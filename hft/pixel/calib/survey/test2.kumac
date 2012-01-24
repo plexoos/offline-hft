@@ -1,0 +1,70 @@
+*** Begin of history file: Fri May 14 17:56:10 2010
+ntupl/cr 10 'test' 7 ! ! x y z ux uy uz r
+shell dir
+nt/read 10 Ball_test_8.dat
+nt/plot 10.x%y%z ! ! ! ! g
+nt/plot 10.x%y ! ! ! ! g
+nt/plot 10.x%y ! ! ! ! box
+nt/plot 10.x%z ! ! ! ! g
+nt/plot 10.x%y%z ! ! ! ! g
+nt/plot 10.(x+ux*r)%(y+uy*r)%(z+uz*r) ! ! ! ! g
+nt/plot 10.(x+ux*r)%(z+uz*r) ! ! ! ! g
+nt/plot 10.(x+ux*r)%(z+uz*r) ! ! ! ! box
+nt/plot 10.(x+ux*r)%(y+uy*r) z<0.5 ! ! ! g
+nt/plot 10.(x+ux*r)%(y+uy*r) z<0.5 ! ! ! box
+nt/plot 10.(x+ux*r)%(y+uy*r) z<0.5 ! ! !
+h/fit 1000000 p2
+h/l
+help h/fit
+help h/fit
+shell
+h/fit 1000000 'fitt.f'
+help h/fit
+h/fit 1000000 'fitt.f' ! 3
+help v/cre
+v/cre par(3) r 0.1 0.1 6.
+h/fit 1000000 'fitt.f' ! 3 par
+help h/fit
+h/fit 1000000 'fitt.f' s 3 par
+v/pri par
+h/l
+shell
+v/cre par(4) r 0.1 0.1 0.1 6.
+nt/plot 10.(x+ux*r)%(y+uy*r)%(z+uz*r) ! ! ! !
+h/l
+help nt/fit
+h/fit 1000000 'fitt.f' s 4 par
+help ntuple
+h/fit 1000000 'fitt.f' s 4 par
+h/l
+fun/fit
+help function/fit
+help function
+nt/plot 10.(x+ux*r)%(z+uz*r) ! ! ! !
+h/fit 1000000 'fitt.f' s 4 par
+nt/plot 10.(y+uy*r)%(z+uz*r) ! ! ! !
+h/fit 1000000 'fitt.f' s 4 par
+nt/plot 10.(z+uz*r) abs((z+uz*r)-2.1)<0.2 ! ! !
+nt/plot 10.(z+uz*r) abs((z+uz*r)-2.1)<0.3 ! ! !
+h/fit 1000000 g
+nt/plot 10.(x+ux*r)%(y+uy*r) abs((z+uz*r)-2.1)<0.3  ! ! !
+shell
+v/cre par(3) r 0.1 0.1 6.
+h/fit 1000000 'fitt.f' s 3 par
+shell
+h/fit 1000000 'fitt.f' s 3 par
+help fun/plot
+help 2d
+fun/plot fitt.f
+help fun/plo
+help fun2/plot
+fun2/plot
+fun2/draw
+help fun/plo
+fun/plot fitt.f -5 5 s
+h/plo 1000000
+fun/plot fitt.f -5 5 s
+nt/plot 10.(z+uz*r) abs((z+uz*r)-2.1)<0.2 ! ! !
+h/fit 1000000 g
+exit
+*** End   of history file: Fri May 14 19:15:32 2010

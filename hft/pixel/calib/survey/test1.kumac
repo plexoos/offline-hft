@@ -1,0 +1,48 @@
+*** Begin of history file: Thu May 13 20:05:26 2010
+ntupl/cr 10 'test' 3 ! ! x y z
+nt/read 10 vrt_no_wt_pnts_all.dat
+nt/plot 10.x%y ! ! ! ! box
+nt/plot 10.y%z ! ! ! ! box
+nt/plot 10.y%z ! ! ! !
+ntupl/cr 20 'test-wt' 3 ! ! x y z
+nt/read 10 vrt_wt_pnts_all.dat
+nt/read 20 vrt_wt_pnts_all.dat
+nt/plot 10.y%z ! ! ! !
+nt/plot 20.y%z ! ! ! !
+nt/read 10 vrt_no_wt_pnts_all.dat
+nt/plot 10.y%z ! ! ! !
+nt/plot 20.y%z ! ! ! ! sbox
+nt/plot 10.y%z ! ! ! !
+nt/plot 10.y%z y<2&&z<5 ! ! !
+nt/plot 10.y y<2&&z<5 ! ! !
+h/fit 1000000 G
+nt/plot 10.z y<2&&z<5 ! ! !
+h/fit 1000000 G
+nt/plot 20.z y<2&&z<5 ! ! !
+nt/plot 20.y%z ! ! ! !
+nt/plot 20.z y<2&&z<5 ! ! !
+h/fit 1000000 G
+nt/plot 20.y y<2&&z<5 ! ! !
+h/fit 1000000 G
+nt/plot 10.y ! ! ! !
+nt/plot 10.x%y ! ! ! !
+nt/plot 20.x%y y<2&&z<5 ! ! !
+nt/plot 20.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.xz ! ! ! !
+nt/plot 10.x%z ! ! ! !
+nt/plot 10.y%z ! ! ! !
+nt/plot 20.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.y y<2&&z<5 ! ! ! box
+h/fit 1000000 G
+nt/plot 20.y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! ! box
+nt/plot 20.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! ! box
+nt/plot 20.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! !
+nt/plot 10.x%y y<2&&z<5 ! ! ! box
+nt/plot 10.x%y y<2&&z<5 ! ! ! s
+exit
+*** End   of history file: Thu May 13 21:14:24 2010

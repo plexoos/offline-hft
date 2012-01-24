@@ -1,0 +1,61 @@
+*** Begin of history file: Thu May 13 16:36:38 2010
+vec/cre x(100) y(100) z(100) ux(100) uy(100) uz(100) r(100)
+vec/cre r x(100) y(100) z(100) ux(100) uy(100) uz(100) r(100)
+help vec/cre
+vec/cre x(100) r
+vec/cre y(100) r
+vec/cre z(100) r
+vec/cre ux(100) r
+vec/cre uy(100) r
+vec/cre uz(100) r
+vec/cre rd(100) r
+help nt/read
+v/del 0
+v/del *
+help nt/crea
+help nt/crea
+ntupl/cr 10 'test' 7 ! ! x,y,z,ux,uy,uz,r
+help nt/re
+nt/read
+help nt/read
+nt/read 10 test.dat
+nt/plot x%y%z
+nt/plot 10.x%y%z
+help nt/plot
+nt/print
+ntupl/cr 10 'test' 7 ! ! x y z ux uy uz r
+nt/read 10 test.dat
+nt/print
+nt/plot 10.x%y%z
+nt/plot 10.r
+nt/plot 10.x
+nt/plot 10.y
+nt/plot 10.x%y
+nt/plot 10.z
+nt/plot 10.x%z
+nt/plot 10.(x+ux)%(y+uy)
+nt/plot 10.(x+ux)%(y+uy) ! ! ! box
+nt/plot 10.(x+ux)%(y+uy) ! ! ! ! box
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! box
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! '*'
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! surf
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! s
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! p
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! box
+nt/plot 10.(y+uy)%(z+uz) ! ! ! ! box
+nt/plot 10.(x+ux)%(z+uz) ! ! ! ! box
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! box
+help nt/plot
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! l
+help nt/plot
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! g
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! g
+help nt/plot
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! zcol
+nt/plot 10.(x+ux)%(y+uy)%(z+uz) ! ! ! ! g
+nt/plot 10.(x+ux)%(y+uy) ! ! ! box
+nt/plot 10.(x+ux)%(y+uy) ! ! ! ! box
+nt/plot 10.(y+uy) ! ! ! !
+nt/plot 10.(z+uz) ! ! ! ! g
+exit
+*** End   of history file: Thu May 13 17:17:41 2010

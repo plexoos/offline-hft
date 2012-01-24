@@ -1,0 +1,52 @@
+     1	11:27	source .alias
+     2	11:27	stardev
+     3	11:27	ksu
+     4	11:27	cd hft/calib/
+     5	11:27	dir
+     6	11:28	mkdir pixel/calib/survey
+     7	11:28	mkdir pixel/
+     8	11:28	mkdir pixel/calib/
+     9	11:28	mkdir pixel/calib/survey
+    10	11:28	dir pixel/calib/survey
+    11	11:29	cp f3d_minuit30.C pixel/calib/survey/
+    12	11:29	cp Ball_test_30.dat pixel/calib/survey/
+    13	11:29	cp Ball_test_8.dat pixel/calib/survey/
+    14	11:29	dir pixel/calib/survey
+    15	11:31	pwd
+
+
+    16	11:32	cvs import     ! help
+    21	11:33	cd pixel/
+    22	11:35	cvs import -m "Installation" offline/users/hft/pixel Spiros start
+
+   30	11:39	cvs co -dhft offline/users/hft
+
+ % dtree hft
+/star/institutions/ksu/margetis/hft/calib/hft
+'-----CVS
+'-----ist
+ |     '-----CVS
+'-----pixel
+ |     '-----calib
+ |      |     '-----alignment
+ |      |      |     '-----CVS
+ |      |      |     '-----global
+ |      |      |      |     '-----CVS
+ |      |      |     '-----local
+ |      |      |      |     '-----CVS
+ |      |     '-----CVS
+ |      |     '-----survey
+ |      |      |     '-----CVS
+ |     '-----CVS
+'-----ssd
+ |     '-----CVS
+'-----StRoot
+ |     '-----CVS
+ |     '-----StHftPool
+ |      |     '-----CVS
+
+
+
+
+
+
