@@ -2146,8 +2146,10 @@ void CheckSetupArc(double rotate=0.0){
 //**********************************************************
 //
 // $Log$
-// Revision 1.1  2013/03/28 19:27:12  videbaks
-// Initial revision
+// Revision 1.1.1.1  2013/03/28 19:27:12  videbaks
+// These are the macro files used to generate both TGeo and xml skeleton for the PXL geometry
+// Originally developed under my provate accountw
+//
 //
 // Revision 1.11  2013/01/27 19:01:46  videbaek
 // Remove debug output
