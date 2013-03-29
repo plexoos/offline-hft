@@ -1,0 +1,20 @@
+This are macros that I used to generatt the ideal PXL sector geometry.
+The structures are rather complicated, so it was the easiest to generate the geometry 
+from the underlying formulae that Howard Weiman has described in great detail.
+
+This was then used to define using the root TGeo classes, so geometry could be reviwed as it was developed.
+STAR does not use TGeo directly, but rather the general AGML such that both
+Geant3 and Root VMC can be created from the same base set of files.
+The Agml imposes som e stringent order in which tree structures has to be defined and positioned.
+I did not implement this completely, but the macros are able to generate the skeleton agml xml code,
+that was then imported by Jonathan into the Pixel geometry.
+
+The macro Sector.C has all the calculational stuff, that generates a number of files (either .C or .xml). 
+It also has numerous testing routines, as well as functions, that generates geant code based on shapes, (BOX, TUBS,...).
+the macro assembly.C reads the generated .C files and make an assembly of beamPipe + pixel sectors.
+The macro will also generate the radiation lenght budget.
+
+the run.C macro executes this chain.
+
+The trap.C is an assembly testing the generation of trapziods based on defining the 4 points
+of the corner. 
