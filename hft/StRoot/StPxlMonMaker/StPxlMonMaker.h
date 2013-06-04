@@ -45,7 +45,7 @@ class TProfile;
 class StPxlMonMaker : public StMaker {
 	public:
 
-		StPxlMonMaker(const Char_t *name="analysis");     // constructor
+		StPxlMonMaker(const Char_t *name="pxlQa");     // constructor
 		~StPxlMonMaker() {}                               // destructor
                 virtual Int_t Init();
                 Int_t Declareplots();

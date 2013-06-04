@@ -42,6 +42,7 @@ Int_t StPxlMonMaker::Init()
 	mEventCounter = 0;
 	NtupleWrite = 0;
 	LOG_INFO<<"StPxlMonMaker::Init()"<<endm;
+        Declareplots();
 	return kStOk; 
 }
 Int_t StPxlMonMaker::Declareplots()
@@ -150,7 +151,6 @@ Int_t StPxlMonMaker::Finish() {
 
 Int_t StPxlMonMaker::Make() {
 	mEventCounter++;  // increase counter
-	if(mEventCounter==1)Declareplots();
 
 	StEvent* event;
 	event = (StEvent *) GetInputDS("StEvent");
@@ -375,36 +375,41 @@ void StPxlMonMaker::writeHistograms()
 	}
 
 	TString filename = TString(ioMaker->GetFile());
-	filename.ReplaceAll(".daq",".root");
-	//filename.ReplaceAll("/version1.7/","/");
+        int found = filename.Last('/');
+        if(found >= 0)
+            filename.Replace(0, found+1, "");
+	filename.ReplaceAll(".daq",".pxlQa.root");
+
 	f1 = new TFile(filename, "RECREATE");
-	nRawHits_sensorID->Write();
+
+        f1->WriteTObject(nRawHits_sensorID);
 	for(int i=0; i< 10; i++)
 	{
-		if(i==1||i==3||i==6)nRawHits_eachsector_sensorID[i]->Write();
+            if(i==1||i==3||i==6)f1->WriteTObject(nRawHits_eachsector_sensorID[i]);
 	}
 
-	nHits_sensorID->Write();
+        f1->WriteTObject(nHits_sensorID);
         for(int i=0; i< 10; i++)
         {
-                if(i==1||i==3||i==6)nHits_eachsector_sensorID[i]->Write();
+            if(i==1||i==3||i==6)f1->WriteTObject(nHits_eachsector_sensorID[i]);
         }
 
-	hitnRawHits_sensorID->Write();
+        f1->WriteTObject(hitnRawHits_sensorID);
         for(int i=0; i< 10; i++)
         {
-                if(i==1||i==3||i==6)hitnRawHits_eachsector_sensorID[i]->Write();
+            if(i==1||i==3||i==6)f1->WriteTObject(hitnRawHits_eachsector_sensorID[i]);
         }
 
-	globalx_y->Write();
-	globalz->Write();
-	globalphi_z_inner->Write();
-	globalphi_z_outer->Write();
+        f1->WriteTObject(globalx_y);
+        f1->WriteTObject(globalz);
+        f1->WriteTObject(globalphi_z_inner);
+        f1->WriteTObject(globalphi_z_outer);
 	for(int i=0; i< 10; i++)
 	{
 		if(i==1||i==3||i==6){
-			innerhits_outerhits[i]->Write();
-			innerrawhits_outerrawhits[i]->Write();}
+                    f1->WriteTObject(innerhits_outerhits[i]);
+                    f1->WriteTObject(innerrawhits_outerrawhits[i]);
+                }
 	}
 	for(int i=0; i< 10; i++)
 	{
@@ -414,8 +419,8 @@ void StPxlMonMaker::writeHistograms()
 			{
 
 				if(i==1||i==3||i==6){
-					rawHit_rowvscolumn[i*40+j*10+k]->Write();
-					nRawHits_EventId[i*40+j*10+k]->Write();
+                                    f1->WriteTObject(rawHit_rowvscolumn[i*40+j*10+k]);
+                                    f1->WriteTObject(nRawHits_EventId[i*40+j*10+k]);
 					//hit_localZ_X[i*40+j*10+k]->Write();
 				}
 			}
