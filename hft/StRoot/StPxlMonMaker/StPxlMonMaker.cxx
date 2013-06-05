@@ -378,7 +378,10 @@ void StPxlMonMaker::writeHistograms()
         int found = filename.Last('/');
         if(found >= 0)
             filename.Replace(0, found+1, "");
-	filename.ReplaceAll(".daq",".pxlQa.root");
+	found = filename.First(".");
+        if(found == 0) found = filename.Length();
+        filename.Replace(found, filename.Length()-found, ".pxlQa.root");
+        LOG_INFO<<"writeHistograms() filename: "<<filename<<endm;
 
 	f1 = new TFile(filename, "RECREATE");
 
