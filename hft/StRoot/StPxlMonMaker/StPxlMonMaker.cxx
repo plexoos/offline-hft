@@ -42,14 +42,31 @@ Int_t StPxlMonMaker::Init()
 	mEventCounter = 0;
 	NtupleWrite = 0;
 	LOG_INFO<<"StPxlMonMaker::Init()"<<endm;
-        Declareplots();
+        //Declareplots();
 	return kStOk; 
 }
 Int_t StPxlMonMaker::Declareplots()
 {
 	if(NtupleWrite){
-		hitNtuple = new TNtuple("hitNtuple", "hitNtuple", "sector:ladder:sensor:localX:localY:localZ:x:y:z:meanRow:meanColumn:layer:nRawHits:EventId");
-		rawHitNtuple = new TNtuple("rawHitNtuple", "rawHitNtuple", "sector:ladder:sensor:column:row:idTruth:EventId");	
+		rawHitTree = new TTree("rawHitTree","rawHitTree");
+		rawHitTree->Branch("Event", &fillrawHit.eventid, "eventid/I:nrawhits");
+		rawHitTree->Branch("sensorid",fillrawHit.sensorid,"sensorid[nrawhits]/S");
+		rawHitTree->Branch("column",fillrawHit.column,"column[nrawhits]/S");
+		rawHitTree->Branch("row",fillrawHit.row,"row[nrawhits]/S");
+                rawHitTree->Branch("idtruth",fillrawHit.idtruth,"idtruth[nrawhits]/I");
+                HitTree = new TTree("HitTree","HitTree");
+                HitTree->Branch("Event",&fillHit.eventid,"eventid/I:nhits");
+                HitTree->Branch("sensorid",fillHit.sensorid,"sensorid[nhits]/S");	
+                HitTree->Branch("localx",fillHit.localx,"localx[nhits]/F");
+                HitTree->Branch("localy",fillHit.localy,"localy[nhits]/F");
+                HitTree->Branch("localz",fillHit.localz,"localz[nhits]/F");
+		HitTree->Branch("globalx",fillHit.globalx,"globalx[nhits]/F");
+		HitTree->Branch("globaly",fillHit.globaly,"globaly[nhits]/F");
+		HitTree->Branch("globalz",fillHit.globalz,"globalz[nhits]/F");
+                HitTree->Branch("meanrow",fillHit.meanrow,"meanrow[nhits]/F");
+                HitTree->Branch("meancolumn",fillHit.meancolumn,"meancolum[nhits]/F");
+                HitTree->Branch("layer",fillHit.layer,"layer[nhits]/S");
+                HitTree->Branch("hitnrawhits",fillHit.hitnrawhits,"hitnrawhits[nhits]/S");
 	}	
 	nRawHits_sensorID = new TH2F("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 1200, 0,1200);
 	nRawHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
@@ -129,9 +146,9 @@ Int_t StPxlMonMaker::Declareplots()
 
 					sprintf(ename, "nRawHits_EventId_%d", i*40+j*10+k);
 					sprintf(etitle, "rawHits vs. EventID: Sector %d Ladder %d Sensor %d", i+1, j+1, k+1);
-					nRawHits_EventId[i*40+j*10+k] = new TProfile(ename, etitle, 10000, 0, 10000);
-					nRawHits_EventId[i*40+j*10+k]->GetXaxis()->SetTitle("EventID (Time)");
-					nRawHits_EventId[i*40+j*10+k]->GetYaxis()->SetTitle("<rawhits>");
+                                        nRawHits_EventId[i*40+j*10+k] = new TProfile(ename, etitle, 500000, 0, 500000);
+                                        nRawHits_EventId[i*40+j*10+k]->GetXaxis()->SetTitle("EventID (Time)");
+                                        nRawHits_EventId[i*40+j*10+k]->GetYaxis()->SetTitle("rawhits");					
 
 				}
 			}
@@ -141,9 +158,10 @@ Int_t StPxlMonMaker::Declareplots()
 	return kStOk;
 }
 Int_t StPxlMonMaker::Finish() {
-
-	writeHistograms();
-	gMessMgr->Info() << "StPxlMonMaker::Finish() "
+	f1->Write();
+        f1->Close();
+	//writeHistograms();
+        gMessMgr->Info() << "StPxlMonMaker::Finish() "
 		<< "Processed " << mEventCounter << " events." << endm;
 
 	return kStOK;
@@ -151,6 +169,23 @@ Int_t StPxlMonMaker::Finish() {
 
 Int_t StPxlMonMaker::Make() {
 	mEventCounter++;  // increase counter
+	if(mEventCounter==1)
+	{        //Declareplots();
+		StIOMaker *ioMaker = (StIOMaker* )GetMaker("inputStream");
+		if (!ioMaker){
+			gMessMgr->Warning() << "StPxlMonMaker::Init(): No StIOMaker" << endm;
+		}
+
+		TString filename = TString(ioMaker->GetFile());
+		int found = filename.Last('/');
+		if(found >= 0)
+			filename.Replace(0, found+1, "");
+		filename.ReplaceAll(".daq",".pxlQa.root");
+
+		f1 = new TFile(filename, "RECREATE");
+
+		Declareplots();
+	}	
 
 	StEvent* event;
 	event = (StEvent *) GetInputDS("StEvent");
@@ -167,15 +202,7 @@ Int_t StPxlMonMaker::Make() {
 		cout<<"StPxlMonMaker:: pxlClusterCollection: "<<pxlClusterCollection<<endl;
 	}
 	PrintPixelHits();
-	if(mEventCounter%100==0)writeHistograms();
-	//
-	//  See if this event survives the event filter.
-	//  If not we stop here right away.
-	//
-	//if (!accept(event)){
-	//	gMessMgr->Warning() << "StPxlMonMaker::Make : Event was not accepted" << endm;
-	//	return kStOK;
-	//}
+        //if(mEventCounter%100==0) {writeHistograms();}
 	return kStOK;
 }
 
@@ -277,8 +304,8 @@ void StPxlMonMaker::PrintPixelHits() {
 		}
 		StPxlHitCollection* PxlHitCollection = pEvent->pxlHitCollection();
 		if (! PxlHitCollection) { cout << "No Pixel Hit Collection" << endl; return;}
-		int hitnumber_inner =0, hitnumber_outer=0;
-		for(int i=0; i<PxlHitCollection->numberOfSectors(); i++)
+		int counthits = 0;
+                for(int i=0; i<PxlHitCollection->numberOfSectors(); i++)
 		{
 			int hitnumber_inner =0, hitnumber_outer=0;
 			StPxlSectorHitCollection* sectorHitCollection = PxlHitCollection->sector(i);
@@ -289,19 +316,24 @@ void StPxlMonMaker::PrintPixelHits() {
 				{
 					if(i==1||i==3||i==6){		
 						StPxlSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(k);
-						//StSPtrVecPxlHit hits = sensorHitCollection->hits();
 						for(int l=0; l<sensorHitCollection->hits().size(); l++)
 						{
 							StPxlHit* hit = sensorHitCollection->hits()[l];						
-							//StPxlHit* hit = hits[l];
 							if (hit) {
 								const StThreeVectorF &P = hit->position();
 								if(NtupleWrite){
-									hitNtuple->Fill((float)hit->sector(), (float)hit->ladder(), (float)hit->sensor(), 
-											(float)hit->localPosition(0), (float)hit->localPosition(1),(float)hit->localPosition(2), 
-											(float)P.x(), (float)P.y(), (float)P.z(),
-											(float)hit->meanRow(),(float)hit->meanColumn(),(int)hit->layer(),
-											(int)hit->nRawHits(),(int)pEvent->id());
+									fillHit.sensorid[counthits] = i*40+j*10+k+1;
+									fillHit.localx[counthits] = hit->localPosition(0);
+									fillHit.localy[counthits] = hit->localPosition(1);
+									fillHit.localz[counthits] = hit->localPosition(2);
+									fillHit.globalx[counthits] = P.x();
+									fillHit.globaly[counthits] = P.y();
+									fillHit.globalz[counthits] = P.z();
+									fillHit.meanrow[counthits] = hit->meanRow();
+									fillHit.meancolumn[counthits] = hit->meanColumn();
+									fillHit.layer[counthits] = hit->layer();
+									fillHit.hitnrawhits[counthits] = hit->nRawHits();
+                                                                        counthits++;
 								}							
 								globalx_y->Fill((float)P.x(), (float)P.y());
 								globalz->Fill((float)P.z());
@@ -321,6 +353,11 @@ void StPxlMonMaker::PrintPixelHits() {
 			}
 			if(i==1||i==3||i==6) innerhits_outerhits[i]->Fill(hitnumber_inner, hitnumber_outer);
 		}
+		if(NtupleWrite){
+			fillHit.eventid = pEvent->id();
+			fillHit.nhits = counthits;
+			HitTree->Fill();
+		}
 	}
 
 	TObjectSet* pxlRawHitDataSet = (TObjectSet*)GetDataSet("pxlRawHit");
@@ -334,7 +371,7 @@ void StPxlMonMaker::PrintPixelHits() {
 		LOG_WARN << "StPxlClusterMaker::Make() no pxlRawHitCollection."<<endm;
 		return;
 	}
-
+	int countrawhits = 0;
 	for (int i=0; i<nPxlSectors; i++)
 	{
 		int rawhitnumber_inner =0, rawhitnumber_outer=0;
@@ -348,14 +385,18 @@ void StPxlMonMaker::PrintPixelHits() {
 					{
 						StPxlRawHit* rawHit = pxlRawHitCollection->pxlRawHitVec[i][j][k][l];
 						if(NtupleWrite){
-							rawHitNtuple->Fill(i+1, j+1, k+1, rawHit->row(), rawHit->column(), rawHit->idTruth(),(int)pEvent->id());
+							fillrawHit.sensorid[countrawhits] = i*40+j*10+k+1;
+							fillrawHit.column[countrawhits]   = rawHit->column();
+							fillrawHit.row[countrawhits]   = rawHit->row();
+                                                        fillrawHit.idtruth[countrawhits] = rawHit->idTruth();
+							countrawhits++;
+
 						}
 						rawHit_rowvscolumn[i*40+j*10+k]->Fill(rawHit->column(), rawHit->row());
-						//if(i==6&&j==3&&k==6) cout<<"rawHit->column() = "<<rawHit->column()<<"rawHit->row() = "<<rawHit->row()<<endl;
 					}
 					nRawHits_sensorID->Fill(i*40+j*10+k+1, pxlRawHitCollection->pxlRawHitVec[i][j][k].size());
 					nRawHits_eachsector_sensorID[i]->Fill(j*10+k+1, pxlRawHitCollection->pxlRawHitVec[i][j][k].size());
-					nRawHits_EventId[i*40+j*10+k]->Fill((int)pEvent->id()/100+1,pxlRawHitCollection->pxlRawHitVec[i][j][k].size()); 
+					nRawHits_EventId[i*40+j*10+k]->Fill((int)pEvent->id()+1,pxlRawHitCollection->pxlRawHitVec[i][j][k].size());					
 					if(j==0) rawhitnumber_inner+=pxlRawHitCollection->pxlRawHitVec[i][j][k].size();
 					if(j==1||j==2||j==3) rawhitnumber_outer+=pxlRawHitCollection->pxlRawHitVec[i][j][k].size();
 				}		
@@ -363,33 +404,33 @@ void StPxlMonMaker::PrintPixelHits() {
 		}
 		if(i==1||i==3||i==6) innerrawhits_outerrawhits[i]->Fill(rawhitnumber_inner, rawhitnumber_outer);
 	}
-        //cout<<"(int)pEvent->id() = "<<(int)pEvent->id()<<"(((int)pEvent->id())/50)+1 = "<<(int)pEvent->id()/100+1<<endl;
-
+	if(NtupleWrite){
+		fillrawHit.eventid = pEvent->id();
+		fillrawHit.nrawhits = countrawhits;
+		rawHitTree->Fill();
+	}
 }
 
-void StPxlMonMaker::writeHistograms()
+/*void StPxlMonMaker::writeHistograms()
 {
-	StIOMaker *ioMaker = (StIOMaker* )GetMaker("inputStream");
-	if (!ioMaker){
-		gMessMgr->Warning() << "StPxlMonMaker::Init(): No StIOMaker" << endm;
-	}
+        StIOMaker *ioMaker = (StIOMaker* )GetMaker("inputStream");
+        if (!ioMaker){
+                gMessMgr->Warning() << "StPxlMonMaker::Init(): No StIOMaker" << endm;
+        }
 
-	TString filename = TString(ioMaker->GetFile());
+        TString filename = TString(ioMaker->GetFile());
         int found = filename.Last('/');
         if(found >= 0)
             filename.Replace(0, found+1, "");
-	found = filename.First(".");
-        if(found == 0) found = filename.Length();
-        filename.Replace(found, filename.Length()-found, ".pxlQa.root");
-        LOG_INFO<<"writeHistograms() filename: "<<filename<<endm;
+        filename.ReplaceAll(".daq",".pxlQa.root");
 
-	f1 = new TFile(filename, "RECREATE");
-
+        f1 = new TFile(filename, "RECREATE");
+        if(NtupleWrite){    f1->WriteTObject(HitTree); f1->WriteTObject(rawHitTree);}
         f1->WriteTObject(nRawHits_sensorID);
-	for(int i=0; i< 10; i++)
-	{
+        for(int i=0; i< 10; i++)
+        {
             if(i==1||i==3||i==6)f1->WriteTObject(nRawHits_eachsector_sensorID[i]);
-	}
+        }
 
         f1->WriteTObject(nHits_sensorID);
         for(int i=0; i< 10; i++)
@@ -407,28 +448,28 @@ void StPxlMonMaker::writeHistograms()
         f1->WriteTObject(globalz);
         f1->WriteTObject(globalphi_z_inner);
         f1->WriteTObject(globalphi_z_outer);
-	for(int i=0; i< 10; i++)
-	{
-		if(i==1||i==3||i==6){
+        for(int i=0; i< 10; i++)
+        {
+                if(i==1||i==3||i==6){
                     f1->WriteTObject(innerhits_outerhits[i]);
                     f1->WriteTObject(innerrawhits_outerrawhits[i]);
                 }
-	}
-	for(int i=0; i< 10; i++)
-	{
-		for(int j=0; j<4; j++)
-		{
-			for(int k=0; k<10; k++)
+        }
+        for(int i=0; i< 10; i++)
+        {
+                for(int j=0; j<4; j++)
+                {
+                        for(int k=0; k<10; k++)
 			{
-
 				if(i==1||i==3||i==6){
-                                    f1->WriteTObject(rawHit_rowvscolumn[i*40+j*10+k]);
-                                    f1->WriteTObject(nRawHits_EventId[i*40+j*10+k]);
+					f1->WriteTObject(rawHit_rowvscolumn[i*40+j*10+k]);
+					f1->WriteTObject(nRawHits_EventId[i*40+j*10+k]);
 					//hit_localZ_X[i*40+j*10+k]->Write();
 				}
 			}
 		}
 	}
-	f1->Close();
+	//f1->Close();
 
 }
+*/
