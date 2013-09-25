@@ -23,6 +23,7 @@
 #include "TH2F.h"
 #include "TProfile.h"
 #include "TNtuple.h"
+#include "TFile.h"
 #include "StThreeVectorF.hh"
 #include "StDetectorName.h"
 #include "StPxlUtil/StPxlCluster.h"
@@ -40,7 +41,7 @@ StPxlMonMaker::StPxlMonMaker(const Char_t *name) : StMaker(name)
 Int_t StPxlMonMaker::Init()
 {
 	mEventCounter = 0;
-	NtupleWrite = 0;
+	NtupleWrite = 1;
 	LOG_INFO<<"StPxlMonMaker::Init()"<<endm;
         Declareplots();
 	return kStOk; 
@@ -48,7 +49,7 @@ Int_t StPxlMonMaker::Init()
 Int_t StPxlMonMaker::Declareplots()
 {
 	if(NtupleWrite){
-		hitNtuple = new TNtuple("hitNtuple", "hitNtuple", "sector:ladder:sensor:localX:localY:localZ:x:y:z:meanRow:meanColumn:layer:nRawHits:EventId");
+		hitNtuple = new TNtuple("hitNtuple", "hitNtuple", "sector:ladder:sensor:localX:localY:localZ:x:y:z:meanRow:meanColumn:layer:nRawHits:idTruth:EventId");
 		rawHitNtuple = new TNtuple("rawHitNtuple", "rawHitNtuple", "sector:ladder:sensor:column:row:idTruth:EventId");	
 	}	
 	nRawHits_sensorID = new TH2F("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 1200, 0,1200);
@@ -300,8 +301,8 @@ void StPxlMonMaker::PrintPixelHits() {
 									hitNtuple->Fill((float)hit->sector(), (float)hit->ladder(), (float)hit->sensor(), 
 											(float)hit->localPosition(0), (float)hit->localPosition(1),(float)hit->localPosition(2), 
 											(float)P.x(), (float)P.y(), (float)P.z(),
-											(float)hit->meanRow(),(float)hit->meanColumn(),(int)hit->layer(),
-											(int)hit->nRawHits(),(int)pEvent->id());
+											(float)hit->meanRow(),(float)hit->meanColumn(),(float)hit->layer(),
+											(float)hit->nRawHits(),(float)hit->idTruth(),(float)pEvent->id());
 								}							
 								globalx_y->Fill((float)P.x(), (float)P.y());
 								globalz->Fill((float)P.z());
@@ -348,7 +349,7 @@ void StPxlMonMaker::PrintPixelHits() {
 					{
 						StPxlRawHit* rawHit = pxlRawHitCollection->pxlRawHitVec[i][j][k][l];
 						if(NtupleWrite){
-							rawHitNtuple->Fill(i+1, j+1, k+1, rawHit->row(), rawHit->column(), rawHit->idTruth(),(int)pEvent->id());
+                                                    rawHitNtuple->Fill((float)i+1, (float)j+1, (float)k+1, (float)rawHit->row(), (float)rawHit->column(), (float)rawHit->idTruth(), (float)pEvent->id());
 						}
 						rawHit_rowvscolumn[i*40+j*10+k]->Fill(rawHit->column(), rawHit->row());
 						//if(i==6&&j==3&&k==6) cout<<"rawHit->column() = "<<rawHit->column()<<"rawHit->row() = "<<rawHit->row()<<endl;
@@ -383,7 +384,10 @@ void StPxlMonMaker::writeHistograms()
         filename.Replace(found, filename.Length()-found, ".pxlQa.root");
         LOG_INFO<<"writeHistograms() filename: "<<filename<<endm;
 
-	f1 = new TFile(filename, "RECREATE");
+        f1 = new TFile(filename.Data(), "RECREATE"); 
+
+        f1->WriteTObject(hitNtuple);
+        f1->WriteTObject(rawHitNtuple);
 
         f1->WriteTObject(nRawHits_sensorID);
 	for(int i=0; i< 10; i++)

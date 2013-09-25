@@ -1345,6 +1345,7 @@ Bfc_st BFC[] = {
   {"pxlRaw"      ,"","","pxlUtil","StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
   {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
   {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
+  {"pxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
   {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
   {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
   {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
@@ -1444,9 +1445,12 @@ Bfc_st BFC[] = {
   {"StiSsd"   ,"","",""                           ,"","StSsdUtil,StSsdDbMaker,StiSsd","Load StiSvt",kFALSE},
   {"StiLibs"  ,"","","StiTpc,StiSvt,StiSsd,BTofUtil"   ,"","StEEmcDbMaker","Load Sti Detector libs",kFALSE},
   // depends on Sti symbols
-  {"VFPPV"    ,""  ,"","ctf_T,eemcDb,StiLib","StGenericVertexMaker"
-   ,         "ctf,St_ctf,St_ctf_Maker,Minui,StGenericVertexMaker","... Pile-up proof vertex finder",kFALSE},
-  {"VFPPVnoCTB"     ,""  ,"","VFPPV",""                ,"","... Pile-up proof vertex finder, noCTB",kFALSE},
+  {"VFPPV"    	,""  	,""	,"ctf_T,eemcDb,StiLib"	,"StGenericVertexMaker"
+                ,"ctf,St_ctf,St_ctf_Maker,Minui,StGenericVertexMaker"	,"... Pile-up proof vertex finder",kFALSE},
+  {"VFPPVnoCTB"		,""  ,""	,"VFPPV" 	,""             ,"","... Pile-up proof vertex finder, noCTB",kFALSE},
+  {"VFPPVEv"    ,""     ,""	,"ctf_T,eemcDb,StiLib"	,"StGenericVertexMaker"	
+             	,"ctf,St_ctf,St_ctf_Maker,Minui,StGenericVertexMaker"	,"... StEvent based VFPPV, noCTB",kFALSE},
+  {"VFPPVEvNoBtof"     	,""  ,""	,"VFPPVEv"	,""		,"","...VFPPVEv with no Btof ",kFALSE},
   // Sti/Stv chains
   {"Sti"      ,"Sti","","StiLib,StiLibs,SCL,StEvent,StDbT,TpcIT,compend,tbutil","StiMaker"
    ,                                         "StEventUtilities,StiUtilities,StiMaker","Sti tracker",kFALSE},
@@ -1624,7 +1628,6 @@ Bfc_st BFC[] = {
   {"NoDefault"   ,""  ,"",""                                  ,"","","No Default consistency check",kFALSE},
   {"Notpc_daq"   ,""  ,"","-tpc_daq"                                            ,"","","No tpc_daq",kFALSE},
   {"analysis"    ,"","","StEvent"        ,"StAnalysisMaker","StAnalysisMaker","Example of Analysis",kFALSE},
-  {"PxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
   {"------------","-----------","-----------","------------------------------------------","","","",kFALSE}
 
 };
