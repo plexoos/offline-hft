@@ -14,7 +14,6 @@
 #include "St_db_Maker/St_db_Maker.h"
 #include "StTreeMaker/StTreeMaker.h"
 #include "StIOMaker/StIOMaker.h"
-#include "StChallenger/StChallenger.h"
 #include "StDbUtilities/StMagUtilities.h"
 #include "StMessMgr.h"
 #include "StEnumerations.h"
@@ -40,7 +39,6 @@
 
 
 // NoChainOptions -> Number of chain options auto-calculated
-#define __KEEP_TPCDAQ_FCF__ /* remove St_tpcdaq_Maker and StRTSClientFCFMaker. not yet ready */
 TableImpl(Bfc);
 ClassImp(StBFChain);
 
@@ -76,6 +74,7 @@ void StBFChain::Setup(Int_t mode) {
   cmd += file;
   gInterpreter->ProcessLine(cmd);
   assert(fchainOpt);
+  delete [] file;
   fNoChainOptions = fchainOpt->GetNRows();
   fBFC = fchainOpt->GetTable();
   // add predifined time stamps and geometry versions
@@ -255,7 +254,9 @@ Int_t StBFChain::Instantiate()
 	if (! dbMk) {
 	  TString MySQLDb("MySQL:StarDb");
 	  TString MainCintDb("$STAR/StarDb");
+	  TString MainCintDbObj("$STAR/.$STAR_HOST_SYS/obj/StarDb");
 	  TString MyCintDb("$PWD/StarDb");
+	  TString MyCintDbObj("$PWD/.$STAR_HOST_SYS/obj/StarDb");
 	  if (GetOption("NoMySQLDb"))   {MySQLDb = "";}
 	  // Removed twice already and put back (start to be a bit boring)
 	  // DO NOT REMOVE THE NEXT OPTION - Used in AutoCalibration
@@ -263,14 +264,16 @@ Int_t StBFChain::Instantiate()
 	  if (GetOption("NoStarCintDb") ) {MainCintDb = "";}
 	  if (GetOption("NoCintDb")     ) {MainCintDb = ""; MyCintDb = "";}
 	  
-	  TString Dirs[3];
+	  TString Dirs[10];
 	  Int_t j;
-	  for (j = 0; j < 3; j++) Dirs[j] = "";
+	  for (j = 0; j < 10; j++) Dirs[j] = "";
 	  j = 0;
 	  if (MySQLDb    != "") {Dirs[j] = MySQLDb;    j++;}
 	  if (MainCintDb != "") {Dirs[j] = MainCintDb; j++;}
+	  if (MainCintDbObj != "") {Dirs[j] = MainCintDbObj; j++;}
 	  if (MyCintDb   != "") {Dirs[j] = MyCintDb;   j++;}
-	  dbMk = new St_db_Maker(fBFC[i].Name,Dirs[0],Dirs[1],Dirs[2]);
+	  if (MyCintDbObj   != "") {Dirs[j] = MyCintDbObj;   j++;}
+	  dbMk = new St_db_Maker(fBFC[i].Name,Dirs[0],Dirs[1],Dirs[2],Dirs[3],Dirs[4]);
 	  if (!dbMk) goto Error;
 	  strcpy (fBFC[i].Name, (Char_t *) dbMk->GetName());
 
@@ -454,6 +457,7 @@ Int_t StBFChain::Instantiate()
       if (GetOption("Alignment")) mk->SetAttr("Alignment"  ,kTRUE);
       mk->PrintAttr();
     }
+    if (maker=="StKFVertexMaker" && GetOption("laserIT"))   mk->SetAttr("laserIT"    ,kTRUE);
     //		Sti(ITTF) end
     if (maker=="StGenericVertexMaker") {
       // VertexFinder methods
@@ -464,6 +468,14 @@ Int_t StBFChain::Instantiate()
       if (GetOption("VFppLMV"    ) ) mk->SetAttr("VFppLMV"    	, kTRUE);
       if (GetOption("VFppLMV5"   ) ) mk->SetAttr("VFppLMV5"   	, kTRUE);
       if (GetOption("VFPPV"      ) ) mk->SetAttr("VFPPV"      	, kTRUE);
+      if (GetOption("VFPPVEv"  ) ) {
+        gSystem->Load("StBTofUtil.so");
+        mk->SetAttr("VFPPVEv"      , kTRUE);
+      }
+      if (GetOption("VFPPVEvNoBtof")){
+        gSystem->Load("StBTofUtil.so"); //Not used but loaded to avoid fail
+        mk->SetAttr("VFPPVEvNoBtof", kTRUE);
+      }
       if (GetOption("VFPPVnoCTB" ) ) mk->SetAttr("VFPPVnoCTB" 	, kTRUE);
       if (GetOption("VFFV"       ) ) mk->SetAttr("VFFV"       	, kTRUE);
       if (GetOption("VFMCE"      ) ) mk->SetAttr("VFMCE"      	, kTRUE);
@@ -571,68 +583,6 @@ Int_t StBFChain::Instantiate()
       if (GetOption("TrsToF"))    mode += 2; // account for particle time of flight
       if (mode) mk->SetMode(mode);
     }
-#ifdef __KEEP_TPCDAQ_FCF__
-    if (maker == "St_tpcdaq_Maker") {
-      Int_t DMode=0;
-      TString cmd(Form("St_tpcdaq_Maker *tcpdaqMk = (St_tpcdaq_Maker *) %p;",mk));
-
-      // Beware of those ...
-      Int_t                                                  mode = 0; // daq
-      if      (GetOption("Trs") || GetOption("Embedding") || GetOption("TpcRS"))
-                                                             mode = 1; // trs
-      else if (GetOption("Simu"))                            mode = 2; // daq, no gain
-      if (mode) mk->SetMode(mode);
-      // DAQ100 or Raw switch options -- Please, adjust StRTSClientFCFMaker block as well
-      if ( GetOption("onlcl") )   DMode = DMode | 0x2;  // use the online TPC clusters (DAQ100) info if any
-      if ( GetOption("onlraw") )  DMode = DMode | 0x1;  // use the TPC raw hit information
-
-      if (DMode != 0) // set flag, leave default = 1
-	cmd += Form("tcpdaqMk->SetDAQFlag(%i);",DMode);
-      // Correction depending on DAQ100 or not
-      // bit 0  =   do GAIN_CORRECTION
-      // bit 1  =   do NOISE_ELIM
-      // bit 2  =   do ASIC_THRESHOLDS
-      // WARNING Option FCF is checked in StDAQMaker
-      Int_t Correction = 0;
-      Int_t SequenceMerging = 0;
-      if ( GetOption("fcf")   ){
-	if ( GetOption("Trs")   )  Correction = 0x5; // ASIC + GAIN
-	else                       Correction = 0x0; // fcf && ! trs => no corrections
-      } else {
-	SequenceMerging = 1;
-	Correction = 0x7;
-      }
-      cmd += Form("tcpdaqMk->SetCorrection(%d);",Correction); // default Correction = 0x7
-      cmd += Form("tcpdaqMk->SetSequenceMerging(%d);",SequenceMerging);
-      LOG_QA << "StBFChain::Instantiate  maker==" << maker.Data()
-	     << Form(" SetDAQFlag(%d) SetMode(%d) SetCorrection(%d) SetSequenceMerging(%d)",
-		     DMode,mk->GetMode(),Correction,SequenceMerging) << endm;
-      ProcessLine(cmd);
-    }
-#endif
-#if 0 /* probably bug 2106 : mismatch N_fit_points */
-    if (maker == "StTpcRTSHitMaker") {
-      if (GetOption("Trs") || GetOption("Embedding"))  mk->SetMode(2); // daq, no gain
-    }
-#endif
-#ifdef __KEEP_TPCDAQ_FCF__
-    if (maker == "StRTSClientFCFMaker"){
-      Int_t DMode=0;
-      // use the online TPC clusters (DAQ100) info if any
-      if ( GetOption("onlcl") && ! GetOption("onlraw") )  DMode = DMode | 0x2;
-      // use the TPC raw hit information
-      if ( GetOption("onlraw")&& ! GetOption("onlcl")  )  DMode = DMode | 0x1;
-      if ( GetOption("Simu") ||  GetOption("Embedding"))  DMode = DMode | 0x4;
-      if (DMode) mk->SetMode(DMode);                 // set flag (matches tcpdaqMk->SetDAQFlag())
-    }
-    if (maker == "StTpcT0Maker"){
-      Int_t mask = 0;
-      if ( GetOption("fcf") ) mask = mask | 0x1;
-      LOG_QA << "StBFChain::Instantiate For " << maker.Data();
-      LOG_QA << " => mask = " << mask << endm;
-      mk->SetMode(mask);
-    }
-#endif
     // Place-holder. Would possibly be a bitmask
     if (maker == "StTofrMatchMaker"){
       mk->SetMode(0);
@@ -748,10 +698,16 @@ Int_t StBFChain::Instantiate()
       } else {
 	LOG_QA << "Default hit filtering is ON" << endm;
       }
-      Int_t mode = 0;
+      Int_t    mode = 0;
       if (GetOption("KeepTpcHit")) mode |= (1 << kTpcId);
       if (GetOption("KeepSvtHit")) mode |= (1 << kSvtId);
       mk->SetMode(mode);
+      // the m_Mode (Int_t is signed integer 4 bytes) mask is too short for the FGT
+      if (GetOption("KeepFgtHit")){
+	TString cmd(Form("StHitFilterMaker *Filtmk=(StHitFilterMaker*) %p;",mk));
+	cmd += "Filtmk->setKeepWestHighEtaHitsForFgt(1.0);";
+	ProcessLine(cmd);
+      }
     }
     if (maker == "StMiniMcMaker" && fFileOut != "") {
       ProcessLine(Form("((StMiniMcMaker *) %p)->setFileName(\"%s\");", mk, fFileOut.Data()));
@@ -823,7 +779,8 @@ Int_t StBFChain::Init() {
   }
   if (fNoChainOptions) {
     if (GetOption("NoOutput") || GetOption("EvOutOnly")) {
-      SetAttr(".call","SetActive(0)","MuDst");		//NO MuDst
+      if (! GetOption("RMuDst"))
+	SetAttr(".call","SetActive(0)","MuDst");		//NO MuDst
       if (! GetOption("EvOutOnly")) {
 	SetAttr(".call","SetActive(0)","outputStream");	//NO Out
       }
@@ -861,6 +818,7 @@ Int_t StBFChain::Init() {
 	    gInterpreter->Calc("CreateTable()");
 	    command.ReplaceAll(".L ",".U ");
 	    gInterpreter->ProcessLine(command);
+	    delete [] file;
 	  } else {
 	    LOG_INFO << "StBFChain::Init file for geometry tag  " << geom << " has not been found in path" << path << endm;
 	  }
@@ -877,7 +835,7 @@ Int_t StBFChain::Init() {
 Int_t StBFChain::Finish()
 {
   if (!fBFC) return kStOK;
-  Int_t ians = StMaker::Finish();
+  Int_t ians = StChain::Finish();
   SafeDelete(fchainOpt);
   fBFC = 0;
   TFile *tf = GetTFile();
@@ -1152,6 +1110,7 @@ void StBFChain::SetOptions(const Char_t *options, const Char_t *chain) {
 	      fchainOpt->AddAt(&row);
 	      fNoChainOptions = fchainOpt->GetNRows();
 	      fBFC = fchainOpt->GetTable();
+	      delete [] file;
 	    }
 	    kgo = kOpt(Tag.Data(),kFALSE);
 	    if (kgo != 0) {
@@ -1362,53 +1321,9 @@ void StBFChain::Set_IO_Files (const Char_t *infile, const Char_t *outfile){
       gc = TString(infile,3);
       gc.ToLower();
     }
-    if (gc == "gc:") {SetGC(infile+3); goto SetOut;}
   }
   SetInputFile(infile);
- SetOut:
   if (! GetOption("NoOutput")) SetOutputFile(outfile);
-}
-//_____________________________________________________________________
-void StBFChain::SetGC (const Char_t *queue){
-  TString Queue(queue);
-  gMessMgr->QAInfo() << "Requested GC queue is :\t" << Queue.Data() << endm;
-  TObjArray Opts;
-  ParseString(Queue,Opts);
-  TIter next(&Opts);
-  TObjString *Opt;
-  static TString ARGV[40];
-  Int_t Argc = -1;
-  while ((Opt = (TObjString *) next())) {
-    TString string = Opt->GetString();
-    const Char_t *argv = string.Data();
-    if (argv[0] == '-') {
-      switch (argv[1]) {
-      case 'o':
-      case 'i':
-      case 'c':
-      case 'q':
-      case 's':
-      case 'n':
-      case 'm':
-      case 't':
-      case '-': // now do --options, they get added to Config
-        ARGV[++Argc] = string.Data();
-        Argc++;
-	break;
-      default :
-	gMessMgr->QAInfo() << "Unrecognized option :\t" << string << endm;
-	break;
-      }
-    }
-    else if (Argc > 0) {ARGV[Argc] += " "; ARGV[Argc] += string;}
-  }
-  Opts.Delete();
-  fSetFiles = (StFileI *)StChallenger::Challenge();
-  fSetFiles->SetDebug();
-  Argc++;
-  Char_t **Argv = new Char_t* [Argc];
-  for (Int_t i=0;i<Argc;i++)  {Argv[i] = (Char_t *) ARGV[i].Data();}
-  fSetFiles->Init(Argc,(const Char_t **) Argv);
 }
 //_____________________________________________________________________
 void StBFChain::SetInputFile (const Char_t *infile){
@@ -1417,6 +1332,7 @@ void StBFChain::SetInputFile (const Char_t *infile){
   if (fInFile != "") {
     fInFile.ReplaceAll("\n",";");
     fInFile.ReplaceAll("#",";");
+    fInFile.ReplaceAll(":",";");
     gMessMgr->QAInfo() << "Input file name = " << fInFile.Data() << endm;
   } else {
     if (fkChain >= 0) {
