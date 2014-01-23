@@ -1,0 +1,45 @@
+/***************************************************************************
+*
+* $Id$
+*
+* Author: Yaping Wang, August 2013
+****************************************************************************
+* Description: 
+* Data collection for IST hits, and one instance corresponds to one ladder.
+****************************************************************************
+*
+* $Log$
+* Revision 1.1  2014/01/23 20:11:28  ypwang
+* adding scripts
+*
+*
+****************************************************************************
+* StIstLadderHitCollection.h,v 1.0
+* Revision 1.0 2013/11/04 15:25:30 Yaping
+* Initial version
+****************************************************************************/
+
+#ifndef StIstLadderHitCollection_hh
+#define StIstLadderHitCollection_hh
+
+#include "StObject.h"
+#include "StIstSensorHitCollection.h"
+
+class StIstLadderHitCollection : public StObject {
+public:
+    StIstLadderHitCollection();
+    ~StIstLadderHitCollection();
+    
+    unsigned int  numberOfHits() const;
+    unsigned int  numberOfSensors() const;
+    
+    StIstSensorHitCollection*       sensor(unsigned int);
+    const StIstSensorHitCollection* sensor(unsigned int) const;
+
+private:
+    enum { mMaxNumberOfSensors = 6 };
+    StIstSensorHitCollection  mSensors[mMaxNumberOfSensors];
+    
+    ClassDef(StIstLadderHitCollection,1)
+};
+#endif
