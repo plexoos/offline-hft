@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.1  2014/01/23 20:11:30  ypwang
-* adding scripts
+* Revision 1.2  2014/01/29 18:25:02  ypwang
+* updating scripts
 *
 *
 ****************************************************************************
@@ -50,7 +50,7 @@
 
 // constructor
 StIstQAMaker::StIstQAMaker( const char* name ) :
-   StMaker(name), mRootFilename("istQa.root"), mEventCounter(0) {
+   StMaker(name), mRootFilename("offlineQA_ist.root"), mEventCounter(0) {
    for(int iSensor=0; iSensor<kIstNumSensors; iSensor++) {
 	rawHitMap[iSensor] = NULL;
 	hitMap[iSensor] = NULL;
@@ -85,27 +85,29 @@ Int_t StIstQAMaker::Init()
             ierr = kStWarn;
         }
 	
-	istQaTree = new TTree("istRawHitsAndHits", "istQA_RawHitsAndHits");
-	istQaTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:idTruth:EventId:charge/F:chargeErr");
-	istQaTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
+	istRawHitTree = new TTree("istRawHits", "istRawHits_QA");
+	istRawHitTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:idTruth:EventId:charge/F:chargeErr");
 
-	numOfRawHits_SensorId = new TH2F("numOfRawHits_SensorId", "The number of RawHits vs. sensorID", 144, 1, 145, 768, 0, 768);
+	istHitTree = new TTree("istHits", "istHits_QA");
+	istHitTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
+
+	numOfRawHits_SensorId = new TH2F("numOfRawHits_SensorId", "The number of RawHits vs. sensor ID", 144, 1, 145, 768, 0, 768);
         numOfRawHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
         numOfRawHits_SensorId->GetYaxis()->SetTitle("Number of Raw Hits");
 
 	char buffer[100];
 	for(int iTimeBin=0; iTimeBin<kIstNumTimeBins; iTimeBin++) {
 	   sprintf(buffer, "rawHitCharge_TimeBin%d", iTimeBin);
-	   rawHitCharge_TimeBin[iTimeBin] = new TH2F(buffer, "ADC of raw hits over all time bins vs. channel ID", 110592, 1, 110593, 512, 0, kIstMaxAdc);
+	   rawHitCharge_TimeBin[iTimeBin] = new TH2F(buffer, "ADC of raw hits over all time bins vs. channel geometry ID", 110592, 1, 110593, 512, 0, kIstMaxAdc);
 	   rawHitCharge_TimeBin[iTimeBin]->GetXaxis()->SetTitle("Channel ID");
 	   rawHitCharge_TimeBin[iTimeBin]->GetYaxis()->SetTitle("ADC of Raw Hits");
 	}
 
-	rawHitChargeErr = new TH2F("rawHitChargeErr", "RMS noise of raw hits vs. channel ID", 110592, 1, 110593, 128, 0, 64);
+	rawHitChargeErr = new TH2F("rawHitChargeErr", "RMS noise of raw hits vs. channel geometry ID", 110592, 1, 110593, 128, 0, 64);
 	rawHitChargeErr->GetXaxis()->SetTitle("Channel ID");
 	rawHitChargeErr->GetYaxis()->SetTitle("RMS noise of Raw Hits");
 
-	numOfHits_SensorId = new TH2F("numOfHits_SensorId", "The number of Hits vs. sensorID", 144, 1, 145, 768, 0, 768);
+	numOfHits_SensorId = new TH2F("numOfHits_SensorId", "The number of Hits vs. sensor ID", 144, 1, 145, 768, 0, 768);
         numOfHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
         numOfHits_SensorId->GetYaxis()->SetTitle("Number of Hits");
 
@@ -117,19 +119,19 @@ Int_t StIstQAMaker::Init()
         hitChargeErr_SensorId->GetXaxis()->SetTitle("Sensor ID");
         hitChargeErr_SensorId->GetYaxis()->SetTitle("RMS noise of Hits");
 
-	maxTimeBin_SensorId = new TH2F("maxTimeBin_SensorId", "Max time bin of hits vs. channel ID", 144, 1, 145, kIstNumTimeBins, 0, kIstNumTimeBins);
+	maxTimeBin_SensorId = new TH2F("maxTimeBin_SensorId", "Max time bin of hits vs. sensor ID", 144, 1, 145, kIstNumTimeBins, 0, kIstNumTimeBins);
         maxTimeBin_SensorId->GetXaxis()->SetTitle("Sensor ID");
         maxTimeBin_SensorId->GetYaxis()->SetTitle("Max Time Bin Index");
 
-	clusterSize_SensorId = new TH2F("clusterSize_SensorId", "Cluster size of Hits vs. sensorID", 144, 1, 145, 20, 0, 20);
+	clusterSize_SensorId = new TH2F("clusterSize_SensorId", "Cluster size of Hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
         clusterSize_SensorId->GetXaxis()->SetTitle("Sensor ID");
         clusterSize_SensorId->GetYaxis()->SetTitle("Cluster Size of Hits");
 
-	clusterSizeZ_SensorId = new TH2F("clusterSizeZ_SensorId", "Cluster size in Z of Hits vs. sensorID", 144, 1, 145, 20, 0, 20);
+	clusterSizeZ_SensorId = new TH2F("clusterSizeZ_SensorId", "Cluster size in Z of Hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
         clusterSizeZ_SensorId->GetXaxis()->SetTitle("Sensor ID");
         clusterSizeZ_SensorId->GetYaxis()->SetTitle("Cluster Size in Z of Hits");
 
-	clusterSizeRPhi_SensorId = new TH2F("clusterSizeRPhi_SensorId", "Cluster size in r-#phi of Hits vs. sensorID", 144, 1, 145, 20, 0, 20);
+	clusterSizeRPhi_SensorId = new TH2F("clusterSizeRPhi_SensorId", "Cluster size in r-#phi of Hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
         clusterSizeRPhi_SensorId->GetXaxis()->SetTitle("Sensor ID");
         clusterSizeRPhi_SensorId->GetYaxis()->SetTitle("Cluster Size in r-#phi of Hits");
 
@@ -225,17 +227,19 @@ Int_t StIstQAMaker::Make(){
       }
       
       if(mEventCounter%10 == 0)
-      	  //LOG_DEBUG << "event index: " << mEventCounter << endm; 
-	  cout << "event index: " << mEventCounter << endl;
+      	  LOG_DEBUG << "event index: " << mEventCounter << endm; 
 
-      for(unsigned int ladderIdx=0; ladderIdx<istHitCollection->numberOfLadders() && ladderIdx<kIstNumLadders; ladderIdx++ )	{
-	  StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
-	  for(unsigned int sensorIdx=0; sensorIdx<ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
-	      StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
-              for(int idx=0; idx<(int)sensorHitCollection->hits().size(); idx++ ){
+      if(istHitCollection->numberOfHits() > 0) {
+         for(unsigned int ladderIdx=0; ladderIdx<istHitCollection->numberOfLadders() && ladderIdx<kIstNumLadders; ladderIdx++ )	{
+	    StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
+	    for(unsigned int sensorIdx=0; sensorIdx<ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
+	       StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
+	       int sensorIdxTemp = 0;
+               for(int idx=0; idx<(int)sensorHitCollection->hits().size(); idx++ ){
 		  StIstHit* hit = sensorHitCollection->hits()[idx];
 		  if(hit)	{
 			const StThreeVectorF &P = hit->position();
+
 			istHit.hitId 		= (int)hit->id();
 			istHit.ladder		= (int)hit->getLadder();
 			istHit.sensor		= (int)hit->getSensor();
@@ -257,69 +261,75 @@ Int_t StIstQAMaker::Make(){
 			istHit.charge		= (float)hit->charge();
 			istHit.chargeErr	= (float)hit->getChargeErr();
 
-			hitMap[ladderIdx*6+sensorIdx]->Fill((float)hit->getMeanColumn(), (float)hit->getMeanRow());
-			hitMapOfIST->Fill(ladderIdx*64+(int)hit->getMeanRow(), sensorIdx*12+(int)hit->getMeanColumn());
+			istHitTree->Fill();
+
+			sensorIdxTemp = ((int)hit->getLadder()-1)*kIstNumSensorsPerLadder + (int)hit->getSensor();
+			hitMap[sensorIdxTemp-1]->Fill((float)hit->getMeanColumn(), (float)hit->getMeanRow());
+			hitMapOfIST->Fill(((int)hit->getLadder()-1)*kIstNumRowsPerSensor+(int)hit->getMeanRow(), ((int)hit->getSensor()-1)*kIstNumColumnsPerSensor+(int)hit->getMeanColumn());
 			hitGlobalXY->Fill((float)P.x(), (float)P.y());
 			hitGlobalPhiZ->Fill((float)P.phi(), (float)P.z());
-			hitCharge_SensorId->Fill(ladderIdx*6+sensorIdx+1, hit->charge());
-			hitChargeErr_SensorId->Fill(ladderIdx*6+sensorIdx+1, hit->getChargeErr());
-			maxTimeBin_SensorId->Fill(ladderIdx*6+sensorIdx+1, (int)hit->getMaxTimeBin());
-			clusterSize_SensorId->Fill(ladderIdx*6+sensorIdx+1, (int)hit->getNRawHits());
-			clusterSizeZ_SensorId->Fill(ladderIdx*6+sensorIdx+1, (int)hit->getNRawHitsZ());
-			clusterSizeRPhi_SensorId->Fill(ladderIdx*6+sensorIdx+1, (int)hit->getNRawHitsRPhi());
-		}//hit cut
-            }//end loop over hits
-	    numOfHits_SensorId->Fill(ladderIdx*6+sensorIdx+1, sensorHitCollection->hits().size());
-	}//loop over sensors
-      }//loop over ladders 
 
-      for( unsigned char ladderIdx=0; ladderIdx<istCollectionPtr->getNumLadders() && ladderIdx<kIstNumLadders; ++ladderIdx ){
-         StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
-         if( rawHitCollectionPtr ){
-            std::vector<StIstRawHit*>& rawHitVec = rawHitCollectionPtr->getRawHitVec();
-            std::vector< StIstRawHit* >::iterator rawHitIter;
-	    
-	    unsigned char ladder = 0, sensor = 0, maxTimeBin = 0;
-	    int sensorId = 0;
-	    int counter[6];
-	    for(int iS=0; iS<6; iS++)
-	        counter[iS] = 0;
+			hitCharge_SensorId->Fill(sensorIdxTemp, hit->charge());
+			hitChargeErr_SensorId->Fill(sensorIdxTemp, hit->getChargeErr());
+			maxTimeBin_SensorId->Fill(sensorIdxTemp, (int)hit->getMaxTimeBin());
+			clusterSize_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHits());
+			clusterSizeZ_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHitsZ());
+			clusterSizeRPhi_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHitsRPhi());
+		 }//hit cut
+              }//end loop over hits
+	      numOfHits_SensorId->Fill(sensorIdxTemp, sensorHitCollection->hits().size());
+	   }//loop over sensors
+        }//loop over ladders 
+      }//end of hits cut
 
-            for( rawHitIter = rawHitVec.begin(); rawHitIter != rawHitVec.end(); ++rawHitIter ){
-		StIstRawHit* rawHit = *rawHitIter;
+      if(istCollectionPtr->getNumRawHits() > 0) {
+	 int counter[kIstNumSensors]; //raw hit multiplicity per sensor per event
+         for(int iS=0; iS<kIstNumSensors; iS++)
+             counter[iS] = 0;
 
-		ladder = rawHit->getLadder();
-		sensor = rawHit->getSensor();
-		maxTimeBin = rawHit->getMaxTimeBin();
-		sensorId = (ladder-1)*6+sensor;
-		counter[sensor-1]++;
+         for( unsigned char ladderIdx=0; ladderIdx<istCollectionPtr->getNumLadders() && ladderIdx<kIstNumLadders; ++ladderIdx ){
+            StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
+            if( rawHitCollectionPtr ){
+               std::vector<StIstRawHit*>& rawHitVec = rawHitCollectionPtr->getRawHitVec();
+               std::vector< StIstRawHit* >::iterator rawHitIter;
 
-                for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin )
-		   rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getChannelId(), rawHit->getCharge( timeBin ));
+               for( rawHitIter = rawHitVec.begin(); rawHitIter != rawHitVec.end(); ++rawHitIter ){
+		   StIstRawHit* rawHit = *rawHitIter;
 
-		rawHitChargeErr->Fill(rawHit->getChannelId(), rawHit->getChargeErr( maxTimeBin ));
-		rawHitMap[sensorId-1]->Fill((float)rawHit->getColumn(), (float)rawHit->getRow());
+		   unsigned char ladder = rawHit->getLadder();
+		   unsigned char sensor = rawHit->getSensor();
+		   unsigned char maxTimeBin = rawHit->getMaxTimeBin();
+		   int sensorId = (ladder-1)*kIstNumSensorsPerLadder + sensor;
+		   counter[sensorId-1]++;
 
-		istRawHit.channelId 	= (int)rawHit->getChannelId();
-		istRawHit.geoId         = (int)rawHit->getGeoId();
-		istRawHit.ladder	= (int)rawHit->getLadder();
-		istRawHit.sensor	= (int)rawHit->getSensor();
-		istRawHit.column	= (int)rawHit->getColumn();
-		istRawHit.row		= (int)rawHit->getRow();
-		istRawHit.maxTimeBin    = (int)maxTimeBin;
-		istRawHit.charge	= (float)rawHit->getCharge(maxTimeBin);
-		istRawHit.chargeErr	= (float)rawHit->getChargeErr(maxTimeBin);
-		istRawHit.idTruth	= (int)rawHit->getIdTruth();
-		istRawHit.EventId	= (int)eventPtr->id();
+                   for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin )
+		      rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getGeoId(), rawHit->getCharge( timeBin ));
 
-            }//loop over raw hits
-            for(int iS=0; iS<6; iS++) {
-	    	numOfRawHits_SensorId->Fill(ladderIdx*6+iS+1, counter[iS]);
-		numOfRawHits_EventId[ladderIdx*6+iS]->Fill((int)eventPtr->id()/100+1, counter[iS]);
-	    }
-         }//end raw hit collection
-      }//loop over ladders
-      istQaTree->Fill();
+		   rawHitChargeErr->Fill(rawHit->getGeoId(), rawHit->getChargeErr( maxTimeBin ));
+		   rawHitMap[sensorId-1]->Fill((float)rawHit->getColumn(), (float)rawHit->getRow());
+
+		   istRawHit.channelId 	= (int)rawHit->getChannelId();
+		   istRawHit.geoId      = (int)rawHit->getGeoId();
+		   istRawHit.ladder	= (int)rawHit->getLadder();
+		   istRawHit.sensor	= (int)rawHit->getSensor();
+		   istRawHit.column	= (int)rawHit->getColumn();
+		   istRawHit.row	= (int)rawHit->getRow();
+		   istRawHit.maxTimeBin = (int)maxTimeBin;
+		   istRawHit.charge	= (float)rawHit->getCharge(maxTimeBin);
+		   istRawHit.chargeErr	= (float)rawHit->getChargeErr(maxTimeBin);
+		   istRawHit.idTruth	= (int)rawHit->getIdTruth();
+		   istRawHit.EventId	= (int)eventPtr->id();
+
+		   istRawHitTree->Fill();
+                }//loop over raw hits
+             }//end raw hit collection
+          }//loop over ladders
+
+	  for(int iS=0; iS<kIstNumSensors; iS++) {
+              numOfRawHits_SensorId->Fill(iS+1, counter[iS]);
+              numOfRawHits_EventId[iS]->Fill((int)eventPtr->id()/100+1, counter[iS]);
+          }
+       }//end number of raw hits cut
    }
   
    mEventCounter++;

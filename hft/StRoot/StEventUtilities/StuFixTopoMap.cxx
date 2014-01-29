@@ -124,7 +124,7 @@ bool StuFixTopoMap(StTrack* track)
                 LOG_DEBUG<<"word1: "<<word1<<endm;
             }
             if (hits[i]->detector() == kIstId) {
-		LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
+                LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
                 if (word1 & 1U<<k) word2 |= 1U<<30; // turnaround flag    
                 word1 |= 1U<<k;
                 LOG_DEBUG<<"word1: "<<word1<<endm;

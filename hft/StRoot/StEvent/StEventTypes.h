@@ -10,11 +10,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.1  2014/01/23 20:11:28  ypwang
- * adding scripts
- *
- * Revision 2.43  2013/07/23 11:21:49  jeromel
- * Undo past week changes
+ * Revision 1.2  2014/01/29 18:25:00  ypwang
+ * updating scripts
  *
  * Revision 2.41  2013/04/10 19:15:52  jeromel
  * Step back from StEvent changes - previous change recoverable [Thomas OK-ed]

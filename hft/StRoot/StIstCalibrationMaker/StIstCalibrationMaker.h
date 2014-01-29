@@ -10,8 +10,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.1  2014/01/23 20:11:29  ypwang
-* adding scripts
+* Revision 1.2  2014/01/29 18:25:01  ypwang
+* updating scripts
 *
 *
 ****************************************************************************
@@ -26,6 +26,9 @@
 #include <string>
 #include "StMaker.h"
 #include "StRoot/StIstUtil/StIstConsts.h"
+
+class StIstDbMaker;
+class St_istMapping;
 
 class StIstCalibrationMaker : public StMaker {
 public:
@@ -52,7 +55,7 @@ public:
 protected:
     // mask for which time bins to save
     Short_t mTimeBinMask;
-    Float_t mPedCut, mChanMaxRmsNoiseLevel, mApvMaxCmNoiseLevel;
+    Float_t mPedCut;
     std::vector< TH1F* > mHistPedVec;
     std::vector< TH1F* > mHistCmnVec;
    
@@ -62,9 +65,8 @@ protected:
         Int_t n;
         Float_t ped;
         Float_t rms;
-        Float_t gain;
 
-        pedNoiseData_t( int nIn=0, float p=0, float r=0, float g=0 ) : n(nIn), ped(p), rms(r), gain(g) { /* */ };
+        pedNoiseData_t( int nIn=0, float p=0, float r=0 ) : n(nIn), ped(p), rms(r) { /* */ };
     };
     typedef std::vector< pedNoiseData_t > pedNoiseDataVec_t;
     pedNoiseDataVec_t mPedVec;
@@ -87,6 +89,12 @@ protected:
 
     // has finished
     Bool_t mHasFinished;
+
+    // Db
+    StIstDbMaker *mIstDbMaker;
+    // mapping
+    typedef std::vector< int > MappingVec_t;//Channel elec. index, geometry ID
+    MappingVec_t mMappingVec;
     
     // for saving to file
     std::string mRootFilename;
@@ -94,9 +102,7 @@ protected:
     TH1F *hist_meanPed[kIstNumTimeBins]; // mean pedestal = pedestal histogram -> GetMean()
     TH1F *hist_rmsPed[kIstNumTimeBins];  // standard deveriation = pedestal histogram -> GetRMS()
     TH1F *hist_cmNoise[kIstNumTimeBins]; // common mode noise per APV chip
-    TH1F *hist_gain[kIstNumTimeBins];    // occupancy of channels
     static const string sectionLabel[72];
-    static const string sectionLabel4APV[72];
 
 private:
     

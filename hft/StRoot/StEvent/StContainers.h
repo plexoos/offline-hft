@@ -10,14 +10,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.1  2014/01/23 20:11:28  ypwang
- * adding scripts
- *
- * Revision 2.33  2013/07/23 11:21:49  jeromel
- * Undo past week changes
- *
- * Revision 2.31  2013/04/10 19:15:52  jeromel
- * Step back from StEvent changes - previous change recoverable [Thomas OK-ed]
+ * Revision 1.2  2014/01/29 18:25:00  ypwang
+ * updating scripts
  *
  * Revision 2.29  2013/03/05 14:42:45  ullrich
  * Added StPxl hits and Containers.
@@ -108,6 +102,7 @@
  **************************************************************************/
 #ifndef StContainers_hh
 #define StContainers_hh
+//#include "St_base/StArray.h"
 #include "StArray.h"
 
 class StObject;

@@ -5,8 +5,8 @@
 * Description: Virtual class for clustering algorithm implementation.
 ****************************************************************************
 * $Log$
-* Revision 1.1  2014/01/23 20:11:29  ypwang
-* adding scripts
+* Revision 1.2  2014/01/29 18:25:01  ypwang
+* updating scripts
 *
 * Revision 1.0 2013/11/04 Yaping
 * Initial version

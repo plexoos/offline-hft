@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.1  2014/01/23 20:11:30  ypwang
-* adding scripts
+* Revision 1.2  2014/01/29 18:25:02  ypwang
+* updating scripts
 *
 *
 ****************************************************************************
@@ -48,7 +48,9 @@ public:
 
 protected:
   TFile* myRootFile;
-  TTree *istQaTree;
+  TTree *istRawHitTree;
+  TTree *istHitTree;
+
   struct rawHitInfo {
 	int channelId, geoId, ladder, sensor, column, row, maxTimeBin, idTruth, EventId;
 	float charge, chargeErr;

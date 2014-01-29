@@ -4,7 +4,7 @@ TDataSet *CreateTable() {
   istControl_st row;
   St_istControl *tableSet = new St_istControl("istControl",1);
   memset(&row,0,tableSet->GetRowSize());
-  row.kIstChanMaxRmsNoiseLevel    = 25.0;
+  row.kIstChanMaxRmsNoiseLevel    = 35.0;
   row.kIstChanMinRmsNoiseLevel    = 12.0;
   row.kIstApvMaxCmNoiseLevel      = 15.0;
   row.kIstPedCutDefault           = 3.0;
@@ -16,6 +16,7 @@ TDataSet *CreateTable() {
   row.kIstADCdata                 = 1;
   row.kIstZSdata                  = 2;
   row.kIstDefaultTimeBin          = 3;
+  row.kIstCurrentTimeBinNum	  = 9;
   tableSet->AddAt(&row,0);
   return (TDataSet *)tableSet;
 }

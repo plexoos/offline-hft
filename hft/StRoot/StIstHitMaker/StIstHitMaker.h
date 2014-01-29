@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.1  2014/01/23 20:11:30  ypwang
-* adding scripts
+* Revision 1.2  2014/01/29 18:25:02  ypwang
+* updating scripts
 *
 *
 ****************************************************************************
@@ -44,6 +44,8 @@ class StIstHitMaker : public StMaker
  protected:
   THashList *listGeoMSensorOnGlobal;
   StIstDbMaker *mIstDbMaker;
+
+  UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 
   StIstHitCollection *istHitCollection;
 

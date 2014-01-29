@@ -502,6 +502,7 @@ int StIstHitIter::GetSize () const
 {
   return ((StIstHitCollection*)fCont)->numberOfLadders();
 }
+
 //________________________________________________________________________________
 const TObject *StIstLadderHitIter::GetObject (int idx) const
 {
@@ -732,8 +733,6 @@ Int_t StFgtPointHitIter::GetSize() const
   return (Int_t)((StFgtPointCollection *)fCont)->getPointVec().size();
 } 
 // -------------------------------------------------------------------------------
-
-
 //________________________________________________________________________________
 //_______EVENT_____EVENT_____EVENT_____EVENT_____EVENT_____EVENT_____EVENT_____TOF
 //________________________________________________________________________________
@@ -748,7 +747,7 @@ int StEventHitIter::AddDetector(StDetectorId detId)
    case kFtpcEastId:
      Add(new StFtpcHitIter());break;
    case kPxlId: 
-   case kIstId: Add(new StIstHitIter()) ;break; 
+   case kIstId: Add(new StIstHitIter()) ;break;
      /* case kFgtId: n.b. This will be removing the RnD version of the FGT */ 
    case kFmsId: 
      Add(new StRnDHitIter(detId));break;

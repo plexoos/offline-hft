@@ -1,6 +1,6 @@
 /*!
- * \class StEvent 
- * \author Thomas Ullrich, Sep 1999
+ * \ class StEvent 
+ * \ author Thomas Ullrich, Sep 1999
  */
 /***************************************************************************
  *
@@ -14,8 +14,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.1  2014/01/23 20:11:28  ypwang
- * adding scripts
+ * Revision 1.2  2014/01/29 18:25:00  ypwang
+ * updating scripts
  *
  * Revision 2.46  2013/03/05 14:42:45  ullrich
  * Added StPxl hits and Containers.
@@ -336,8 +336,8 @@ public:
     void setFtpcHitCollection(StFtpcHitCollection*);
     void setSvtHitCollection(StSvtHitCollection*);
     void setSsdHitCollection(StSsdHitCollection*);
-    void setPxlHitCollection(StPxlHitCollection*);
     void setIstHitCollection(StIstHitCollection*);
+    void setPxlHitCollection(StPxlHitCollection*);
     void setEmcCollection(StEmcCollection*);
     void setFmsCollection(StFmsCollection*);
     void setRichCollection(StRichCollection*);
