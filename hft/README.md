@@ -11,11 +11,20 @@ How to build development hft libraries
 
     starver dev
     cvs checkout -r HEAD offline/hft
+    cvs checkout -r HEAD StarDb
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
     cvs checkout -r HEAD StRoot/StiRnD
 
+    # Checkout temporarily to compile localy as the official library is not yet
+    # available
+    cvs checkout -r HEAD StRoot/StPxlDbMaker
+    cvs checkout -r HEAD StRoot/StPxlRawHitMaker
+    cvs checkout -r HEAD StRoot/StPxlUtil
+
+    cp -r offline/hft/StarDb/Calibrations StarDb/
+    cp -r offline/hft/StarDb/Geometry StarDb/
     cp offline/hft/StRoot/StEvent/StIstHitCollection.cxx       StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHitCollection.h         StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHit.cxx                 StRoot/StEvent/
@@ -35,11 +44,8 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StIstRawHitMaker
     ln -s ../offline/hft/StRoot/StIstUtil
     ln -s ../offline/hft/StRoot/StPxlClusterMaker
-    ln -s ../offline/hft/StRoot/StPxlDbMaker
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlQAMaker
-    ln -s ../offline/hft/StRoot/StPxlRawHitMaker
-    ln -s ../offline/hft/StRoot/StPxlUtil
 
     cd ..
     patch -p0 < offline/hft/StRoot/StBFChain.patch
@@ -53,8 +59,9 @@ How to run tests
 
 To read PXL raw data:
 
-    export BFC_OPTIONS='"pp2013a pxlRaw pxlDb pxlCluster pxlHit pxlQA mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
+    export BFC_OPTIONS='"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlQA mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
     export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157027/daq/st_physics_14157027_raw_5480001.daq"'
+    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157071/daq/st_pxl_adc_14157071_raw_6990001.daq"'
 
 To run PXL simulation:
 
