@@ -9,9 +9,12 @@ official StRoot area.
 How to build development hft libraries
 ======================================
 
+    starver dev
     cvs checkout -r HEAD offline/hft
+    cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
-    cvs checkout -r HEAD StRoot/StRnD
+    cvs checkout -r HEAD StRoot/StEventUtilities
+    cvs checkout -r HEAD StRoot/StiRnD
 
     cp offline/hft/StRoot/StEvent/StIstHitCollection.cxx       StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHitCollection.h         StRoot/StEvent/
@@ -23,8 +26,6 @@ How to build development hft libraries
     cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.h   StRoot/StEvent/
 
     cd StRoot
-    ln -s ../offline/hft/StRoot/StBFChain
-    ln -s ../offline/hft/StRoot/StEventUtilities
     ln -s ../offline/hft/StRoot/StIstCalibrationMaker
     ln -s ../offline/hft/StRoot/StIstClusterMaker
     ln -s ../offline/hft/StRoot/StIstDbMaker
@@ -41,8 +42,34 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StPxlUtil
 
     cd ..
+    patch -p0 < offline/hft/StRoot/StBFChain.patch
     patch -p0 < offline/hft/StRoot/StEvent.patch
+    patch -p0 < offline/hft/StRoot/StEventUtilities.patch
     cons
+
+
+How to run tests
+================
+
+To read PXL raw data:
+
+    export BFC_OPTIONS='"pp2013a pxlRaw pxlDb pxlCluster pxlHit pxlQA mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
+    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157027/daq/st_physics_14157027_raw_5480001.daq"'
+
+To run PXL simulation:
+
+    export BFC_OPTIONS='"tpcRS y2014 MakeEvent ITTF StiRnD PixelIt NoSsdIt NoSvtIt pxlDb pxlFastSim Idst BAna l0 Tree logger Sti VFMC E tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
+    export BFC_INPFILE='"test.fz"'
+
+    root4star -b -q -l "bfc.C(1, 100, $BFC_OPTIONS, $BFC_INPFILE)"
+
+For IST
+
+    root4star -b -q -l 'bfc.C(1, 5000, "in,istRaw,istDb,istCluster,istHit,istQA", "st_physics_15016035_raw_1000001.daq")'
+
+For IST calibration
+
+    root4star -b -q -l 'bfc.C(1, 5000, "in,istRaw,istDb,istCalib", "st_physics_15016035_raw_1000001.daq")'
 
 
 To do
@@ -52,3 +79,4 @@ To do
 - Rename StiPixel... classes to StiPxl... to be consistent with the other
 detector subsystems
 - Add instructions for how to run simulation with hft detectors
+- Add location for test simulation and data files
