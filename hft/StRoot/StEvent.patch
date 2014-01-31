@@ -1,0 +1,183 @@
+--- StRoot/StEvent/StContainers.cxx	2013-07-23 07:21:49.000000000 -0400
++++ offline/hft/StRoot/StEvent/StContainers.cxx	2014-01-24 22:47:16.028838000 -0500
+@@ -149,6 +152,7 @@
+ #include "StFgtPoint.h"
+ #include "StFgtHit.h"
+ #include "StPxlHit.h"
++#include "StIstHit.h"
+ 
+ StCollectionImp(Object)
+ StCollectionImp(CalibrationVertex)
+@@ -206,4 +210,4 @@
+ StCollectionImp(FgtStrip)
+ StCollectionImp(FgtPoint)
+ StCollectionImp(PxlHit)
+-
++StCollectionImp(IstHit)
+--- StRoot/StEvent/StContainers.h	2013-07-23 07:21:49.000000000 -0400
++++ offline/hft/StRoot/StEvent/StContainers.h	2014-01-24 19:54:20.559820000 -0500
+@@ -165,6 +168,7 @@
+ class StFgtStrip;
+ class StFgtHit;
+ class StFgtPoint;
++class StIstHit;
+ 
+ StCollectionDef(Object)
+ StCollectionDef(BTofHit)
+@@ -222,6 +226,6 @@
+ StCollectionDef(FgtHit)
+ StCollectionDef(FgtStrip)
+ StCollectionDef(FgtPoint)
+-
++StCollectionDef(IstHit)
+ 
+ #endif
+--- StRoot/StEvent/StEventClusteringHints.cxx	2013-03-05 09:42:45.000000000 -0500
++++ offline/hft/StRoot/StEvent/StEventClusteringHints.cxx	2014-01-24 19:54:20.567821000 -0500
+@@ -113,7 +116,7 @@
+ #include "StEventClusteringHints.h"
+ #include <algorithm>
+ 
+-static const char rcsid[] = "$Id$";
++static const char rcsid[] = "$Id$";
+ 
+ ClassImp(StEventClusteringHints)
+ 
+@@ -162,6 +165,7 @@
+     setBranch("StRpsCollection",             "evt_aux",      7);
+     setBranch("StSsdHitCollection",          "evt_hits",     8);
+     setBranch("StSvtHitCollection",          "evt_hits",     8);
++    setBranch("StIstHitCollection",          "evt_hits",     8);
+     setBranch("StPxlHitCollection",          "evt_hits",     8);
+     setBranch("StTpcHitCollection",          "evt_hits",     8);
+     setBranch("StFtpcHitCollection",         "evt_hits",     8);
+@@ -185,6 +189,7 @@
+     setBranch("StRpsCollection",             "event", 1);
+     setBranch("StSsdHitCollection",          "event", 1);
+     setBranch("StSvtHitCollection",          "event", 1);
++    setBranch("StIstHitCollection",          "event", 1);
+     setBranch("StPxlHitCollection",          "event", 1);
+     setBranch("StTpcHitCollection",          "event", 1);
+     setBranch("StFtpcHitCollection",         "event", 1);
+--- StRoot/StEvent/StEvent.cxx	2013-03-05 09:49:44.000000000 -0500
++++ offline/hft/StRoot/StEvent/StEvent.cxx	2014-01-24 19:54:20.562821000 -0500
+@@ -221,6 +224,7 @@
+ #include "StHltEvent.h"
+ #include "StFgtCollection.h"
+ #include "StPxlHitCollection.h"
++#include "StIstHitCollection.h"
+ #include "StTrackNode.h"
+ #include "StTrack.h"
+ 
+@@ -228,8 +232,8 @@
+ using std::swap;
+ #endif
+ 
+-TString StEvent::mCvsTag  = "$Id$";
+-static const char rcsid[] = "$Id$";
++TString StEvent::mCvsTag  = "$Id$";
++static const char rcsid[] = "$Id$";
+ 
+ ClassImp(StEvent)
+ 
+@@ -779,6 +783,22 @@
+     return fgtCollection;
+ }
+ 
++StIstHitCollection*
++StEvent::istHitCollection()
++{
++    StIstHitCollection *istHitCollection = 0;
++    _lookup(istHitCollection, mContent);
++    return istHitCollection;
++}
++
++const StIstHitCollection*
++StEvent::istHitCollection() const
++{
++    StIstHitCollection *istHitCollection = 0;
++    _lookup(istHitCollection, mContent);
++    return istHitCollection;
++}
++
+ StPxlHitCollection*
+ StEvent::pxlHitCollection()
+ {
+@@ -1228,6 +1248,12 @@
+ }
+ 
+ void
++StEvent::setIstHitCollection(StIstHitCollection* val)
++{
++    _lookupAndSet(val, mContent);
++}
++
++void
+ StEvent::setPxlHitCollection(StPxlHitCollection* val)
+ {
+     _lookupAndSet(val, mContent);
+@@ -1341,6 +1367,7 @@
+     cout << "\tStFtpcHitCollection:         " << static_cast<void*>(ftpcHitCollection());
+     cout << "\tStSvtHitCollection:          " << static_cast<void*>(svtHitCollection());
+     cout << "\tStSsdHitCollection:          " << static_cast<void*>(ssdHitCollection());
++    cout << "\tStIstHitCollection:          " << static_cast<void*>(istHitCollection());
+     cout << "\tStPxlHitCollection:          " << static_cast<void*>(pxlHitCollection());
+     cout << "\tStEmcCollection:             " << static_cast<void*>(emcCollection());
+     cout << "\tStFmsCollection:             " << static_cast<void*>(fmsCollection());
+@@ -1366,6 +1393,7 @@
+     cout << "\t# of FTPC hits:              " << (ftpcHitCollection() ? ftpcHitCollection()->numberOfHits() : 0) << endl;
+     cout << "\t# of SVT hits:               " << (svtHitCollection() ? svtHitCollection()->numberOfHits() : 0) << endl;
+     cout << "\t# of SSD hits:               " << (ssdHitCollection() ? ssdHitCollection()->numberOfHits() : 0) << endl;
++    cout << "\t# of IST hits:               " << (istHitCollection() ? istHitCollection()->numberOfHits() : 0) << endl;
+     cout << "\t# of PXL hits:               " << (pxlHitCollection() ? pxlHitCollection()->numberOfHits() : 0) << endl;
+     cout << "\t# of track nodes:            " << trackNodes().size() << endl;
+     cout << "\t# of primary tracks:         " << (primaryVertex(0) ? primaryVertex(0)->numberOfDaughters() : 0) << endl;
+--- StRoot/StEvent/StEvent.h	2013-03-05 09:42:45.000000000 -0500
++++ offline/hft/StRoot/StEvent/StEvent.h	2014-01-24 19:54:20.564821000 -0500
+@@ -200,6 +203,7 @@
+ class StHltEvent;
+ class StFgtCollection;
+ class StPxlHitCollection;
++class StIstHitCollection;
+ 
+ class StEvent : public StXRefMain {
+ public:
+@@ -261,6 +265,8 @@
+     const StFgtCollection*              fgtCollection() const;
+     StPxlHitCollection*                 pxlHitCollection();
+     const StPxlHitCollection*           pxlHitCollection() const;
++    StIstHitCollection*                 istHitCollection();
++    const StIstHitCollection*           istHitCollection() const;
+     
+     StL0Trigger*                        l0Trigger();
+     const StL0Trigger*                  l0Trigger() const;
+@@ -331,6 +337,7 @@
+     void setSvtHitCollection(StSvtHitCollection*);
+     void setSsdHitCollection(StSsdHitCollection*);
+     void setPxlHitCollection(StPxlHitCollection*);
++    void setIstHitCollection(StIstHitCollection*);
+     void setEmcCollection(StEmcCollection*);
+     void setFmsCollection(StFmsCollection*);
+     void setRichCollection(StRichCollection*);
+--- StRoot/StEvent/StEventLinkDef.h	2013-03-05 09:42:45.000000000 -0500
++++ offline/hft/StRoot/StEvent/StEventLinkDef.h	2014-01-24 19:54:20.568821000 -0500
+@@ -149,6 +149,7 @@
+ #pragma link C++ class TrgOfflen2013+;
+ 
+ #pragma link C++ function operator<<(ostream&, const StPxlHit&);        
++#pragma link C++ function operator<<(ostream&, const StIstHit&); 
+ #pragma link C++ function operator<<(ostream&, const StTpcPixel&);        
+ #pragma link C++ function operator<<(ostream&, const StMeasuredPoint&);        
+ #pragma link C++ function operator<<(ostream&, const StHit&);        
+--- StRoot/StEvent/StEventTypes.h	2013-07-23 07:21:49.000000000 -0400
++++ offline/hft/StRoot/StEvent/StEventTypes.h	2014-01-24 19:54:20.570821000 -0500
+@@ -278,5 +281,8 @@
+ #include "StFgtHitCollection.h"
+ #include "StFgtPoint.h"
+ #include "StFgtPointCollection.h"
+- 
++#include "StIstHit.h"
++#include "StIstHitCollection.h"
++#include "StIstLadderHitCollection.h"
++#include "StIstSensorHitCollection.h" 
+ #endif
