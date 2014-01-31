@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.10  2014/01/31 00:08:19  smirnovd
+ * Reduced indentation in nested loops
+ *
  * Revision 1.9  2014/01/28 19:29:42  qiuh
  * *** empty log message ***
  *
@@ -77,40 +80,41 @@ Int_t StPxlMonMaker::declareplots()
    m_hitnRawHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_hitnRawHits_sensorID->GetYaxis()->SetTitle("RawHits per hit");
    for (int i = 0; i < 10; i++) {
-      if (i == 1 || i == 3 || i == 6) {
-         char ename[50];
-         char etitle[100];
-         sprintf(ename, "nRawHits_eachsector_sensorID_%d", i);
-         sprintf(etitle, "RawHits vs. sensorNo: Sector %d", i + 1);
-         m_nRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
-         m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
-         m_nRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nRawHits");
 
-         sprintf(ename, "nHits_eachsector_sensorID_%d", i);
-         sprintf(etitle, "Hits vs. sensorNo: Sector %d", i + 1);
-         m_nHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
-         m_nHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
-         m_nHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nHits");
+      if (i != 1 && i != 3 && i != 6) continue;
 
-         sprintf(ename, "hitnRawHits_eachsector_sensorID_%d", i);
-         sprintf(etitle, "RawHits per hit vs. sensorNo: Sector %d", i + 1);
-         m_hitnRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 32, 0, 32);
-         m_hitnRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
-         m_hitnRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("RawHits per hit");
+      char ename[50];
+      char etitle[100];
 
-         sprintf(ename, "innerhits_outerhits_%d", i);
-         sprintf(etitle, "Inner hits vs. outer hits: Sector %d", i + 1);
-         m_innerhits_outerhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
-         m_innerhits_outerhits[i]->GetXaxis()->SetTitle("Inner hits");
-         m_innerhits_outerhits[i]->GetYaxis()->SetTitle("Outer hits");
+      sprintf(ename, "nRawHits_eachsector_sensorID_%d", i);
+      sprintf(etitle, "RawHits vs. sensorNo: Sector %d", i + 1);
+      m_nRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
+      m_nRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nRawHits");
 
-         sprintf(ename, "innerrawhits_outerrawhits_%d", i);
-         sprintf(etitle, "Inner rawhits vs. outer rawhits: Sector %d", i + 1);
-         m_innerrawhits_outerrawhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
-         m_innerrawhits_outerrawhits[i]->GetXaxis()->SetTitle("Inner rawhits");
-         m_innerrawhits_outerrawhits[i]->GetYaxis()->SetTitle("Outer rawhits");
+      sprintf(ename, "nHits_eachsector_sensorID_%d", i);
+      sprintf(etitle, "Hits vs. sensorNo: Sector %d", i + 1);
+      m_nHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
+      m_nHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nHits");
 
-      }
+      sprintf(ename, "hitnRawHits_eachsector_sensorID_%d", i);
+      sprintf(etitle, "RawHits per hit vs. sensorNo: Sector %d", i + 1);
+      m_hitnRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 32, 0, 32);
+      m_hitnRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
+      m_hitnRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("RawHits per hit");
+
+      sprintf(ename, "innerhits_outerhits_%d", i);
+      sprintf(etitle, "Inner hits vs. outer hits: Sector %d", i + 1);
+      m_innerhits_outerhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
+      m_innerhits_outerhits[i]->GetXaxis()->SetTitle("Inner hits");
+      m_innerhits_outerhits[i]->GetYaxis()->SetTitle("Outer hits");
+
+      sprintf(ename, "innerrawhits_outerrawhits_%d", i);
+      sprintf(etitle, "Inner rawhits vs. outer rawhits: Sector %d", i + 1);
+      m_innerrawhits_outerrawhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
+      m_innerrawhits_outerrawhits[i]->GetXaxis()->SetTitle("Inner rawhits");
+      m_innerrawhits_outerrawhits[i]->GetYaxis()->SetTitle("Outer rawhits");
    }
 
    m_globalx_y  = new TH2F("globalx_y", "Global X vs. Y", 200, -10, 10, 200, -10, 10);
@@ -129,22 +133,21 @@ Int_t StPxlMonMaker::declareplots()
       for (int j = 0; j < 4; j++) {
          for (int k = 0; k < 10; k++) {
 
-            if (i == 1 || i == 3 || i == 6) {
-               char ename[50];
-               char etitle[100];
-               sprintf(ename, "rawHit_rowvscolumn_%d", i * 40 + j * 10 + k);
-               sprintf(etitle, "rawHit column vs. row: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
-               m_rawHit_rowvscolumn[i * 40 + j * 10 + k] = new TH2F(ename, etitle, 1000, 0, 1000, 1000, 0, 1000);
-               m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("column");
-               m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("row");
+            if (i != 1 && i != 3 && i != 6) continue;
 
-               sprintf(ename, "nRawHits_EventId_%d", i * 40 + j * 10 + k);
-               sprintf(etitle, "rawHits vs. EventID: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
-               m_nRawHits_EventId[i * 40 + j * 10 + k] = new TProfile(ename, etitle, 10000, 0, 10000);
-               m_nRawHits_EventId[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("EventID (Time)");
-               m_nRawHits_EventId[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("<rawhits>");
+            char ename[50];
+            char etitle[100];
+            sprintf(ename, "rawHit_rowvscolumn_%d", i * 40 + j * 10 + k);
+            sprintf(etitle, "rawHit column vs. row: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
+            m_rawHit_rowvscolumn[i * 40 + j * 10 + k] = new TH2F(ename, etitle, 1000, 0, 1000, 1000, 0, 1000);
+            m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("column");
+            m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("row");
 
-            }
+            sprintf(ename, "nRawHits_EventId_%d", i * 40 + j * 10 + k);
+            sprintf(etitle, "rawHits vs. EventID: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
+            m_nRawHits_EventId[i * 40 + j * 10 + k] = new TProfile(ename, etitle, 10000, 0, 10000);
+            m_nRawHits_EventId[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("EventID (Time)");
+            m_nRawHits_EventId[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("<rawhits>");
          }
       }
    }
@@ -204,33 +207,37 @@ void StPxlMonMaker::printPixelHits()
          StPxlSectorHitCollection *sectorHitCollection = PxlHitCollection->sector(i);
          for (unsigned int j = 0; j < sectorHitCollection->numberOfLadders(); j++) {
             StPxlLadderHitCollection *ladderHitCollection = sectorHitCollection->ladder(j);
-            for (unsigned int k = 0; k < ladderHitCollection->numberOfSensors(); k++) {
-               if (i == 1 || i == 3 || i == 6) {
-                  StPxlSensorHitCollection *sensorHitCollection = ladderHitCollection->sensor(k);
-                  for (unsigned int l = 0; l < sensorHitCollection->hits().size(); l++) {
-                     StPxlHit *hit = sensorHitCollection->hits()[l];
-                     if (hit) {
-                        const StThreeVectorF &P = hit->position();
-                        if (mNtupleWrite) {
-                           m_hitNtuple->Fill((float)hit->sector(), (float)hit->ladder(), (float)hit->sensor(),
-                                             (float)hit->localPosition(0), (float)hit->localPosition(1), (float)hit->localPosition(2),
-                                             (float)P.x(), (float)P.y(), (float)P.z(),
-                                             (float)hit->meanRow(), (float)hit->meanColumn(), (float)hit->layer(),
-                                             (float)hit->nRawHits(), (float)hit->idTruth(), (float)pEvent->id());
-                        }
-                        m_globalx_y->Fill((float)P.x(), (float)P.y());
-                        m_globalz->Fill((float)P.z());
-                        if (j == 0) m_globalphi_z_inner->Fill(P.phi(), (float)P.z());
-                        if (j == 1 || j == 2 || j == 3) m_globalphi_z_outer->Fill(P.phi(), (float)P.z());
-                        m_hitnRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, (int)hit->nRawHits());
-                        m_hitnRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, (int)hit->nRawHits());
-                     }
+            for (unsigned int k = 0; k < ladderHitCollection->numberOfSensors(); k++)
+            {
+               if (i != 1 && i != 3 && i != 6) continue;
+
+               StPxlSensorHitCollection *sensorHitCollection = ladderHitCollection->sensor(k);
+               for (unsigned int l = 0; l < sensorHitCollection->hits().size(); l++)
+               {
+                  StPxlHit *hit = sensorHitCollection->hits()[l];
+                  if (!hit) continue;
+
+                  const StThreeVectorF &P = hit->position();
+                  if (mNtupleWrite) {
+                     m_hitNtuple->Fill((float)hit->sector(), (float)hit->ladder(), (float)hit->sensor(),
+                                       (float)hit->localPosition(0), (float)hit->localPosition(1), (float)hit->localPosition(2),
+                                       (float)P.x(), (float)P.y(), (float)P.z(),
+                                       (float)hit->meanRow(), (float)hit->meanColumn(), (float)hit->layer(),
+                                       (float)hit->nRawHits(), (float)hit->idTruth(), (float)pEvent->id());
                   }
-                  m_nHits_sensorID->Fill(i * 40 + j * 10 + k + 1, sensorHitCollection->hits().size());
-                  m_nHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, sensorHitCollection->hits().size());
-                  if (j == 0) hitnumber_inner += sensorHitCollection->hits().size();
-                  if (j == 1 || j == 2 || j == 3) hitnumber_outer += sensorHitCollection->hits().size();
+
+                  m_globalx_y->Fill((float)P.x(), (float)P.y());
+                  m_globalz->Fill((float)P.z());
+                  if (j == 0) m_globalphi_z_inner->Fill(P.phi(), (float)P.z());
+                  if (j == 1 || j == 2 || j == 3) m_globalphi_z_outer->Fill(P.phi(), (float)P.z());
+                  m_hitnRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, (int)hit->nRawHits());
+                  m_hitnRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, (int)hit->nRawHits());
                }
+
+               m_nHits_sensorID->Fill(i * 40 + j * 10 + k + 1, sensorHitCollection->hits().size());
+               m_nHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, sensorHitCollection->hits().size());
+               if (j == 0) hitnumber_inner += sensorHitCollection->hits().size();
+               if (j == 1 || j == 2 || j == 3) hitnumber_outer += sensorHitCollection->hits().size();
             }
          }
          if (i == 1 || i == 3 || i == 6) m_innerhits_outerhits[i]->Fill(hitnumber_inner, hitnumber_outer);
@@ -249,24 +256,30 @@ void StPxlMonMaker::printPixelHits()
       return;
    }
 
-   for (int i = 0; i < kNumberOfPxlSectors; i++) {
-      int rawhitnumber_inner = 0, rawhitnumber_outer = 0;
-      for (int j = 0; j < kNumberOfPxlLaddersPerSector; j++) {
-         for (int k = 0; k < kNumberOfPxlSensorsPerLadder; k++) {
-            if (i == 1 || i == 3 || i == 6) {
-               for (int l = 0; l < pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1); l++) {
-                  const StPxlRawHit *rawHit = pxlRawHitCollection->rawHit(i + 1, j + 1, k + 1, l);
-                  if (mNtupleWrite) {
-                     m_rawHitNtuple->Fill((float)i + 1, (float)j + 1, (float)k + 1, (float)rawHit->row(), (float)rawHit->column(), (float)rawHit->idTruth(), (float)pEvent->id());
-                  }
-                  m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->Fill(rawHit->column(), rawHit->row());
+   for (int i = 0; i < kNumberOfPxlSectors; i++)
+   {
+      int rawhitnumber_inner = 0;
+      int rawhitnumber_outer = 0;
+
+      for (int j = 0; j < kNumberOfPxlLaddersPerSector; j++)
+      {
+         for (int k = 0; k < kNumberOfPxlSensorsPerLadder; k++)
+         {
+            if (i != 1 && i != 3 && i != 6) continue;
+
+            for (int l = 0; l < pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1); l++) {
+               const StPxlRawHit *rawHit = pxlRawHitCollection->rawHit(i + 1, j + 1, k + 1, l);
+               if (mNtupleWrite) {
+                  m_rawHitNtuple->Fill((float)i + 1, (float)j + 1, (float)k + 1, (float)rawHit->row(), (float)rawHit->column(), (float)rawHit->idTruth(), (float) pEvent->id());
                }
-               m_nRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
-               m_nRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
-               m_nRawHits_EventId[i * 40 + j * 10 + k]->Fill((int)pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
-               if (j == 0) rawhitnumber_inner += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
-               if (j == 1 || j == 2 || j == 3) rawhitnumber_outer += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
+               m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->Fill(rawHit->column(), rawHit->row());
             }
+
+            m_nRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            m_nRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            m_nRawHits_EventId[i * 40 + j * 10 + k]->Fill((int) pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            if (j == 0) rawhitnumber_inner += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
+            if (j == 1 || j == 2 || j == 3) rawhitnumber_outer += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
          }
       }
       if (i == 1 || i == 3 || i == 6) m_innerrawhits_outerrawhits[i]->Fill(rawhitnumber_inner, rawhitnumber_outer);
