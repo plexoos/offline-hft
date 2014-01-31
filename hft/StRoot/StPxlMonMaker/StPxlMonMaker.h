@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.12  2014/01/31 23:59:28  smirnovd
+ * Removed unused private class methods
+ *
  * Revision 1.11  2014/01/31 23:56:37  smirnovd
  * Change return type to void
  *
@@ -91,8 +94,6 @@ public:
 
 private:
 
-   Bool_t accept(StEvent *);           // this method serves as an event filter
-   Bool_t accept(StTrack *);           // and this is used to select tracks
    void   bookHists();
    void   fillHists();
    void   writeHists();

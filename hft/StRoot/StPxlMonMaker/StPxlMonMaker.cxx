@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.16  2014/01/31 23:59:28  smirnovd
+ * Removed unused private class methods
+ *
  * Revision 1.15  2014/01/31 23:56:36  smirnovd
  * Change return type to void
  *
@@ -204,19 +207,6 @@ Int_t StPxlMonMaker::Make()
 
    if (mEventCounter % 100 == 0) writeHists();
    return kStOK;
-}
-
-
-bool StPxlMonMaker::accept(StEvent *event)
-{
-   if (!event) return kFALSE;
-   return event->primaryVertex();
-}
-
-
-bool StPxlMonMaker::accept(StTrack *track)
-{
-   return track && track->flag() >= 0;
 }
 
 
