@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.15  2014/01/31 23:56:36  smirnovd
+ * Change return type to void
+ *
  * Revision 1.14  2014/01/31 19:48:23  smirnovd
  * Redefined hit map histograms using user provided bin size
  *
@@ -73,7 +76,7 @@ Int_t StPxlMonMaker::Init()
 }
 
 
-Int_t StPxlMonMaker::bookHists()
+void StPxlMonMaker::bookHists()
 {
    int nRowBins = kNumberOfPxlRowsOnSensor / mNumPixelsPerBin + (kNumberOfPxlRowsOnSensor % mNumPixelsPerBin ? 1 : 0);
    int nColBins = kNumberOfPxlColumnsOnSensor / mNumPixelsPerBin + (kNumberOfPxlColumnsOnSensor % mNumPixelsPerBin ? 1 : 0);
@@ -168,8 +171,6 @@ Int_t StPxlMonMaker::bookHists()
          }
       }
    }
-
-   return kStOk;
 }
 
 

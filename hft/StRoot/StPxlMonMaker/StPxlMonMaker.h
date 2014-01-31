@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.11  2014/01/31 23:56:37  smirnovd
+ * Change return type to void
+ *
  * Revision 1.10  2014/01/31 19:48:12  smirnovd
  * Added a parameter to specify the size in number of rows and columns to group/bin pixels in a sensor
  *
@@ -90,7 +93,7 @@ private:
 
    Bool_t accept(StEvent *);           // this method serves as an event filter
    Bool_t accept(StTrack *);           // and this is used to select tracks
-   Int_t  bookHists();
+   void   bookHists();
    void   fillHists();
    void   writeHists();
 
