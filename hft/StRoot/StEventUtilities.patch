@@ -1,0 +1,121 @@
+--- StRoot/StEventUtilities/StEventHitIter.cxx	2013-01-08 16:50:17.000000000 -0500
++++ offline/hft/StRoot/StEventUtilities/StEventHitIter.cxx	2014-01-27 20:13:47.724807000 -0500
+@@ -17,6 +17,7 @@
+ #include "StFgtCollection.h"
+ #include "StFgtHitCollection.h"
+ #include "StFgtPointCollection.h"
++#include "StIstHitCollection.h"
+ //________________________________________________________________________________
+ StHitIter::StHitIter()
+ {
+@@ -446,6 +447,82 @@
+   return ((StSsdWaferHitCollection*)fCont)->hits().size();
+ }
+ 
++//_______IST_______IST_______IST_______IST_______IST_______IST_______IST_______IST
++//________________________________________________________________________________
++//..............................................................................
++class StIstHitIter : public StHitIter {
++public:
++                StIstHitIter();
++virtual        ~StIstHitIter(){;}
++virtual const TObject *Reset(const TObject *cont);
++virtual const TObject *GetObject (int idx) const;
++virtual           int  GetSize () const;
++  StDetectorId DetectorId() const {return kIstId;}
++protected:
++};
++//..............................................................................
++class StIstLadderHitIter : public StHitIter {
++public:
++                StIstLadderHitIter();
++virtual        ~StIstLadderHitIter(){;}
++virtual const TObject *GetObject (int idx) const;
++virtual           int  GetSize () const;
++protected:
++};
++//..............................................................................
++class StIstSensorHitIter : public StHitIter {
++public:
++                StIstSensorHitIter();
++virtual        ~StIstSensorHitIter(){;}
++virtual const TObject *GetObject (int idx) const;
++virtual           int  GetSize () const;
++protected:
++};
++//________________________________________________________________________________
++StIstHitIter::StIstHitIter()
++{
++  StHitIter *iter = this,*jter=0;
++  iter->SetDowIter((jter=new StIstLadderHitIter())); iter=jter;
++  iter->SetDowIter((jter=new StIstSensorHitIter ()));
++}
++//________________________________________________________________________________
++const TObject *StIstHitIter::Reset(const TObject *cont)
++{
++  const StIstHitCollection *to = 0;
++  if (cont) to = ((StEvent*)cont)->istHitCollection();
++  return StHitIter::Reset(to);
++}
++//________________________________________________________________________________
++const TObject *StIstHitIter::GetObject (int idx) const
++{
++  return (const TObject*)((StIstHitCollection*)fCont)->ladder(idx);
++}
++//________________________________________________________________________________
++int StIstHitIter::GetSize () const
++{
++  return ((StIstHitCollection*)fCont)->numberOfLadders();
++}
++//________________________________________________________________________________
++const TObject *StIstLadderHitIter::GetObject (int idx) const
++{
++  return (const TObject*)((StIstLadderHitCollection*)fCont)->sensor(idx);
++}
++//________________________________________________________________________________
++int StIstLadderHitIter::GetSize () const
++{
++  return ((StIstLadderHitCollection*)fCont)->numberOfSensors();
++}
++//________________________________________________________________________________
++const TObject *StIstSensorHitIter::GetObject (int idx) const
++{
++  return (const TObject*)((StIstSensorHitCollection*)fCont)->hits().at(idx);
++}
++//________________________________________________________________________________
++int StIstSensorHitIter::GetSize () const
++{
++  return ((StIstSensorHitCollection*)fCont)->hits().size();
++}
++
+ //________________________________________________________________________________
+ //_______FTPC______FTPC______FTPC______FTPC______FTPC______FTPC______FTPC______TPC
+ //________________________________________________________________________________
+@@ -671,7 +748,7 @@
+    case kFtpcEastId:
+      Add(new StFtpcHitIter());break;
+    case kPxlId: 
+-   case kIstId: 
++   case kIstId: Add(new StIstHitIter()) ;break; 
+      /* case kFgtId: n.b. This will be removing the RnD version of the FGT */ 
+    case kFmsId: 
+      Add(new StRnDHitIter(detId));break;
+--- StRoot/StEventUtilities/StuFixTopoMap.cxx	2013-03-11 05:42:31.000000000 -0400
++++ offline/hft/StRoot/StEventUtilities/StuFixTopoMap.cxx	2014-01-27 14:16:52.742645000 -0500
+@@ -124,13 +124,9 @@
+                 LOG_DEBUG<<"word1: "<<word1<<endm;
+             }
+             if (hits[i]->detector() == kIstId) {
+-                k = dynamic_cast<const StRnDHit*>(hits[i])->layer();
+-                s = dynamic_cast<const StRnDHit*>(hits[i])->extraByte0();
+-                LOG_DEBUG<<"track has hit in ist, layer "<<k<<", side "<<s<<endm;
+-                if(k==2) k=k+s-1;
+-                LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
+-                if (word1 & 1U<<(k+2)) word2 |= 1U<<30; // turnaround flag    
+-                word1 |= 1U<<(k+2);
++		LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
++                if (word1 & 1U<<k) word2 |= 1U<<30; // turnaround flag    
++                word1 |= 1U<<k;
+                 LOG_DEBUG<<"word1: "<<word1<<endm;
+             }
+             else if (hits[i]->detector() == kSsdId) {

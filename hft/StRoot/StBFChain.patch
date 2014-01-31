@@ -1,0 +1,119 @@
+--- StRoot/StBFChain/BigFullChain.h	2013-10-03 16:39:00.000000000 -0400
++++ offline/hft/StRoot/StBFChain/BigFullChain.h	2014-01-27 14:51:41.842237000 -0500
+@@ -1200,7 +1200,7 @@
+   {"gstar"       ,"geant"  ,"","-fzin,-ntin,-geant,Simu,geantL","St_geant_Maker"
+    ,                                        "","gstar for 80 muon tracks with pT = 1GeV in |eta|<4",kFALSE},
+   {"pythia"      ,"geant" ,"","-gstar,-fzin,-ntin,-geant,geantL","St_geant_Maker"
+-   ,                                "Pythia6_4_26,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
++   ,                                "Pythia6_4_23,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
+   {"Wenu"        ,"" ,"","pythia","", ""                 ,"set pp 510 GeV -> W+/- -> e+/- nu/nubar",kFALSE},
+   {"tdaq"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+   {"miniDAQ"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+@@ -1338,8 +1338,23 @@
+   {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+   {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+   {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
++  {"pxlDb"      ,"","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
+   {"pxlFastSim","","","StMcEvent,StEvent"
+    ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
++  {"pxlUtil"     ,"","","","","StPxlUtil","Pxl Utilities",kFALSE},
++  {"pxlRaw"      ,"","","pxlUtil","StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
++  {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
++  {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
++  {"pxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
++  {"istDb"      ,"istDb","","tpcDb","StIstDbMaker","StIstDbMaker","Load and run IstDbMaker",        kFALSE},
++  {"istFastSim","","","StMcEvent,StEvent"
++   ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
++  {"istUtil"     ,"","","","","StIstUtil","Ist Utilities",kFALSE},
++  {"istRaw"      ,"","","istUtil,istDb","StIstRawHitMaker","StIstRawHitMaker","Ist Raw Hit Maker",kFALSE},
++  {"istCluster"      ,"","","istUtil","StIstClusterMaker","StIstClusterMaker","Ist Cluster Maker",kFALSE},
++  {"istHit"      ,"","","istUtil,event,istDb","StIstHitMaker","StIstHitMaker","Ist Hit Maker",kFALSE},
++  {"istQA"    ,"","","istUtil,StEvent"        ,"StIstQAMaker","StIstQAMaker","Example of Ist QA",kFALSE},
++  {"istCalib" ,"","","istUtil","StIstCalibrationMaker","StIstCalibrationMaker","Ist Calibration Maker",kFALSE},
+   {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
+   {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
+   {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
+--- StRoot/StBFChain/StBFChain.cxx	2013-12-23 15:34:26.000000000 -0500
++++ offline/hft/StRoot/StBFChain/StBFChain.cxx	2014-01-27 14:16:52.654642000 -0500
+@@ -95,8 +95,7 @@
+   }
+   FDate  = FTime  = 0;
+   FDateS = FTimeS = 0;
+-  fFiltTrg   = "";
+-  fRunG      = -1;
++  fRunG  = -1;
+   Gproperty  = ".gopt.";
+   Gvalue     = "";
+   Gpattern   = "*";
+@@ -722,12 +721,6 @@
+ 	ProcessLine(Form("((StMaker *) %p)->SetMode(%i);", mk, mode));
+     }
+     if (maker == "StBTofCalibMaker" && GetOption("UseProjectedVertex")) mk->SetAttr("UseProjectedVertex",kTRUE);
+-    if (maker == "StEventMaker" && fFiltTrg.Length()) {
+-      mk->SetAttr("FiltTrg",(Int_t) (fFiltTrg.BeginsWith('+') ? 1 : -1));
+-      TString FiltTrgFlavor = fFiltTrg(1,128);
+-      if (FiltTrgFlavor.Length())
+-        SetFlavor((FiltTrgFlavor += "+ofl").Data(),"trgOfflineFilter");
+-    }
+   Add2Chain:
+     if (! mk) continue;
+     if (name == "") strcpy (fBFC[i].Name,(Char_t *) mk->GetName());
+@@ -970,11 +963,6 @@
+   // GoptXXXvvvvvv -> Gopt 4 / XXX 3 / vvvvvv 6 = 13
+   if ( Tag.BeginsWith("gopt") && Tag.Length() == 13 ) return 0;
+ 
+-  if ( Tag.BeginsWith("FiltTrg",TString::kIgnoreCase) ) {
+-    Check = kTRUE;
+-    if ( TPRegexp("^FiltTrg(Inc|Exc)?(_.*)*$").Match(Tag,"i") > 0) return 0;
+-  }
+-
+   if (Check) {
+     gMessMgr->Error() << "Option " << Tag.Data() << " has not been recognized" << endm;
+     abort(); //assert(1);
+@@ -1104,24 +1092,6 @@
+ 	  if (Tag.Length() > 4)  (void) sscanf(Tag.Data(),"rung.%d",&fRunG);
+ 	  gMessMgr->QAInfo() << Tag.Data() << " will be considered as Run number (& rndm seed set) " 
+ 			     << fRunG << " for simulation." << endm; 
+-	} else if (Tag.BeginsWith("FiltTrg",TString::kIgnoreCase)) {
+-          TString filtTrgTag = Tag;
+-          Ssiz_t flavorIdx = Tag.Index('_');
+-          if (flavorIdx > 0) {
+-            filtTrgTag = Tag(0,flavorIdx);
+-            fFiltTrg = Tag(flavorIdx+1,64);
+-          }
+-          if (filtTrgTag.CompareTo("FiltTrgExc",TString::kIgnoreCase)==0) {
+-	    gMessMgr->QAInfo() << "Trigger Filtering exclude with flavor=" << fFiltTrg << endm;
+-            fFiltTrg.Prepend('-');
+-          } else if (filtTrgTag.CompareTo("FiltTrgInc",TString::kIgnoreCase)==0 ||
+-                     filtTrgTag.CompareTo("FiltTrg"   ,TString::kIgnoreCase)==0) {
+-	    gMessMgr->QAInfo() << "Trigger Filtering include with flavor=" << fFiltTrg << endm;
+-            fFiltTrg.Prepend('+');
+-          } else {
+-            // not a match, disable
+-            fFiltTrg = "";
+-          }
+ 	} else { // Check for predefined db time stamps ?
+ 	  kgo = kOpt(Tag.Data(),kFALSE);
+ 	  if (kgo != 0){
+--- StRoot/StBFChain/StBFChain.h	2013-12-23 15:34:26.000000000 -0500
++++ offline/hft/StRoot/StBFChain/StBFChain.h	2014-01-27 14:16:52.657642000 -0500
+@@ -40,7 +40,6 @@
+   Int_t               FTime;      // floating timestamp time (unused)
+   Int_t               FDateS;     // floating timestamp date (DateTime)
+   Int_t               FTimeS;     // floating timestamp time (DateTime)
+-  TString             fFiltTrg;   // trigger filtering properties (flavor, inc/exc)
+   Int_t               fRunG;      // on fly simulation run no. & set for RDNM
+   Int_t               fNoChainOptions;
+   TString             Gproperty;  // a global property name
+@@ -77,6 +76,11 @@
+    void                SetFlags(const Char_t *Chain="gstar tfs"); // *MENU*
+    void                Set_IO_Files(const Char_t *infile=0, const Char_t *outfile=0); // *MENU
+    void                SetInputFile(const Char_t *infile=0);                          // *MENU
++   void                SetGC(const Char_t *queue=
++			     "-s;dst runc;"                     // list of components needed
++			     "-q;numberOfPrimaryTracks>1500;"   // example of user query
++			     );                                                       // *MENU
++
+    void                SetOutputFile(const Char_t *outfile=0);                        // *MENU
+    void                SetTFile(TFile *tf)			{fTFile=tf;}
+    TFile              *GetTFile() const			        {return fTFile;}
