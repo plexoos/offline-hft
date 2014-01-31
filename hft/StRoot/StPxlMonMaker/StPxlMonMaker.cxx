@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.14  2014/01/31 19:48:23  smirnovd
+ * Redefined hit map histograms using user provided bin size
+ *
  * Revision 1.13  2014/01/31 19:48:12  smirnovd
  * Added a parameter to specify the size in number of rows and columns to group/bin pixels in a sensor
  *
@@ -154,17 +157,14 @@ Int_t StPxlMonMaker::bookHists()
 
             char ename[50];
             char etitle[100];
-            sprintf(ename, "rawHit_rowvscolumn_%d", i * 40 + j * 10 + k);
-            sprintf(etitle, "rawHit column vs. row: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
-            m_rawHit_rowvscolumn[i * 40 + j * 10 + k] = new TH2F(ename, etitle, 1000, 0, 1000, 1000, 0, 1000);
-            m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("column");
-            m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("row");
 
-            sprintf(ename, "nRawHits_EventId_%d", i * 40 + j * 10 + k);
-            sprintf(etitle, "rawHits vs. EventID: Sector %d Ladder %d Sensor %d", i + 1, j + 1, k + 1);
+            sprintf(ename, "rawHit_rowvscolumn_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
+            sprintf(etitle, "Raw hit map: Sector %d, Ladder %d, Sensor %d; Row Id; Column Id;", i+1, j+1, k+1);
+            m_rawHit_rowvscolumn[i * 40 + j * 10 + k] = new TH2F(ename, etitle, nRowBins, 0, nRowBins*mNumPixelsPerBin, nColBins, 0, nColBins*mNumPixelsPerBin);
+
+            sprintf(ename, "nRawHits_EventId_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
+            sprintf(etitle, "rawHits vs. Event Id: Sector %d Ladder %d Sensor %d; Event Id (Time); Num. of Raw Hits", i+1, j+1, k+1);
             m_nRawHits_EventId[i * 40 + j * 10 + k] = new TProfile(ename, etitle, 10000, 0, 10000);
-            m_nRawHits_EventId[i * 40 + j * 10 + k]->GetXaxis()->SetTitle("EventID (Time)");
-            m_nRawHits_EventId[i * 40 + j * 10 + k]->GetYaxis()->SetTitle("<rawhits>");
          }
       }
    }
