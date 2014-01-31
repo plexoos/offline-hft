@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.10  2014/01/31 19:48:12  smirnovd
+ * Added a parameter to specify the size in number of rows and columns to group/bin pixels in a sensor
+ *
  * Revision 1.9  2014/01/31 19:47:46  smirnovd
  * Give consistent and more appropriate names to class methods
  *
@@ -33,6 +36,8 @@
 
 #ifndef StPxlMonMaker_hh
 #define StPxlMonMaker_hh
+
+#include <stdint.h>
 
 #include "TString.h"
 #include "TNtuple.h"
@@ -50,8 +55,8 @@ class StPxlMonMaker : public StMaker
 {
 public:
 
-   StPxlMonMaker(const Char_t *name = "pxlQa");
-   Int_t Init();
+   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name = "pxlQa");
+   Int_t  Init();
    Int_t  Make();                      // invoked for every event
    Int_t  Finish();                    // called once at the end
    virtual const char *GetCVS() const {
@@ -89,8 +94,9 @@ private:
    void   fillHists();
    void   writeHists();
 
-   Int_t mEventCounter;  //!
-   Int_t mNtupleWrite;
+   uint16_t mNumPixelsPerBin;   //!< Number of rows and columns to group in a bin
+   Int_t    mEventCounter;      //!
+   Int_t    mNtupleWrite;
 
    ClassDef(StPxlMonMaker, 0)
 };

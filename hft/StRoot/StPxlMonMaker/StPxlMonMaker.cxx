@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.13  2014/01/31 19:48:12  smirnovd
+ * Added a parameter to specify the size in number of rows and columns to group/bin pixels in a sensor
+ *
  * Revision 1.12  2014/01/31 19:47:46  smirnovd
  * Give consistent and more appropriate names to class methods
  *
@@ -52,7 +55,8 @@
 ClassImp(StPxlMonMaker);
 
 
-StPxlMonMaker::StPxlMonMaker(const Char_t *name) : StMaker(name)
+StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name) : StMaker(name),
+   mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(1)
 {}
 
 
@@ -68,6 +72,9 @@ Int_t StPxlMonMaker::Init()
 
 Int_t StPxlMonMaker::bookHists()
 {
+   int nRowBins = kNumberOfPxlRowsOnSensor / mNumPixelsPerBin + (kNumberOfPxlRowsOnSensor % mNumPixelsPerBin ? 1 : 0);
+   int nColBins = kNumberOfPxlColumnsOnSensor / mNumPixelsPerBin + (kNumberOfPxlColumnsOnSensor % mNumPixelsPerBin ? 1 : 0);
+
    if (mNtupleWrite) {
       m_hitNtuple = new TNtuple("hitNtuple", "hitNtuple", "sector:ladder:sensor:localX:localY:localZ:x:y:z:meanRow:meanColumn:layer:nRawHits:idTruth:EventId");
       m_rawHitNtuple = new TNtuple("rawHitNtuple", "rawHitNtuple", "sector:ladder:sensor:column:row:idTruth:EventId");
