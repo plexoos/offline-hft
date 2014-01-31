@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.12  2014/01/31 19:47:46  smirnovd
+ * Give consistent and more appropriate names to class methods
+ *
  * Revision 1.11  2014/01/31 00:08:36  smirnovd
  * Minor style issues fixed
  *
@@ -58,12 +61,12 @@ Int_t StPxlMonMaker::Init()
    mEventCounter = 0;
    mNtupleWrite = 1;
    LOG_INFO << "StPxlMonMaker::Init()" << endm;
-   declareplots();
+   bookHists();
    return kStOk;
 }
 
 
-Int_t StPxlMonMaker::declareplots()
+Int_t StPxlMonMaker::bookHists()
 {
    if (mNtupleWrite) {
       m_hitNtuple = new TNtuple("hitNtuple", "hitNtuple", "sector:ladder:sensor:localX:localY:localZ:x:y:z:meanRow:meanColumn:layer:nRawHits:idTruth:EventId");
@@ -165,7 +168,7 @@ Int_t StPxlMonMaker::declareplots()
 
 Int_t StPxlMonMaker::Finish()
 {
-   writeHistograms();
+   writeHists();
    gMessMgr->Info() << "StPxlMonMaker::Finish() "
                     << "Processed " << mEventCounter << " events." << endm;
    return kStOK;
@@ -189,9 +192,9 @@ Int_t StPxlMonMaker::Make()
       LOG_WARN << "StPxlMonMaker:: pxlClusterCollection: " << pxlClusterCollection << endm;
    }
 
-   printPixelHits();
+   fillHists();
 
-   if (mEventCounter % 100 == 0) writeHistograms();
+   if (mEventCounter % 100 == 0) writeHists();
    return kStOK;
 }
 
@@ -209,7 +212,7 @@ bool StPxlMonMaker::accept(StTrack *track)
 }
 
 
-void StPxlMonMaker::printPixelHits()
+void StPxlMonMaker::fillHists()
 {
    StEvent *pEvent = (StEvent *) StMaker::GetChain()->GetInputDS("StEvent");
    if (pEvent) {
@@ -307,7 +310,7 @@ void StPxlMonMaker::printPixelHits()
 }
 
 
-void StPxlMonMaker::writeHistograms()
+void StPxlMonMaker::writeHists()
 {
    StIOMaker *ioMaker = (StIOMaker * )GetMaker("inputStream");
    if (!ioMaker) {
@@ -321,7 +324,7 @@ void StPxlMonMaker::writeHistograms()
    found = filename.First(".");
    if (found == 0) found = filename.Length();
    filename.Replace(found, filename.Length() - found, ".pxlQa.root");
-   LOG_INFO << "writeHistograms() filename: " << filename << endm;
+   LOG_INFO << "writeHists() filename: " << filename << endm;
 
    m_f1 = new TFile(filename.Data(), "RECREATE");
 

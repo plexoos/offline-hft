@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.9  2014/01/31 19:47:46  smirnovd
+ * Give consistent and more appropriate names to class methods
+ *
  * Revision 1.8  2014/01/31 00:08:36  smirnovd
  * Minor style issues fixed
  *
@@ -82,9 +85,9 @@ private:
 
    Bool_t accept(StEvent *);           // this method serves as an event filter
    Bool_t accept(StTrack *);           // and this is used to select tracks
-   Int_t  declareplots();
-   void   printPixelHits();
-   void   writeHistograms();
+   Int_t  bookHists();
+   void   fillHists();
+   void   writeHists();
 
    Int_t mEventCounter;  //!
    Int_t mNtupleWrite;
