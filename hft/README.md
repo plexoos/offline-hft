@@ -49,3 +49,6 @@ To do
 =====
 
 - Move development from StRoot/StiRnD/Hft to offline/hft/StRoot/StiPxl
+- Rename StiPixel... classes to StiPxl... to be consistent with the other
+detector subsystems
+- Add instructions for how to run simulation with hft detectors
