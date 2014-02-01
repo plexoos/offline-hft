@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.18  2014/02/01 19:03:16  smirnovd
+ * Fixed default parameter bug
+ *
  * Revision 1.17  2014/02/01 02:37:18  smirnovd
  * This commit is intended to sync with what we had in StRoot/StiRnD
  *
@@ -46,7 +49,7 @@
 ClassImp(StPxlMonMaker);
 
 
-StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name) : StMaker(name),
+StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin, const Char_t *name) : StMaker(name),
    mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(1)
 {}
 

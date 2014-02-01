@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.14  2014/02/01 19:03:17  smirnovd
+ * Fixed default parameter bug
+ *
  * Revision 1.13  2014/02/01 02:37:18  smirnovd
  * This commit is intended to sync with what we had in StRoot/StiRnD
  *
@@ -49,7 +52,7 @@ class StPxlMonMaker : public StMaker
 {
 public:
 
-   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name = "pxlQa");
+   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name="pxlQa");
    Int_t  Init();
    Int_t  Make();                      // invoked for every event
    Int_t  Finish();                    // called once at the end
