@@ -2,6 +2,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.16  2014/02/01 02:48:07  smirnovd
+ * Improved style format by running astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+ *
  * Revision 1.15  2014/02/01 02:37:17  smirnovd
  * This commit is intended to sync with what we had in StRoot/StiRnD
  *
@@ -68,113 +71,133 @@
 #include "StiPixelHitLoader.h"
 
 StiPixelHitLoader::StiPixelHitLoader()
-: StiHitLoader<StEvent,StiDetectorBuilder>("PixelHitLoader")
+   : StiHitLoader<StEvent, StiDetectorBuilder>("PixelHitLoader")
 {}
 
-StiPixelHitLoader::StiPixelHitLoader(StiHitContainer* hitContainer,
-                                     Factory<StiHit>*hitFactory,
-                                     StiDetectorBuilder * detector)
-: StiHitLoader<StEvent,StiDetectorBuilder>("PixelHitLoader",hitContainer,hitFactory,detector)
+StiPixelHitLoader::StiPixelHitLoader(StiHitContainer *hitContainer,
+                                     Factory<StiHit> *hitFactory,
+                                     StiDetectorBuilder *detector)
+   : StiHitLoader<StEvent, StiDetectorBuilder>("PixelHitLoader", hitContainer, hitFactory, detector)
 {}
 
 StiPixelHitLoader::~StiPixelHitLoader()
 {}
 
-void StiPixelHitLoader::loadHits(StEvent* source,
-                                 Filter<StiTrack> * trackFilter,
-                                 Filter<StiHit> * hitFilter)
+void StiPixelHitLoader::loadHits(StEvent *source,
+                                 Filter<StiTrack> *trackFilter,
+                                 Filter<StiHit> *hitFilter)
 {
 
-    LOG_INFO << " -I- Started" << endl;
-    if (!_detector)
-	throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) - FATAL - _detector==0");
-    if(!_hitContainer)
-	throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) - FATAL - _hitContainer==0");
-    
-    StPxlHitCollection *col = source->pxlHitCollection();
-    if (!col) {
-	LOG_ERROR <<"StiPixelHitLoader::loadHits\tERROR:\tcol==0"
-		  <<"You must not have pixelFastSim in your chain"
-		  <<"will return with no action taken"<<endm;
-	return;
-    }
-    //Added by Michael Lomnitz (KSU):  Loops over Sector/Ladder/Sensor to obtain the whole hit collection
-    StiDetector *detector=0;
-    int nHit=0;
+   LOG_INFO << " -I- Started" << endl;
 
-    StPxlHitCollection* PxlHitCollection=source->pxlHitCollection(); 
-    if(! PxlHitCollection){cout<<"No PXL hit collection"<<endl; return;}
-    UInt_t numberOfSectors=PxlHitCollection->numberOfSectors();
-    for(UInt_t i=0;i<numberOfSectors;i++){
-      StPxlSectorHitCollection* PxlSectorHitCollection=PxlHitCollection->sector(i); 
-      if(! PxlSectorHitCollection){cout<<"No PXLSector hit collection"<<endl; return;}
-      UInt_t numberOfLadders=PxlSectorHitCollection->numberOfLadders();
-      for(UInt_t j=0;j<numberOfLadders;j++){
-	StPxlLadderHitCollection* PxlLadderHitCollection=PxlSectorHitCollection->ladder(j); 
-	if(! PxlLadderHitCollection){cout<<"No PXLLadder hit collection"<<endl; return;}
-	UInt_t numberOfSensors=PxlLadderHitCollection->numberOfSensors();
-	for(UInt_t l=0;l<numberOfSensors;l++){
-	  StPxlSensorHitCollection* PxlSensorHitCollection=PxlLadderHitCollection->sensor(l);
-	  StSPtrVecPxlHit& vec = PxlSensorHitCollection->hits();	 
-	  
-	  LOG_DEBUG<<"StiPixelHitLoader - collection size: "<<vec.size()<<endm;
-	  
-	  for(unsigned int jj=0; jj<vec.size(); jj++){
-	    StPxlHit *pxlH = vec[jj];
-	    if(!pxlH)
-	      throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- NULL hit in container");
-	    
-	    if (pxlH->detector()!=kPxlId) continue;
-	    if (pxlH->sector()==2 || pxlH->sector()==4 || pxlH->sector()==7){ //olny sectors 4 and 7
-	    int LAY=0, LAD=0;
-	    
-	    if(pxlH->layer()==1){
-	      LAY=0;//(int)pxlH->layer()-1;
-	      LAD=(int)pxlH->sector()-1;
-	    }
-	    else{
-	      LAY=1;//(int)pxlH->layer()-1;
-	      LAD=(((int)pxlH->sector()-1)*3 + (int)pxlH->ladder()-2);
-	    }
-	    LOG_DEBUG << " hit sector : " << (int)pxlH->sector() << " ladder : " << (int)pxlH->ladder() << endm; 
-	    LOG_DEBUG << " layer : "<< LAY <<" ladder :  "<< LAD << endm;
-	    LOG_DEBUG << "X/Y/Z    : " << pxlH->position().x()<<"/"<< pxlH->position().y()<<"/"<<pxlH->position().z()<<endm;
-	    LOG_DEBUG << "Xl/Yl/Zl : " << pxlH->localPosition(0)<<"/"<< pxlH->localPosition(1)<<"/"<<pxlH->localPosition(2)<<endm;
-	    detector= _detector->getDetector(LAY,LAD);
-	    
-	    if(!detector)
-	      throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- NULL detector pointer");
-	    LOG_DEBUG <<"add hit to detector:\t"<<detector->getName()<<endm;
-	    double angle     = detector->getPlacement()->getNormalRefAngle();
-	    double radius    = detector->getPlacement()->getNormalRadius();
-	    double zcenter   = detector->getPlacement()->getZcenter();
-	    double halfDepth = detector->getShape()->getHalfDepth();
-	    double halfWidth = detector->getShape()->getHalfWidth();
-	    double thick     = detector->getShape()->getThickness();
-	    LOG_DEBUG << " detector info " << *detector << endm;
-	    LOG_DEBUG << " radius = "<< radius << " angle = " << angle << " zCenter = " << zcenter << endm;
-	    LOG_DEBUG << " depth = " << halfDepth << " Width = " << halfWidth << " thickness= " << thick << endm; 
-	    LOG_DEBUG << " key 1 : " << detector->getKey(1) <<" key 2 : " << detector->getKey(2) << endm; 
-	    
-	    StiHit *stiHit=_hitFactory->getInstance();
-	    if(!stiHit) throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- stiHit==0");
-	    stiHit->reset();	
-	    
-	    stiHit->setGlobal(detector, pxlH,
-			      pxlH->position().x(), pxlH->position().y(),
-				pxlH->position().z(), pxlH->charge());
-	    
-	    _hitContainer->add(stiHit);
-	    LOG_DEBUG <<" nHit = "<<nHit<<" Sector = "<<(int)pxlH->sector()<<" Ladder = "<<(int)pxlH->ladder()<<" x = "<<(float)pxlH->position().x()<<" y = "<<(float)pxlH->position().y()<<" z = "<<(float)pxlH->position().z()<<endm;
-	    LOG_DEBUG <<" " << endm;
-	    
-	    //done loop over hits
-	    nHit++;
-	    }
-	  }
-	}
+   if (!_detector)
+      throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) - FATAL - _detector==0");
+
+   if (!_hitContainer)
+      throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) - FATAL - _hitContainer==0");
+
+   StPxlHitCollection *col = source->pxlHitCollection();
+
+   if (!col) {
+      LOG_ERROR << "StiPixelHitLoader::loadHits\tERROR:\tcol==0"
+                << "You must not have pixelFastSim in your chain"
+                << "will return with no action taken" << endm;
+      return;
+   }
+
+   //Added by Michael Lomnitz (KSU):  Loops over Sector/Ladder/Sensor to obtain the whole hit collection
+   StiDetector *detector = 0;
+   int nHit = 0;
+
+   StPxlHitCollection *PxlHitCollection = source->pxlHitCollection();
+
+   if (! PxlHitCollection) {cout << "No PXL hit collection" << endl; return;}
+
+   UInt_t numberOfSectors = PxlHitCollection->numberOfSectors();
+
+   for (UInt_t i = 0; i < numberOfSectors; i++) {
+      StPxlSectorHitCollection *PxlSectorHitCollection = PxlHitCollection->sector(i);
+
+      if (! PxlSectorHitCollection) {cout << "No PXLSector hit collection" << endl; return;}
+
+      UInt_t numberOfLadders = PxlSectorHitCollection->numberOfLadders();
+
+      for (UInt_t j = 0; j < numberOfLadders; j++) {
+         StPxlLadderHitCollection *PxlLadderHitCollection = PxlSectorHitCollection->ladder(j);
+
+         if (! PxlLadderHitCollection) {cout << "No PXLLadder hit collection" << endl; return;}
+
+         UInt_t numberOfSensors = PxlLadderHitCollection->numberOfSensors();
+
+         for (UInt_t l = 0; l < numberOfSensors; l++) {
+            StPxlSensorHitCollection *PxlSensorHitCollection = PxlLadderHitCollection->sensor(l);
+            StSPtrVecPxlHit &vec = PxlSensorHitCollection->hits();
+
+            LOG_DEBUG << "StiPixelHitLoader - collection size: " << vec.size() << endm;
+
+            for (unsigned int jj = 0; jj < vec.size(); jj++) {
+               StPxlHit *pxlH = vec[jj];
+
+               if (!pxlH)
+                  throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- NULL hit in container");
+
+               if (pxlH->detector() != kPxlId) continue;
+
+               if (pxlH->sector() == 2 || pxlH->sector() == 4 || pxlH->sector() == 7) { //olny sectors 4 and 7
+                  int LAY = 0, LAD = 0;
+
+                  if (pxlH->layer() == 1) {
+                     LAY = 0; //(int)pxlH->layer()-1;
+                     LAD = (int)pxlH->sector() - 1;
+                  }
+                  else {
+                     LAY = 1; //(int)pxlH->layer()-1;
+                     LAD = (((int)pxlH->sector() - 1) * 3 + (int)pxlH->ladder() - 2);
+                  }
+
+                  LOG_DEBUG << " hit sector : " << (int)pxlH->sector() << " ladder : " << (int)pxlH->ladder() << endm;
+                  LOG_DEBUG << " layer : " << LAY << " ladder :  " << LAD << endm;
+                  LOG_DEBUG << "X/Y/Z    : " << pxlH->position().x() << "/" << pxlH->position().y() << "/" << pxlH->position().z() << endm;
+                  LOG_DEBUG << "Xl/Yl/Zl : " << pxlH->localPosition(0) << "/" << pxlH->localPosition(1) << "/" << pxlH->localPosition(2) << endm;
+                  detector = _detector->getDetector(LAY, LAD);
+
+                  if (!detector)
+                     throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- NULL detector pointer");
+
+                  LOG_DEBUG << "add hit to detector:\t" << detector->getName() << endm;
+                  double angle     = detector->getPlacement()->getNormalRefAngle();
+                  double radius    = detector->getPlacement()->getNormalRadius();
+                  double zcenter   = detector->getPlacement()->getZcenter();
+                  double halfDepth = detector->getShape()->getHalfDepth();
+                  double halfWidth = detector->getShape()->getHalfWidth();
+                  double thick     = detector->getShape()->getThickness();
+                  LOG_DEBUG << " detector info " << *detector << endm;
+                  LOG_DEBUG << " radius = " << radius << " angle = " << angle << " zCenter = " << zcenter << endm;
+                  LOG_DEBUG << " depth = " << halfDepth << " Width = " << halfWidth << " thickness= " << thick << endm;
+                  LOG_DEBUG << " key 1 : " << detector->getKey(1) << " key 2 : " << detector->getKey(2) << endm;
+
+                  StiHit *stiHit = _hitFactory->getInstance();
+
+                  if (!stiHit) throw runtime_error("StiPixelHitLoader::loadHits(StEvent*) -E- stiHit==0");
+
+                  stiHit->reset();
+
+                  stiHit->setGlobal(detector, pxlH,
+                                    pxlH->position().x(), pxlH->position().y(),
+                                    pxlH->position().z(), pxlH->charge());
+
+                  _hitContainer->add(stiHit);
+                  LOG_DEBUG << " nHit = " << nHit << " Sector = " << (int)pxlH->sector() << " Ladder = " << (int)pxlH->ladder() << " x = " << (float)pxlH->position().x() << " y = " << (float)pxlH->position().y() << " z = " << (float)pxlH->position().z() << endm;
+                  LOG_DEBUG << " " << endm;
+
+                  //done loop over hits
+                  nHit++;
+               }
+            }
+         }
       }
-    }
-    LOG_INFO <<"StiPixelHitLoader:loadHits -I- Loaded "<<nHit<<" pixel hits."<<endm;
+   }
+
+   LOG_INFO << "StiPixelHitLoader:loadHits -I- Loaded " << nHit << " pixel hits." << endm;
 }
 

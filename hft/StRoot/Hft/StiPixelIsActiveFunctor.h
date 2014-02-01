@@ -12,12 +12,13 @@
 
 #include "Sti/StiIsActiveFunctor.h"
 
-class StiPixelIsActiveFunctor : public StiIsActiveFunctor{
+class StiPixelIsActiveFunctor : public StiIsActiveFunctor
+{
 public:
-    StiPixelIsActiveFunctor();
-    virtual ~StiPixelIsActiveFunctor();
-    virtual bool operator()(double dYlocal, double dZlocal) const;
-    
+   StiPixelIsActiveFunctor();
+   virtual ~StiPixelIsActiveFunctor();
+   virtual bool operator()(double dYlocal, double dZlocal) const;
+
 protected:
 };
 

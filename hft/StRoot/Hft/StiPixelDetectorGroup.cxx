@@ -5,10 +5,10 @@
 #include "StiPixelHitLoader.h"
 
 
-StiPixelDetectorGroup::StiPixelDetectorGroup(bool active, const string & inputFile)
-    : StiDetectorGroup<StEvent>("Pixel",
-					  active?new StiPixelHitLoader():0,
-					  new StiPixelDetectorBuilder(active,inputFile),0)
+StiPixelDetectorGroup::StiPixelDetectorGroup(bool active, const string &inputFile)
+   : StiDetectorGroup<StEvent>("Pixel",
+                               active ? new StiPixelHitLoader() : 0,
+                               new StiPixelDetectorBuilder(active, inputFile), 0)
 {}
 
 StiPixelDetectorGroup::~StiPixelDetectorGroup()

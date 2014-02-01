@@ -4,6 +4,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.13  2014/02/01 02:48:07  smirnovd
+ * Improved style format by running astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+ *
  * Revision 1.12  2014/02/01 02:37:17  smirnovd
  * This commit is intended to sync with what we had in StRoot/StiRnD
  *
@@ -72,20 +75,20 @@
  *
  */
 
-/* 
+/*
    numbering should be the following :
    hardware : sector ladder   ITTF : layer  ladder
-   1      1                          1      0                
+   1      1                          1      0
    1      2                          1      1
    1      3                          1      2
    1      4                          0      0
-   
-   2      1                          1      3                
+
+   2      1                          1      3
    2      2                          1      4
    2      3                          1      5
    2      4                          0      1
    (...)
-   10     1                          1     27               
+   10     1                          1     27
    10     2                          1     28
    10     3                          1     29
    10     4                          0     9
@@ -103,7 +106,7 @@
 #include "StiPixelIsActiveFunctor.h"
 #include "Sti/StiNeverActiveFunctor.h"
 #include "Sti/StiElossCalculator.h"
-#include "StiPixelDetectorBuilder.h" 
+#include "StiPixelDetectorBuilder.h"
 #include "StiPixelIsActiveFunctor.h"
 #include "StDetectorDbMaker/StiPixelHitErrorCalculator.h"
 #include "TDataSetIter.h"
@@ -112,12 +115,12 @@
 #include "StEventTypes.h"
 #include "StPxlDbMaker/StPxlDbMaker.h"
 StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active,
-						 const string & inputFile)
-  : StiDetectorBuilder("Pixel",active,inputFile)
+      const string &inputFile)
+   : StiDetectorBuilder("Pixel", active, inputFile)
 {
-	//Parameterized hit error calculator.  Given a track (dip, cross, pt, etc)
-        //returns average error once you actually want to do tracking, the results
-        //depend strongly on the numbers below. 
+   //Parameterized hit error calculator.  Given a track (dip, cross, pt, etc)
+   //returns average error once you actually want to do tracking, the results
+   //depend strongly on the numbers below.
 }
 
 StiPixelDetectorBuilder::~StiPixelDetectorBuilder()
@@ -127,115 +130,117 @@ StiPixelDetectorBuilder::~StiPixelDetectorBuilder()
 void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
 {
 
-  char name[50];
-  LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Started" << endm;
+   char name[50];
+   LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Started" << endm;
 
 
-  unsigned int nRows=2;
+   unsigned int nRows = 2;
 
-  // 2 real rows, but we have detector elements and support elements. 
-  setNRows(nRows);
-  
-  if (StiVMCToolKit::GetVMC()) {useVMCGeometry(); return;}
+   // 2 real rows, but we have detector elements and support elements.
+   setNRows(nRows);
 
-  
-    _gasMat    = add(new StiMaterial("PixelAir",7.3, 14.61, 0.001205, 30420.*0.001205, 7.3*12.e-9));
-    _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
-    _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
-  
+   if (StiVMCToolKit::GetVMC()) {useVMCGeometry(); return;}
 
-  //Instantiate energy loss detector for si material  
-  //const static double I2Ar = (15.8*18) * (15.8*18) * 1e-18; // GeV**2
-  //double ionization = material->getIonization();
-  double ionization = _siMat->getIonization();
 
-  StiElossCalculator * siElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
-								  ionization*ionization,
-								  _siMat->getA(),
-								  _siMat->getZ(),
-								  _siMat->getDensity());
-  StiPlanarShape *pShape;
-  for (unsigned int row=0; row<nRows; row++) 
-    {
+   _gasMat    = add(new StiMaterial("PixelAir", 7.3, 14.61, 0.001205, 30420.*0.001205, 7.3 * 12.e-9));
+   _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
+   _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
+
+
+   //Instantiate energy loss detector for si material
+   //const static double I2Ar = (15.8*18) * (15.8*18) * 1e-18; // GeV**2
+   //double ionization = material->getIonization();
+   double ionization = _siMat->getIonization();
+
+   StiElossCalculator *siElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
+         ionization * ionization,
+         _siMat->getA(),
+         _siMat->getZ(),
+         _siMat->getDensity());
+   StiPlanarShape *pShape;
+
+   for (unsigned int row = 0; row < nRows; row++) {
       pShape = new StiPlanarShape;
+
       if (!pShape) throw runtime_error("StiPixelDetectorBuilder::buildDetectors() - FATAL - pShape==0||ifcShape==0");
+
       sprintf(name, "Pixel/Layer_%d", row);
       pShape->setName(name);
-      pShape->setThickness(0.0280); //cm 
-      pShape->setHalfDepth( 20./2. );
+      pShape->setThickness(0.0280); //cm
+      pShape->setHalfDepth( 20. / 2. );
       pShape->setHalfWidth(1.0);
-      for(unsigned int sector = 0; sector<24; sector++)	
-	{      
-	  StiPlacement *pPlacement = new StiPlacement;
-	  pPlacement->setZcenter(0.);
-	  double phi = phiForPixelSector(sector) + psiForPixelSector(sector);
-	  double r = radiusForPixelSector(sector)* cos(psiForPixelSector(sector)) - 0.0040; // note 40 microns offset
-	  double dY = radiusForPixelSector(sector)*sin(psiForPixelSector(sector));
-	  /*printf(" sector: %g phi: %g radius: %g normal: %g dY: %g\n",sector
-	       ,phi*180/3.1415
-	       << " radius:"<<radiusForPixelSector(sector)
-	       << " normal r:"<<r
-	       << "     dY:"<<dY<<endl;*/
-	  pPlacement->setNormalRep(phi, r, dY); 
-	  pPlacement->setLayerRadius(r);
-	  pPlacement->setLayerAngle(phi);
-	  pPlacement->setRegion(StiPlacement::kMidRapidity);
-	  sprintf(name, "Pixel/Layer_%d/Ladder_%d", row, sector);
-	  StiDetector *pDetector = _detectorFactory->getInstance();
-	  pDetector->setName(name);
-	  pDetector->setIsOn(true);
-	  pDetector->setIsActive(new StiPixelIsActiveFunctor);
-	  pDetector->setIsContinuousMedium(true);
-	  pDetector->setIsDiscreteScatterer(false);
-	  pDetector->setMaterial(_siMat);
-	  pDetector->setGas(_gasMat);
-	  pDetector->setGroupId(kPxlId);
-	  pDetector->setShape(pShape);
-	  pDetector->setPlacement(pPlacement);
-	  pDetector->setHitErrorCalculator(StiPixelHitErrorCalculator::instance());
-	  pDetector->setElossCalculator(siElossCalculator);
-	  if (sector<18)
-	    {
-	      pDetector->setKey(1,1);
-	      pDetector->setKey(2,sector);
-	      add(1,sector,pDetector);
-	    }
-	  else
-	    {
-	      pDetector->setKey(1,0);
-	      pDetector->setKey(2,sector-18);
-	      add(0,(sector-18),pDetector);
-	    }
 
-	  //cout << "Setting detector: " << name << " with key values: "
-	  //     << pDetector->getKey(1) << " "  << pDetector->getKey(2) << endl;
-	}
-    }
-  LOG_INFO << " -I- Done" << endl;
+      for (unsigned int sector = 0; sector < 24; sector++) {
+         StiPlacement *pPlacement = new StiPlacement;
+         pPlacement->setZcenter(0.);
+         double phi = phiForPixelSector(sector) + psiForPixelSector(sector);
+         double r = radiusForPixelSector(sector) * cos(psiForPixelSector(sector)) - 0.0040; // note 40 microns offset
+         double dY = radiusForPixelSector(sector) * sin(psiForPixelSector(sector));
+         /*printf(" sector: %g phi: %g radius: %g normal: %g dY: %g\n",sector
+              ,phi*180/3.1415
+              << " radius:"<<radiusForPixelSector(sector)
+              << " normal r:"<<r
+              << "     dY:"<<dY<<endl;*/
+         pPlacement->setNormalRep(phi, r, dY);
+         pPlacement->setLayerRadius(r);
+         pPlacement->setLayerAngle(phi);
+         pPlacement->setRegion(StiPlacement::kMidRapidity);
+         sprintf(name, "Pixel/Layer_%d/Ladder_%d", row, sector);
+         StiDetector *pDetector = _detectorFactory->getInstance();
+         pDetector->setName(name);
+         pDetector->setIsOn(true);
+         pDetector->setIsActive(new StiPixelIsActiveFunctor);
+         pDetector->setIsContinuousMedium(true);
+         pDetector->setIsDiscreteScatterer(false);
+         pDetector->setMaterial(_siMat);
+         pDetector->setGas(_gasMat);
+         pDetector->setGroupId(kPxlId);
+         pDetector->setShape(pShape);
+         pDetector->setPlacement(pPlacement);
+         pDetector->setHitErrorCalculator(StiPixelHitErrorCalculator::instance());
+         pDetector->setElossCalculator(siElossCalculator);
+
+         if (sector < 18) {
+            pDetector->setKey(1, 1);
+            pDetector->setKey(2, sector);
+            add(1, sector, pDetector);
+         }
+         else {
+            pDetector->setKey(1, 0);
+            pDetector->setKey(2, sector - 18);
+            add(0, (sector - 18), pDetector);
+         }
+
+         //cout << "Setting detector: " << name << " with key values: "
+         //     << pDetector->getKey(1) << " "  << pDetector->getKey(2) << endl;
+      }
+   }
+
+   LOG_INFO << " -I- Done" << endl;
 }
 
-void StiPixelDetectorBuilder::useVMCGeometry() {
-  LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Use VMC geometry" << endm;
-  
-  unsigned int nSectors = 10;
-  unsigned int nLadders  = 4;
-  unsigned int nSensors = 10;
+void StiPixelDetectorBuilder::useVMCGeometry()
+{
+   LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Use VMC geometry" << endm;
 
-  THashList *PxlRot = new THashList(400,0);
-  PxlRot = gStPxlDbMaker->GetRotations();    
-  //check geometry tables
-  /*
-    for(int ii=0;ii<400;++ii){
-    TGeoHMatrix *combP=(TGeoHMatrix *)PxlRot->FindObject(Form("R%03i",ii+1));
-    if(combP){
-    combP->Prnt();
-    }
-    }
-  */
-  SetCurrentDetectorBuilder(this);
-  
-  const VolumeMap_t PxlVolumes[] = 
-    { 
+   unsigned int nSectors = 10;
+   unsigned int nLadders  = 4;
+   unsigned int nSensors = 10;
+
+   THashList *PxlRot = new THashList(400, 0);
+   PxlRot = gStPxlDbMaker->GetRotations();
+   //check geometry tables
+   /*
+     for(int ii=0;ii<400;++ii){
+     TGeoHMatrix *combP=(TGeoHMatrix *)PxlRot->FindObject(Form("R%03i",ii+1));
+     if(combP){
+     combP->Prnt();
+     }
+     }
+   */
+   SetCurrentDetectorBuilder(this);
+
+   const VolumeMap_t PxlVolumes[] = {
       /*
       {"GLUA","Glu volume",                 "HALL_1/CAVE_1/TpcRefSys_1","",""},
       {"GLUB","Glu volume",                 "HALL_1/CAVE_1/TpcRefSys_1","",""},
@@ -247,206 +252,228 @@ void StiPixelDetectorBuilder::useVMCGeometry() {
       {"PLAC","Active silicon volume",      "HALL_1/CAVE_1/TpcRefSys_1","",""}
       */
       //average weight of a ladder
-      {"PXLA","PXL LADDER",                 "HALL_1/CAVE_1/TpcRefSys_1","",""}
-    };
-  
-  // Get Materials
+      {"PXLA", "PXL LADDER",                 "HALL_1/CAVE_1/TpcRefSys_1", "", ""}
+   };
 
-  struct Material_t {
-    const Char_t *name;
-    StiMaterial    **p;
-  };
-  
-  _gasMat    = add(new StiMaterial("PixelAir",7.3,   14.61,     0.001205, 30420.*0.001205, 7.3*12.e-9));
-  _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
-  _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
-  
-  Material_t map[] = {
-    {"AIR", &_gasMat},
-    {"SILICON", &_siMat},
-    {"SILICON", &_hybridMat} 
-  };
-  Bool_t  _TpcRefSys_1 = kFALSE;
-  if (gGeoManager->GetVolume("TpcRefSys_1")) _TpcRefSys_1 = kTRUE;
-  Int_t M = sizeof(map)/sizeof(Material_t);
-  for (Int_t i = 0; i < M; i++) 
-    {
-      const TGeoMaterial *mat =  gGeoManager->GetMaterial(map[i].name); 
+   // Get Materials
+
+   struct Material_t {
+      const Char_t *name;
+      StiMaterial    **p;
+   };
+
+   _gasMat    = add(new StiMaterial("PixelAir", 7.3,   14.61,     0.001205, 30420.*0.001205, 7.3 * 12.e-9));
+   _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
+   _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
+
+   Material_t map[] = {
+      {"AIR", &_gasMat},
+      {"SILICON", &_siMat},
+      {"SILICON", &_hybridMat}
+   };
+   Bool_t  _TpcRefSys_1 = kFALSE;
+
+   if (gGeoManager->GetVolume("TpcRefSys_1")) _TpcRefSys_1 = kTRUE;
+
+   Int_t M = sizeof(map) / sizeof(Material_t);
+
+   for (Int_t i = 0; i < M; i++) {
+      const TGeoMaterial *mat =  gGeoManager->GetMaterial(map[i].name);
+
       if (! mat) continue;
+
       Double_t PotI = StiVMCToolKit::GetPotI(mat);
       *map[i].p = add(new StiMaterial(mat->GetName(),
-				      mat->GetZ(),
-				      mat->GetA(),
-				      mat->GetDensity(),
-				      mat->GetDensity()*mat->GetRadLen(),
-				      PotI));
-    }
-  double ionization = _siMat->getIonization();
-  
-  StiElossCalculator * ElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
-								ionization*ionization,
-								_siMat->getA(),
-								_siMat->getZ(),
-								_siMat->getDensity());
+                                      mat->GetZ(),
+                                      mat->GetA(),
+                                      mat->GetDensity(),
+                                      mat->GetDensity()*mat->GetRadLen(),
+                                      PotI));
+   }
 
-  for(UInt_t ii=0;ii<nSectors;++ii){
-    for(UInt_t jj=0;jj<nLadders;++jj){
-      for(UInt_t kk=0;kk<nSensors;kk++){
-	if(ii==1 || ii==3 || ii==6){
-	  //for run 13, only sector 2,4,7
-	  int matPix=0;
-	  matPix=(ii)*40+(jj)*10+(kk+1);
-	  LOG_DEBUG <<" ii/jj/kk/matPix : " << ii<<" "<<" " << jj <<" " << kk << " " << matPix << endm;
-	  if(kk!=0) continue;
-	  //we place the ladder as a whole
+   double ionization = _siMat->getIonization();
+
+   StiElossCalculator *ElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
+         ionization * ionization,
+         _siMat->getA(),
+         _siMat->getZ(),
+         _siMat->getDensity());
+
+   for (UInt_t ii = 0; ii < nSectors; ++ii) {
+      for (UInt_t jj = 0; jj < nLadders; ++jj) {
+         for (UInt_t kk = 0; kk < nSensors; kk++) {
+            if (ii == 1 || ii == 3 || ii == 6) {
+               //for run 13, only sector 2,4,7
+               int matPix = 0;
+               matPix = (ii) * 40 + (jj) * 10 + (kk + 1);
+               LOG_DEBUG << " ii/jj/kk/matPix : " << ii << " " << " " << jj << " " << kk << " " << matPix << endm;
+
+               if (kk != 0) continue;
+
+               //we place the ladder as a whole
 #if 0
-	  TString path(PxlVolumes[7].path);
-	  //LOG_DEBUG << " path : " << path << endm;
-	  if (! _TpcRefSys_1) path.ReplaceAll("/TpcRefSys_1","");
-	  gGeoManager->cd(path); // retrieve info of PLAC volume
-	  TGeoNode *nodeT = gGeoManager->GetCurrentNode();
-	  // Extract volume geometry for this node
-	  TGeoBBox *box = (TGeoBBox *) nodeT->GetVolume()->GetShape();
-#else
-	  TGeoVolume *vol = gGeoManager->GetVolume("PLAC");
-	  if (! vol) continue;
-	  TGeoBBox *box = (TGeoBBox *) vol->GetShape();
-#endif
-	  char name[50];
-	  sprintf(name, "Pixel/Sector_%d/Ladder_%d/Sensor_%d", ii+1,jj+1,kk+1);
-	  LOG_DEBUG <<" weigh/daughters/Material/A/Z : " << vol->Weight() <<" " <<vol->GetNdaughters() <<" " << vol->GetMaterial()->GetName() <<" " << vol->GetMaterial()->GetA() << " " << vol->GetMaterial()->GetZ() << endm;
-	  LOG_DEBUG <<" DZ/DY/DX : " << box->GetDZ() 
-		    <<" " << box->GetDY()
-		    <<" " << box->GetDX()
-		    <<" " << endm;
-	  
-	  //PLAC shape : DX =.961cm ; DY = .002cm ; DZ = .94 cm
-	  
-	  StiShape *sh  = new StiPlanarShape(name,
-					     10*box->GetDZ(),          
-					     box->GetDY(),           
-					     box->GetDX());         
-	  
-	  add(sh);
-	  TGeoHMatrix *combP=(TGeoHMatrix *)PxlRot->FindObject(Form("R%03i",matPix));
-	  if(combP){
-	    combP->Print();
-	  }
+               TString path(PxlVolumes[7].path);
 
-	  Double_t     *xyz    = combP->GetTranslation();
-	  Double_t     *rot    = combP->GetRotationMatrix();
-	  StThreeVectorD centerVector(xyz[0],xyz[1],xyz[2]);
-	  StThreeVectorD normalVector(rot[1],rot[4],rot[7]);
-	  
-	  Double_t prod = centerVector*normalVector;
-	  if (prod < 0) normalVector *= -1;
-	  // Normalize normal vector, just in case....
-	  
-	  normalVector /= normalVector.magnitude();
-	  
-	  // Volume positioning
-	  StiPlacement *pPlacement = new StiPlacement;
-	  Double_t phi  = centerVector.phi();
-	  Double_t phiD = normalVector.phi();
-	  Double_t r    = centerVector.perp();
-	  pPlacement->setZcenter(0);
-	  pPlacement->setLayerRadius(r); 
-	  
-	  pPlacement->setLayerAngle(phi);
-	  pPlacement->setRegion(StiPlacement::kMidRapidity);
-	  pPlacement->setNormalRep(phiD, r*TMath::Cos(phi-phiD), r*TMath::Sin(phi-phiD)); 
-	  assert(pPlacement);
-	  
-	  //Build final detector object
-	  
-	  StiDetector *p =getDetectorFactory()->getInstance();
-	  if ( !p ) 
-	    {
-	      LOG_INFO <<"StiPixelDetectorBuilder::AverageVolume() -E- StiDetector pointer invalid." <<endm;
-	      return;
-	    }
-	  //char name[50];
-	  //sprintf(name, "Pixel/Sector_%d/Ladder_%d/Sensor_%d", ii,jj,kk);
-	  p->setName(name);
-	  p->setIsOn(kTRUE);
-	  //if (ActiveVolume) {
-	  //LOG_DEBUG << " current node : " << name << " is set active" <<endm;
-	  p->setIsActive(new StiPixelIsActiveFunctor);
-	  //}
-	  //else {
-	  //LOG_DEBUG << " current node : " << name << " is set inactive" <<endm;
-	  //p->setIsActive(new StiNeverActiveFunctor);
-	  //}
-	  //if(nameP.Contains("PXSI")) {layer=layer+10;}
-	  
-	  p->setIsContinuousMedium(false);
-	  p->setIsDiscreteScatterer(true);
-	  p->setShape(sh);
-	  p->setPlacement(pPlacement);
-	  p->setGas(GetCurrentDetectorBuilder()->getGasMat());
-	  if(!p->getGas()) LOG_INFO <<"gas not there!"<<endm;
-	  p->setMaterial(_siMat);
-	  p->setElossCalculator(ElossCalculator);
-	  p->setHitErrorCalculator(StiPixelHitErrorCalculator::instance());
-	  
-	  Int_t ROW    = 0;
-	  Int_t SECTOR = 0;
-	  
-	  /* numbering is : 
-	     ladder = 0-1- ...9 for inner layer --> ROW =0
-	     ladder = 0-1-2 for sector 0 of outer layer, then 3-4-5 for the second sector until 29 for the last sectro
-	     ladder=4 is the inner ladder
-	  */
-	  // update 05-15 : inner ladder is ladder 1
-	  if(jj==0)
-	    {
-	      ROW =0 ;
-	      SECTOR = ii;
-	    }
-	  else {
-	    ROW = 1;
-	    SECTOR = (ii)*3 + (jj - 1);
-	  }
-	  p->setKey(1, ROW);
-	  p->setKey(2, SECTOR);
-	  add(ROW,SECTOR, p);
-	  
-	  // Whole bunch of debugging information
-	  
-	  Float_t rad2deg = 180.0/3.1415927;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:Name               = " << p->getName()                               << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalRefAngle    = " << pPlacement->getNormalRefAngle()*rad2deg    << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalRadius      = " << pPlacement->getNormalRadius()              << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalYoffset     = " << pPlacement->getNormalYoffset()             << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterRefAngle    = " << pPlacement->getCenterRefAngle()*rad2deg    << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterRadius      = " << pPlacement->getCenterRadius()              << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterOrientation = " << pPlacement->getCenterOrientation()*rad2deg << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:LayerRadius       = " << pPlacement->getLayerRadius()               << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:LayerAngle        = " << pPlacement->getLayerAngle()*rad2deg        << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pPlacement:Zcenter           = " << pPlacement->getZcenter()                   << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:sector             = " << ii+1                                       << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:Ladder             = " << jj+1                                       << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:sensor             = " << kk+1                                       << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:row/sector (ITTF)  = " << ROW <<" / " << SECTOR                      << endm;
-	  LOG_DEBUG << "===>NEW:PIXEL:pDetector:Active?            = " << p->isActive()                              << endm;       
-	  }
+               //LOG_DEBUG << " path : " << path << endm;
+               if (! _TpcRefSys_1) path.ReplaceAll("/TpcRefSys_1", "");
+
+               gGeoManager->cd(path); // retrieve info of PLAC volume
+               TGeoNode *nodeT = gGeoManager->GetCurrentNode();
+               // Extract volume geometry for this node
+               TGeoBBox *box = (TGeoBBox *) nodeT->GetVolume()->GetShape();
+#else
+               TGeoVolume *vol = gGeoManager->GetVolume("PLAC");
+
+               if (! vol) continue;
+
+               TGeoBBox *box = (TGeoBBox *) vol->GetShape();
+#endif
+               char name[50];
+               sprintf(name, "Pixel/Sector_%d/Ladder_%d/Sensor_%d", ii + 1, jj + 1, kk + 1);
+               LOG_DEBUG << " weigh/daughters/Material/A/Z : " << vol->Weight() << " " << vol->GetNdaughters() << " " << vol->GetMaterial()->GetName() << " " << vol->GetMaterial()->GetA() << " " << vol->GetMaterial()->GetZ() << endm;
+               LOG_DEBUG << " DZ/DY/DX : " << box->GetDZ()
+                         << " " << box->GetDY()
+                         << " " << box->GetDX()
+                         << " " << endm;
+
+               //PLAC shape : DX =.961cm ; DY = .002cm ; DZ = .94 cm
+
+               StiShape *sh  = new StiPlanarShape(name,
+                                                  10 * box->GetDZ(),
+                                                  box->GetDY(),
+                                                  box->GetDX());
+
+               add(sh);
+               TGeoHMatrix *combP = (TGeoHMatrix *)PxlRot->FindObject(Form("R%03i", matPix));
+
+               if (combP) {
+                  combP->Print();
+               }
+
+               Double_t     *xyz    = combP->GetTranslation();
+               Double_t     *rot    = combP->GetRotationMatrix();
+               StThreeVectorD centerVector(xyz[0], xyz[1], xyz[2]);
+               StThreeVectorD normalVector(rot[1], rot[4], rot[7]);
+
+               Double_t prod = centerVector * normalVector;
+
+               if (prod < 0) normalVector *= -1;
+
+               // Normalize normal vector, just in case....
+
+               normalVector /= normalVector.magnitude();
+
+               // Volume positioning
+               StiPlacement *pPlacement = new StiPlacement;
+               Double_t phi  = centerVector.phi();
+               Double_t phiD = normalVector.phi();
+               Double_t r    = centerVector.perp();
+               pPlacement->setZcenter(0);
+               pPlacement->setLayerRadius(r);
+
+               pPlacement->setLayerAngle(phi);
+               pPlacement->setRegion(StiPlacement::kMidRapidity);
+               pPlacement->setNormalRep(phiD, r * TMath::Cos(phi - phiD), r * TMath::Sin(phi - phiD));
+               assert(pPlacement);
+
+               //Build final detector object
+
+               StiDetector *p = getDetectorFactory()->getInstance();
+
+               if ( !p ) {
+                  LOG_INFO << "StiPixelDetectorBuilder::AverageVolume() -E- StiDetector pointer invalid." << endm;
+                  return;
+               }
+
+               //char name[50];
+               //sprintf(name, "Pixel/Sector_%d/Ladder_%d/Sensor_%d", ii,jj,kk);
+               p->setName(name);
+               p->setIsOn(kTRUE);
+               //if (ActiveVolume) {
+               //LOG_DEBUG << " current node : " << name << " is set active" <<endm;
+               p->setIsActive(new StiPixelIsActiveFunctor);
+               //}
+               //else {
+               //LOG_DEBUG << " current node : " << name << " is set inactive" <<endm;
+               //p->setIsActive(new StiNeverActiveFunctor);
+               //}
+               //if(nameP.Contains("PXSI")) {layer=layer+10;}
+
+               p->setIsContinuousMedium(false);
+               p->setIsDiscreteScatterer(true);
+               p->setShape(sh);
+               p->setPlacement(pPlacement);
+               p->setGas(GetCurrentDetectorBuilder()->getGasMat());
+
+               if (!p->getGas()) LOG_INFO << "gas not there!" << endm;
+
+               p->setMaterial(_siMat);
+               p->setElossCalculator(ElossCalculator);
+               p->setHitErrorCalculator(StiPixelHitErrorCalculator::instance());
+
+               Int_t ROW    = 0;
+               Int_t SECTOR = 0;
+
+               /* numbering is :
+                  ladder = 0-1- ...9 for inner layer --> ROW =0
+                  ladder = 0-1-2 for sector 0 of outer layer, then 3-4-5 for the second sector until 29 for the last sectro
+                  ladder=4 is the inner ladder
+               */
+               // update 05-15 : inner ladder is ladder 1
+               if (jj == 0) {
+                  ROW = 0 ;
+                  SECTOR = ii;
+               }
+               else {
+                  ROW = 1;
+                  SECTOR = (ii) * 3 + (jj - 1);
+               }
+
+               p->setKey(1, ROW);
+               p->setKey(2, SECTOR);
+               add(ROW, SECTOR, p);
+
+               // Whole bunch of debugging information
+
+               Float_t rad2deg = 180.0 / 3.1415927;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:Name               = " << p->getName()                               << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalRefAngle    = " << pPlacement->getNormalRefAngle()*rad2deg    << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalRadius      = " << pPlacement->getNormalRadius()              << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:NormalYoffset     = " << pPlacement->getNormalYoffset()             << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterRefAngle    = " << pPlacement->getCenterRefAngle()*rad2deg    << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterRadius      = " << pPlacement->getCenterRadius()              << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:CenterOrientation = " << pPlacement->getCenterOrientation()*rad2deg << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:LayerRadius       = " << pPlacement->getLayerRadius()               << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:LayerAngle        = " << pPlacement->getLayerAngle()*rad2deg        << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pPlacement:Zcenter           = " << pPlacement->getZcenter()                   << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:sector             = " << ii + 1                                       << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:Ladder             = " << jj + 1                                       << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:sensor             = " << kk + 1                                       << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:row/sector (ITTF)  = " << ROW << " / " << SECTOR                      << endm;
+               LOG_DEBUG << "===>NEW:PIXEL:pDetector:Active?            = " << p->isActive()                              << endm;
+            }
+         }
       }
-    }      
-  }
-  
-  Int_t NoPxlVols = sizeof(PxlVolumes)/sizeof(VolumeMap_t);
-  LOG_DEBUG <<" # of volume(s) : " << NoPxlVols << endm;
-  gGeoManager->RestoreMasterVolume(); 
-  gGeoManager->CdTop();
-  for (Int_t i = 0; i < NoPxlVols; i++) {
-    TString path(PxlVolumes[i].path);
-    if (! _TpcRefSys_1) path.ReplaceAll("/TpcRefSys_1","");
-    gGeoManager->cd(path); 
-    TGeoNode *nodeT = gGeoManager->GetCurrentNode();
-    if (! nodeT) continue;;
-    LOG_DEBUG <<" current node : " << i <<"/" << NoPxlVols <<" path is : " << PxlVolumes[i].name << endm;
-    LOG_DEBUG <<" # of daughters : " << nodeT->GetNdaughters() <<" weight : " << nodeT->GetVolume()->Weight() << endm;
-    StiVMCToolKit::LoopOverNodes(nodeT, path, PxlVolumes[i].name, MakeAverageVolume);
-  } 
-  
+   }
+
+   Int_t NoPxlVols = sizeof(PxlVolumes) / sizeof(VolumeMap_t);
+   LOG_DEBUG << " # of volume(s) : " << NoPxlVols << endm;
+   gGeoManager->RestoreMasterVolume();
+   gGeoManager->CdTop();
+
+   for (Int_t i = 0; i < NoPxlVols; i++) {
+      TString path(PxlVolumes[i].path);
+
+      if (! _TpcRefSys_1) path.ReplaceAll("/TpcRefSys_1", "");
+
+      gGeoManager->cd(path);
+      TGeoNode *nodeT = gGeoManager->GetCurrentNode();
+
+      if (! nodeT) continue;;
+
+      LOG_DEBUG << " current node : " << i << "/" << NoPxlVols << " path is : " << PxlVolumes[i].name << endm;
+      LOG_DEBUG << " # of daughters : " << nodeT->GetNdaughters() << " weight : " << nodeT->GetVolume()->Weight() << endm;
+      StiVMCToolKit::LoopOverNodes(nodeT, path, PxlVolumes[i].name, MakeAverageVolume);
+   }
+
 }
