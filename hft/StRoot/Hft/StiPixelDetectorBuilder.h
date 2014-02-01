@@ -21,9 +21,9 @@ public:
    double psiForPixelSector(unsigned int iSector) const;
 
 protected:
-   StiMaterial *_fcMaterial;
-   StiMaterial *_siMat;
-   StiMaterial *_hybridMat;
+
+   StiMaterial *mSiMaterial;
+   StiMaterial *mHybridMaterial;
 };
 
 inline double StiPixelDetectorBuilder::phiForSector(unsigned int sector) const

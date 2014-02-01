@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.19  2014/02/01 02:49:12  smirnovd
+ * Renamed class member variables to be consistent with STAR styles
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.18  2014/02/01 02:49:03  smirnovd
  * Switched to already defined constants
  *
@@ -166,19 +171,19 @@ void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
    if (StiVMCToolKit::GetVMC()) {useVMCGeometry(); return;}
 
    _gasMat    = add(new StiMaterial("PixelAir", 7.3, 14.61, 0.001205, 30420.*0.001205, 7.3 * 12.e-9));
-   _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
-   _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
+   mSiMaterial = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
+   mHybridMaterial = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
 
    //Instantiate energy loss detector for si material
    //const static double I2Ar = (15.8*18) * (15.8*18) * 1e-18; // GeV**2
    //double ionization = material->getIonization();
-   double ionization = _siMat->getIonization();
+   double ionization = mSiMaterial->getIonization();
 
-   StiElossCalculator *siElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
+   StiElossCalculator *siElossCalculator = new StiElossCalculator(mSiMaterial->getZOverA(),
          ionization * ionization,
-         _siMat->getA(),
-         _siMat->getZ(),
-         _siMat->getDensity());
+         mSiMaterial->getA(),
+         mSiMaterial->getZ(),
+         mSiMaterial->getDensity());
    StiPlanarShape *pShape;
 
    for (unsigned int row = 0; row < nRows; row++) {
@@ -208,13 +213,14 @@ void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
          pPlacement->setLayerAngle(phi);
          pPlacement->setRegion(StiPlacement::kMidRapidity);
          sprintf(name, "Pixel/Layer_%d/Ladder_%d", row, sector);
+
          StiDetector *pDetector = _detectorFactory->getInstance();
          pDetector->setName(name);
          pDetector->setIsOn(true);
          pDetector->setIsActive(new StiPixelIsActiveFunctor);
          pDetector->setIsContinuousMedium(true);
          pDetector->setIsDiscreteScatterer(false);
-         pDetector->setMaterial(_siMat);
+         pDetector->setMaterial(mSiMaterial);
          pDetector->setGas(_gasMat);
          pDetector->setGroupId(kPxlId);
          pDetector->setShape(pShape);
@@ -285,13 +291,13 @@ void StiPixelDetectorBuilder::useVMCGeometry()
    };
 
    _gasMat    = add(new StiMaterial("PixelAir", 7.3,   14.61,     0.001205, 30420.*0.001205, 7.3 * 12.e-9));
-   _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
-   _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
+   mSiMaterial = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
+   mHybridMaterial = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,           14.*12.*1e-9) );
 
    Material_t map[] = {
       {"AIR", &_gasMat},
-      {"SILICON", &_siMat},
-      {"SILICON", &_hybridMat}
+      {"SILICON", &mSiMaterial},
+      {"SILICON", &mHybridMaterial}
    };
    Bool_t  _TpcRefSys_1 = kFALSE;
 
@@ -313,13 +319,13 @@ void StiPixelDetectorBuilder::useVMCGeometry()
                                       PotI));
    }
 
-   double ionization = _siMat->getIonization();
+   double ionization = mSiMaterial->getIonization();
 
-   StiElossCalculator *ElossCalculator = new StiElossCalculator(_siMat->getZOverA(),
+   StiElossCalculator *ElossCalculator = new StiElossCalculator(mSiMaterial->getZOverA(),
          ionization * ionization,
-         _siMat->getA(),
-         _siMat->getZ(),
-         _siMat->getDensity());
+         mSiMaterial->getA(),
+         mSiMaterial->getZ(),
+         mSiMaterial->getDensity());
 
    for (UInt_t ii = 0; ii < nPxlSectors; ++ii) {
       for (UInt_t jj = 0; jj < nPxlLaddersPerSector; ++jj) {
@@ -352,7 +358,9 @@ void StiPixelDetectorBuilder::useVMCGeometry()
 #endif
                char name[50];
                sprintf(name, "Pixel/Sector_%d/Ladder_%d/Sensor_%d", ii + 1, jj + 1, kk + 1);
-               LOG_DEBUG << " weigh/daughters/Material/A/Z : " << vol->Weight() << " " << vol->GetNdaughters() << " " << vol->GetMaterial()->GetName() << " " << vol->GetMaterial()->GetA() << " " << vol->GetMaterial()->GetZ() << endm;
+               LOG_DEBUG << " weigh/daughters/Material/A/Z : " << vol->Weight() << " "
+                         << vol->GetNdaughters() << " " << vol->GetMaterial()->GetName() << " "
+                         << vol->GetMaterial()->GetA() << " " << vol->GetMaterial()->GetZ() << endm;
                LOG_DEBUG << " DZ/DY/DX : " << box->GetDZ()
                          << " " << box->GetDY()
                          << " " << box->GetDX()
@@ -367,10 +375,8 @@ void StiPixelDetectorBuilder::useVMCGeometry()
 
                add(sh);
                TGeoHMatrix *combP = (TGeoHMatrix *)PxlRot->FindObject(Form("R%03i", matPix));
-
-               if (combP) {
-                  combP->Print();
-               }
+               assert(combP);
+               combP->Print();
 
                Double_t     *xyz    = combP->GetTranslation();
                Double_t     *rot    = combP->GetRotationMatrix();
@@ -396,7 +402,6 @@ void StiPixelDetectorBuilder::useVMCGeometry()
                pPlacement->setLayerAngle(phi);
                pPlacement->setRegion(StiPlacement::kMidRapidity);
                pPlacement->setNormalRep(phiD, r * TMath::Cos(phi - phiD), r * TMath::Sin(phi - phiD));
-               assert(pPlacement);
 
                //Build final detector object
 
@@ -429,7 +434,7 @@ void StiPixelDetectorBuilder::useVMCGeometry()
 
                if (!p->getGas()) LOG_INFO << "gas not there!" << endm;
 
-               p->setMaterial(_siMat);
+               p->setMaterial(mSiMaterial);
                p->setElossCalculator(ElossCalculator);
                p->setHitErrorCalculator(StiPixelHitErrorCalculator::instance());
 
