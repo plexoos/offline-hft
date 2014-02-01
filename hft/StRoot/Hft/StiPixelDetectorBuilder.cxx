@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.17  2014/02/01 02:48:56  smirnovd
+ * Minor stylistic clean-up
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.16  2014/02/01 02:48:47  smirnovd
  * Remove pointless empty destructor
  *
@@ -130,8 +135,9 @@
 #include "StEvent.h"
 #include "StEventTypes.h"
 #include "StPxlDbMaker/StPxlDbMaker.h"
-StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active,
-      const string &inputFile)
+
+
+StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active, const string &inputFile)
    : StiDetectorBuilder("Pixel", active, inputFile)
 {
    //Parameterized hit error calculator.  Given a track (dip, cross, pt, etc)
@@ -143,10 +149,8 @@ StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active,
 /// Build all detector components of the Pixel detector.
 void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
 {
-
    char name[50];
    LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Started" << endm;
-
 
    unsigned int nRows = 2;
 
@@ -155,11 +159,9 @@ void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
 
    if (StiVMCToolKit::GetVMC()) {useVMCGeometry(); return;}
 
-
    _gasMat    = add(new StiMaterial("PixelAir", 7.3, 14.61, 0.001205, 30420.*0.001205, 7.3 * 12.e-9));
    _siMat     = add(new StiMaterial("PixelSi",  14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
    _hybridMat = add(new StiMaterial("PixelHyb", 14.,  28.0855,   2.33,     21.82,   14.*12.*1e-9) );
-
 
    //Instantiate energy loss detector for si material
    //const static double I2Ar = (15.8*18) * (15.8*18) * 1e-18; // GeV**2
@@ -232,6 +234,7 @@ void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
 
    LOG_INFO << " -I- Done" << endl;
 }
+
 
 void StiPixelDetectorBuilder::useVMCGeometry()
 {
@@ -492,5 +495,4 @@ void StiPixelDetectorBuilder::useVMCGeometry()
       LOG_DEBUG << " # of daughters : " << nodeT->GetNdaughters() << " weight : " << nodeT->GetVolume()->Weight() << endm;
       StiVMCToolKit::LoopOverNodes(nodeT, path, PxlVolumes[i].name, MakeAverageVolume);
    }
-
 }

@@ -1,14 +1,16 @@
 #ifndef StiPixelDetectorBuilder_H
 #define StiPixelDetectorBuilder_H
+
 #include "Sti/StiDetectorBuilder.h"
 #include "StDetectorDbMaker/StiHitErrorCalculator.h"
+
+
 class StiPixelDetectorBuilder : public StiDetectorBuilder
 {
 public:
    StiPixelDetectorBuilder(bool active, const string &inputFile);
    virtual void buildDetectors(StMaker &source);
    double phiForSector(unsigned int iSector) const;
-
 
    void useVMCGeometry();
    //void AverageVolume(TGeoPhysicalNode *nodeP);
