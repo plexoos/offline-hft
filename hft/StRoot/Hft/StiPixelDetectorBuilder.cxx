@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.15  2014/02/01 02:48:39  smirnovd
+ * For the time being ignore undefined variable gStPxlDbMaker
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.14  2014/02/01 02:48:30  smirnovd
  * Added ROOT header to get rid of compiler error
  *
@@ -234,7 +239,10 @@ void StiPixelDetectorBuilder::useVMCGeometry()
    unsigned int nSensors = 10;
 
    THashList *PxlRot = new THashList(400, 0);
-   PxlRot = gStPxlDbMaker->GetRotations();
+   // XXX:ds At the moment gStPxlDbMaker is not defined in offline/hft/StRoot/StPxlDbMaker or
+   // StRoot/
+   //PxlRot = gStPxlDbMaker->GetRotations();
+
    //check geometry tables
    /*
      for(int ii=0;ii<400;++ii){
