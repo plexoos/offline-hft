@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.19  2014/02/01 19:03:36  smirnovd
+ * Common index for composite sensor id
+ *
  * Revision 1.18  2014/02/01 19:03:16  smirnovd
  * Fixed default parameter bug
  *
@@ -146,16 +149,18 @@ void StPxlMonMaker::bookHists()
 
             if (i != 1 && i != 3 && i != 6) continue;
 
+            int sensorId = i * 40 + j * 10 + k;
+
             char ename[50];
             char etitle[100];
 
             sprintf(ename, "rawHit_rowvscolumn_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
             sprintf(etitle, "Raw hit map: Sector %d, Ladder %d, Sensor %d; Row Id; Column Id;", i+1, j+1, k+1);
-            m_rawHit_rowvscolumn[i * 40 + j * 10 + k] = new TH2F(ename, etitle, nRowBins, 0, nRowBins*mNumPixelsPerBin, nColBins, 0, nColBins*mNumPixelsPerBin);
+            m_rawHit_rowvscolumn[sensorId] = new TH2F(ename, etitle, nRowBins, 0, nRowBins*mNumPixelsPerBin, nColBins, 0, nColBins*mNumPixelsPerBin);
 
             sprintf(ename, "nRawHits_EventId_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
             sprintf(etitle, "rawHits vs. Event Id: Sector %d Ladder %d Sensor %d; Event Id (Time); Num. of Raw Hits", i+1, j+1, k+1);
-            m_nRawHits_EventId[i * 40 + j * 10 + k] = new TProfile(ename, etitle, 10000, 0, 10000);
+            m_nRawHits_EventId[sensorId] = new TProfile(ename, etitle, 10000, 0, 10000);
          }
       }
    }
@@ -213,6 +218,8 @@ void StPxlMonMaker::fillHists()
             {
                if (i != 1 && i != 3 && i != 6) continue;
 
+               int sensorId = i * 40 + j * 10 + k;
+
                StPxlSensorHitCollection *sensorHitCollection = ladderHitCollection->sensor(k);
                for (unsigned int l = 0; l < sensorHitCollection->hits().size(); l++)
                {
@@ -232,11 +239,11 @@ void StPxlMonMaker::fillHists()
                   m_globalz->Fill((float)P.z());
                   if (j == 0) m_globalphi_z_inner->Fill(P.phi(), (float)P.z());
                   if (j == 1 || j == 2 || j == 3) m_globalphi_z_outer->Fill(P.phi(), (float)P.z());
-                  m_hitnRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, (int)hit->nRawHits());
+                  m_hitnRawHits_sensorID->Fill(sensorId + 1, (int)hit->nRawHits());
                   m_hitnRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, (int)hit->nRawHits());
                }
 
-               m_nHits_sensorID->Fill(i * 40 + j * 10 + k + 1, sensorHitCollection->hits().size());
+               m_nHits_sensorID->Fill(sensorId + 1, sensorHitCollection->hits().size());
                m_nHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, sensorHitCollection->hits().size());
                if (j == 0) hitnumber_inner += sensorHitCollection->hits().size();
                if (j == 1 || j == 2 || j == 3) hitnumber_outer += sensorHitCollection->hits().size();
@@ -271,17 +278,20 @@ void StPxlMonMaker::fillHists()
          {
             if (i != 1 && i != 3 && i != 6) continue;
 
+            int sensorId = i * 40 + j * 10 + k;
+
             for (int l = 0; l < pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1); l++) {
                const StPxlRawHit *rawHit = pxlRawHitCollection->rawHit(i + 1, j + 1, k + 1, l);
                if (mNtupleWrite) {
                   m_rawHitNtuple->Fill((float)i + 1, (float)j + 1, (float)k + 1, (float)rawHit->row(), (float)rawHit->column(), (float)rawHit->idTruth(), (float) pEvent->id());
                }
-               m_rawHit_rowvscolumn[i * 40 + j * 10 + k]->Fill(rawHit->column(), rawHit->row());
+               m_rawHit_rowvscolumn[sensorId]->Fill(rawHit->column(), rawHit->row());
             }
 
-            m_nRawHits_sensorID->Fill(i * 40 + j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            m_nRawHits_sensorID->Fill(sensorId + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
             m_nRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
-            m_nRawHits_EventId[i * 40 + j * 10 + k]->Fill((int) pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            m_nRawHits_EventId[sensorId]->Fill((int) pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+
             if (j == 0) rawhitnumber_inner += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
             if (j == 1 || j == 2 || j == 3) rawhitnumber_outer += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
          }
@@ -348,10 +358,12 @@ void StPxlMonMaker::writeHists()
       for (int j = 0; j < 4; j++) {
          for (int k = 0; k < 10; k++) {
 
-            if (i == 1 || i == 3 || i == 6) {
-               m_f1->WriteTObject(m_rawHit_rowvscolumn[i * 40 + j * 10 + k]);
-               m_f1->WriteTObject(m_nRawHits_EventId[i * 40 + j * 10 + k]);
-               //hit_localZ_X[i*40+j*10+k]->Write();
+            if (i == 1 || i == 3 || i == 6)
+            {
+               int sensorId = i * 40 + j * 10 + k;
+
+               m_f1->WriteTObject(m_rawHit_rowvscolumn[sensorId]);
+               m_f1->WriteTObject(m_nRawHits_EventId[sensorId]);
             }
          }
       }
