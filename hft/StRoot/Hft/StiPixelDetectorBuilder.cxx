@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.14  2014/02/01 02:48:30  smirnovd
+ * Added ROOT header to get rid of compiler error
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.13  2014/02/01 02:48:07  smirnovd
  * Improved style format by running astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
  *
@@ -96,6 +101,8 @@
 
 #include <stdio.h>
 #include <stdexcept>
+#include "TDataSetIter.h"
+#include "THashList.h"
 #include "Sti/StiPlanarShape.h"
 #include "Sti/StiCylindricalShape.h"
 #include "Sti/StiMaterial.h"
@@ -109,7 +116,6 @@
 #include "StiPixelDetectorBuilder.h"
 #include "StiPixelIsActiveFunctor.h"
 #include "StDetectorDbMaker/StiPixelHitErrorCalculator.h"
-#include "TDataSetIter.h"
 #include "tables/St_HitError_Table.h"
 #include "StEvent.h"
 #include "StEventTypes.h"
