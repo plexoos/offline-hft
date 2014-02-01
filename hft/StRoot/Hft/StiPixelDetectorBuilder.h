@@ -1,8 +1,7 @@
 #ifndef StiPixelDetectorBuilder_H
 #define StiPixelDetectorBuilder_H
 #include "Sti/StiDetectorBuilder.h"
-#include "Sti/StiHitErrorCalculator.h"
-
+#include "StDetectorDbMaker/StiHitErrorCalculator.h"
 class StiPixelDetectorBuilder : public StiDetectorBuilder
 {
 public:
@@ -11,15 +10,19 @@ public:
     virtual void buildDetectors(StMaker&source);
     double phiForSector(unsigned int iSector) const;
 
+
+    void useVMCGeometry();
+    //void AverageVolume(TGeoPhysicalNode *nodeP);
+
     /// returns the azimuthal angle [-pi, pi) for tpc sector [1-24]
     double phiForPixelSector(unsigned int iSector) const;
     double radiusForPixelSector(unsigned int iSector) const;
     double psiForPixelSector(unsigned int iSector) const;
 
  protected:
-    StiMaterial * _gas;
     StiMaterial * _fcMaterial;
-    StiDefaultHitErrorCalculator _calculator;
+    StiMaterial *_siMat;
+    StiMaterial *_hybridMat;
 };
 
 inline double StiPixelDetectorBuilder::phiForSector(unsigned int sector) const

@@ -19,20 +19,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.12  2014/01/31 23:59:28  smirnovd
- * Removed unused private class methods
- *
- * Revision 1.11  2014/01/31 23:56:37  smirnovd
- * Change return type to void
- *
- * Revision 1.10  2014/01/31 19:48:12  smirnovd
- * Added a parameter to specify the size in number of rows and columns to group/bin pixels in a sensor
- *
- * Revision 1.9  2014/01/31 19:47:46  smirnovd
- * Give consistent and more appropriate names to class methods
- *
- * Revision 1.8  2014/01/31 00:08:36  smirnovd
- * Minor style issues fixed
+ * Revision 1.13  2014/02/01 02:37:18  smirnovd
+ * This commit is intended to sync with what we had in StRoot/StiRnD
  *
  * Revision 1.7  2014/01/28 19:29:42  qiuh
  * *** empty log message ***
