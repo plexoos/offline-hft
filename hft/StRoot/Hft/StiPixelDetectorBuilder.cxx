@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.18  2014/02/01 02:49:03  smirnovd
+ * Switched to already defined constants
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.17  2014/02/01 02:48:56  smirnovd
  * Minor stylistic clean-up
  *
@@ -135,6 +140,7 @@
 #include "StEvent.h"
 #include "StEventTypes.h"
 #include "StPxlDbMaker/StPxlDbMaker.h"
+#include "StPxlUtil/StPxlConstants.h"
 
 
 StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active, const string &inputFile)
@@ -240,10 +246,6 @@ void StiPixelDetectorBuilder::useVMCGeometry()
 {
    LOG_INFO << "StiPixelDetectorBuilder::buildDetectors() -I- Use VMC geometry" << endm;
 
-   unsigned int nSectors = 10;
-   unsigned int nLadders  = 4;
-   unsigned int nSensors = 10;
-
    THashList *PxlRot = new THashList(400, 0);
    // XXX:ds At the moment gStPxlDbMaker is not defined in offline/hft/StRoot/StPxlDbMaker or
    // StRoot/
@@ -319,9 +321,9 @@ void StiPixelDetectorBuilder::useVMCGeometry()
          _siMat->getZ(),
          _siMat->getDensity());
 
-   for (UInt_t ii = 0; ii < nSectors; ++ii) {
-      for (UInt_t jj = 0; jj < nLadders; ++jj) {
-         for (UInt_t kk = 0; kk < nSensors; kk++) {
+   for (UInt_t ii = 0; ii < nPxlSectors; ++ii) {
+      for (UInt_t jj = 0; jj < nPxlLaddersPerSector; ++jj) {
+         for (UInt_t kk = 0; kk < nPxlSensorsPerLadder; kk++) {
             if (ii == 1 || ii == 3 || ii == 6) {
                //for run 13, only sector 2,4,7
                int matPix = 0;
