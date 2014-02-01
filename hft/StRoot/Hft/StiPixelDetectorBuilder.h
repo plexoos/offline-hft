@@ -6,7 +6,6 @@ class StiPixelDetectorBuilder : public StiDetectorBuilder
 {
 public:
    StiPixelDetectorBuilder(bool active, const string &inputFile);
-   virtual ~StiPixelDetectorBuilder();
    virtual void buildDetectors(StMaker &source);
    double phiForSector(unsigned int iSector) const;
 

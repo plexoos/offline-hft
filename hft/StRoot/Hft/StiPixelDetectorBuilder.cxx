@@ -4,6 +4,11 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.16  2014/02/01 02:48:47  smirnovd
+ * Remove pointless empty destructor
+ *
+ * Signed-off-by: Dmitri Smirnov <d.s@plexoos.com>
+ *
  * Revision 1.15  2014/02/01 02:48:39  smirnovd
  * For the time being ignore undefined variable gStPxlDbMaker
  *
@@ -134,8 +139,6 @@ StiPixelDetectorBuilder::StiPixelDetectorBuilder(bool active,
    //depend strongly on the numbers below.
 }
 
-StiPixelDetectorBuilder::~StiPixelDetectorBuilder()
-{}
 
 /// Build all detector components of the Pixel detector.
 void StiPixelDetectorBuilder::buildDetectors(StMaker &source)
