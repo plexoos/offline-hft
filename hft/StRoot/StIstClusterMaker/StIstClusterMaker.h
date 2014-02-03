@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:01  ypwang
+* Revision 1.3  2014/02/03 16:12:19  ypwang
 * updating scripts
 *
 *
@@ -34,7 +34,6 @@ class StIstClusterMaker : public StMaker
   virtual Int_t Init();
   virtual Int_t InitRun(Int_t runumber);
   virtual Int_t Make();
-  virtual void Clear( Option_t *opts = "" );
 
   Int_t setClusterAlgo(StIstIClusterAlgo*);
   void setUsedTimeBin(unsigned char tb = -1);			//time bin to be used
