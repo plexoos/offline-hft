@@ -1200,7 +1200,7 @@ Bfc_st BFC[] = {
   {"gstar"       ,"geant"  ,"","-fzin,-ntin,-geant,Simu,geantL","St_geant_Maker"
    ,                                        "","gstar for 80 muon tracks with pT = 1GeV in |eta|<4",kFALSE},
   {"pythia"      ,"geant" ,"","-gstar,-fzin,-ntin,-geant,geantL","St_geant_Maker"
-   ,                                "Pythia6_4_23,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
+   ,                                "Pythia6_4_26,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
   {"Wenu"        ,"" ,"","pythia","", ""                 ,"set pp 510 GeV -> W+/- -> e+/- nu/nubar",kFALSE},
   {"tdaq"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
   {"miniDAQ"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
@@ -1338,7 +1338,7 @@ Bfc_st BFC[] = {
   {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
   {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
   {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
-  {"pxlDb"      ,"","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
+  {"pxlDb"      ,"pxlDb","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
   {"pxlFastSim","","","StMcEvent,StEvent"
    ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
   {"pxlUtil"     ,"","","","","StPxlUtil","Pxl Utilities",kFALSE},
@@ -1346,6 +1346,15 @@ Bfc_st BFC[] = {
   {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
   {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
   {"pxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
+  {"istDb"      ,"istDb","","tpcDb","StIstDbMaker","StIstDbMaker","Load and run IstDbMaker",        kFALSE},
+  {"istFastSim","","","StMcEvent,StEvent"
+   ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
+  {"istUtil"     ,"","","","","StIstUtil","Ist Utilities",kFALSE},
+  {"istRaw"      ,"","","istUtil,istDb","StIstRawHitMaker","StIstRawHitMaker","Ist Raw Hit Maker",kFALSE},
+  {"istCluster"      ,"","","istUtil","StIstClusterMaker","StIstClusterMaker","Ist Cluster Maker",kFALSE},
+  {"istHit"      ,"","","istUtil,event,istDb","StIstHitMaker","StIstHitMaker","Ist Hit Maker",kFALSE},
+  {"istQA"    ,"","","istUtil,StEvent"        ,"StIstQAMaker","StIstQAMaker","Example of Ist QA",kFALSE},
+  {"istCalib" ,"","","istUtil","StIstCalibrationMaker","StIstCalibrationMaker","Ist Calibration Maker",kFALSE},
   {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
   {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
   {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
@@ -1628,6 +1637,7 @@ Bfc_st BFC[] = {
   {"NoDefault"   ,""  ,"",""                                  ,"","","No Default consistency check",kFALSE},
   {"Notpc_daq"   ,""  ,"","-tpc_daq"                                            ,"","","No tpc_daq",kFALSE},
   {"analysis"    ,"","","StEvent"        ,"StAnalysisMaker","StAnalysisMaker","Example of Analysis",kFALSE},
+  {"MyAnalysis"    ,"","","StEvent"        ,"StMyAnalysisMaker","StMyAnalysisMaker","fill PXL,IST,SSD hits in root files",kFALSE},
   {"------------","-----------","-----------","------------------------------------------","","","",kFALSE}
 
 };
