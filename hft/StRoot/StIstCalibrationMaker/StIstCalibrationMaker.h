@@ -10,7 +10,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:01  ypwang
+* Revision 1.3  2014/02/06 12:28:34  ypwang
 * updating scripts
 *
 *
@@ -35,7 +35,7 @@ public:
     // constructors
     StIstCalibrationMaker( const char* name = "ist_calib" );
     // deconstructor
-    virtual ~StIstCalibrationMaker();
+    ~StIstCalibrationMaker();
 
     Int_t Init();
     Int_t InitRun(Int_t runNumber);
@@ -43,12 +43,8 @@ public:
     Int_t Finish();
 
     // modifiers
-    void setToSavePedToFile( const char* filename );
-    void setToSaveCmnToFile( const char* filename );
     void setTimeBinMask( short mask = 0xFF );
-    
     void setPedCut(float pedCut = 3.0);
-    void setToSaveHistsToFile( const char* rootFilename );
     // Get CVS
     virtual const char *GetCVS() const;
 
@@ -80,10 +76,6 @@ protected:
     typedef std::vector< cmNoiseData_t > cmNoiseDataVec_t;
     cmNoiseDataVec_t mCmnVec; 
    
-    // for saving to file
-    std::string mPedTable;
-    std::string mCmnTable;
-
     // functions that actually do the saving
     Int_t saveToFile();
 
@@ -97,11 +89,13 @@ protected:
     MappingVec_t mMappingVec;
     
     // for saving to file
-    std::string mRootFilename;
     TFile *myRootFile; 			 // file to store histograms
     TH1F *hist_meanPed[kIstNumTimeBins]; // mean pedestal = pedestal histogram -> GetMean()
     TH1F *hist_rmsPed[kIstNumTimeBins];  // standard deveriation = pedestal histogram -> GetRMS()
     TH1F *hist_cmNoise[kIstNumTimeBins]; // common mode noise per APV chip
+    TH1F *hist_sumPed[kIstNumTimeBins];  // summary pedestal over all channels
+    TH1F *hist_sumRms[kIstNumTimeBins]; // summary rms noise over all channels
+    TH1F *hist_sumCmn[kIstNumTimeBins]; // summary common mode noise over all channels
     static const string sectionLabel[72];
 
 private:
@@ -110,12 +104,8 @@ private:
 }; 
 
 // modifiers
-inline void StIstCalibrationMaker::setToSavePedToFile( const char* filename )	{ mPedTable = filename; };
-inline void StIstCalibrationMaker::setToSaveCmnToFile( const char* filename )	{ mCmnTable = filename; };
 inline void StIstCalibrationMaker::setTimeBinMask( short mask )			{ mTimeBinMask = mask; };
 inline void StIstCalibrationMaker::setPedCut(float pedCut)			{ mPedCut = pedCut; };
-inline void StIstCalibrationMaker::setToSaveHistsToFile( const char* rootFilename ){ mRootFilename = rootFilename; };
-
 inline const char *StIstCalibrationMaker::GetCVS() const {
    static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
    return cvs;

@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:02  ypwang
+* Revision 1.3  2014/02/06 12:28:35  ypwang
 * updating scripts
 *
 *
@@ -25,19 +25,20 @@
 #include <string>
 
 #include "StMaker.h"
+#include "StIOMaker/StIOMaker.h"
 #include "StRoot/StIstUtil/StIstConsts.h"
 #include "TString.h"
 #include "TNtuple.h"
 #include "TH2F.h"
 #include "TProfile.h"
 
+class StIOMaker;
 class StEvent;
 class StTrack;
 
 class StIstQAMaker : public StMaker {
 public:
   StIstQAMaker(const char *name="ist_Qa");     // constructor
-  ~StIstQAMaker();                          	// destructor
   Int_t Init();
   Int_t  Make();                      		// invoked for every event
   Int_t  Finish();                    		// called once at the end
@@ -82,14 +83,9 @@ protected:
   TH2F* clusterSizeZ_SensorId;	    // hit cluster size in Z direction
   TH2F* clusterSizeRPhi_SensorId;   // hit cluster size in R-Phi direction
 
-  std::string mRootFilename;
   Int_t  mEventCounter;             // Event countter
 
 private:
   ClassDef(StIstQAMaker,1);
 };
-
-// deconstructor
-inline StIstQAMaker::~StIstQAMaker(){ /*    */ };
-
 #endif
