@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.21  2014/02/07 00:14:43  smirnovd
+ * Removed temporary constraint on processing only three pixel sectors
+ *
  * Revision 1.20  2014/02/07 00:14:32  smirnovd
  * Change histogram type to conserve memory
  *
@@ -94,8 +97,6 @@ void StPxlMonMaker::bookHists()
 
    for (int i = 0; i < 10; i++) {
 
-      if (i != 1 && i != 3 && i != 6) continue;
-
       char ename[50];
       char etitle[100];
 
@@ -149,8 +150,6 @@ void StPxlMonMaker::bookHists()
    for (int i = 0; i < 10; i++) {
       for (int j = 0; j < 4; j++) {
          for (int k = 0; k < 10; k++) {
-
-            if (i != 1 && i != 3 && i != 6) continue;
 
             int sensorId = i * 40 + j * 10 + k;
 
@@ -219,8 +218,6 @@ void StPxlMonMaker::fillHists()
             StPxlLadderHitCollection *ladderHitCollection = sectorHitCollection->ladder(j);
             for (unsigned int k = 0; k < ladderHitCollection->numberOfSensors(); k++)
             {
-               if (i != 1 && i != 3 && i != 6) continue;
-
                int sensorId = i * 40 + j * 10 + k;
 
                StPxlSensorHitCollection *sensorHitCollection = ladderHitCollection->sensor(k);
@@ -253,8 +250,7 @@ void StPxlMonMaker::fillHists()
             }
          }
 
-         if (i == 1 || i == 3 || i == 6)
-            m_innerhits_outerhits[i]->Fill(hitnumber_inner, hitnumber_outer);
+         m_innerhits_outerhits[i]->Fill(hitnumber_inner, hitnumber_outer);
       }
    }
 
@@ -279,8 +275,6 @@ void StPxlMonMaker::fillHists()
       {
          for (int k = 0; k < kNumberOfPxlSensorsPerLadder; k++)
          {
-            if (i != 1 && i != 3 && i != 6) continue;
-
             int sensorId = i * 40 + j * 10 + k;
 
             for (int l = 0; l < pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1); l++) {
@@ -300,8 +294,7 @@ void StPxlMonMaker::fillHists()
          }
       }
 
-      if (i == 1 || i == 3 || i == 6)
-         m_innerrawhits_outerrawhits[i]->Fill(rawhitnumber_inner, rawhitnumber_outer);
+      m_innerrawhits_outerrawhits[i]->Fill(rawhitnumber_inner, rawhitnumber_outer);
    }
 }
 
@@ -329,20 +322,17 @@ void StPxlMonMaker::writeHists()
 
    m_f1->WriteTObject(m_nRawHits_sensorID);
    for (int i = 0; i < 10; i++) {
-      if (i == 1 || i == 3 || i == 6)
-         m_f1->WriteTObject(m_nRawHits_eachsector_sensorID[i]);
+      m_f1->WriteTObject(m_nRawHits_eachsector_sensorID[i]);
    }
 
    m_f1->WriteTObject(m_nHits_sensorID);
    for (int i = 0; i < 10; i++) {
-      if (i == 1 || i == 3 || i == 6)
-         m_f1->WriteTObject(m_nHits_eachsector_sensorID[i]);
+      m_f1->WriteTObject(m_nHits_eachsector_sensorID[i]);
    }
 
    m_f1->WriteTObject(m_hitnRawHits_sensorID);
    for (int i = 0; i < 10; i++) {
-      if (i == 1 || i == 3 || i == 6)
-         m_f1->WriteTObject(m_hitnRawHits_eachsector_sensorID[i]);
+      m_f1->WriteTObject(m_hitnRawHits_eachsector_sensorID[i]);
    }
 
    m_f1->WriteTObject(m_globalx_y);
@@ -351,23 +341,18 @@ void StPxlMonMaker::writeHists()
    m_f1->WriteTObject(m_globalphi_z_outer);
 
    for (int i = 0; i < 10; i++) {
-      if (i == 1 || i == 3 || i == 6) {
-         m_f1->WriteTObject(m_innerhits_outerhits[i]);
-         m_f1->WriteTObject(m_innerrawhits_outerrawhits[i]);
-      }
+      m_f1->WriteTObject(m_innerhits_outerhits[i]);
+      m_f1->WriteTObject(m_innerrawhits_outerrawhits[i]);
    }
 
    for (int i = 0; i < 10; i++) {
       for (int j = 0; j < 4; j++) {
          for (int k = 0; k < 10; k++) {
 
-            if (i == 1 || i == 3 || i == 6)
-            {
-               int sensorId = i * 40 + j * 10 + k;
+            int sensorId = i * 40 + j * 10 + k;
 
-               m_f1->WriteTObject(m_rawHit_rowvscolumn[sensorId]);
-               m_f1->WriteTObject(m_nRawHits_EventId[sensorId]);
-            }
+            m_f1->WriteTObject(m_rawHit_rowvscolumn[sensorId]);
+            m_f1->WriteTObject(m_nRawHits_EventId[sensorId]);
          }
       }
    }
