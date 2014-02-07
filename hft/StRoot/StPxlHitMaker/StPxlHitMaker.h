@@ -18,6 +18,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.5  2014/02/07 22:18:06  smirnovd
+ * Set stricter access modifier for member variables
+ *
  * Revision 1.4  2014/01/28 19:29:40  qiuh
  * *** empty log message ***
  *
@@ -49,7 +52,7 @@ public:
       return cvs;
    }
 
-protected:
+private:
    StPxlDb *mPxlDb; ///< db structure containing geometry, status information and so on
    Double_t mPixelSize; ///< size of a pxiel
 
