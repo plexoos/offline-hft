@@ -1345,7 +1345,7 @@ Bfc_st BFC[] = {
   {"pxlRaw"      ,"","","pxlUtil","StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
   {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
   {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
-  {"pxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
+  {"pxlMon"    ,"","","StEvent"        ,"StPxlMonMaker","StPxlMonMaker","Example of Pxl QA",kFALSE},
   {"istDb"      ,"istDb","","tpcDb","StIstDbMaker","StIstDbMaker","Load and run IstDbMaker",        kFALSE},
   {"istFastSim","","","StMcEvent,StEvent"
    ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
