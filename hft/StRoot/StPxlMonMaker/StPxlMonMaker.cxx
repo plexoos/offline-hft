@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.22  2014/02/07 00:14:52  smirnovd
+ * Organized output in subdirectories. The change intoduced by Shusu
+ *
  * Revision 1.21  2014/02/07 00:14:43  smirnovd
  * Removed temporary constraint on processing only three pixel sectors
  *
@@ -307,13 +310,24 @@ void StPxlMonMaker::writeHists()
    }
 
    TString filename = TString(ioMaker->GetFile());
-   int found = filename.Last('/');
-   if (found >= 0)
-      filename.Replace(0, found + 1, "");
-   found = filename.First(".");
-   if (found == 0) found = filename.Length();
-   filename.Replace(found, filename.Length() - found, ".pxlQa.root");
-   LOG_INFO << "writeHists() filename: " << filename << endm;
+   int slash_index = filename.Last('/');
+
+   if(slash_index >= 0){
+      filename.Replace(0, slash_index-12, "");
+   }
+
+   TString daynumber( filename(0,3) );
+   TString runnumber( filename(4,8) );
+   gSystem->Exec(Form("mkdir output"));
+   gSystem->Exec(Form("mkdir output/%s",daynumber.Data()));
+   gSystem->Exec(Form("mkdir output/%s/%s",daynumber.Data(),runnumber.Data()));
+
+   slash_index = filename.First(".");
+   if (slash_index == 0) slash_index = filename.Length();
+
+   filename.Replace(slash_index, filename.Length() - slash_index, ".pxlQa.root");
+   filename.Insert(0, "output/");
+   LOG_INFO << "StPxlMonMaker::writeHists(): filename: " << filename << endm;
 
    m_f1 = new TFile(filename.Data(), "RECREATE");
 
