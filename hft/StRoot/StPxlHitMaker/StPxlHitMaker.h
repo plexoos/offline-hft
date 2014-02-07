@@ -8,19 +8,6 @@
  * $Id$
  *
  * Author: Qiu Hao, Jan 2013
- ***************************************************************************
- *
- * $Log$
- * Revision 1.6  2014/02/07 22:38:12  smirnovd
- * Doxygen comments reshuffled
- *
- * Revision 1.5  2014/02/07 22:18:06  smirnovd
- * Set stricter access modifier for member variables
- *
- * Revision 1.4  2014/01/28 19:29:40  qiuh
- * *** empty log message ***
- *
- *
  **************************************************************************/
 
 #ifndef StPxlHitMaker_hh
@@ -57,3 +44,22 @@ private:
 };
 
 #endif
+
+
+/***************************************************************************
+ *
+ * $Log$
+ * Revision 1.7  2014/02/07 22:56:39  smirnovd
+ * Moved CVS log list to the bottom of file
+ *
+ * Revision 1.6  2014/02/07 22:38:12  smirnovd
+ * Doxygen comments reshuffled
+ *
+ * Revision 1.5  2014/02/07 22:18:06  smirnovd
+ * Set stricter access modifier for member variables
+ *
+ * Revision 1.4  2014/01/28 19:29:40  qiuh
+ * *** empty log message ***
+ *
+ *
+ **************************************************************************/
