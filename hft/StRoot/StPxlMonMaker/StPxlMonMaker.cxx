@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.23  2014/02/07 00:15:00  smirnovd
+ * Small stylistic improvement + doxygen comments
+ *
  * Revision 1.22  2014/02/07 00:14:52  smirnovd
  * Organized output in subdirectories. The change intoduced by Shusu
  *
@@ -304,9 +307,9 @@ void StPxlMonMaker::fillHists()
 
 void StPxlMonMaker::writeHists()
 {
-   StIOMaker *ioMaker = (StIOMaker * )GetMaker("inputStream");
+   StIOMaker *ioMaker = (StIOMaker*) GetMaker("inputStream");
    if (!ioMaker) {
-      gMessMgr->Warning() << "StPxlMonMaker::Init(): No StIOMaker" << endm;
+      gMessMgr->Warning() << "StPxlMonMaker::writeHists(): No StIOMaker found" << endm;
    }
 
    TString filename = TString(ioMaker->GetFile());

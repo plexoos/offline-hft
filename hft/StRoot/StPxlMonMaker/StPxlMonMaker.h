@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.16  2014/02/07 00:15:00  smirnovd
+ * Small stylistic improvement + doxygen comments
+ *
  * Revision 1.15  2014/02/07 00:14:32  smirnovd
  * Change histogram type to conserve memory
  *
@@ -68,15 +71,16 @@ public:
    TFile    *m_f1;
    TNtuple  *m_hitNtuple;
    TNtuple  *m_rawHitNtuple;
-   TH2S     *m_rawHit_rowvscolumn[400];
-   TH2S     *m_hit_localZ_X[400];
+
+   TH2S     *m_rawHit_rowvscolumn[400];            ///< Sensor hit maps indexed by sensor id
    TProfile *m_nRawHits_EventId[400];
    TH2F     *m_globalx_y;
+
    TH2S     *m_hitnRawHits_sensorID;
    TH2S     *m_hitnRawHits_eachsector_sensorID[10];
 
-   TH2S     *m_nRawHits_sensorID;
-   TH2S     *m_nRawHits_eachsector_sensorID[10];
+   TH2S     *m_nRawHits_sensorID;                  ///< Sensor integral hit map vs sensor id. Duplicates m_rawHit_rowvscolumn!
+   TH2S     *m_nRawHits_eachsector_sensorID[10];   ///< Sensor integral hit map vs ladder/sensor indexed by sector id. Duplicates m_rawHit_rowvscolumn!
 
    TH2S     *m_nHits_sensorID;
    TH2S     *m_nHits_eachsector_sensorID[10];
