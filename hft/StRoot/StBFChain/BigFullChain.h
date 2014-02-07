@@ -1338,7 +1338,7 @@ Bfc_st BFC[] = {
   {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
   {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
   {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
-  {"pxlDb"      ,"pxlDb","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
+  {"pxlDb"      ,"","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
   {"pxlFastSim","","","StMcEvent,StEvent"
    ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
   {"pxlUtil"     ,"","","","","StPxlUtil","Pxl Utilities",kFALSE},
