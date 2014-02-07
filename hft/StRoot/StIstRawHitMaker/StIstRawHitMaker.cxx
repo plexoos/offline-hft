@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.3  2014/02/07 21:36:26  ypwang
+* updating script
+*
 * Revision 1.2  2014/01/29 18:25:03  ypwang
 * updating scripts
 *
@@ -42,7 +45,7 @@
 #include <string.h>
 #include <time.h>
 
-StIstRawHitMaker::StIstRawHitMaker( const char* name ): StRTSBaseMaker( "ist", name ), mIsCaliMode(1), mDoCmnCorrection(0), mIstCollectionPtr(0), mIstDbMaker(0), mDataType(0){
+StIstRawHitMaker::StIstRawHitMaker( const char* name ): StRTSBaseMaker( "ist", name ), mIsCaliMode(0), mDoCmnCorrection(0), mIstCollectionPtr(0), mIstDbMaker(0), mDataType(0){
    // set all vectors to zeros
    mCmnVec.resize( kIstNumApvs );
    mPedVec.resize( kIstNumElecIds );
