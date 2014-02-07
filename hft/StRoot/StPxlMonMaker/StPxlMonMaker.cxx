@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.20  2014/02/07 00:14:32  smirnovd
+ * Change histogram type to conserve memory
+ *
  * Revision 1.19  2014/02/01 19:03:36  smirnovd
  * Common index for composite sensor id
  *
@@ -77,15 +80,15 @@ void StPxlMonMaker::bookHists()
       m_rawHitNtuple = new TNtuple("rawHitNtuple", "rawHitNtuple", "sector:ladder:sensor:column:row:idTruth:EventId");
    }
 
-   m_nRawHits_sensorID = new TH2F("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
+   m_nRawHits_sensorID = new TH2S("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
    m_nRawHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_nRawHits_sensorID->GetYaxis()->SetTitle("nRawHits");
 
-   m_nHits_sensorID = new TH2F("nHits_sensorID", "The number of Hits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
+   m_nHits_sensorID = new TH2S("nHits_sensorID", "The number of Hits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
    m_nHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_nHits_sensorID->GetYaxis()->SetTitle("nHits");
 
-   m_hitnRawHits_sensorID = new TH2F("hitnRawHits_sensorID", "The number of RawHits per hit vs. sensorID", 400, 1, 401, 32, 0, 32);
+   m_hitnRawHits_sensorID = new TH2S("hitnRawHits_sensorID", "The number of RawHits per hit vs. sensorID", 400, 1, 401, 32, 0, 32);
    m_hitnRawHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_hitnRawHits_sensorID->GetYaxis()->SetTitle("RawHits per hit");
 
@@ -98,31 +101,31 @@ void StPxlMonMaker::bookHists()
 
       sprintf(ename, "nRawHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "RawHits vs. sensorNo: Sector %d", i + 1);
-      m_nRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 1200, 0, 1200);
       m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
       m_nRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nRawHits");
 
       sprintf(ename, "nHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "Hits vs. sensorNo: Sector %d", i + 1);
-      m_nHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 1200, 0, 1200);
       m_nHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
       m_nHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nHits");
 
       sprintf(ename, "hitnRawHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "RawHits per hit vs. sensorNo: Sector %d", i + 1);
-      m_hitnRawHits_eachsector_sensorID[i] = new TH2F(ename, etitle, 40, 1, 41, 32, 0, 32);
+      m_hitnRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 32, 0, 32);
       m_hitnRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
       m_hitnRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("RawHits per hit");
 
       sprintf(ename, "innerhits_outerhits_%d", i);
       sprintf(etitle, "Inner hits vs. outer hits: Sector %d", i + 1);
-      m_innerhits_outerhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
+      m_innerhits_outerhits[i] = new TH2S(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
       m_innerhits_outerhits[i]->GetXaxis()->SetTitle("Inner hits");
       m_innerhits_outerhits[i]->GetYaxis()->SetTitle("Outer hits");
 
       sprintf(ename, "innerrawhits_outerrawhits_%d", i);
       sprintf(etitle, "Inner rawhits vs. outer rawhits: Sector %d", i + 1);
-      m_innerrawhits_outerrawhits[i] = new TH2F(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
+      m_innerrawhits_outerrawhits[i] = new TH2S(ename, etitle, 600, 0, 6000, 1800, 0, 18000);
       m_innerrawhits_outerrawhits[i]->GetXaxis()->SetTitle("Inner rawhits");
       m_innerrawhits_outerrawhits[i]->GetYaxis()->SetTitle("Outer rawhits");
    }
@@ -156,7 +159,7 @@ void StPxlMonMaker::bookHists()
 
             sprintf(ename, "rawHit_rowvscolumn_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
             sprintf(etitle, "Raw hit map: Sector %d, Ladder %d, Sensor %d; Row Id; Column Id;", i+1, j+1, k+1);
-            m_rawHit_rowvscolumn[sensorId] = new TH2F(ename, etitle, nRowBins, 0, nRowBins*mNumPixelsPerBin, nColBins, 0, nColBins*mNumPixelsPerBin);
+            m_rawHit_rowvscolumn[sensorId] = new TH2S(ename, etitle, nRowBins, 0, nRowBins*mNumPixelsPerBin, nColBins, 0, nColBins*mNumPixelsPerBin);
 
             sprintf(ename, "nRawHits_EventId_sec%02d_ldr%d_snr%02d", i+1, j+1, k+1);
             sprintf(etitle, "rawHits vs. Event Id: Sector %d Ladder %d Sensor %d; Event Id (Time); Num. of Raw Hits", i+1, j+1, k+1);

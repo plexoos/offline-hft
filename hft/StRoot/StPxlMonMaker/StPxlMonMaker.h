@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.15  2014/02/07 00:14:32  smirnovd
+ * Change histogram type to conserve memory
+ *
  * Revision 1.14  2014/02/01 19:03:17  smirnovd
  * Fixed default parameter bug
  *
@@ -40,6 +43,7 @@
 #include "TNtuple.h"
 #include "TFile.h"
 #include "TH2F.h"
+#include "TH2S.h"
 #include "TProfile.h"
 #include "StIOMaker/StIOMaker.h"
 
@@ -64,22 +68,22 @@ public:
    TFile    *m_f1;
    TNtuple  *m_hitNtuple;
    TNtuple  *m_rawHitNtuple;
-   TH2F     *m_rawHit_rowvscolumn[400];
-   TH2F     *m_hit_localZ_X[400];
+   TH2S     *m_rawHit_rowvscolumn[400];
+   TH2S     *m_hit_localZ_X[400];
    TProfile *m_nRawHits_EventId[400];
    TH2F     *m_globalx_y;
-   TH2F     *m_hitnRawHits_sensorID;
-   TH2F     *m_hitnRawHits_eachsector_sensorID[10];
+   TH2S     *m_hitnRawHits_sensorID;
+   TH2S     *m_hitnRawHits_eachsector_sensorID[10];
 
-   TH2F     *m_nRawHits_sensorID;
-   TH2F     *m_nRawHits_eachsector_sensorID[10];
+   TH2S     *m_nRawHits_sensorID;
+   TH2S     *m_nRawHits_eachsector_sensorID[10];
 
-   TH2F     *m_nHits_sensorID;
-   TH2F     *m_nHits_eachsector_sensorID[10];
+   TH2S     *m_nHits_sensorID;
+   TH2S     *m_nHits_eachsector_sensorID[10];
 
    TH1F     *m_globalz;
-   TH2F     *m_innerhits_outerhits[10];
-   TH2F     *m_innerrawhits_outerrawhits[10];
+   TH2S     *m_innerhits_outerhits[10];
+   TH2S     *m_innerrawhits_outerrawhits[10];
    TH2F     *m_globalphi_z_inner;
    TH2F     *m_globalphi_z_outer;
 
