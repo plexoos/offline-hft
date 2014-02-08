@@ -15,13 +15,13 @@ How to build development hft libraries
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
-    cvs checkout -r HEAD StRoot/StiRnD
+    cvs checkout -r HEAD StRoot/StiMaker
 
-    # Checkout temporarily to compile localy as the official library is not yet
-    # available
-    cvs checkout -r HEAD StRoot/StPxlDbMaker
+    # The following package is in the official CVS StRoot area but not yet in
+    # $STAR/StRoot. Check it out to compile locally as the official library is
+    # not yet available
+
     cvs checkout -r HEAD StRoot/StPxlRawHitMaker
-    cvs checkout -r HEAD StRoot/StPxlUtil
 
     cp -r offline/hft/StarDb/Calibrations StarDb/
     cp -r offline/hft/StarDb/Geometry StarDb/
@@ -45,12 +45,14 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StIstUtil
     ln -s ../offline/hft/StRoot/StPxlClusterMaker
     ln -s ../offline/hft/StRoot/StPxlHitMaker
-    ln -s ../offline/hft/StRoot/StPxlQAMaker
+    ln -s ../offline/hft/StRoot/StPxlMonMaker
+    ln -s ../offline/hft/StRoot/StiPxl
 
     cd ..
     patch -p0 < offline/hft/StRoot/StBFChain.patch
     patch -p0 < offline/hft/StRoot/StEvent.patch
     patch -p0 < offline/hft/StRoot/StEventUtilities.patch
+    patch -p0 < offline/hft/StRoot/StiMaker.patch
     cons
 
 
@@ -59,14 +61,14 @@ How to run tests
 
 To read PXL raw data:
 
-    export BFC_OPTIONS='"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlQA mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
+    export BFC_OPTIONS='"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
     export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157027/daq/st_physics_14157027_raw_5480001.daq"'
     export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157071/daq/st_pxl_adc_14157071_raw_6990001.daq"'
 
-To run PXL simulation:
+To run over PXL simulation:
 
-    export BFC_OPTIONS='"tpcRS y2014 MakeEvent ITTF StiRnD PixelIt NoSsdIt NoSvtIt pxlDb pxlFastSim Idst BAna l0 Tree logger Sti VFMC E tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-    export BFC_INPFILE='"test.fz"'
+    export BFC_OPTIONS='"Debug2 tpcRS y2014 MakeEvent ITTF StiPxl PixelIt NoSsdIt NoSvtIt pxlDb pxlFastSim Idst BAna l0 Tree logger Sti VFMCE tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
+    export BFC_INPFILE='"mytest.fz"'
 
     root4star -b -q -l "bfc.C(1, 100, $BFC_OPTIONS, $BFC_INPFILE)"
 
@@ -82,8 +84,9 @@ For IST calibration
 To do
 =====
 
-- Move development from StRoot/StiRnD/Hft to offline/hft/StRoot/StiPxl
-- Rename StiPixel... classes to StiPxl... to be consistent with the other
-detector subsystems
+- <del>Move development from StRoot/StiRnD/Hft to offline/hft/StRoot/StiPxl</del>
+- <del>Rename StiPixel... classes to StiPxl... to be consistent with the other
+detector subsystems</del>
 - Add instructions for how to run simulation with hft detectors
 - Add location for test simulation and data files
+- <del>Need a patch for StiMaker due to StRoot/StiRnD/Hft -> offline/hft/StRoot/StiPxl change </del>
