@@ -14,7 +14,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:03  ypwang
+* Revision 1.3  2014/02/08 03:34:17  ypwang
 * updating scripts
 *
 *
@@ -41,6 +41,7 @@ class StIstDbMaker;
 class St_istPedNoise;
 class St_istGain;
 class St_istMapping;
+class St_istControl;
 
 class StIstRawHitMaker : public StRTSBaseMaker {
  public: 

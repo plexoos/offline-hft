@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.3  2014/02/03 16:12:19  ypwang
+* Revision 1.4  2014/02/08 03:34:16  ypwang
 * updating scripts
 *
 *
@@ -175,7 +175,7 @@ Int_t StIstHitMaker::InitRun(Int_t runnumber)
    listGeoMSensorOnGlobal = mIstDbMaker->GetRotations();
 
    // control parameters
-   St_istControl *istControl = (St_istControl *)GetDataBase("Calibrations/ist/istControl");
+   St_istControl *istControl = mIstDbMaker->GetControl();
    if (!istControl)  LOG_WARN << " no istControl table " << endm;
    istControl_st *istControlTable = istControl->GetTable();
 
@@ -190,9 +190,4 @@ StIstHitMaker::StIstHitMaker( const char* name ) : StMaker(name), listGeoMSensor
    /* no op */
 };
 
-StIstHitMaker::~StIstHitMaker()
-{
-  /* no op */	
-};
- 
 ClassImp(StIstHitMaker);

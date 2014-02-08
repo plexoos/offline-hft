@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:02  ypwang
+* Revision 1.3  2014/02/08 03:34:16  ypwang
 * updating scripts
 *
 *
@@ -41,15 +41,13 @@ class StIstFastSimMaker : public StMaker {
  public:
 
   StIstFastSimMaker(const char *name="istFastSim") :StMaker(name){}
-  virtual       ~StIstFastSimMaker();
-
-  virtual Int_t  Make();
-  virtual Int_t Finish();
-  virtual int Init();
-  virtual int InitRun( int);
+  Int_t Make();
+  Int_t Finish();
+  Int_t Init();
+  Int_t InitRun( int);
   
   //Routine to smear hit by resolution with gaussian, mean zero and width res
-  double distortHit(double x, double res, double detLength);
+  Double_t distortHit(double x, double res, double detLength);
 
   virtual const char *GetCVS() const
   {
@@ -69,6 +67,3 @@ class StIstFastSimMaker : public StMaker {
   ClassDef(StIstFastSimMaker,1)   //StAF chain virtual base class for Makers
 };
 #endif
-
-
-

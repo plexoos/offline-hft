@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.3  2014/02/03 16:12:19  ypwang
+* Revision 1.4  2014/02/08 03:34:16  ypwang
 * updating scripts
 *
 *
@@ -25,15 +25,17 @@
 #include "StMaker.h"
 #include "StIstIClusterAlgo.h"
 
+class StIstDbMaker;
+class St_istControl;
+
 class StIstClusterMaker : public StMaker
 {
  public:
   StIstClusterMaker( const char* name="ist_cluster");
-  ~StIstClusterMaker();
 
-  virtual Int_t Init();
-  virtual Int_t InitRun(Int_t runumber);
-  virtual Int_t Make();
+  Int_t Init();
+  Int_t InitRun(Int_t runumber);
+  Int_t Make();
 
   Int_t setClusterAlgo(StIstIClusterAlgo*);
   void setUsedTimeBin(unsigned char tb = -1);			//time bin to be used
@@ -44,6 +46,8 @@ class StIstClusterMaker : public StMaker
 
  protected:
   StIstIClusterAlgo* mClusterAlgoPtr;
+  StIstDbMaker *mIstDbMaker;
+
   UChar_t mTimeBin;
   Bool_t mSplitCluster;
   UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;

@@ -9,7 +9,7 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:02  ypwang
+* Revision 1.3  2014/02/08 03:34:16  ypwang
 * updating scripts
 *
 *
@@ -48,10 +48,8 @@ using namespace std;
 #include "StarClassLibrary/StRandom.hh"
 
 ClassImp(StIstFastSimMaker)
- 
-StIstFastSimMaker::~StIstFastSimMaker(){ /*noop*/ }
 
-int StIstFastSimMaker::Init()
+Int_t StIstFastSimMaker::Init()
 {
   LOG_INFO<<"StIstFastSimMaker::Init()"<<endm;
   int seed=time(NULL);
@@ -64,7 +62,7 @@ int StIstFastSimMaker::Init()
 }
 
 //____________________________________________________________
-int StIstFastSimMaker::InitRun(int RunNo)
+Int_t StIstFastSimMaker::InitRun(int RunNo)
 {
   LOG_INFO<<"StIstFastSimMaker::InitRun"<<endm;
 
@@ -199,7 +197,7 @@ Int_t StIstFastSimMaker::Make()
   return kStOK;
 }
 
-double StIstFastSimMaker::distortHit(double x, double res, double detLength){
+Double_t StIstFastSimMaker::distortHit(double x, double res, double detLength){
   double test;
   test = x + myRandom->gauss(0,res);
 

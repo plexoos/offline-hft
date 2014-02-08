@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/02/08 03:34:15  ypwang
+* updating scripts
+*
 * Revision 1.3  2014/02/06 12:28:34  ypwang
 * updating scripts
 *
@@ -147,7 +150,7 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
    Int_t ierr = kStOk;
 
    //control parameter
-   St_istControl *istControl = (St_istControl *)GetDataBase("Calibrations/ist/istControl");
+   St_istControl *istControl = mIstDbMaker->GetControl();
    if (!istControl)  LOG_WARN << " no istControl table " << endm;
 
    istControl_st *istControlTable = istControl->GetTable() ;
