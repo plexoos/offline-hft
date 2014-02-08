@@ -1,19 +1,31 @@
---- StRoot/StBFChain/BigFullChain.h	2013-10-03 16:39:00.000000000 -0400
-+++ offline/hft/StRoot/StBFChain/BigFullChain.h	2014-01-27 14:51:41.842237000 -0500
-@@ -1200,7 +1200,7 @@
-   {"gstar"       ,"geant"  ,"","-fzin,-ntin,-geant,Simu,geantL","St_geant_Maker"
-    ,                                        "","gstar for 80 muon tracks with pT = 1GeV in |eta|<4",kFALSE},
-   {"pythia"      ,"geant" ,"","-gstar,-fzin,-ntin,-geant,geantL","St_geant_Maker"
--   ,                                "Pythia6_4_26,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
-+   ,                                "Pythia6_4_23,bpythia","Load Pythia in starsim, set pp 510 GeV",kFALSE},
-   {"Wenu"        ,"" ,"","pythia","", ""                 ,"set pp 510 GeV -> W+/- -> e+/- nu/nubar",kFALSE},
-   {"tdaq"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
-   {"miniDAQ"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
-@@ -1338,8 +1338,23 @@
+Index: StRoot/StBFChain/BigFullChain.h
+===================================================================
+RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullChain.h,v
+retrieving revision 1.203
+diff -u -r1.203 BigFullChain.h
+--- StRoot/StBFChain/BigFullChain.h	28 Jan 2014 21:01:03 -0000	1.203
++++ StRoot/StBFChain/BigFullChain.h	8 Feb 2014 00:56:12 -0000
+@@ -1165,7 +1165,6 @@
+   {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
+   {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
+   {"StEvent"   ,"","","globT,SCL,TRGDef,StBichsel,EmcUtil,TbUtil,detDb","","StEvent","Load StEvent",kFALSE},
+-  {"PxlUtil"     ,""  ,"","","",                                       "StPxlUtil","Load StPxlUtil",kFALSE},
+   {"SsdUtil"     ,""  ,"","StarMagField,StEvent",""               ,"Geom,StSsdUtil","Load SSD Util",kFALSE},
+   {"EmcUtil"     ,""  ,"","emc_T,geomT,StDbT",""                      ,"StEmcUtil","Load StEmcUtil",kFALSE},
+   {"EEmcUtil"    ,""  ,"","",""                                     ,"StEEmcUtil","Load StEEmcUtil",kFALSE},
+@@ -1229,7 +1228,6 @@
+   {"eemcDb"      ,"eeDb" ,"","db,EEmcUtil",      "StEEmcDbMaker","StEEmcDbMaker","Load EEmcDbMaker",kFALSE},
+   {"fmsDb"       ,"fmsDb","","db",                  "StFmsDbMaker","StFmsDbMaker","Load FmsDbMaker",kFALSE},
+   {"fgtDb"       ,"fgtDb","","db,fgtutil",          "StFgtDbMaker","StFgtDbMaker","Load FgtDbMaker",kFALSE},
+-  {"pxlDb"       ,"pxlDb","","tpcDb",               "StPxlDbMaker","StPxlDbMaker","Load PxlDbMaker",kFALSE},
+ 
+   {"------------","-----------","-----------","------------------------------------------","","","",kFALSE},
+   {"MAKERS      ","-----------","-----------","------------------------------------------","","","",kFALSE},
+@@ -1341,8 +1339,23 @@
    {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
    {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
    {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
-+  {"pxlDb"      ,"","","tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
++  {"pxlDb"      ,"","","pxlUtil,tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
    {"pxlFastSim","","","StMcEvent,StEvent"
     ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
 +  {"pxlUtil"     ,"","","","","StPxlUtil","Pxl Utilities",kFALSE},
@@ -33,87 +45,19 @@
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
---- StRoot/StBFChain/StBFChain.cxx	2013-12-23 15:34:26.000000000 -0500
-+++ offline/hft/StRoot/StBFChain/StBFChain.cxx	2014-01-27 14:16:52.654642000 -0500
-@@ -95,8 +95,7 @@
-   }
-   FDate  = FTime  = 0;
-   FDateS = FTimeS = 0;
--  fFiltTrg   = "";
--  fRunG      = -1;
-+  fRunG  = -1;
-   Gproperty  = ".gopt.";
-   Gvalue     = "";
-   Gpattern   = "*";
-@@ -722,12 +721,6 @@
- 	ProcessLine(Form("((StMaker *) %p)->SetMode(%i);", mk, mode));
-     }
-     if (maker == "StBTofCalibMaker" && GetOption("UseProjectedVertex")) mk->SetAttr("UseProjectedVertex",kTRUE);
--    if (maker == "StEventMaker" && fFiltTrg.Length()) {
--      mk->SetAttr("FiltTrg",(Int_t) (fFiltTrg.BeginsWith('+') ? 1 : -1));
--      TString FiltTrgFlavor = fFiltTrg(1,128);
--      if (FiltTrgFlavor.Length())
--        SetFlavor((FiltTrgFlavor += "+ofl").Data(),"trgOfflineFilter");
--    }
-   Add2Chain:
-     if (! mk) continue;
-     if (name == "") strcpy (fBFC[i].Name,(Char_t *) mk->GetName());
-@@ -970,11 +963,6 @@
-   // GoptXXXvvvvvv -> Gopt 4 / XXX 3 / vvvvvv 6 = 13
-   if ( Tag.BeginsWith("gopt") && Tag.Length() == 13 ) return 0;
- 
--  if ( Tag.BeginsWith("FiltTrg",TString::kIgnoreCase) ) {
--    Check = kTRUE;
--    if ( TPRegexp("^FiltTrg(Inc|Exc)?(_.*)*$").Match(Tag,"i") > 0) return 0;
--  }
--
-   if (Check) {
-     gMessMgr->Error() << "Option " << Tag.Data() << " has not been recognized" << endm;
-     abort(); //assert(1);
-@@ -1104,24 +1092,6 @@
- 	  if (Tag.Length() > 4)  (void) sscanf(Tag.Data(),"rung.%d",&fRunG);
- 	  gMessMgr->QAInfo() << Tag.Data() << " will be considered as Run number (& rndm seed set) " 
- 			     << fRunG << " for simulation." << endm; 
--	} else if (Tag.BeginsWith("FiltTrg",TString::kIgnoreCase)) {
--          TString filtTrgTag = Tag;
--          Ssiz_t flavorIdx = Tag.Index('_');
--          if (flavorIdx > 0) {
--            filtTrgTag = Tag(0,flavorIdx);
--            fFiltTrg = Tag(flavorIdx+1,64);
--          }
--          if (filtTrgTag.CompareTo("FiltTrgExc",TString::kIgnoreCase)==0) {
--	    gMessMgr->QAInfo() << "Trigger Filtering exclude with flavor=" << fFiltTrg << endm;
--            fFiltTrg.Prepend('-');
--          } else if (filtTrgTag.CompareTo("FiltTrgInc",TString::kIgnoreCase)==0 ||
--                     filtTrgTag.CompareTo("FiltTrg"   ,TString::kIgnoreCase)==0) {
--	    gMessMgr->QAInfo() << "Trigger Filtering include with flavor=" << fFiltTrg << endm;
--            fFiltTrg.Prepend('+');
--          } else {
--            // not a match, disable
--            fFiltTrg = "";
--          }
- 	} else { // Check for predefined db time stamps ?
- 	  kgo = kOpt(Tag.Data(),kFALSE);
- 	  if (kgo != 0){
---- StRoot/StBFChain/StBFChain.h	2013-12-23 15:34:26.000000000 -0500
-+++ offline/hft/StRoot/StBFChain/StBFChain.h	2014-01-27 14:16:52.657642000 -0500
-@@ -40,7 +40,6 @@
-   Int_t               FTime;      // floating timestamp time (unused)
-   Int_t               FDateS;     // floating timestamp date (DateTime)
-   Int_t               FTimeS;     // floating timestamp time (DateTime)
--  TString             fFiltTrg;   // trigger filtering properties (flavor, inc/exc)
-   Int_t               fRunG;      // on fly simulation run no. & set for RDNM
-   Int_t               fNoChainOptions;
-   TString             Gproperty;  // a global property name
-@@ -77,6 +76,11 @@
-    void                SetFlags(const Char_t *Chain="gstar tfs"); // *MENU*
-    void                Set_IO_Files(const Char_t *infile=0, const Char_t *outfile=0); // *MENU
-    void                SetInputFile(const Char_t *infile=0);                          // *MENU
-+   void                SetGC(const Char_t *queue=
-+			     "-s;dst runc;"                     // list of components needed
-+			     "-q;numberOfPrimaryTracks>1500;"   // example of user query
-+			     );                                                       // *MENU
-+
-    void                SetOutputFile(const Char_t *outfile=0);                        // *MENU
-    void                SetTFile(TFile *tf)			{fTFile=tf;}
-    TFile              *GetTFile() const			        {return fTFile;}
+@@ -1467,13 +1480,13 @@
+   {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
+   {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
+   {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
+-  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiRnD","Sti tracking: Pixel geom",kFALSE},
++  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiPxl","Sti tracking: Pixel geom",kFALSE},
+   {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Ist geom",kFALSE},
+   {"BTofIT"  ,""  ,"","ITTF",""                            ,"Sti,StiBTof","Sti tracking: BTof geom",kFALSE},
+   {"NoSvtIT"     ,""  ,"","-SvtIT",""                    ,"","ITTF: track with switch off SVT geom",kFALSE},
+   {"NoSsdIT"     ,""  ,"","-SsdIT",""                    ,"","ITTF: track with switch off SSD geom",kFALSE},
+   {"skip1row"    ,""  ,"","",""                           ,"","ITTF: skip the first pad row in TPC",kFALSE},
+-  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
++  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
+   {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
+   {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
+   {"BeamBack" ,"","","StEvent","StBeamBackMaker","Minuit,StBeamBackMaker"

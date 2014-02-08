@@ -1,5 +1,10 @@
---- StRoot/StEventUtilities/StEventHitIter.cxx	2013-01-08 16:50:17.000000000 -0500
-+++ offline/hft/StRoot/StEventUtilities/StEventHitIter.cxx	2014-01-27 20:13:47.724807000 -0500
+Index: StRoot/StEventUtilities/StEventHitIter.cxx
+===================================================================
+RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StEventUtilities/StEventHitIter.cxx,v
+retrieving revision 1.4
+diff -u -r1.4 StEventHitIter.cxx
+--- StRoot/StEventUtilities/StEventHitIter.cxx	8 Jan 2013 21:50:17 -0000	1.4
++++ StRoot/StEventUtilities/StEventHitIter.cxx	8 Feb 2014 00:55:40 -0000
 @@ -17,6 +17,7 @@
  #include "StFgtCollection.h"
  #include "StFgtHitCollection.h"
@@ -100,8 +105,13 @@
       /* case kFgtId: n.b. This will be removing the RnD version of the FGT */ 
     case kFmsId: 
       Add(new StRnDHitIter(detId));break;
---- StRoot/StEventUtilities/StuFixTopoMap.cxx	2013-03-11 05:42:31.000000000 -0400
-+++ offline/hft/StRoot/StEventUtilities/StuFixTopoMap.cxx	2014-01-27 14:16:52.742645000 -0500
+Index: StRoot/StEventUtilities/StuFixTopoMap.cxx
+===================================================================
+RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StEventUtilities/StuFixTopoMap.cxx,v
+retrieving revision 1.4
+diff -u -r1.4 StuFixTopoMap.cxx
+--- StRoot/StEventUtilities/StuFixTopoMap.cxx	11 Mar 2013 09:42:31 -0000	1.4
++++ StRoot/StEventUtilities/StuFixTopoMap.cxx	8 Feb 2014 00:55:40 -0000
 @@ -124,13 +124,9 @@
                  LOG_DEBUG<<"word1: "<<word1<<endm;
              }
