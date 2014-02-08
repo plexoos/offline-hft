@@ -1,0 +1,26 @@
+Index: StRoot/StiMaker/StiMaker.cxx
+===================================================================
+RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StiMaker/StiMaker.cxx,v
+retrieving revision 1.206
+diff -u -r1.206 StiMaker.cxx
+--- StRoot/StiMaker/StiMaker.cxx	10 Apr 2013 22:14:20 -0000	1.206
++++ StRoot/StiMaker/StiMaker.cxx	3 Feb 2014 22:12:58 -0000
+@@ -415,8 +415,7 @@
+ #include "StiTpc/StiTpcHitLoader.h"
+ #include "StiSvt/StiSvtDetectorGroup.h"
+ #include "StiSsd/StiSsdDetectorGroup.h"
+-#include "StiRnD/Hft/StiPixelDetectorGroup.h"
+-// #include "StiBTof/StiBTofDetectorGroup.h"
++#include "StiPxl/StiPxlDetectorGroup.h"
+ #include "Sti/StiKalmanTrackNode.h"
+ #include "Sti/StiKalmanTrack.h"
+ #include "Sti/StiHitLoader.h"
+@@ -606,7 +605,7 @@
+   if (IAttr("usePixel"))
+     {
+       cout<<"StiMaker::Init() -I- Adding detector group:PIXEL"<<endl;
+-      _toolkit->add(group = new StiPixelDetectorGroup(IAttr("activePixel"),SAttr("pixelInputFile")));
++      _toolkit->add(group = new StiPxlDetectorGroup(IAttr("activePixel"),SAttr("pixelInputFile")));
+       group->setGroupId(kPxlId);
+     }
+  if (IAttr("useIst"))
