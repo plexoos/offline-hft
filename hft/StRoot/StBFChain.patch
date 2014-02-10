@@ -4,7 +4,7 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullCha
 retrieving revision 1.203
 diff -u -r1.203 BigFullChain.h
 --- StRoot/StBFChain/BigFullChain.h	28 Jan 2014 21:01:03 -0000	1.203
-+++ StRoot/StBFChain/BigFullChain.h	8 Feb 2014 00:56:12 -0000
++++ StRoot/StBFChain/BigFullChain.h	8 Feb 2014 01:43:54 -0000
 @@ -1165,7 +1165,6 @@
    {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
    {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
@@ -32,7 +32,7 @@ diff -u -r1.203 BigFullChain.h
 +  {"pxlRaw"      ,"","","pxlUtil","StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
 +  {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
 +  {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
-+  {"pxlQA"    ,"","","StEvent"        ,"StPxlQAMaker","StPxlQAMaker","Example of Pxl QA",kFALSE},
++  {"pxlMon"    ,"","","StEvent"        ,"StPxlMonMaker","StPxlMonMaker","Example of Pxl QA",kFALSE},
 +  {"istDb"      ,"istDb","","tpcDb","StIstDbMaker","StIstDbMaker","Load and run IstDbMaker",        kFALSE},
 +  {"istFastSim","","","StMcEvent,StEvent"
 +   ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
