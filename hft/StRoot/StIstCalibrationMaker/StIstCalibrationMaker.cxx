@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/02/14 14:42:47  ypwang
+* update due to removal of getNumLadders() member function from StIstCollection
+*
 * Revision 1.4  2014/02/08 03:34:15  ypwang
 * updating scripts
 *
@@ -209,7 +212,7 @@ Int_t StIstCalibrationMaker::Make()
 	    }
 	}
 
-        for( unsigned char ladderIdx=0; ladderIdx<istCollectionPtr->getNumLadders() && ladderIdx<kIstNumLadders; ++ladderIdx ){
+        for( unsigned char ladderIdx=0; ladderIdx<kIstNumLadders; ++ladderIdx ){
             StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
 
             if( rawHitCollectionPtr ){

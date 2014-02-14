@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/02/14 14:47:20  ypwang
+* update due to removal of getNumLadders() member function from StIstCollection
+*
 * Revision 1.3  2014/02/06 12:28:35  ypwang
 * updating scripts
 *
@@ -223,7 +226,7 @@ Int_t StIstQAMaker::Make(){
       	  LOG_DEBUG << "event index: " << mEventCounter << endm; 
 
       if(istHitCollection->numberOfHits() > 0) {
-         for(unsigned int ladderIdx=0; ladderIdx<istHitCollection->numberOfLadders() && ladderIdx<kIstNumLadders; ladderIdx++ )	{
+         for(unsigned int ladderIdx=0; ladderIdx<kIstNumLadders; ladderIdx++ )	{
 	    StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
 	    for(unsigned int sensorIdx=0; sensorIdx<ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
 	       StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
@@ -280,7 +283,7 @@ Int_t StIstQAMaker::Make(){
          for(int iS=0; iS<kIstNumSensors; iS++)
              counter[iS] = 0;
 
-         for( unsigned char ladderIdx=0; ladderIdx<istCollectionPtr->getNumLadders() && ladderIdx<kIstNumLadders; ++ladderIdx ){
+         for( unsigned char ladderIdx=0; ladderIdx<kIstNumLadders; ++ladderIdx ){
             StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
             if( rawHitCollectionPtr ){
                std::vector<StIstRawHit*>& rawHitVec = rawHitCollectionPtr->getRawHitVec();
