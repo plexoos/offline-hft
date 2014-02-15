@@ -14,6 +14,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/02/15 19:55:25  ypwang
+* remove virtual type declaration from member function
+*
 * Revision 1.3  2014/02/08 03:34:17  ypwang
 * updating scripts
 *
@@ -46,11 +49,11 @@ class St_istControl;
 class StIstRawHitMaker : public StRTSBaseMaker {
  public: 
    StIstRawHitMaker( const char* name = "ist_raw_hit" );
-   virtual ~StIstRawHitMaker();
-   virtual Int_t Init();
-   virtual Int_t InitRun(Int_t runNumber);
-   virtual Int_t Make();
-   virtual void Clear( Option_t *opts = "" );
+   ~StIstRawHitMaker();
+   Int_t Init();
+   Int_t InitRun(Int_t runNumber);
+   Int_t Make();
+   void Clear( Option_t *opts = "" );
 
    void setIsCalibrationMode( bool isCaliMode = 0);
    void setHitCut( float hitCut = 5.0);

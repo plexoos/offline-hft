@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/02/15 19:55:25  ypwang
+* remove virtual type declaration from member function
+*
 * Revision 1.4  2014/02/08 03:34:17  ypwang
 * updating scripts
 *
@@ -396,9 +399,7 @@ Int_t StIstRawHitMaker::Make() {
 void StIstRawHitMaker::Clear( Option_t *opts )
 {
    if( mIstCollectionPtr )
-     {
       mIstCollectionPtr->Clear( opts );
-     }
 };
 
 ClassImp(StIstRawHitMaker);
