@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.5  2014/02/19 04:42:05  ypwang
-* electronics information and a TH2F (ladder vs sensor) added.
+* Revision 1.6  2014/02/19 06:23:58  ypwang
+* update title definition for rawHits_TimeBin histograms
 *
 * Revision 1.4  2014/02/14 14:47:20  ypwang
 * update due to removal of getNumLadders() member function from StIstCollection
@@ -99,7 +99,7 @@ Int_t StIstQAMaker::Init()
     char buffer[100];
     for(int iTimeBin=0; iTimeBin<kIstNumTimeBins; iTimeBin++) {
 	sprintf(buffer, "rawHitCharge_TimeBin%d", iTimeBin);
-	rawHitCharge_TimeBin[iTimeBin] = new TH2F(buffer, "ADC of raw hits over all time bins vs. channel geometry ID", 110592, 1, 110593, 512, 0, kIstMaxAdc);
+	rawHitCharge_TimeBin[iTimeBin] = new TH2F(buffer, Form("ADC of raw hits at time bin %d vs. channel geometry ID",iTimeBin), 110592, 1, 110593, 512, 0, kIstMaxAdc);
 	rawHitCharge_TimeBin[iTimeBin]->GetXaxis()->SetTitle("Channel ID");
 	rawHitCharge_TimeBin[iTimeBin]->GetYaxis()->SetTitle("ADC of Raw Hits");
     }
@@ -213,7 +213,7 @@ Int_t StIstQAMaker::Make(){
     }
 
    //*******Initialization of the raw hit and hit level variables********** 
-   istRawHit.channelId = istRawHit.geoId = istRawHit.ladder = istRawHit.sensor = istRawHit.column = istRawHit.row = istRawHit.maxTimeBin = istRawHit.idTruth = istRawHit.EventId = -1;
+   istRawHit.channelId = istRawHit.geoId = istRawHit.ladder = istRawHit.sensor = istRawHit.column = istRawHit.row = istRawHit.maxTimeBin = istRawHit.rdo = istRawHit.arm = istRawHit.apv = istRawHit.channel = istRawHit.idTruth = istRawHit.EventId = -1;
    istRawHit.charge = istRawHit.chargeErr = 0.;
 
    istHit.hitId = istHit.ladder = istHit.sensor = istHit.apv = istHit.idTruth = istHit.EventId = istHit.maxTimeBin = istHit.clusteringType = istHit.nRawHits = istHit.nRawHitsZ = istHit.nRawHitsRPhi = -1;
