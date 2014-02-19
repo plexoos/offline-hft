@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/02/19 04:42:05  ypwang
+* electronics information and a TH2F (ladder vs sensor) added.
+*
 * Revision 1.4  2014/02/14 14:47:20  ypwang
 * update due to removal of getNumLadders() member function from StIstCollection
 *
@@ -64,6 +67,7 @@ StIstQAMaker::StIstQAMaker( const char* name ) :
     	rawHitCharge_TimeBin[iTimeBin] = NULL;
 
    hitMapOfIST = NULL;
+   hitMapOfAPV = NULL;
    hitGlobalXY = NULL;
    hitGlobalPhiZ = NULL;
    rawHitChargeErr = NULL;
@@ -83,10 +87,10 @@ Int_t StIstQAMaker::Init()
     Int_t ierr = kStOk;
 
     istRawHitTree = new TTree("istRawHits", "istRawHits_QA");
-    istRawHitTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:idTruth:EventId:charge/F:chargeErr");
+    istRawHitTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:rdo:arm:apv:channel:idTruth:EventId:charge/F:chargeErr");
 
     istHitTree = new TTree("istHits", "istHits_QA");
-    istHitTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
+    istHitTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:apv:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
 
     numOfRawHits_SensorId = new TH2F("numOfRawHits_SensorId", "The number of RawHits vs. sensor ID", 144, 1, 145, 768, 0, 768);
     numOfRawHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
@@ -136,6 +140,10 @@ Int_t StIstQAMaker::Init()
     hitMapOfIST->GetXaxis()->SetTitle("Row in r-#phi");
     hitMapOfIST->GetYaxis()->SetTitle("Column in Z");
 
+    hitMapOfAPV = new TH2F("hitMapOfAPV", "IST hit map in APV geometry Id vs. ladder", 36, 1, 37, 24, 1, 25);
+    hitMapOfAPV->GetXaxis()->SetTitle("APV geometry ID");
+    hitMapOfAPV->GetYaxis()->SetTitle("Ladder ID");
+
     hitGlobalXY = new TH2F("hitGlobalXY", "Global X vs. Global Y", 150, -15, 15, 150, -15, 15);
     hitGlobalXY->GetXaxis()->SetTitle("Global X [cm]");
     hitGlobalXY->GetYaxis()->SetTitle("Global Y [cm]");
@@ -161,7 +169,7 @@ Int_t StIstQAMaker::Init()
 
 	    sprintf(histtitle, "Hit mean column vs. mean row: Ladder %d Sensor %d", iLadder+1, iSensor+1);
             sprintf(buffer,"hitMap_Sensor%d", iLadder*6+iSensor+1);
-            hitMap[iLadder*6+iSensor] = new TH2F(buffer, histtitle, 12, 1, 13, 64, 1, 65);
+            hitMap[iLadder*6+iSensor] = new TH2F(buffer, histtitle, 12, 0.5, 12.5, 64, 0.5, 64.5);
             hitMap[iLadder*6+iSensor]->GetXaxis()->SetTitle("Mean Column");
             hitMap[iLadder*6+iSensor]->GetYaxis()->SetTitle("Mean Row");
 	}		
@@ -208,7 +216,7 @@ Int_t StIstQAMaker::Make(){
    istRawHit.channelId = istRawHit.geoId = istRawHit.ladder = istRawHit.sensor = istRawHit.column = istRawHit.row = istRawHit.maxTimeBin = istRawHit.idTruth = istRawHit.EventId = -1;
    istRawHit.charge = istRawHit.chargeErr = 0.;
 
-   istHit.hitId = istHit.ladder = istHit.sensor = istHit.idTruth = istHit.EventId = istHit.maxTimeBin = istHit.clusteringType = istHit.nRawHits = istHit.nRawHitsZ = istHit.nRawHitsRPhi = -1;
+   istHit.hitId = istHit.ladder = istHit.sensor = istHit.apv = istHit.idTruth = istHit.EventId = istHit.maxTimeBin = istHit.clusteringType = istHit.nRawHits = istHit.nRawHitsZ = istHit.nRawHitsRPhi = -1;
    istHit.meanColumn = istHit.meanRow = istHit.localX = istHit.localY = istHit.localZ = istHit.x = istHit.y = istHit.z = istHit.charge = istHit.chargeErr = 0.; 
 
    //loop
@@ -239,6 +247,7 @@ Int_t StIstQAMaker::Make(){
 			istHit.hitId 		= (int)hit->id();
 			istHit.ladder		= (int)hit->getLadder();
 			istHit.sensor		= (int)hit->getSensor();
+			istHit.apv		= (int)hit->getApv();
 			istHit.maxTimeBin	= (int)hit->getMaxTimeBin();
 			istHit.clusteringType	= (int)hit->getClusteringType();
 			istHit.nRawHits		= (int)hit->getNRawHits();
@@ -262,6 +271,7 @@ Int_t StIstQAMaker::Make(){
 			sensorIdxTemp = ((int)hit->getLadder()-1)*kIstNumSensorsPerLadder + (int)hit->getSensor();
 			hitMap[sensorIdxTemp-1]->Fill((float)hit->getMeanColumn(), (float)hit->getMeanRow());
 			hitMapOfIST->Fill(((int)hit->getLadder()-1)*kIstNumRowsPerSensor+(int)hit->getMeanRow(), ((int)hit->getSensor()-1)*kIstNumColumnsPerSensor+(int)hit->getMeanColumn());
+			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*6 + (int)hit->getApv(), (int)hit->getLadder());
 			hitGlobalXY->Fill((float)P.x(), (float)P.y());
 			hitGlobalPhiZ->Fill((float)P.phi(), (float)P.z());
 
@@ -313,6 +323,10 @@ Int_t StIstQAMaker::Make(){
 		   istRawHit.maxTimeBin = (int)maxTimeBin;
 		   istRawHit.charge	= (float)rawHit->getCharge(maxTimeBin);
 		   istRawHit.chargeErr	= (float)rawHit->getChargeErr(maxTimeBin);
+		   istRawHit.rdo	= (int)rawHit->getRdo();
+		   istRawHit.arm        = (int)rawHit->getArm();
+		   istRawHit.apv        = (int)rawHit->getApv();
+		   istRawHit.channel    = (int)rawHit->getChannel();
 		   istRawHit.idTruth	= (int)rawHit->getIdTruth();
 		   istRawHit.EventId	= (int)eventPtr->id();
 
@@ -375,6 +389,7 @@ Int_t StIstQAMaker::Finish(){
     myRootFile->WriteTObject(clusterSizeZ_SensorId);
     myRootFile->WriteTObject(clusterSizeRPhi_SensorId);
     myRootFile->WriteTObject(hitMapOfIST);
+    myRootFile->WriteTObject(hitMapOfAPV);
     myRootFile->WriteTObject(hitGlobalXY);
     myRootFile->WriteTObject(hitGlobalPhiZ);
     for(int iLadder=0; iLadder<kIstNumLadders; iLadder++) {

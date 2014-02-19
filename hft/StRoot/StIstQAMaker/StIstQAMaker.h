@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/02/19 04:42:05  ypwang
+* electronics information and a TH2F (ladder vs sensor) added.
+*
 * Revision 1.3  2014/02/06 12:28:35  ypwang
 * updating scripts
 *
@@ -53,12 +56,12 @@ protected:
   TTree *istHitTree;
 
   struct rawHitInfo {
-	int channelId, geoId, ladder, sensor, column, row, maxTimeBin, idTruth, EventId;
+	int channelId, geoId, ladder, sensor, column, row, maxTimeBin, rdo, arm, apv, channel, idTruth, EventId;
 	float charge, chargeErr;
   } istRawHit;
   
   struct hitInfo {
-	int hitId, ladder, sensor, idTruth, EventId, maxTimeBin, clusteringType, nRawHits, nRawHitsZ, nRawHitsRPhi;
+	int hitId, ladder, sensor, apv, idTruth, EventId, maxTimeBin, clusteringType, nRawHits, nRawHitsZ, nRawHitsRPhi;
 	float meanColumn, meanRow, localX, localY, localZ, x, y, z, charge, chargeErr;
   } istHit;
 
@@ -66,6 +69,7 @@ protected:
   TH2F* rawHitMap[kIstNumSensors]; // raw hit column vs row per sensor
   TH2F* hitMap[kIstNumSensors];    // hit mean column vs mean row per sensor
   TH2F* hitMapOfIST;		   // hit map of IST layer in r-phi vs. Z area
+  TH2F* hitMapOfAPV;		   // hit map in ladder vs. APV Id
   TH2F* hitGlobalXY;		   // hit global x vs y
   TH2F* hitGlobalPhiZ;		   // hit global z
   //Charge
