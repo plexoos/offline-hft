@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:00  ypwang
-* updating scripts
+* Revision 1.3  2014/02/19 04:38:15  ypwang
+* add member function getApv()
 *
 *
 ****************************************************************************
@@ -43,6 +43,7 @@ public:
     //accessories
     unsigned char     	getLadder() const;
     unsigned char     	getSensor() const;
+    unsigned char       getApv() const;
     float		getMeanColumn() const;
     float		getMeanRow() const;
     unsigned char     	getMaxTimeBin() const;  
@@ -84,6 +85,12 @@ ostream& operator<<(ostream&, const StIstHit&);
 ////////////////////////
 inline unsigned char StIstHit::getLadder() const          {   return 1 + (mHardwarePosition-1)/kIstNumSensorsPerLadder;         };
 inline unsigned char StIstHit::getSensor() const          {   return 1 + (mHardwarePosition-1)%kIstNumSensorsPerLadder;         };
+
+inline unsigned char StIstHit::getApv() const          {
+    float meanColumn = 0.5 + (0.5*kIstSensorActiveSizeZ + mLocalPosition[2])/kIstPadPitchColumn;
+    return ((unsigned char)(meanColumn-0.5))/2 + 1;
+}
+
 inline float StIstHit::getMeanColumn() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeZ    + mLocalPosition[2])/kIstPadPitchColumn;	};
 inline float StIstHit::getMeanRow() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeRPhi - mLocalPosition[0])/kIstPadPitchRow;	};
 inline unsigned char StIstHit::getMaxTimeBin() const      {   return mMaxTimeBin;     };
