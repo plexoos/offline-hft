@@ -4,7 +4,7 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StEventUtilities/StE
 retrieving revision 1.4
 diff -u -r1.4 StEventHitIter.cxx
 --- StRoot/StEventUtilities/StEventHitIter.cxx	8 Jan 2013 21:50:17 -0000	1.4
-+++ StRoot/StEventUtilities/StEventHitIter.cxx	8 Feb 2014 00:55:40 -0000
++++ StRoot/StEventUtilities/StEventHitIter.cxx	28 Jan 2014 01:30:47 -0000
 @@ -17,6 +17,7 @@
  #include "StFgtCollection.h"
  #include "StFgtHitCollection.h"
@@ -105,27 +105,3 @@ diff -u -r1.4 StEventHitIter.cxx
       /* case kFgtId: n.b. This will be removing the RnD version of the FGT */ 
     case kFmsId: 
       Add(new StRnDHitIter(detId));break;
-Index: StRoot/StEventUtilities/StuFixTopoMap.cxx
-===================================================================
-RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StEventUtilities/StuFixTopoMap.cxx,v
-retrieving revision 1.4
-diff -u -r1.4 StuFixTopoMap.cxx
---- StRoot/StEventUtilities/StuFixTopoMap.cxx	11 Mar 2013 09:42:31 -0000	1.4
-+++ StRoot/StEventUtilities/StuFixTopoMap.cxx	8 Feb 2014 00:55:40 -0000
-@@ -124,13 +124,9 @@
-                 LOG_DEBUG<<"word1: "<<word1<<endm;
-             }
-             if (hits[i]->detector() == kIstId) {
--                k = dynamic_cast<const StRnDHit*>(hits[i])->layer();
--                s = dynamic_cast<const StRnDHit*>(hits[i])->extraByte0();
--                LOG_DEBUG<<"track has hit in ist, layer "<<k<<", side "<<s<<endm;
--                if(k==2) k=k+s-1;
--                LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
--                if (word1 & 1U<<(k+2)) word2 |= 1U<<30; // turnaround flag    
--                word1 |= 1U<<(k+2);
-+		LOG_DEBUG<<"set bit for layer "<<k<<" to 1"<<endm;
-+                if (word1 & 1U<<k) word2 |= 1U<<30; // turnaround flag    
-+                word1 |= 1U<<k;
-                 LOG_DEBUG<<"word1: "<<word1<<endm;
-             }
-             else if (hits[i]->detector() == kSsdId) {
