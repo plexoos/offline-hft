@@ -56,6 +56,22 @@ How to build development hft libraries
     cons
 
 
+How to create patches for packages in official StRoot
+=====================================================
+
+In the directory containing StRoot execute the following commands:
+
+    cvs update -r HEAD StRoot/StBFChain
+    cvs update -r HEAD StRoot/StEvent
+    cvs update -r HEAD StRoot/StEventUtilities
+    cvs update -r HEAD StRoot/StiMaker
+
+    cvs diff -u -r HEAD StRoot/StBFChain > offline/hft/StRoot/StBFChain.patch
+    cvs diff -u -r HEAD StRoot/StEvent > offline/hft/StRoot/StEvent.patch
+    cvs diff -u -r HEAD StRoot/StEventUtilities > offline/hft/StRoot/StEventUtilities.patch
+    cvs diff -u -r HEAD StRoot/StiMaker > offline/hft/StRoot/StiMaker.patch
+
+
 How to run tests
 ================
 
