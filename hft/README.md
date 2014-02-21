@@ -10,6 +10,8 @@ How to build development hft libraries
 ======================================
 
     starver dev
+    mkdir myhft
+    cd myhft
     cvs checkout -r HEAD offline/hft
     cvs checkout -r HEAD StarDb
     cvs checkout -r HEAD StRoot/StBFChain
@@ -25,6 +27,9 @@ How to build development hft libraries
 
     cp -r offline/hft/StarDb/Calibrations StarDb/
     cp -r offline/hft/StarDb/Geometry StarDb/
+
+    # Copy new files to the official StRoot area
+
     cp offline/hft/StRoot/StEvent/StIstHitCollection.cxx       StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHitCollection.h         StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHit.cxx                 StRoot/StEvent/
@@ -33,6 +38,9 @@ How to build development hft libraries
     cp offline/hft/StRoot/StEvent/StIstLadderHitCollection.h   StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.cxx StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.h   StRoot/StEvent/
+
+    # The following new submodules can aslo be copied to your local StRoot but
+    # you may chose to link them instead
 
     cd StRoot
     ln -s ../offline/hft/StRoot/StIstCalibrationMaker
@@ -47,6 +55,8 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
     ln -s ../offline/hft/StRoot/StiPxl
+
+    # Apply changes to existing files
 
     cd ..
     patch -p0 < offline/hft/StRoot/StBFChain.patch
@@ -79,7 +89,7 @@ To read PXL raw data:
 
     export BFC_OPTIONS='"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
     export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157027/daq/st_physics_14157027_raw_5480001.daq"'
-    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157071/daq/st_pxl_adc_14157071_raw_6990001.daq"'
+    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run14/daq/038/15038019/st_cosmic_adc_15038019_raw_1000001.daq"'
 
 To run over PXL simulation:
 
