@@ -10,6 +10,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.3  2014/02/22 20:13:07  ypwang
+ * adding IST Sti codes
+ *
  * Revision 1.2  2014/01/29 18:25:00  ypwang
  * updating scripts
  *
@@ -102,7 +105,6 @@
  **************************************************************************/
 #ifndef StContainers_hh
 #define StContainers_hh
-//#include "St_base/StArray.h"
 #include "StArray.h"
 
 class StObject;
