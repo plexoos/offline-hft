@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.24  2014/02/25 01:08:39  smirnovd
+ * Reduced number of bins in event distribution histograms
+ *
  * Revision 1.23  2014/02/07 00:15:00  smirnovd
  * Small stylistic improvement + doxygen comments
  *
@@ -89,11 +92,11 @@ void StPxlMonMaker::bookHists()
       m_rawHitNtuple = new TNtuple("rawHitNtuple", "rawHitNtuple", "sector:ladder:sensor:column:row:idTruth:EventId");
    }
 
-   m_nRawHits_sensorID = new TH2S("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
+   m_nRawHits_sensorID = new TH2S("nRawHits_sensorID", "The number of RawHits vs. sensorID", 400, 1, 401, 100, 0, 1200);
    m_nRawHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_nRawHits_sensorID->GetYaxis()->SetTitle("nRawHits");
 
-   m_nHits_sensorID = new TH2S("nHits_sensorID", "The number of Hits vs. sensorID", 400, 1, 401, 1200, 0, 1200);
+   m_nHits_sensorID = new TH2S("nHits_sensorID", "The number of Hits vs. sensorID", 400, 1, 401, 100, 0, 1200);
    m_nHits_sensorID->GetXaxis()->SetTitle("Sensor ID");
    m_nHits_sensorID->GetYaxis()->SetTitle("nHits");
 
@@ -108,13 +111,13 @@ void StPxlMonMaker::bookHists()
 
       sprintf(ename, "nRawHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "RawHits vs. sensorNo: Sector %d", i + 1);
-      m_nRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 100, 0, 1200);
       m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
       m_nRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nRawHits");
 
       sprintf(ename, "nHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "Hits vs. sensorNo: Sector %d", i + 1);
-      m_nHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 1200, 0, 1200);
+      m_nHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 100, 0, 1200);
       m_nHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
       m_nHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nHits");
 
