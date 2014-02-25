@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.3  2014/02/19 04:38:15  ypwang
-* add member function getApv()
+* Revision 1.4  2014/02/25 17:04:50  ypwang
+* get rid of mClusteringType and its accessory/modifier functions
 *
 *
 ****************************************************************************
@@ -48,7 +48,6 @@ public:
     float		getMeanRow() const;
     unsigned char     	getMaxTimeBin() const;  
     float     		getChargeErr() const;
-    unsigned char	getClusteringType() const;
     unsigned char     	getNRawHits() const;
     unsigned char     	getNRawHitsZ() const;
     unsigned char     	getNRawHitsRPhi() const;       
@@ -58,7 +57,6 @@ public:
     //modifiers
     void    setMaxTimeBin(unsigned char tb);
     void    setChargeErr(float chargeErr);
-    void    setClusteringType(unsigned char clusteringType);
     void    setNRawHits(unsigned char nRawHits);//cluster size
     void    setNRawHitsZ(unsigned char nRawHitsZ);
     void    setNRawHitsRPhi(unsigned char nRawHitsRPhi);  
@@ -67,13 +65,11 @@ public:
 protected:
     UChar_t mMaxTimeBin;        // max charge time bin
     Float_t mChargeErr;         // charge uncertainty
-    UChar_t mClusteringType;	// clustering algorithm type
     UChar_t mNRawHits;          // nRawHits: cluster size
     UChar_t mNRawHitsZ;         // cluster size in Z direction
     UChar_t mNRawHitsRPhi;      // cluster size in r-phi direction
     
-    //local position of hit inside the sensor 
-    Float_t mLocalPosition[3]; //meanColumn, 0. or defined by sensor surface correction, meanRow
+    Float_t mLocalPosition[3];  //local position of hit inside the sensor 
         
     StDetectorId mDetectorId;
 private:
@@ -91,18 +87,16 @@ inline unsigned char StIstHit::getApv() const          {
     return ((unsigned char)(meanColumn-0.5))/2 + 1;
 }
 
-inline float StIstHit::getMeanColumn() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeZ    + mLocalPosition[2])/kIstPadPitchColumn;	};
-inline float StIstHit::getMeanRow() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeRPhi - mLocalPosition[0])/kIstPadPitchRow;	};
+inline float StIstHit::getMeanColumn() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeZ    + mLocalPosition[2])/kIstPadPitchColumn;};
+inline float StIstHit::getMeanRow() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeRPhi - mLocalPosition[0])/kIstPadPitchRow;	 };
 inline unsigned char StIstHit::getMaxTimeBin() const      {   return mMaxTimeBin;     };
 inline float StIstHit::getChargeErr()    const    	  {   return mChargeErr;      };
-inline unsigned char StIstHit::getClusteringType() const  {   return mClusteringType; };
 inline unsigned char StIstHit::getNRawHits() const        {   return mNRawHits;       };
 inline unsigned char StIstHit::getNRawHitsZ() const       {   return mNRawHitsZ;   };
 inline unsigned char StIstHit::getNRawHitsRPhi() const    {   return mNRawHitsRPhi;};
 
 inline void StIstHit::setMaxTimeBin(unsigned char tb)     	     	{   mMaxTimeBin = tb;       };
 inline void StIstHit::setChargeErr(float chargeErr)        		{   mChargeErr = chargeErr;         };
-inline void StIstHit::setClusteringType(unsigned char clusteringType) 	{   mClusteringType = clusteringType; };
 inline void StIstHit::setNRawHits(unsigned char nRawHits)   	     	{   mNRawHits = nRawHits;   };
 inline void StIstHit::setNRawHitsZ(unsigned char nRawHitsZ)        	{   mNRawHitsZ = nRawHitsZ;   };
 inline void StIstHit::setNRawHitsRPhi(unsigned char nRawHitsRPhi)  	{   mNRawHitsRPhi = nRawHitsRPhi;   };

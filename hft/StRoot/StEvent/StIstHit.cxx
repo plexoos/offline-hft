@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.3  2014/02/25 17:04:50  ypwang
+* get rid of mClusteringType and its accessory/modifier functions
+*
 * Revision 1.2  2014/01/29 18:25:00  ypwang
 * updating scripts
 *
@@ -25,11 +28,10 @@ StIstHit::~StIstHit() { /* no op */ }
 
 StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB, unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi, float meanColumn, float meanRow)
 {
-    StHit::setHardwarePosition((ladder-1)*6 + sensor);
+    StHit::setHardwarePosition((ladder-1)*kIstNumSensorsPerLadder + sensor);
     StHit::setCharge(charge);
     mChargeErr = chargeErr;
     mMaxTimeBin = maxTB;
-    mClusteringType = 1;
     mNRawHits = nRawHits;
     mNRawHitsZ = nRawHitsZ;
     mNRawHitsRPhi = nRawHitsRPhi;
@@ -45,7 +47,6 @@ StIstHit::StIstHit(const StThreeVectorF& p,
 {
     mChargeErr = 0.;
     mMaxTimeBin = -1;
-    mClusteringType = 1;
     mNRawHits = -1;
     mNRawHitsZ = -1;
     mNRawHitsRPhi = -1;
