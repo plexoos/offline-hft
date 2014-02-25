@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.25  2014/02/25 01:09:06  smirnovd
+ * Minor fixes not affecting functionality
+ *
  * Revision 1.24  2014/02/25 01:08:39  smirnovd
  * Reduced number of bins in event distribution histograms
  *
@@ -69,14 +72,14 @@ ClassImp(StPxlMonMaker);
 
 StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin, const Char_t *name) : StMaker(name),
    mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(1)
-{}
 
 
 Int_t StPxlMonMaker::Init()
 {
+   LOG_INFO << "StPxlMonMaker::Init()" << endm;
+
    mEventCounter = 0;
    mNtupleWrite = 1;
-   LOG_INFO << "StPxlMonMaker::Init()" << endm;
    bookHists();
    return kStOk;
 }
@@ -331,7 +334,7 @@ void StPxlMonMaker::writeHists()
    slash_index = filename.First(".");
    if (slash_index == 0) slash_index = filename.Length();
 
-   filename.Replace(slash_index, filename.Length() - slash_index, ".pxlQa.root");
+   filename.Replace(slash_index, filename.Length() - slash_index, ".pxlMon.root");
    filename.Insert(0, "output/");
    LOG_INFO << "StPxlMonMaker::writeHists(): filename: " << filename << endm;
 

@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.17  2014/02/25 01:09:06  smirnovd
+ * Minor fixes not affecting functionality
+ *
  * Revision 1.16  2014/02/07 00:15:00  smirnovd
  * Small stylistic improvement + doxygen comments
  *
@@ -59,7 +62,7 @@ class StPxlMonMaker : public StMaker
 {
 public:
 
-   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name="pxlQa");
+   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name="pxlMon");
    Int_t  Init();
    Int_t  Make();                      // invoked for every event
    Int_t  Finish();                    // called once at the end
@@ -79,11 +82,11 @@ public:
    TH2S     *m_hitnRawHits_sensorID;
    TH2S     *m_hitnRawHits_eachsector_sensorID[10];
 
-   TH2S     *m_nRawHits_sensorID;                  ///< Sensor integral hit map vs sensor id. Duplicates m_rawHit_rowvscolumn!
-   TH2S     *m_nRawHits_eachsector_sensorID[10];   ///< Sensor integral hit map vs ladder/sensor indexed by sector id. Duplicates m_rawHit_rowvscolumn!
+   TH2S     *m_nRawHits_sensorID;                  ///< Raw hit multiplicity distributions for each sensor
+   TH2S     *m_nRawHits_eachsector_sensorID[10];   ///< As above but indexed by sector id
 
-   TH2S     *m_nHits_sensorID;
-   TH2S     *m_nHits_eachsector_sensorID[10];
+   TH2S     *m_nHits_sensorID;                     ///< Hit multiplicity distributions for each sensor
+   TH2S     *m_nHits_eachsector_sensorID[10];      ///< As above but indexed by sector id
 
    TH1F     *m_globalz;
    TH2S     *m_innerhits_outerhits[10];
