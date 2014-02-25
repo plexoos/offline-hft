@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.28  2014/02/25 01:09:28  smirnovd
+ * Fixed missing brackets
+ *
  * Revision 1.27  2014/02/25 01:09:19  smirnovd
  * Remove unused code accessing cluster collection
  *
@@ -78,6 +81,7 @@ ClassImp(StPxlMonMaker);
 
 StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin, const Char_t *name) : StMaker(name),
    mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(1)
+{}
 
 
 Int_t StPxlMonMaker::Init()
