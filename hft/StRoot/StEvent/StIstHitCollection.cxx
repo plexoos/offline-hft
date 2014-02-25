@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:00  ypwang
-* updating scripts
+* Revision 1.3  2014/02/25 17:08:49  ypwang
+* add mClusteringType and its accessory/modifier functions
 *
 *
 ****************************************************************************
@@ -28,9 +28,9 @@ static const char rcsid[] = "$Id$";
 
 ClassImp(StIstHitCollection)
 
-StIstHitCollection::StIstHitCollection() { /* noop */ }
+StIstHitCollection::StIstHitCollection() { /* no op */ }
 
-StIstHitCollection::~StIstHitCollection() { /* noop */ }
+StIstHitCollection::~StIstHitCollection() { /* no op */ }
     
 unsigned int
 StIstHitCollection::numberOfLadders() const { return mNumberOfLadders; }
@@ -62,6 +62,9 @@ StIstHitCollection::numberOfHits() const
                 sum += mLadders[i].sensor(j)->hits().size();
     return sum;
 }
+
+unsigned char StIstHitCollection::getClusteringType() const {   return mClusteringType; }
+void StIstHitCollection::setClusteringType(unsigned char clusteringType) {   mClusteringType = clusteringType; }
 
 StIstLadderHitCollection*
 StIstHitCollection::ladder(unsigned int i)

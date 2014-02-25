@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.2  2014/01/29 18:25:00  ypwang
-* updating scripts
+* Revision 1.3  2014/02/25 17:08:49  ypwang
+* add mClusteringType and its accessory/modifier functions
 *
 *
 ****************************************************************************
@@ -34,6 +34,9 @@ public:
     bool          addHit(StIstHit*);
     unsigned int  numberOfHits() const;
     unsigned int  numberOfLadders() const;
+
+    unsigned char getClusteringType() const;
+    void 	  setClusteringType(unsigned char clusteringType);
     
     StIstLadderHitCollection*       ladder(unsigned int);
     const StIstLadderHitCollection* ladder(unsigned int) const;
@@ -41,6 +44,7 @@ public:
 private:
     enum { mNumberOfLadders = 24 };
     StIstLadderHitCollection mLadders[mNumberOfLadders];
+    UChar_t mClusteringType;  // clustering algorithm type
     
     ClassDef(StIstHitCollection,1)
 };
