@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.30  2014/02/25 04:44:52  sss
+ * *** empty log message ***
+ *
  * Revision 1.29  2014/02/25 04:20:14  sss
  * *** empty log message ***
  *
@@ -83,7 +86,7 @@ ClassImp(StPxlMonMaker);
 
 
 StPxlMonMaker::StPxlMonMaker(uint16_t numPixelsPerBin, const Char_t *name) : StMaker(name),
-   mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(1)
+   mNumPixelsPerBin(numPixelsPerBin), mEventCounter(0), mNtupleWrite(0)
 {}
 
 
@@ -92,7 +95,7 @@ Int_t StPxlMonMaker::Init()
    LOG_INFO << "StPxlMonMaker::Init()" << endm;
 
    mEventCounter = 0;
-   mNtupleWrite = 1;
+   mNtupleWrite = 0;
    bookHists();
    return kStOk;
 }

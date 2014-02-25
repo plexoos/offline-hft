@@ -19,6 +19,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.18  2014/02/25 04:44:52  sss
+ * *** empty log message ***
+ *
  * Revision 1.17  2014/02/25 01:09:06  smirnovd
  * Minor fixes not affecting functionality
  *
@@ -62,7 +65,7 @@ class StPxlMonMaker : public StMaker
 {
 public:
 
-   StPxlMonMaker(uint16_t numPixelsPerBin=10, const Char_t *name="pxlMon");
+   StPxlMonMaker(uint16_t numPixelsPerBin=1, const Char_t *name="pxlMon");
    Int_t  Init();
    Int_t  Make();                      // invoked for every event
    Int_t  Finish();                    // called once at the end
