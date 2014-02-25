@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/02/25 01:07:32  smirnovd
+* Save on indentation
+*
 * Revision 1.6  2014/02/25 01:07:18  smirnovd
 * Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
@@ -231,7 +234,8 @@ Int_t StIstCalibrationMaker::Make()
       for ( unsigned char ladderIdx = 0; ladderIdx < kIstNumLadders; ++ladderIdx ) {
          StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
 
-         if ( rawHitCollectionPtr ) {
+         if ( !rawHitCollectionPtr ) continue;
+
             std::vector<StIstRawHit *> &rawHitVec = rawHitCollectionPtr->getRawHitVec();
             std::vector< StIstRawHit * >::iterator rawHitIter;
 
@@ -269,7 +273,6 @@ Int_t StIstCalibrationMaker::Make()
                   }//adc cut
                }//time bin loop
             }//raw hits loop
-         }//raw hit collection cut
       }//ladderIdx loop
 
       //common mode calculation per event
