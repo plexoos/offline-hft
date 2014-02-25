@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.26  2014/02/25 01:09:12  smirnovd
+ * Fill derivative histograms when the maker finishes
+ *
  * Revision 1.25  2014/02/25 01:09:06  smirnovd
  * Minor fixes not affecting functionality
  *
@@ -183,6 +186,33 @@ void StPxlMonMaker::bookHists()
 
 Int_t StPxlMonMaker::Finish()
 {
+   LOG_INFO << "StPxlMonMaker::Finish()" << endm;
+
+   for (int iSec = 0; iSec < kNumberOfPxlSectors; iSec++) {
+      for (int iLad = 0; iLad < kNumberOfPxlLaddersPerSector; iLad++) {
+         for (int iSen = 0; iSen < kNumberOfPxlSensorsPerLadder; iSen++)
+         {
+            int sensorId = iSec * 40 + iLad * 10 + iSen;
+
+            // Copy bin content
+            int nYBins = m_nRawHits_sensorID->GetNbinsY();
+
+            for (int iYBin=0; iYBin<=nYBins+1; ++iYBin) { // include under/overflow bins
+
+               double binCont = m_nRawHits_sensorID->GetBinContent(sensorId + 1, iYBin);
+
+               if (binCont)
+                  m_nRawHits_eachsector_sensorID[iSec]->SetBinContent(iLad * 10 + iSen + 1, iYBin, binCont);
+
+               binCont = m_nHits_sensorID->GetBinContent(sensorId + 1, iYBin);
+
+               if (binCont)
+                  m_nHits_eachsector_sensorID[iSec]->Fill(iLad * 10 + iSen + 1, binCont);
+            }
+         }
+      }
+   }
+
    writeHists();
    gMessMgr->Info() << "StPxlMonMaker::Finish() "
                     << "Processed " << mEventCounter << " events." << endm;
@@ -256,7 +286,6 @@ void StPxlMonMaker::fillHists()
                }
 
                m_nHits_sensorID->Fill(sensorId + 1, sensorHitCollection->hits().size());
-               m_nHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, sensorHitCollection->hits().size());
                if (j == 0) hitnumber_inner += sensorHitCollection->hits().size();
                if (j == 1 || j == 2 || j == 3) hitnumber_outer += sensorHitCollection->hits().size();
             }
@@ -298,7 +327,6 @@ void StPxlMonMaker::fillHists()
             }
 
             m_nRawHits_sensorID->Fill(sensorId + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
-            m_nRawHits_eachsector_sensorID[i]->Fill(j * 10 + k + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
             m_nRawHits_EventId[sensorId]->Fill((int) pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
 
             if (j == 0) rawhitnumber_inner += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
