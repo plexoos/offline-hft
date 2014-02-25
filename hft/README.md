@@ -55,6 +55,7 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
     ln -s ../offline/hft/StRoot/StiPxl
+    ln -s ../offline/hft/StRoot/StiIst
 
     # Apply changes to existing files
 
