@@ -85,26 +85,9 @@ In the directory containing StRoot execute the following commands:
 How to run tests
 ================
 
-To read PXL raw data:
+The BFC chain options for data and simulation processing can be found in
 
-    export BFC_OPTIONS='"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
-    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run13/daq/14157027/daq/st_physics_14157027_raw_5480001.daq"'
-    export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run14/daq/038/15038019/st_cosmic_adc_15038019_raw_1000001.daq"'
-
-To run over PXL simulation:
-
-    export BFC_OPTIONS='"Debug2 tpcRS y2014 MakeEvent ITTF StiPxl PixelIt NoSsdIt NoSvtIt pxlDb pxlFastSim Idst BAna l0 Tree logger Sti VFMCE tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-    export BFC_INPFILE='"mytest.fz"'
-
-    root4star -b -q -l "bfc.C(1, 100, $BFC_OPTIONS, $BFC_INPFILE)"
-
-For IST
-
-    root4star -b -q -l 'bfc.C(1, 5000, "in,istRaw,istDb,istCluster,istHit,istQA", "st_physics_15016035_raw_1000001.daq")'
-
-For IST calibration
-
-    root4star -b -q -l 'bfc.C(1, 5000, "in,istRaw,istDb,istCalib", "st_physics_15016035_raw_1000001.daq")'
+    offline/hft/runBFC.sh
 
 
 To do
