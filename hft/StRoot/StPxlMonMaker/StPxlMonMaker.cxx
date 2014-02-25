@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.27  2014/02/25 01:09:19  smirnovd
+ * Remove unused code accessing cluster collection
+ *
  * Revision 1.26  2014/02/25 01:09:12  smirnovd
  * Fill derivative histograms when the maker finishes
  *
@@ -229,12 +232,6 @@ Int_t StPxlMonMaker::Make()
    if (!event) {
       gMessMgr->Warning() << "StPxlMonMaker::Make : No StEvent" << endm;
       //return kStOK;        // if no event, we're done
-   }
-
-   TObjectSet *pxlClusterDataSet = (TObjectSet *)GetDataSet("pxlCluster");
-   if (pxlClusterDataSet) {
-      StPxlClusterCollection *pxlClusterCollection = (StPxlClusterCollection *)pxlClusterDataSet->GetObject();
-      LOG_WARN << "StPxlMonMaker:: pxlClusterCollection: " << pxlClusterCollection << endm;
    }
 
    fillHists();
