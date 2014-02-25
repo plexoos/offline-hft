@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.7  2014/02/19 08:38:50  ypwang
-* update several histograms binning
+* Revision 1.8  2014/02/25 17:12:26  ypwang
+* minor update due to mClusteringType moved to StIstHitCollection
 *
 * Revision 1.4  2014/02/14 14:47:20  ypwang
 * update due to removal of getNumLadders() member function from StIstCollection
@@ -236,6 +236,7 @@ Int_t StIstQAMaker::Make(){
       if(istHitCollection->numberOfHits() > 0) {
          for(unsigned int ladderIdx=0; ladderIdx<kIstNumLadders; ladderIdx++ )	{
 	    StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
+	    unsigned char nClusteringType = istHitCollection->getClusteringType();
 	    for(unsigned int sensorIdx=0; sensorIdx<ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
 	       StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
 	       int sensorIdxTemp = 0;
@@ -249,7 +250,7 @@ Int_t StIstQAMaker::Make(){
 			istHit.sensor		= (int)hit->getSensor();
 			istHit.apv		= (int)hit->getApv();
 			istHit.maxTimeBin	= (int)hit->getMaxTimeBin();
-			istHit.clusteringType	= (int)hit->getClusteringType();
+			istHit.clusteringType	= (int)nClusteringType;
 			istHit.nRawHits		= (int)hit->getNRawHits();
 			istHit.nRawHitsZ	= (int)hit->getNRawHitsZ();
 			istHit.nRawHitsRPhi	= (int)hit->getNRawHitsRPhi();
