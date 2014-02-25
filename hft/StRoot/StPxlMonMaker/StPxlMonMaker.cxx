@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.29  2014/02/25 04:20:14  sss
+ * *** empty log message ***
+ *
  * Revision 1.28  2014/02/25 01:09:28  smirnovd
  * Fixed missing brackets
  *
@@ -124,8 +127,8 @@ void StPxlMonMaker::bookHists()
 
       sprintf(ename, "nRawHits_eachsector_sensorID_%d", i);
       sprintf(etitle, "RawHits vs. sensorNo: Sector %d", i + 1);
-      m_nRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 40, 1, 41, 100, 0, 1200);
-      m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sensor No.");
+      m_nRawHits_eachsector_sensorID[i] = new TH2S(ename, etitle, 160, 1, 161, 1200, 0, 1200);
+      m_nRawHits_eachsector_sensorID[i]->GetXaxis()->SetTitle("Sub-array");
       m_nRawHits_eachsector_sensorID[i]->GetYaxis()->SetTitle("nRawHits");
 
       sprintf(ename, "nHits_eachsector_sensorID_%d", i);
@@ -194,32 +197,6 @@ void StPxlMonMaker::bookHists()
 Int_t StPxlMonMaker::Finish()
 {
    LOG_INFO << "StPxlMonMaker::Finish()" << endm;
-
-   for (int iSec = 0; iSec < kNumberOfPxlSectors; iSec++) {
-      for (int iLad = 0; iLad < kNumberOfPxlLaddersPerSector; iLad++) {
-         for (int iSen = 0; iSen < kNumberOfPxlSensorsPerLadder; iSen++)
-         {
-            int sensorId = iSec * 40 + iLad * 10 + iSen;
-
-            // Copy bin content
-            int nYBins = m_nRawHits_sensorID->GetNbinsY();
-
-            for (int iYBin=0; iYBin<=nYBins+1; ++iYBin) { // include under/overflow bins
-
-               double binCont = m_nRawHits_sensorID->GetBinContent(sensorId + 1, iYBin);
-
-               if (binCont)
-                  m_nRawHits_eachsector_sensorID[iSec]->SetBinContent(iLad * 10 + iSen + 1, iYBin, binCont);
-
-               binCont = m_nHits_sensorID->GetBinContent(sensorId + 1, iYBin);
-
-               if (binCont)
-                  m_nHits_eachsector_sensorID[iSec]->Fill(iLad * 10 + iSen + 1, binCont);
-            }
-         }
-      }
-   }
-
    writeHists();
    gMessMgr->Info() << "StPxlMonMaker::Finish() "
                     << "Processed " << mEventCounter << " events." << endm;
@@ -318,16 +295,24 @@ void StPxlMonMaker::fillHists()
          for (int k = 0; k < kNumberOfPxlSensorsPerLadder; k++)
          {
             int sensorId = i * 40 + j * 10 + k;
-
+            unsigned int sensor_subarray[4] = {0};
             for (int l = 0; l < pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1); l++) {
                const StPxlRawHit *rawHit = pxlRawHitCollection->rawHit(i + 1, j + 1, k + 1, l);
                if (mNtupleWrite) {
                   m_rawHitNtuple->Fill((float)i + 1, (float)j + 1, (float)k + 1, (float)rawHit->row(), (float)rawHit->column(), (float)rawHit->idTruth(), (float) pEvent->id());
                }
                m_rawHit_rowvscolumn[sensorId]->Fill(rawHit->column(), rawHit->row());
+               if(rawHit->column()<240) sensor_subarray[0]++;
+               else if(rawHit->column()<480) sensor_subarray[1]++;
+               else if(rawHit->column()<720) sensor_subarray[2]++;
+               else sensor_subarray[3]++;
             }
 
             m_nRawHits_sensorID->Fill(sensorId + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
+            m_nRawHits_eachsector_sensorID[i]->Fill(j*40+k*4+1, sensor_subarray[0]);
+            m_nRawHits_eachsector_sensorID[i]->Fill(j*40+k*4+2, sensor_subarray[1]);
+            m_nRawHits_eachsector_sensorID[i]->Fill(j*40+k*4+3, sensor_subarray[2]);
+            m_nRawHits_eachsector_sensorID[i]->Fill(j*40+k*4+4, sensor_subarray[3]);
             m_nRawHits_EventId[sensorId]->Fill((int) pEvent->id() / 100 + 1, pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1));
 
             if (j == 0) rawhitnumber_inner += pxlRawHitCollection->numberOfRawHits(i + 1, j + 1, k + 1);
