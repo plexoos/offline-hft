@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.9  2014/02/25 01:07:57  smirnovd
+* Reverse condition within the loop
+*
 * Revision 1.8  2014/02/25 01:07:48  smirnovd
 * Remove one indentation level
 *
@@ -253,7 +256,7 @@ Int_t StIstCalibrationMaker::Make()
             for ( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ) {
                Int_t adc = (*rawHitIter)->getCharge( timeBin );
 
-               if (adc)	{
+               if (!adc) continue;
                   int t = (int)timeBin;
 
                   if (mTimeBinMask == 0) t = 0;
@@ -273,7 +276,6 @@ Int_t StIstCalibrationMaker::Make()
                   }
 
                   histPed->Fill( (float)adc );
-               }//adc cut
             }//time bin loop
          }//raw hits loop
       }//ladderIdx loop
