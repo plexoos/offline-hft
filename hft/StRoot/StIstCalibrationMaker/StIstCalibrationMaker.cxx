@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.10  2014/02/25 01:08:21  smirnovd
+* Remove one level of indentation in the loop
+*
 * Revision 1.9  2014/02/25 01:07:57  smirnovd
 * Reverse condition within the loop
 *
@@ -257,25 +260,26 @@ Int_t StIstCalibrationMaker::Make()
                Int_t adc = (*rawHitIter)->getCharge( timeBin );
 
                if (!adc) continue;
-                  int t = (int)timeBin;
 
-                  if (mTimeBinMask == 0) t = 0;
+               int t = (int)timeBin;
 
-                  sumAdcPerEvent[apvId - 1][t] += adc;
-                  channelCountsPerEvent[apvId - 1][t] ++;
+               if (mTimeBinMask == 0) t = 0;
 
-                  int code = kIstNumTimeBins * elecId + t;
-                  TH1F *histPed = mHistPedVec[ code ];
+               sumAdcPerEvent[apvId - 1][t] += adc;
+               channelCountsPerEvent[apvId - 1][t] ++;
 
-                  if ( !histPed ) {
-                     ss.str("");
-                     ss.clear();
-                     ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
-                     histPed = new TH1F( ss.str().data(), "", 128, 0, kIstMaxAdc );
-                     mHistPedVec[ code ] = histPed;
-                  }
+               int code = kIstNumTimeBins * elecId + t;
+               TH1F *histPed = mHistPedVec[ code ];
 
-                  histPed->Fill( (float)adc );
+               if ( !histPed ) {
+                  ss.str("");
+                  ss.clear();
+                  ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
+                  histPed = new TH1F( ss.str().data(), "", 128, 0, kIstMaxAdc );
+                  mHistPedVec[ code ] = histPed;
+               }
+
+               histPed->Fill( (float)adc );
             }//time bin loop
          }//raw hits loop
       }//ladderIdx loop
