@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/02/25 01:07:48  smirnovd
+* Remove one indentation level
+*
 * Revision 1.7  2014/02/25 01:07:32  smirnovd
 * Save on indentation
 *
@@ -236,43 +239,43 @@ Int_t StIstCalibrationMaker::Make()
 
          if ( !rawHitCollectionPtr ) continue;
 
-            std::vector<StIstRawHit *> &rawHitVec = rawHitCollectionPtr->getRawHitVec();
-            std::vector< StIstRawHit * >::iterator rawHitIter;
+         std::vector<StIstRawHit *> &rawHitVec = rawHitCollectionPtr->getRawHitVec();
+         std::vector< StIstRawHit * >::iterator rawHitIter;
 
-            for ( rawHitIter = rawHitVec.begin(); rawHitIter != rawHitVec.end(); ++rawHitIter ) {
-               int elecId = (*rawHitIter)->getChannelId();
-               int geoId  = (*rawHitIter)->getGeoId();		//channel geometry Id, counting from 1 to 110592
-               int apvId  = 1 + (geoId - 1) / kIstNumApvChannels;  	//APV chip geometry Id, counting from 1 to 864
+         for ( rawHitIter = rawHitVec.begin(); rawHitIter != rawHitVec.end(); ++rawHitIter ) {
+            int elecId = (*rawHitIter)->getChannelId();
+            int geoId  = (*rawHitIter)->getGeoId();		//channel geometry Id, counting from 1 to 110592
+            int apvId  = 1 + (geoId - 1) / kIstNumApvChannels;  	//APV chip geometry Id, counting from 1 to 864
 
-               if (elecId >= kIstNumElecIds ||  geoId > kIstNumElecIds || apvId > kIstNumApvs)
-                  continue;
+            if (elecId >= kIstNumElecIds ||  geoId > kIstNumElecIds || apvId > kIstNumApvs)
+               continue;
 
-               for ( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ) {
-                  Int_t adc = (*rawHitIter)->getCharge( timeBin );
+            for ( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ) {
+               Int_t adc = (*rawHitIter)->getCharge( timeBin );
 
-                  if (adc)	{
-                     int t = (int)timeBin;
+               if (adc)	{
+                  int t = (int)timeBin;
 
-                     if (mTimeBinMask == 0) t = 0;
+                  if (mTimeBinMask == 0) t = 0;
 
-                     sumAdcPerEvent[apvId - 1][t] += adc;
-                     channelCountsPerEvent[apvId - 1][t] ++;
+                  sumAdcPerEvent[apvId - 1][t] += adc;
+                  channelCountsPerEvent[apvId - 1][t] ++;
 
-                     int code = kIstNumTimeBins * elecId + t;
-                     TH1F *histPed = mHistPedVec[ code ];
+                  int code = kIstNumTimeBins * elecId + t;
+                  TH1F *histPed = mHistPedVec[ code ];
 
-                     if ( !histPed ) {
-                        ss.str("");
-                        ss.clear();
-                        ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
-                        histPed = new TH1F( ss.str().data(), "", 128, 0, kIstMaxAdc );
-                        mHistPedVec[ code ] = histPed;
-                     }
+                  if ( !histPed ) {
+                     ss.str("");
+                     ss.clear();
+                     ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
+                     histPed = new TH1F( ss.str().data(), "", 128, 0, kIstMaxAdc );
+                     mHistPedVec[ code ] = histPed;
+                  }
 
-                     histPed->Fill( (float)adc );
-                  }//adc cut
-               }//time bin loop
-            }//raw hits loop
+                  histPed->Fill( (float)adc );
+               }//adc cut
+            }//time bin loop
+         }//raw hits loop
       }//ladderIdx loop
 
       //common mode calculation per event
