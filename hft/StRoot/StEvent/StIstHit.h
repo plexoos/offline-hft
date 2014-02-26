@@ -4,11 +4,14 @@
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
-* Description: 
+* Description:
 * Data structure for individual IST hit (a 1D cluster).
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/02/26 21:18:08  smirnovd
+* Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.5  2014/02/26 01:35:36  ypwang
 * get rid of meanColumn/meanRow/Apv transformations and local position uncertainties to avoid external constants access
 *
@@ -31,54 +34,54 @@
 class StIstHit : public StHit
 {
 public:
-    StIstHit(unsigned char ladder=-1, unsigned char sensor=-1, float Charge=0., float ChargeErr=0., unsigned char maxTB=0, unsigned char nRawHits=1, unsigned char nRawHitsZ=0, unsigned char nRawHitsRPhi=0);
-    StIstHit(const StThreeVectorF& position,
-             const StThreeVectorF& error,
-             unsigned int hwPosition, float charge,
-             unsigned char trackRefCount = 0);
-    
-    virtual StDetectorId detector() const;
-    void    setDetectorId(StDetectorId); 
-     
-    //accessories
-    unsigned char     	getLadder() const;
-    unsigned char     	getSensor() const;
-    unsigned char     	getMaxTimeBin() const;  
-    float     		getChargeErr() const;
-    unsigned char     	getNRawHits() const;
-    unsigned char     	getNRawHitsZ() const;
-    unsigned char     	getNRawHitsRPhi() const;       
-    float     		localPosition(unsigned int ) const;
+   StIstHit(unsigned char ladder = -1, unsigned char sensor = -1, float Charge = 0., float ChargeErr = 0., unsigned char maxTB = 0, unsigned char nRawHits = 1, unsigned char nRawHitsZ = 0, unsigned char nRawHitsRPhi = 0);
+   StIstHit(const StThreeVectorF &position,
+            const StThreeVectorF &error,
+            unsigned int hwPosition, float charge,
+            unsigned char trackRefCount = 0);
 
-    //modifiers
-    void    setMaxTimeBin(unsigned char tb);
-    void    setChargeErr(float chargeErr);
-    void    setNRawHits(unsigned char nRawHits);//cluster size
-    void    setNRawHitsZ(unsigned char nRawHitsZ);
-    void    setNRawHitsRPhi(unsigned char nRawHitsRPhi);  
-    void    setLocalPosition(float, float, float);
-        
+   virtual StDetectorId detector() const;
+   void    setDetectorId(StDetectorId);
+
+   //accessories
+   unsigned char     	getLadder() const;
+   unsigned char     	getSensor() const;
+   unsigned char     	getMaxTimeBin() const;
+   float     		getChargeErr() const;
+   unsigned char     	getNRawHits() const;
+   unsigned char     	getNRawHitsZ() const;
+   unsigned char     	getNRawHitsRPhi() const;
+   float     		localPosition(unsigned int ) const;
+
+   //modifiers
+   void    setMaxTimeBin(unsigned char tb);
+   void    setChargeErr(float chargeErr);
+   void    setNRawHits(unsigned char nRawHits);//cluster size
+   void    setNRawHitsZ(unsigned char nRawHitsZ);
+   void    setNRawHitsRPhi(unsigned char nRawHitsRPhi);
+   void    setLocalPosition(float, float, float);
+
 protected:
-    UChar_t mMaxTimeBin;        // max charge time bin
-    Float_t mChargeErr;         // charge uncertainty
-    UChar_t mNRawHits;          // nRawHits: cluster size
-    UChar_t mNRawHitsZ;         // cluster size in Z direction
-    UChar_t mNRawHitsRPhi;      // cluster size in r-phi direction
-    
-    Float_t mLocalPosition[3];  //local position of hit inside the sensor 
-        
-    StDetectorId mDetectorId;
-private:
-    enum { mIstNumSensorsPerLadder = 6};
+   UChar_t mMaxTimeBin;        // max charge time bin
+   Float_t mChargeErr;         // charge uncertainty
+   UChar_t mNRawHits;          // nRawHits: cluster size
+   UChar_t mNRawHitsZ;         // cluster size in Z direction
+   UChar_t mNRawHitsRPhi;      // cluster size in r-phi direction
 
-    ClassDef(StIstHit,1)
+   Float_t mLocalPosition[3];  //local position of hit inside the sensor
+
+   StDetectorId mDetectorId;
+private:
+   enum { mIstNumSensorsPerLadder = 6};
+
+   ClassDef(StIstHit, 1)
 };
 
-ostream& operator<<(ostream&, const StIstHit&);
+ostream &operator<<(ostream &, const StIstHit &);
 
 ////////////////////////
-inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition-1)/mIstNumSensorsPerLadder;};
-inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition-1)%mIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition - 1) / mIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition - 1) % mIstNumSensorsPerLadder;};
 inline unsigned char StIstHit::getMaxTimeBin() const      { return mMaxTimeBin;     	};
 inline float StIstHit::getChargeErr()    const    	  { return mChargeErr;      	};
 inline unsigned char StIstHit::getNRawHits() const        { return mNRawHits;       	};

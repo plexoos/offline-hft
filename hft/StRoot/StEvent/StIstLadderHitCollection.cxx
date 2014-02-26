@@ -4,11 +4,14 @@
 *
 * Author: Yaping Wang, August 2013
 ****************************************************************************
-* Description: 
+* Description:
 * See header file.
 ****************************************************************************
 *
 * $Log$
+* Revision 1.3  2014/02/26 21:18:08  smirnovd
+* Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.2  2014/01/29 18:25:00  ypwang
 * updating scripts
 *
@@ -35,28 +38,30 @@ StIstLadderHitCollection::numberOfSensors() const {return mMaxNumberOfSensors;}
 unsigned int
 StIstLadderHitCollection::numberOfHits() const
 {
-    unsigned int sum = 0;
-    for (unsigned int j=0; j<numberOfSensors(); j++) {
-        sum += mSensors[j].hits().size();
-    }
-    return sum;
+   unsigned int sum = 0;
+
+   for (unsigned int j = 0; j < numberOfSensors(); j++) {
+      sum += mSensors[j].hits().size();
+   }
+
+   return sum;
 }
 
-StIstSensorHitCollection*
+StIstSensorHitCollection *
 StIstLadderHitCollection::sensor(unsigned int i)
 {
-    if (i < numberOfSensors())
-        return &(mSensors[i]);
-    else
-        return 0;
+   if (i < numberOfSensors())
+      return &(mSensors[i]);
+   else
+      return 0;
 }
 
-const StIstSensorHitCollection*
+const StIstSensorHitCollection *
 StIstLadderHitCollection::sensor(unsigned int i) const
 {
-    if (i < numberOfSensors())
-        return &(mSensors[i]);
-    else
-        return 0;
+   if (i < numberOfSensors())
+      return &(mSensors[i]);
+   else
+      return 0;
 }
-    
+

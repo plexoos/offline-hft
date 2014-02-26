@@ -4,11 +4,14 @@
 *
 * Author: Yaping Wang, August 2013
 ****************************************************************************
-* Description: 
+* Description:
 * Data collection for IST hits, and one instance corresponds to one sensor.
 ****************************************************************************
 *
 * $Log$
+* Revision 1.3  2014/02/26 21:18:08  smirnovd
+* Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.2  2014/01/29 18:25:00  ypwang
 * updating scripts
 *
@@ -27,17 +30,18 @@
 
 class StIstHit;
 
-class StIstSensorHitCollection : public StObject {
+class StIstSensorHitCollection : public StObject
+{
 public:
-    StIstSensorHitCollection();
-    ~StIstSensorHitCollection();
-    
-    StSPtrVecIstHit&       hits();
-    const StSPtrVecIstHit& hits() const;
+   StIstSensorHitCollection();
+   ~StIstSensorHitCollection();
+
+   StSPtrVecIstHit       &hits();
+   const StSPtrVecIstHit &hits() const;
 
 private:
-    StSPtrVecIstHit mHits;
-    
-    ClassDef(StIstSensorHitCollection,1)
+   StSPtrVecIstHit mHits;
+
+   ClassDef(StIstSensorHitCollection, 1)
 };
 #endif

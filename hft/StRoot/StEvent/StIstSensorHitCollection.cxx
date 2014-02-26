@@ -4,11 +4,14 @@
 *
 * Author: Yaping Wang, August 2013
 ****************************************************************************
-* Description: 
+* Description:
 * See header file.
 ****************************************************************************
 *
 * $Log$
+* Revision 1.3  2014/02/26 21:18:08  smirnovd
+* Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.2  2014/01/29 18:25:00  ypwang
 * updating scripts
 *
@@ -30,14 +33,14 @@ StIstSensorHitCollection::StIstSensorHitCollection() { /* noop */ }
 
 StIstSensorHitCollection::~StIstSensorHitCollection()
 {
-    for (unsigned int i=0; i<mHits.size(); i++) {
-        delete mHits[i];
-        mHits[i] = 0;
-    }
+   for (unsigned int i = 0; i < mHits.size(); i++) {
+      delete mHits[i];
+      mHits[i] = 0;
+   }
 }
 
-const StSPtrVecIstHit&
+const StSPtrVecIstHit &
 StIstSensorHitCollection::hits() const { return mHits; }
 
-StSPtrVecIstHit&
+StSPtrVecIstHit &
 StIstSensorHitCollection::hits() { return mHits; }
