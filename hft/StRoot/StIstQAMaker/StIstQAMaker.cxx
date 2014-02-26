@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.9  2014/02/26 01:58:05  ypwang
+* adding meanRow/meanColumn/ApvId transforms from local position
+*
 * Revision 1.8  2014/02/25 17:12:26  ypwang
 * minor update due to mClusteringType moved to StIstHitCollection
 *
@@ -248,7 +251,6 @@ Int_t StIstQAMaker::Make(){
 			istHit.hitId 		= (int)hit->id();
 			istHit.ladder		= (int)hit->getLadder();
 			istHit.sensor		= (int)hit->getSensor();
-			istHit.apv		= (int)hit->getApv();
 			istHit.maxTimeBin	= (int)hit->getMaxTimeBin();
 			istHit.clusteringType	= (int)nClusteringType;
 			istHit.nRawHits		= (int)hit->getNRawHits();
@@ -256,8 +258,6 @@ Int_t StIstQAMaker::Make(){
 			istHit.nRawHitsRPhi	= (int)hit->getNRawHitsRPhi();
 			istHit.idTruth		= (int)hit->idTruth();
 			istHit.EventId		= (int)eventPtr->id();
-			istHit.meanColumn	= (float)hit->getMeanColumn();
-			istHit.meanRow		= (float)hit->getMeanRow();
 			istHit.localX          	= (float)hit->localPosition(0);
 			istHit.localY		= (float)hit->localPosition(1);
 			istHit.localZ		= (float)hit->localPosition(2);
@@ -266,13 +266,19 @@ Int_t StIstQAMaker::Make(){
 			istHit.z		= (float)P.z();
 			istHit.charge		= (float)hit->charge();
 			istHit.chargeErr	= (float)hit->getChargeErr();
+			float nMeanColumn       = 0.5 + (0.5*kIstSensorActiveSizeZ + hit->localPosition(2))/kIstPadPitchColumn;
+                        float nMeanRow          = 0.5 + (0.5*kIstSensorActiveSizeRPhi - hit->localPosition(0))/kIstPadPitchRow;
+                        int   nApv              = ((int)(nMeanColumn-0.5))/2 + 1; //each APV chip cover 2 columns
+                        istHit.apv              = nApv;
+                        istHit.meanColumn       = nMeanColumn;
+                        istHit.meanRow          = nMeanRow;
 
 			istHitTree->Fill();
 
 			sensorIdxTemp = ((int)hit->getLadder()-1)*kIstNumSensorsPerLadder + (int)hit->getSensor();
-			hitMap[sensorIdxTemp-1]->Fill(hit->getMeanColumn(), hit->getMeanRow());
-			hitMapOfIST->Fill(((float)hit->getLadder()-1)*kIstNumRowsPerSensor+hit->getMeanRow(), ((float)hit->getSensor()-1)*kIstNumColumnsPerSensor+hit->getMeanColumn());
-			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*6 + (int)hit->getApv(), (int)hit->getLadder());
+			hitMap[sensorIdxTemp-1]->Fill(nMeanColumn, nMeanRow);
+			hitMapOfIST->Fill(((float)hit->getLadder()-1)*kIstNumRowsPerSensor+nMeanRow, ((float)hit->getSensor()-1)*kIstNumColumnsPerSensor+nMeanColumn);
+			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*kIstApvsPerLadder/kIstNumSensorsPerLadder + nApv, (int)hit->getLadder());
 			hitGlobalXY->Fill((float)P.x(), (float)P.y());
 			hitGlobalPhiZ->Fill((float)P.phi(), (float)P.z());
 
