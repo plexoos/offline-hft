@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/02/26 01:35:36  ypwang
+* get rid of meanColumn/meanRow/Apv transformations and local position uncertainties to avoid external constants access
+*
 * Revision 1.3  2014/02/25 17:04:50  ypwang
 * get rid of mClusteringType and its accessory/modifier functions
 *
@@ -24,20 +27,18 @@
 
 #include "StIstHit.h"
 
-StIstHit::~StIstHit() { /* no op */ }
-
-StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB, unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi, float meanColumn, float meanRow)
+StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB, unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi)
 {
-    StHit::setHardwarePosition((ladder-1)*kIstNumSensorsPerLadder + sensor);
+    StHit::setHardwarePosition((ladder-1)*mIstNumSensorsPerLadder + sensor);
     StHit::setCharge(charge);
     mChargeErr = chargeErr;
     mMaxTimeBin = maxTB;
     mNRawHits = nRawHits;
     mNRawHitsZ = nRawHitsZ;
     mNRawHitsRPhi = nRawHitsRPhi;
-    mLocalPosition[0] = 0.5*kIstSensorActiveSizeRPhi - (meanRow-0.5)*kIstPadPitchRow;//transfer to the sensor local coordinate (unit: cm)
+    mLocalPosition[0] = 0.;
     mLocalPosition[1] = 0.;
-    mLocalPosition[2] = (meanColumn-0.5)*kIstPadPitchColumn - 0.5*kIstSensorActiveSizeZ;//transfer to the sensor local coordiante (unit: cm)
+    mLocalPosition[2] = 0.;
     mDetectorId = kIstId;
 }
 
@@ -73,22 +74,6 @@ float StIstHit::localPosition(unsigned int i) const
 		return mLocalPosition[i];
 	else
 	        return 0;
-}
-
-float StIstHit::localPositionErr(unsigned int i) const
-{
-        if (i==0) {
-	    if(mNRawHitsRPhi == 1)	
-                return kIstPosResolutionRPhi;
-	    else if(mNRawHitsRPhi > 1)
-		return kIstPosResolutionRPhi2;
-	    else
-		return 0;
-	}
-	else if (i==2)
-		return kIstPosResolutionZ;
-        else
-        	return 0;
 }
 
 ostream& operator<<(ostream& os, const StIstHit& hit)

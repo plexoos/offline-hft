@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/02/26 01:35:36  ypwang
+* get rid of meanColumn/meanRow/Apv transformations and local position uncertainties to avoid external constants access
+*
 * Revision 1.4  2014/02/25 17:04:50  ypwang
 * get rid of mClusteringType and its accessory/modifier functions
 *
@@ -24,18 +27,15 @@
 
 #include "StHit.h"
 #include "StEnumerations.h"
-#include "StRoot/StIstUtil/StIstConsts.h"
 
 class StIstHit : public StHit
 {
 public:
-    StIstHit(unsigned char ladder=-1, unsigned char sensor=-1, float Charge=0., float ChargeErr=0., unsigned char maxTB=0, unsigned char nRawHits=1, unsigned char nRawHitsZ=0, unsigned char nRawHitsRPhi=0, float meanColumn=0., float meanRow=0);
+    StIstHit(unsigned char ladder=-1, unsigned char sensor=-1, float Charge=0., float ChargeErr=0., unsigned char maxTB=0, unsigned char nRawHits=1, unsigned char nRawHitsZ=0, unsigned char nRawHitsRPhi=0);
     StIstHit(const StThreeVectorF& position,
              const StThreeVectorF& error,
              unsigned int hwPosition, float charge,
              unsigned char trackRefCount = 0);
-    
-    ~StIstHit();
     
     virtual StDetectorId detector() const;
     void    setDetectorId(StDetectorId); 
@@ -43,16 +43,12 @@ public:
     //accessories
     unsigned char     	getLadder() const;
     unsigned char     	getSensor() const;
-    unsigned char       getApv() const;
-    float		getMeanColumn() const;
-    float		getMeanRow() const;
     unsigned char     	getMaxTimeBin() const;  
     float     		getChargeErr() const;
     unsigned char     	getNRawHits() const;
     unsigned char     	getNRawHitsZ() const;
     unsigned char     	getNRawHitsRPhi() const;       
     float     		localPosition(unsigned int ) const;
-    float		localPositionErr(unsigned int ) const;
 
     //modifiers
     void    setMaxTimeBin(unsigned char tb);
@@ -73,32 +69,26 @@ protected:
         
     StDetectorId mDetectorId;
 private:
+    enum { mIstNumSensorsPerLadder = 6};
+
     ClassDef(StIstHit,1)
 };
 
 ostream& operator<<(ostream&, const StIstHit&);
 
 ////////////////////////
-inline unsigned char StIstHit::getLadder() const          {   return 1 + (mHardwarePosition-1)/kIstNumSensorsPerLadder;         };
-inline unsigned char StIstHit::getSensor() const          {   return 1 + (mHardwarePosition-1)%kIstNumSensorsPerLadder;         };
+inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition-1)/mIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition-1)%mIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getMaxTimeBin() const      { return mMaxTimeBin;     	};
+inline float StIstHit::getChargeErr()    const    	  { return mChargeErr;      	};
+inline unsigned char StIstHit::getNRawHits() const        { return mNRawHits;       	};
+inline unsigned char StIstHit::getNRawHitsZ() const       { return mNRawHitsZ;   	};
+inline unsigned char StIstHit::getNRawHitsRPhi() const    { return mNRawHitsRPhi;	};
 
-inline unsigned char StIstHit::getApv() const          {
-    float meanColumn = 0.5 + (0.5*kIstSensorActiveSizeZ + mLocalPosition[2])/kIstPadPitchColumn;
-    return ((unsigned char)(meanColumn-0.5))/2 + 1;
-}
-
-inline float StIstHit::getMeanColumn() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeZ    + mLocalPosition[2])/kIstPadPitchColumn;};
-inline float StIstHit::getMeanRow() const	    	  {   return 0.5 + (0.5*kIstSensorActiveSizeRPhi - mLocalPosition[0])/kIstPadPitchRow;	 };
-inline unsigned char StIstHit::getMaxTimeBin() const      {   return mMaxTimeBin;     };
-inline float StIstHit::getChargeErr()    const    	  {   return mChargeErr;      };
-inline unsigned char StIstHit::getNRawHits() const        {   return mNRawHits;       };
-inline unsigned char StIstHit::getNRawHitsZ() const       {   return mNRawHitsZ;   };
-inline unsigned char StIstHit::getNRawHitsRPhi() const    {   return mNRawHitsRPhi;};
-
-inline void StIstHit::setMaxTimeBin(unsigned char tb)     	     	{   mMaxTimeBin = tb;       };
-inline void StIstHit::setChargeErr(float chargeErr)        		{   mChargeErr = chargeErr;         };
-inline void StIstHit::setNRawHits(unsigned char nRawHits)   	     	{   mNRawHits = nRawHits;   };
-inline void StIstHit::setNRawHitsZ(unsigned char nRawHitsZ)        	{   mNRawHitsZ = nRawHitsZ;   };
-inline void StIstHit::setNRawHitsRPhi(unsigned char nRawHitsRPhi)  	{   mNRawHitsRPhi = nRawHitsRPhi;   };
+inline void StIstHit::setMaxTimeBin(unsigned char tb)     	     	{ mMaxTimeBin = tb;       	};
+inline void StIstHit::setChargeErr(float chargeErr)        		{ mChargeErr = chargeErr;     	};
+inline void StIstHit::setNRawHits(unsigned char nRawHits)   	     	{ mNRawHits = nRawHits;   	};
+inline void StIstHit::setNRawHitsZ(unsigned char nRawHitsZ)        	{ mNRawHitsZ = nRawHitsZ;   	};
+inline void StIstHit::setNRawHitsRPhi(unsigned char nRawHitsRPhi)  	{ mNRawHitsRPhi = nRawHitsRPhi; };
 
 #endif
