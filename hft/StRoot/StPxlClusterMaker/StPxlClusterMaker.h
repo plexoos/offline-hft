@@ -18,6 +18,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.6  2014/02/27 00:44:25  smirnovd
+ * Minor corrections
+ *
  * Revision 1.5  2014/02/21 21:11:06  smirnovd
  * Minor style and empty space adjustments
  *
@@ -54,7 +57,9 @@ protected:
    void findCluster(StPxlCluster *cluster, Int_t column, Int_t row);
 
    StPxlClusterCollection *mPxlClusterCollection; ///< pointer to the pxl cluster collection
-   const StPxlRawHit *mRawHitMap[kNumberOfPxlRowsOnSensor][kNumberOfPxlColumnsOnSensor]; ///< map of fired pixels in a sensor
+
+private:
+   const StPxlRawHit * mRawHitMap[kNumberOfPxlRowsOnSensor][kNumberOfPxlColumnsOnSensor]; ///< map of fired pixels in a sensor
 
    ClassDef(StPxlClusterMaker, 0)
 };
