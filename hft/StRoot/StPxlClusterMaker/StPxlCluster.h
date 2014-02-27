@@ -18,6 +18,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.5  2014/02/27 00:44:15  smirnovd
+ * Make sorting function static class method
+ *
  * Revision 1.4  2014/02/21 21:11:06  smirnovd
  * Minor style and empty space adjustments
  *
@@ -49,6 +52,8 @@ public:
       static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
       return cvs;
    }
+
+   static bool compareSecond(const std::pair<int, int> &pair1, const std::pair<int, int> &pair2);
 
 protected:
    std::vector<const StPxlRawHit *> mRawHitVec; ///< vector of raw hits
