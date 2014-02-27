@@ -18,6 +18,9 @@
  ***************************************************************************
  *
  * $Log$
+ * Revision 1.4  2014/02/27 00:44:08  smirnovd
+ * Use constructor initializer list
+ *
  * Revision 1.3  2014/01/28 19:29:35  qiuh
  * *** empty log message ***
  *
@@ -28,7 +31,7 @@
 
 ClassImp(StPxlClusterCollection)
 
-StPxlClusterCollection::StPxlClusterCollection() : StObject()
+StPxlClusterCollection::StPxlClusterCollection() : StObject(), mClusterVec()
 {
 }
 
