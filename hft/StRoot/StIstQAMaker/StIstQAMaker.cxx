@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.10  2014/03/01 00:31:42  ypwang
+* StIstDigiHit object called
+*
 * Revision 1.9  2014/02/26 01:58:05  ypwang
 * adding meanRow/meanColumn/ApvId transforms from local position
 *
@@ -31,6 +34,7 @@
 #include "StIstQAMaker.h"
 #include "StIstHitCollection.h"
 #include "StIstHit.h"
+#include "StRoot/StIstUtil/StIstDigiHit.h"
 #include "StRoot/StIstUtil/StIstCollection.h"
 #include "StRoot/StIstUtil/StIstRawHitCollection.h"
 #include "StRoot/StIstUtil/StIstRawHit.h"
@@ -237,14 +241,16 @@ Int_t StIstQAMaker::Make(){
       	  LOG_DEBUG << "event index: " << mEventCounter << endm; 
 
       if(istHitCollection->numberOfHits() > 0) {
-         for(unsigned int ladderIdx=0; ladderIdx<kIstNumLadders; ladderIdx++ )	{
+         for(int ladderIdx=0; ladderIdx<kIstNumLadders; ladderIdx++ )	{
 	    StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
 	    unsigned char nClusteringType = istHitCollection->getClusteringType();
-	    for(unsigned int sensorIdx=0; sensorIdx<ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
+	    for(int sensorIdx=0; sensorIdx<(int)ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
 	       StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
 	       int sensorIdxTemp = 0;
                for(int idx=0; idx<(int)sensorHitCollection->hits().size(); idx++ ){
-		  StIstHit* hit = sensorHitCollection->hits()[idx];
+		  StIstHit* &hitT = sensorHitCollection->hits()[idx];
+		  StIstDigiHit* hit = new StIstDigiHit(*hitT);
+
 		  if(hit)	{
 			const StThreeVectorF &P = hit->position();
 
@@ -266,24 +272,21 @@ Int_t StIstQAMaker::Make(){
 			istHit.z		= (float)P.z();
 			istHit.charge		= (float)hit->charge();
 			istHit.chargeErr	= (float)hit->getChargeErr();
-			float nMeanColumn       = 0.5 + (0.5*kIstSensorActiveSizeZ + hit->localPosition(2))/kIstPadPitchColumn;
-                        float nMeanRow          = 0.5 + (0.5*kIstSensorActiveSizeRPhi - hit->localPosition(0))/kIstPadPitchRow;
-                        int   nApv              = ((int)(nMeanColumn-0.5))/2 + 1; //each APV chip cover 2 columns
-                        istHit.apv              = nApv;
-                        istHit.meanColumn       = nMeanColumn;
-                        istHit.meanRow          = nMeanRow;
+			istHit.apv		= (int)hit->getApv();
+			istHit.meanColumn	= (float)hit->getMeanColumn();
+			istHit.meanRow		= (float)hit->getMeanRow();
 
 			istHitTree->Fill();
 
 			sensorIdxTemp = ((int)hit->getLadder()-1)*kIstNumSensorsPerLadder + (int)hit->getSensor();
-			hitMap[sensorIdxTemp-1]->Fill(nMeanColumn, nMeanRow);
-			hitMapOfIST->Fill(((float)hit->getLadder()-1)*kIstNumRowsPerSensor+nMeanRow, ((float)hit->getSensor()-1)*kIstNumColumnsPerSensor+nMeanColumn);
-			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*kIstApvsPerLadder/kIstNumSensorsPerLadder + nApv, (int)hit->getLadder());
+			hitMap[sensorIdxTemp-1]->Fill((float)hit->getMeanColumn(), (float)hit->getMeanRow());
+			hitMapOfIST->Fill(((float)hit->getLadder()-1)*kIstNumRowsPerSensor+(float)hit->getMeanRow(), ((float)hit->getSensor()-1)*kIstNumColumnsPerSensor+(float)hit->getMeanColumn());
+			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*kIstApvsPerLadder/kIstNumSensorsPerLadder + (int)hit->getApv(), (int)hit->getLadder());
 			hitGlobalXY->Fill((float)P.x(), (float)P.y());
 			hitGlobalPhiZ->Fill((float)P.phi(), (float)P.z());
 
-			hitCharge_SensorId->Fill(sensorIdxTemp, hit->charge());
-			hitChargeErr_SensorId->Fill(sensorIdxTemp, hit->getChargeErr());
+			hitCharge_SensorId->Fill(sensorIdxTemp, (float)hit->charge());
+			hitChargeErr_SensorId->Fill(sensorIdxTemp, (float)hit->getChargeErr());
 			maxTimeBin_SensorId->Fill(sensorIdxTemp, (int)hit->getMaxTimeBin());
 			clusterSize_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHits());
 			clusterSizeZ_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHitsZ());
@@ -300,7 +303,7 @@ Int_t StIstQAMaker::Make(){
          for(int iS=0; iS<kIstNumSensors; iS++)
              counter[iS] = 0;
 
-         for( unsigned char ladderIdx=0; ladderIdx<kIstNumLadders; ++ladderIdx ){
+         for(int ladderIdx=0; ladderIdx<kIstNumLadders; ++ladderIdx ){
             StIstRawHitCollection *rawHitCollectionPtr = istCollectionPtr->getRawHitCollection( ladderIdx );
             if( rawHitCollectionPtr ){
                std::vector<StIstRawHit*>& rawHitVec = rawHitCollectionPtr->getRawHitVec();
