@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.11  2014/03/05 16:54:14  ypwang
+* minor update on istRawHit branch to include all time bins' charge and chargeErr informations
+*
 * Revision 1.10  2014/03/01 00:31:42  ypwang
 * StIstDigiHit object called
 *
@@ -94,7 +97,7 @@ Int_t StIstQAMaker::Init()
     Int_t ierr = kStOk;
 
     istRawHitTree = new TTree("istRawHits", "istRawHits_QA");
-    istRawHitTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:rdo:arm:apv:channel:idTruth:EventId:charge/F:chargeErr");
+    istRawHitTree->Branch("rawHits", &istRawHit, "channelId/I:geoId:ladder:sensor:column:row:maxTimeBin:rdo:arm:apv:channel:idTruth:EventId:charge[9]/F:chargeErr[9]/F");
 
     istHitTree = new TTree("istHits", "istHits_QA");
     istHitTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:apv:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
@@ -221,8 +224,10 @@ Int_t StIstQAMaker::Make(){
 
    //*******Initialization of the raw hit and hit level variables********** 
    istRawHit.channelId = istRawHit.geoId = istRawHit.ladder = istRawHit.sensor = istRawHit.column = istRawHit.row = istRawHit.maxTimeBin = istRawHit.rdo = istRawHit.arm = istRawHit.apv = istRawHit.channel = istRawHit.idTruth = istRawHit.EventId = -1;
-   istRawHit.charge = istRawHit.chargeErr = 0.;
-
+   for(int iTB=0; iTB<kIstNumTimeBins; iTB++) {
+	istRawHit.charge[iTB] = 0.;
+	istRawHit.chargeErr[iTB] = 0.;
+   }
    istHit.hitId = istHit.ladder = istHit.sensor = istHit.apv = istHit.idTruth = istHit.EventId = istHit.maxTimeBin = istHit.clusteringType = istHit.nRawHits = istHit.nRawHitsZ = istHit.nRawHitsRPhi = -1;
    istHit.meanColumn = istHit.meanRow = istHit.localX = istHit.localY = istHit.localZ = istHit.x = istHit.y = istHit.z = istHit.charge = istHit.chargeErr = 0.; 
 
@@ -318,9 +323,11 @@ Int_t StIstQAMaker::Make(){
 		   int sensorId = (ladder-1)*kIstNumSensorsPerLadder + sensor;
 		   counter[sensorId-1]++;
 
-                   for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin )
-		      rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getGeoId(), rawHit->getCharge( timeBin ));
-
+                   for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ) {
+		       rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getGeoId(), rawHit->getCharge( timeBin ));
+		       istRawHit.charge[timeBin] = rawHit->getCharge(timeBin);
+		       istRawHit.chargeErr[timeBin]  = rawHit->getChargeErr(timeBin);
+		   }
 		   rawHitChargeErr->Fill(rawHit->getGeoId(), rawHit->getChargeErr( maxTimeBin ));
 		   rawHitMap[sensorId-1]->Fill((float)rawHit->getColumn(), (float)rawHit->getRow());
 
@@ -331,8 +338,6 @@ Int_t StIstQAMaker::Make(){
 		   istRawHit.column	= (int)rawHit->getColumn();
 		   istRawHit.row	= (int)rawHit->getRow();
 		   istRawHit.maxTimeBin = (int)maxTimeBin;
-		   istRawHit.charge	= (float)rawHit->getCharge(maxTimeBin);
-		   istRawHit.chargeErr	= (float)rawHit->getChargeErr(maxTimeBin);
 		   istRawHit.rdo	= (int)rawHit->getRdo();
 		   istRawHit.arm        = (int)rawHit->getArm();
 		   istRawHit.apv        = (int)rawHit->getApv();

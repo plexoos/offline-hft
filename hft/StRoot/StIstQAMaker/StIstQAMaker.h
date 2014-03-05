@@ -9,8 +9,8 @@
 ****************************************************************************
 *
 * $Log$
-* Revision 1.4  2014/02/19 04:42:05  ypwang
-* electronics information and a TH2F (ladder vs sensor) added.
+* Revision 1.5  2014/03/05 16:54:14  ypwang
+* minor update on istRawHit branch to include all time bins' charge and chargeErr informations
 *
 * Revision 1.3  2014/02/06 12:28:35  ypwang
 * updating scripts
@@ -57,7 +57,7 @@ protected:
 
   struct rawHitInfo {
 	int channelId, geoId, ladder, sensor, column, row, maxTimeBin, rdo, arm, apv, channel, idTruth, EventId;
-	float charge, chargeErr;
+	float charge[kIstNumTimeBins], chargeErr[kIstNumTimeBins];
   } istRawHit;
   
   struct hitInfo {
