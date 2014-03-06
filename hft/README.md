@@ -1,6 +1,6 @@
 
 This directory (offline/hft in STAR CVS) contains development version of hft
-related software. The subdirectories (StRoot, StarDb, ...) include new
+related software. The subdirectories (StRoot, ...) include new
 submodules along with modified sources of the respective HEAD versions. Once
 tested the new classes and changes to the existing ones will be moved to the
 official StRoot area.
@@ -13,7 +13,6 @@ How to build development hft libraries
     mkdir myhft
     cd myhft
     cvs checkout -r HEAD offline/hft
-    cvs checkout -r HEAD StarDb
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
@@ -24,9 +23,6 @@ How to build development hft libraries
     # not yet available
 
     cvs checkout -r HEAD StRoot/StPxlRawHitMaker
-
-    cp -r offline/hft/StarDb/Calibrations StarDb/
-    cp -r offline/hft/StarDb/Geometry StarDb/
 
     # Copy new files to the official StRoot area
 
