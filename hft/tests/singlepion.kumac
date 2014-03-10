@@ -1,4 +1,4 @@
-  detp geometry y2013_1
+  detp geometry y2014
   gexec $STAR_LIB/StarMagFiledNoDict.so
   gexec $STAR_LIB/xgeometry.so
   make sim/gstar
