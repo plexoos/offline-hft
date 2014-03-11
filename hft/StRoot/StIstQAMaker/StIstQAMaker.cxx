@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.12  2014/03/11 17:51:32  ypwang
+* Histogram type changed from TH2F to TH2S, and reduce several histogram's bin number
+*
 * Revision 1.11  2014/03/05 16:54:14  ypwang
 * minor update on istRawHit branch to include all time bins' charge and chargeErr informations
 *
@@ -102,55 +105,55 @@ Int_t StIstQAMaker::Init()
     istHitTree = new TTree("istHits", "istHits_QA");
     istHitTree->Branch("hits", &istHit, "hitId/I:ladder:sensor:apv:idTruth:EventId:maxTimeBin:clusteringType:nRawHits:nRawHitsZ:nRawHitsRPhi:meanColumn/F:meanRow:localX:localY:localZ:x:y:z:charge:chargeErr");
 
-    numOfRawHits_SensorId = new TH2F("numOfRawHits_SensorId", "The number of RawHits vs. sensor ID", 144, 1, 145, 128, 0, 128);
+    numOfRawHits_SensorId = new TH2S("numOfRawHits_SensorId", "The number of RawHits vs. sensor ID", 144, 1, 145, 128, 0, 128);
     numOfRawHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
     numOfRawHits_SensorId->GetYaxis()->SetTitle("Number of Raw Hits");
 
     char buffer[100];
     for(int iTimeBin=0; iTimeBin<kIstNumTimeBins; iTimeBin++) {
 	sprintf(buffer, "rawHitCharge_TimeBin%d", iTimeBin);
-	rawHitCharge_TimeBin[iTimeBin] = new TH2F(buffer, Form("ADC of raw hits at time bin %d vs. channel geometry ID",iTimeBin), 110592, 1, 110593, 512, 0, kIstMaxAdc);
+	rawHitCharge_TimeBin[iTimeBin] = new TH2S(buffer, Form("ADC of raw hits at time bin %d vs. channel geometry ID",iTimeBin), 864, 1, 110593, 512, 0, kIstMaxAdc);
 	rawHitCharge_TimeBin[iTimeBin]->GetXaxis()->SetTitle("Channel ID");
 	rawHitCharge_TimeBin[iTimeBin]->GetYaxis()->SetTitle("ADC of Raw Hits");
     }
 
-    rawHitChargeErr = new TH2F("rawHitChargeErr", "RMS noise of raw hits vs. channel geometry ID", 110592, 1, 110593, 128, 0, 64);
+    rawHitChargeErr = new TH2S("rawHitChargeErr", "RMS noise of raw hits vs. channel geometry ID", 864, 1, 110593, 128, 0, 64);
     rawHitChargeErr->GetXaxis()->SetTitle("Channel ID");
     rawHitChargeErr->GetYaxis()->SetTitle("RMS noise of Raw Hits");
 
-    numOfHits_SensorId = new TH2F("numOfHits_SensorId", "The number of hits vs. sensor ID", 144, 1, 145, 128, 0, 128);
+    numOfHits_SensorId = new TH2S("numOfHits_SensorId", "The number of hits vs. sensor ID", 144, 1, 145, 128, 0, 128);
     numOfHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
     numOfHits_SensorId->GetYaxis()->SetTitle("Number of Hits");
 
-    hitCharge_SensorId = new TH2F("hitCharge_SensorId", "ADC of hits vs. sensor ID", 144, 1, 145, 512, 0, kIstMaxAdc);
+    hitCharge_SensorId = new TH2S("hitCharge_SensorId", "ADC of hits vs. sensor ID", 144, 1, 145, 512, 0, kIstMaxAdc);
     hitCharge_SensorId->GetXaxis()->SetTitle("Sensor ID");
     hitCharge_SensorId->GetYaxis()->SetTitle("ADC of Hits");
 
-    hitChargeErr_SensorId = new TH2F("hitChargeErr_SensorId", "RMS noise of hits vs. sensor ID", 144, 1, 145, 128, 0, 64);
+    hitChargeErr_SensorId = new TH2S("hitChargeErr_SensorId", "RMS noise of hits vs. sensor ID", 144, 1, 145, 128, 0, 64);
     hitChargeErr_SensorId->GetXaxis()->SetTitle("Sensor ID");
     hitChargeErr_SensorId->GetYaxis()->SetTitle("RMS noise of Hits");
 
-    maxTimeBin_SensorId = new TH2F("maxTimeBin_SensorId", "Max time bin of hits vs. sensor ID", 144, 1, 145, kIstNumTimeBins, 0, kIstNumTimeBins);
+    maxTimeBin_SensorId = new TH2S("maxTimeBin_SensorId", "Max time bin of hits vs. sensor ID", 144, 1, 145, kIstNumTimeBins, 0, kIstNumTimeBins);
     maxTimeBin_SensorId->GetXaxis()->SetTitle("Sensor ID");
     maxTimeBin_SensorId->GetYaxis()->SetTitle("Max Time Bin Index");
 
-    clusterSize_SensorId = new TH2F("clusterSize_SensorId", "Cluster size of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
+    clusterSize_SensorId = new TH2S("clusterSize_SensorId", "Cluster size of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
     clusterSize_SensorId->GetXaxis()->SetTitle("Sensor ID");
     clusterSize_SensorId->GetYaxis()->SetTitle("Cluster Size of Hits");
 
-    clusterSizeZ_SensorId = new TH2F("clusterSizeZ_SensorId", "Cluster size in Z of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
+    clusterSizeZ_SensorId = new TH2S("clusterSizeZ_SensorId", "Cluster size in Z of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
     clusterSizeZ_SensorId->GetXaxis()->SetTitle("Sensor ID");
     clusterSizeZ_SensorId->GetYaxis()->SetTitle("Cluster Size in Z of Hits");
 
-    clusterSizeRPhi_SensorId = new TH2F("clusterSizeRPhi_SensorId", "Cluster size in r-#phi of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
+    clusterSizeRPhi_SensorId = new TH2S("clusterSizeRPhi_SensorId", "Cluster size in r-#phi of hits vs. sensor ID", 144, 1, 145, 20, 0, 20);
     clusterSizeRPhi_SensorId->GetXaxis()->SetTitle("Sensor ID");
     clusterSizeRPhi_SensorId->GetYaxis()->SetTitle("Cluster Size in r-#phi of hits");
 
-    hitMapOfIST = new TH2F("hitMapOfIST", "IST hit map in r-phi vs. Z", 1536, 0.5, 1536.5, 72, 0.5, 72.5);
+    hitMapOfIST = new TH2S("hitMapOfIST", "IST hit map in r-phi vs. Z", 1536, 1, 1537, 72, 1, 73);
     hitMapOfIST->GetXaxis()->SetTitle("Row in r-#phi");
     hitMapOfIST->GetYaxis()->SetTitle("Column in Z");
 
-    hitMapOfAPV = new TH2F("hitMapOfAPV", "IST hit map in APV geometry Id vs. ladder", 36, 1, 37, 24, 1, 25);
+    hitMapOfAPV = new TH2S("hitMapOfAPV", "IST hit map in APV geometry Id vs. ladder", 36, 1, 37, 24, 1, 25);
     hitMapOfAPV->GetXaxis()->SetTitle("APV geometry ID");
     hitMapOfAPV->GetYaxis()->SetTitle("Ladder ID");
 
@@ -167,7 +170,7 @@ Int_t StIstQAMaker::Init()
 	for(int iSensor=0; iSensor<kIstNumSensorsPerLadder; iSensor++) {
 	    sprintf(histtitle, "Raw Hit column vs. row: Ladder %d Sensor %d", iLadder+1, iSensor+1);
 	    sprintf(buffer,"rawHitMap_Sensor%d", iLadder*6+iSensor+1);
-	    rawHitMap[iLadder*6+iSensor] = new TH2F(buffer, histtitle, 12, 1, 13, 64, 1, 65);
+	    rawHitMap[iLadder*6+iSensor] = new TH2S(buffer, histtitle, 12, 1, 13, 64, 1, 65);
 	    rawHitMap[iLadder*6+iSensor]->GetXaxis()->SetTitle("Column");
 	    rawHitMap[iLadder*6+iSensor]->GetYaxis()->SetTitle("Row");
 
@@ -179,7 +182,7 @@ Int_t StIstQAMaker::Init()
 
 	    sprintf(histtitle, "Hit mean column vs. mean row: Ladder %d Sensor %d", iLadder+1, iSensor+1);
             sprintf(buffer,"hitMap_Sensor%d", iLadder*6+iSensor+1);
-            hitMap[iLadder*6+iSensor] = new TH2F(buffer, histtitle, 12, 0.5, 12.5, 64, 0.5, 64.5);
+            hitMap[iLadder*6+iSensor] = new TH2S(buffer, histtitle, 12, 1, 13, 64, 1, 65);
             hitMap[iLadder*6+iSensor]->GetXaxis()->SetTitle("Mean Column");
             hitMap[iLadder*6+iSensor]->GetYaxis()->SetTitle("Mean Row");
 	}		
@@ -284,14 +287,14 @@ Int_t StIstQAMaker::Make(){
 			istHitTree->Fill();
 
 			sensorIdxTemp = ((int)hit->getLadder()-1)*kIstNumSensorsPerLadder + (int)hit->getSensor();
-			hitMap[sensorIdxTemp-1]->Fill((float)hit->getMeanColumn(), (float)hit->getMeanRow());
-			hitMapOfIST->Fill(((float)hit->getLadder()-1)*kIstNumRowsPerSensor+(float)hit->getMeanRow(), ((float)hit->getSensor()-1)*kIstNumColumnsPerSensor+(float)hit->getMeanColumn());
+			hitMap[sensorIdxTemp-1]->Fill((int)(hit->getMeanColumn()-0.5)+1, (int)(hit->getMeanRow()-0.5)+1);
+			hitMapOfIST->Fill(((int)hit->getLadder()-1)*kIstNumRowsPerSensor+(int)(hit->getMeanRow()-0.5)+1, ((int)hit->getSensor()-1)*kIstNumColumnsPerSensor+(int)(hit->getMeanColumn()-0.5)+1);
 			hitMapOfAPV->Fill(((int)hit->getSensor()-1)*kIstApvsPerLadder/kIstNumSensorsPerLadder + (int)hit->getApv(), (int)hit->getLadder());
 			hitGlobalXY->Fill((float)P.x(), (float)P.y());
 			hitGlobalPhiZ->Fill((float)P.phi(), (float)P.z());
 
-			hitCharge_SensorId->Fill(sensorIdxTemp, (float)hit->charge());
-			hitChargeErr_SensorId->Fill(sensorIdxTemp, (float)hit->getChargeErr());
+			hitCharge_SensorId->Fill(sensorIdxTemp, (int)hit->charge());
+			hitChargeErr_SensorId->Fill(sensorIdxTemp, (int)(hit->getChargeErr()+0.5));
 			maxTimeBin_SensorId->Fill(sensorIdxTemp, (int)hit->getMaxTimeBin());
 			clusterSize_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHits());
 			clusterSizeZ_SensorId->Fill(sensorIdxTemp, (int)hit->getNRawHitsZ());
@@ -324,12 +327,12 @@ Int_t StIstQAMaker::Make(){
 		   counter[sensorId-1]++;
 
                    for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ) {
-		       rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getGeoId(), rawHit->getCharge( timeBin ));
+		       rawHitCharge_TimeBin[timeBin]->Fill(rawHit->getGeoId(), (int)rawHit->getCharge( timeBin ));
 		       istRawHit.charge[timeBin] = rawHit->getCharge(timeBin);
 		       istRawHit.chargeErr[timeBin]  = rawHit->getChargeErr(timeBin);
 		   }
-		   rawHitChargeErr->Fill(rawHit->getGeoId(), rawHit->getChargeErr( maxTimeBin ));
-		   rawHitMap[sensorId-1]->Fill((float)rawHit->getColumn(), (float)rawHit->getRow());
+		   rawHitChargeErr->Fill(rawHit->getGeoId(), (int)(rawHit->getChargeErr( maxTimeBin )+0.5));
+		   rawHitMap[sensorId-1]->Fill((int)rawHit->getColumn(), (int)rawHit->getRow());
 
 		   istRawHit.channelId 	= (int)rawHit->getChannelId();
 		   istRawHit.geoId      = (int)rawHit->getGeoId();

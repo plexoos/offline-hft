@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/11 17:51:32  ypwang
+* Histogram type changed from TH2F to TH2S, and reduce several histogram's bin number
+*
 * Revision 1.5  2014/03/05 16:54:14  ypwang
 * minor update on istRawHit branch to include all time bins' charge and chargeErr informations
 *
@@ -66,26 +69,26 @@ protected:
   } istHit;
 
   //position
-  TH2F* rawHitMap[kIstNumSensors]; // raw hit column vs row per sensor
-  TH2F* hitMap[kIstNumSensors];    // hit mean column vs mean row per sensor
-  TH2F* hitMapOfIST;		   // hit map of IST layer in r-phi vs. Z area
-  TH2F* hitMapOfAPV;		   // hit map in ladder vs. APV Id
+  TH2S* rawHitMap[kIstNumSensors]; // raw hit column vs row per sensor
+  TH2S* hitMap[kIstNumSensors];    // hit mean column vs mean row per sensor
+  TH2S* hitMapOfIST;		   // hit map of IST layer in r-phi vs. Z area
+  TH2S* hitMapOfAPV;		   // hit map in ladder vs. APV Id
   TH2F* hitGlobalXY;		   // hit global x vs y
   TH2F* hitGlobalPhiZ;		   // hit global z
   //Charge
-  TH2F* rawHitCharge_TimeBin[kIstNumTimeBins]; // Charge (ADC) vs channel ID over all time bins
-  TH2F* rawHitChargeErr;  // RMS noise vs channel ID
-  TH2F* hitCharge_SensorId;         // Charge vs sensorID
-  TH2F* hitChargeErr_SensorId;      // Charge uncertainty vs sensorID
-  TH2F* maxTimeBin_SensorId;	    // max ADC time bin vs sensorID
+  TH2S* rawHitCharge_TimeBin[kIstNumTimeBins]; // Charge (ADC) vs channel ID over all time bins
+  TH2S* rawHitChargeErr;  // RMS noise vs channel ID
+  TH2S* hitCharge_SensorId;         // Charge vs sensorID
+  TH2S* hitChargeErr_SensorId;      // Charge uncertainty vs sensorID
+  TH2S* maxTimeBin_SensorId;	    // max ADC time bin vs sensorID
   //hit or raw hit number
-  TH2F* numOfRawHits_SensorId;      // number of raw hits vs sensor Id
-  TH2F* numOfHits_SensorId;	    // number of hits vs sensor Id
+  TH2S* numOfRawHits_SensorId;      // number of raw hits vs sensor Id
+  TH2S* numOfHits_SensorId;	    // number of hits vs sensor Id
   TProfile* numOfRawHits_EventId[kIstNumSensors];
   //cluster size
-  TH2F* clusterSize_SensorId;	    // hit cluster size
-  TH2F* clusterSizeZ_SensorId;	    // hit cluster size in Z direction
-  TH2F* clusterSizeRPhi_SensorId;   // hit cluster size in R-Phi direction
+  TH2S* clusterSize_SensorId;	    // hit cluster size
+  TH2S* clusterSizeZ_SensorId;	    // hit cluster size in Z direction
+  TH2S* clusterSizeRPhi_SensorId;   // hit cluster size in R-Phi direction
 
   Int_t  mEventCounter;             // Event countter
 
