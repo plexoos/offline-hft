@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.12  2014/03/11 17:44:20  ypwang
+* minor updates to add a flag mRunHist to choose whether run histogram calculation method
+*
 * Revision 1.11  2014/03/05 16:52:29  ypwang
 * mathematical method added for pedestal/RMS calculation and minor updates done for histogram method
 *
@@ -45,7 +48,7 @@ const string StIstCalibrationMaker::sectionLabel[72]={  "1C","1B","1A","2C","2B"
                                           		"21C","21B","21A","22C","22B","22A","23C","23B","23A","24C","24B","24A"};
 
 // constructor
-StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name ), mTimeBinMask(0xFF), evtIdx(0), mHasFinished(0), mIstDbMaker(0) {
+StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name ), mTimeBinMask(0xFF), mRunHist(true), mDoPedCut(true), evtIdx(0), mHasFinished(0), mIstDbMaker(0) {
     for(unsigned char iTb=0; iTb<kIstNumTimeBins; iTb++) {
 	hist_meanPed[iTb] = NULL;
 	hist_rmsPed[iTb]  = NULL;
@@ -55,11 +58,14 @@ StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name
 	hist_sumCmn[iTb] = NULL;
     }
 
+    mPedVec1stLoop.resize(kIstNumTimeBins*kIstNumElecIds);
+    mRmsVec1stLoop.resize(kIstNumTimeBins*kIstNumElecIds);
+
     mMathPedVec.resize(kIstNumTimeBins*kIstNumElecIds);
     mMathRmsVec.resize(kIstNumTimeBins*kIstNumElecIds);
     mMathCouVec.resize(kIstNumTimeBins*kIstNumElecIds);
    
-    mHistPedVec.assign( kIstNumTimeBins*kIstNumElecIds, (TH1F*)0 );
+    if(mRunHist) mHistPedVec.assign( kIstNumTimeBins*kIstNumElecIds, (TH1S*)0 );
     mHistCmnVec.assign( kIstNumTimeBins*kIstNumApvs, (TH1F*)0 );
     mPedVec.resize( kIstNumTimeBins*kIstNumElecIds );    // set to all zeros
     mCmnVec.resize( kIstNumTimeBins*kIstNumApvs );    // set to all zeros
@@ -68,21 +74,18 @@ StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name
 
 // deconstructor
 StIstCalibrationMaker::~StIstCalibrationMaker()
-{ 
+{
+    mPedVec1stLoop.clear();
+    mRmsVec1stLoop.clear();
+
     mMathPedVec.clear();
     mMathRmsVec.clear();
     mMathCouVec.clear();
 
-    std::vector< TH1F * >::iterator vecIter, vecIter1;
-    for ( vecIter = mHistPedVec.begin(); vecIter != mHistPedVec.end(); ++vecIter ) {
-         delete[] (*vecIter);
-    }
-    mHistPedVec.clear();
+    if(mRunHist) 
+	while (!mHistPedVec.empty()) delete mHistPedVec.back(), mHistPedVec.pop_back();
 
-    for ( vecIter1 = mHistCmnVec.begin(); vecIter1 != mHistCmnVec.end(); ++vecIter1 ) {
-         delete[] (*vecIter1);
-    }
-    mHistCmnVec.clear();
+    while (!mHistCmnVec.empty()) delete mHistCmnVec.back(), mHistCmnVec.pop_back();
 
     mPedVec.clear();
     mCmnVec.clear();
@@ -143,6 +146,28 @@ Int_t StIstCalibrationMaker::Init()
         hist_sumCmn[iTB]->GetXaxis()->SetTitle("CM Noise [ADC counts]");
         hist_sumCmn[iTB]->GetYaxis()->SetTitle("Counts");
     }  
+
+    //read the pedestal/rms value from 1st loop for signal-like channel excluding in 2nd loop
+    if(mDoPedCut) {
+	TString infile = "istPedNoiseTable.dat";
+    	std::ifstream in(infile);
+    	if (!in.is_open()) {
+       	    mDoPedCut=false;
+            LOG_WARN << "Could not find istPedNoiseTable.dat! Set mDoPedCut to false" << endm;
+        } else {
+            LOG_INFO << "Read Pedestal and RMS from istPedNoiseTable.dat!"<< endm;
+	    int chElecId, chTimeBin, chCode;
+	    float chPed, chRms;
+	    while(!in.eof()) {
+	        in >> chElecId >> chTimeBin >> chPed >> chRms;
+
+	        chCode = kIstNumTimeBins * chElecId + chTimeBin;
+	        mPedVec1stLoop[chCode] = chPed;
+	        mRmsVec1stLoop[chCode]  = chRms;
+           }
+	}
+	in.close();
+    }
 
     mIstDbMaker = (StIstDbMaker*)GetMaker("istDb");
     if(ierr || !mIstDbMaker) {
@@ -208,7 +233,7 @@ Int_t StIstCalibrationMaker::Make()
         std::stringstream ss, sc;
 	int sumAdcPerEvent[kIstNumApvs][kIstNumTimeBins];
 	int channelCountsPerEvent[kIstNumApvs][kIstNumTimeBins];
-        float cmNoisePerEvent[kIstNumApvs][kIstNumTimeBins];
+        double cmNoisePerEvent[kIstNumApvs][kIstNumTimeBins];
 	for(int i=0; i<kIstNumApvs; i++)	{
 	    for(int j=0; j<kIstNumTimeBins; j++)  {
 		sumAdcPerEvent[i][j] = 0;
@@ -232,32 +257,42 @@ Int_t StIstCalibrationMaker::Make()
 			continue;
 
                     for( unsigned char timeBin = 0; timeBin < kIstNumTimeBins; ++timeBin ){
-			Int_t adc = (*rawHitIter)->getCharge( timeBin );
+			Int_t adc = (*rawHitIter)->getCharge( timeBin );			
 			if(adc)	{
                             int t = (int)timeBin;
                             if(mTimeBinMask==0) t=0;
+			    int code = kIstNumTimeBins * elecId + t; 
+
+			    //exclude signal-like channels time bin by time bin in current event
+			    bool pass = kTRUE;
+			    if(mDoPedCut)
+				pass = (adc > (mPedVec1stLoop[code]-mPedCut*mRmsVec1stLoop[code])) && (adc < (mPedVec1stLoop[code]+mPedCut*mRmsVec1stLoop[code]));
+
+			    if(!pass) continue;
 
 			    sumAdcPerEvent[apvId-1][t] += adc;
 			    channelCountsPerEvent[apvId-1][t] ++;
 
-                            int code = kIstNumTimeBins * elecId + t;                               
-
-			    mMathPedVec[code] += (float)adc;
-                            mMathRmsVec[code] += (float)(adc*adc);
+			    mMathPedVec[code] += adc;
+                            mMathRmsVec[code] += adc*adc;
                             mMathCouVec[code] ++;
 
-			    TH1F* histPed = mHistPedVec[ code ];
-                            if( !histPed ){
-                             	ss.str("");
-                             	ss.clear();
-                             	ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
-                             	histPed = new TH1F( ss.str().data(), "", 128, 0, kIstMaxAdc );
-                             	mHistPedVec[ code ] = histPed;
+                            if(mRunHist) {
+			        TH1S* histPed = mHistPedVec[ code ];
+                                if( !histPed ){
+                             	    ss.str("");
+                             	    ss.clear();
+                             	    ss << "hist_Pedestal_Ch" << code / kIstNumTimeBins << "_TB" << code % kIstNumTimeBins;
+                             	    histPed = new TH1S( ss.str().data(), "", 128, 0, kIstMaxAdc );
+                             	    mHistPedVec[ code ] = histPed;
+                                }
+                                histPed->Fill( adc );
                             }
-                            histPed->Fill( (float)adc );
 			}//adc cut
                     }//time bin loop
                 }//raw hits loop
+		//clear raw hit objects in vector
+		while (!rawHitVec.empty()) delete rawHitVec.back(), rawHitVec.pop_back();
             }//raw hit collection cut
         }//ladderIdx loop
 
@@ -265,7 +300,7 @@ Int_t StIstCalibrationMaker::Make()
 	for(int i=0; i<kIstNumApvs; i++) {
             for(int j=0; j<kIstNumTimeBins; j++)  {
 		if( sumAdcPerEvent[i][j] )	{
-		    cmNoisePerEvent[i][j] = (float)sumAdcPerEvent[i][j] / (float)channelCountsPerEvent[i][j];
+		    cmNoisePerEvent[i][j] = (double)sumAdcPerEvent[i][j] / channelCountsPerEvent[i][j];
 		    int code = kIstNumTimeBins * i + j;
 		    TH1F* histCmn = mHistCmnVec[ code ];
 
@@ -297,67 +332,64 @@ Int_t StIstCalibrationMaker::Finish()
 
 	//calculate pedestal/RMS with mathematical method
 	for(int i=0; i<kIstNumTimeBins*kIstNumElecIds; i++) {
-	    float mathPed, mathRms;
+            short timebin = i % kIstNumTimeBins;
+            int chanIdx   = i / kIstNumTimeBins;
+	    double mathPed, mathRms;
 	    if(mMathCouVec[i] < 1) {
 		mathPed = 0.;
-		mathRms = 0.;
+		mathRms = 100.;
 	    }
 	    else {
-	    	mathPed = mMathPedVec[i]/(float)mMathCouVec[i];
-	    	mathRms = mMathRmsVec[i]/(float)mMathCouVec[i];
+	    	mathPed = mMathPedVec[i]/mMathCouVec[i];
+	    	mathRms = mMathRmsVec[i]/mMathCouVec[i];
 	    }
 
-	    float variance = mathRms - mathPed*mathPed;
+	    double variance = mathRms - mathPed*mathPed;
 	    if(variance > 0)
 	    	mathRms = sqrt( variance );
 	    else
-		mathRms = 0;
+		mathRms = 100;
 
 	    mMathPedVec[i] = mathPed;
 	    mMathRmsVec[i] = mathRms;
+	    if(mDoPedCut) {
+            	Int_t geomIdx  = mMappingVec[chanIdx]; // channel geometry ID which is numbering from 1 to 110592
+            	hist_meanPed[timebin]->SetBinContent(geomIdx, (float)mathPed);
+            	hist_rmsPed[timebin]->SetBinContent(geomIdx, (float)mathRms);
+            	hist_sumPed[timebin]->Fill((float)mathPed);
+            	hist_sumRms[timebin]->Fill((float)mathRms);
+	    }
 	}
 
 	//calculate pedestal/RMS with histogram method
-        std::vector< TH1F* >::iterator mHistPedVecIter;
-        std::vector< TH1F* >::iterator mHistCmnVecIter;
-        int elecIdx = 0, chipIdx = 0;
+        if(mRunHist) {
+            std::vector< TH1S* >::iterator mHistPedVecIter;
+            int elecIdx = 0;
 
-        for( mHistPedVecIter = mHistPedVec.begin(); mHistPedVecIter != mHistPedVec.end(); ++mHistPedVecIter ){
-            TH1F *histPed = *mHistPedVecIter;
-            elecIdx = std::distance( mHistPedVec.begin(), mHistPedVecIter );
-
-            short timebin = elecIdx % kIstNumTimeBins;
-            int chanIdx   = elecIdx / kIstNumTimeBins;
+            for( mHistPedVecIter = mHistPedVec.begin(); mHistPedVecIter != mHistPedVec.end(); ++mHistPedVecIter ){
+                TH1S *histPed = *mHistPedVecIter;
+                elecIdx = std::distance( mHistPedVec.begin(), mHistPedVecIter );
             
-            if(histPed)  {
-                int   entries = histPed->GetEntries();
-                float meanPed = histPed->GetMean();
-		float rmsPed  = histPed->GetRMS(); 
-                float meanPedErr=histPed->GetMeanError();
-		float rmsPedErr=histPed->GetRMSError();
+                if(histPed)  {
+                    int   entries = histPed->GetEntries();
+                    float meanPed = histPed->GetMean();
+		    float rmsPed  = histPed->GetRMS(); 
 
-		if( entries == 0 ) {
-		    meanPed = 0.;
-                    rmsPed  = 100.; //marked as dead channel
-		    meanPedErr = 0.;
-		    rmsPedErr =0.;
-		}
+		    if( entries == 0 ) {
+		        meanPed = 0.;
+                        rmsPed  = 100.; //marked as dead channel
+		    }
 
-                pedNoiseData_t &data = mPedVec[ elecIdx ];
-		data.n    = entries;
-                data.ped  = meanPed;
-                data.rms  = rmsPed;
-
-		Int_t geomIdx  = mMappingVec[chanIdx]; // channel geometry ID which is numbering from 1 to 110592
-                hist_meanPed[timebin]->SetBinContent(geomIdx, meanPed);
-                hist_meanPed[timebin]->SetBinError(geomIdx, meanPedErr);
-                hist_rmsPed[timebin]->SetBinContent(geomIdx, rmsPed);
-                hist_rmsPed[timebin]->SetBinError(geomIdx, rmsPedErr);
-		hist_sumPed[timebin]->Fill(meanPed);
-		hist_sumRms[timebin]->Fill(rmsPed);
+                    pedNoiseData_t &data = mPedVec[ elecIdx ];
+		    data.n    = entries;
+                    data.ped  = meanPed;
+                    data.rms  = rmsPed;
+                }
             }
         }
 
+        std::vector< TH1F* >::iterator mHistCmnVecIter;
+        int chipIdx = 0;
 	for( mHistCmnVecIter = mHistCmnVec.begin(); mHistCmnVecIter != mHistCmnVec.end(); ++mHistCmnVecIter ){
             TH1F *histCmn = *mHistCmnVecIter;
 	    chipIdx = std::distance( mHistCmnVec.begin(), mHistCmnVecIter );
@@ -368,20 +400,19 @@ Int_t StIstCalibrationMaker::Finish()
 	    if(histCmn)  {
 		int   entries = histCmn->GetEntries();
 		float cmNoise = histCmn->GetRMS();
-		float cmNoiseErr = histCmn->GetRMSError();
 
 		if(entries == 0) {
 		    cmNoise = 100.; //marked as dead chip
-		    cmNoiseErr = 0.;
 		}
 
 		cmNoiseData_t &data = mCmnVec[ chipIdx ];
                 data.n    = entries;
                 data.cmn  = cmNoise;
 
-		hist_cmNoise[timebin]->SetBinContent(apvIdx+1, cmNoise);
-                hist_cmNoise[timebin]->SetBinError(apvIdx+1, cmNoiseErr);
-		hist_sumCmn[timebin]->Fill(cmNoise);
+		if(mDoPedCut) {
+		    hist_cmNoise[timebin]->SetBinContent(apvIdx+1, cmNoise);
+		    hist_sumCmn[timebin]->Fill(cmNoise);
+		}
 	    }
 	}
         
@@ -435,26 +466,6 @@ Int_t StIstCalibrationMaker::saveToFile()
     }
     myRootFile->Close();
 
-    //save pedestal and rms noise with histogram method
-    mPedNoiseFilename_hist.Replace(found, mPedNoiseFilename_hist.Length() - found, ".istPedNoise_hist.dat");
-    LOG_INFO << "IST Pedestal and RMS File Name using histogram method: " << mPedNoiseFilename_hist << endm;
- 
-    std::ofstream fout_ped( mPedNoiseFilename_hist.Data(), std::ios_base::out & std::ios_base::trunc );
-    if( !fout_ped ){
-        LOG_ERROR << "Error opening file '" << mPedNoiseFilename_hist << "'" << endm;
-        ierr = kStFatal;
-    }
-
-    pedNoiseDataVec_t::iterator pedDataVecIter; 
-    int idx = 0;
-    for( pedDataVecIter = mPedVec.begin(); pedDataVecIter != mPedVec.end() && !ierr; ++pedDataVecIter, ++idx ){
-        short timebin = idx % kIstNumTimeBins;
-        int elecId  = idx / kIstNumTimeBins;
-
-        fout_ped << elecId << ' ' << timebin << ' ' << pedDataVecIter->ped << ' ' << pedDataVecIter->rms << endl;
-    }
-    fout_ped.close();
-
     //save pedestal and rms noise with mathematical method
     mPedNoiseFilename_math.Replace(found, mPedNoiseFilename_math.Length() - found, ".istPedNoise_math.dat");
     LOG_INFO << "IST Pedestal and RMS File Name using math method: " << mPedNoiseFilename_math << endm;
@@ -464,6 +475,8 @@ Int_t StIstCalibrationMaker::saveToFile()
         LOG_ERROR << "Error opening file '" << mPedNoiseFilename_math << "'" << endm;
         ierr = kStFatal;
     }
+    fout_ped_math.setf(std::ios::fixed, std::ios::floatfield);
+    fout_ped_math.precision(5);
 
     for(int i=0; i<kIstNumTimeBins*kIstNumElecIds; i++) {
 	short timebin = i % kIstNumTimeBins;
@@ -471,6 +484,30 @@ Int_t StIstCalibrationMaker::saveToFile()
 	fout_ped_math << elecId << ' ' << timebin << ' ' << mMathPedVec[i] << ' ' << mMathRmsVec[i] << endl;
     }
     fout_ped_math.close();
+
+    //save pedestal and rms noise with histogram method
+    if(mRunHist) {
+        mPedNoiseFilename_hist.Replace(found, mPedNoiseFilename_hist.Length() - found, ".istPedNoise_hist.dat");
+        LOG_INFO << "IST Pedestal and RMS File Name using histogram method: " << mPedNoiseFilename_hist << endm;
+
+        std::ofstream fout_ped_hist( mPedNoiseFilename_hist.Data(), std::ios_base::out & std::ios_base::trunc );
+        if( !fout_ped_hist ){
+            LOG_ERROR << "Error opening file '" << mPedNoiseFilename_hist << "'" << endm;
+            ierr = kStFatal;
+        }
+        fout_ped_hist.setf(std::ios::fixed, std::ios::floatfield);
+        fout_ped_hist.precision(5);
+
+        pedNoiseDataVec_t::iterator pedDataVecIter;
+        int idx = 0;
+        for( pedDataVecIter = mPedVec.begin(); pedDataVecIter != mPedVec.end() && !ierr; ++pedDataVecIter, ++idx ){
+            short timebin = idx % kIstNumTimeBins;
+            int elecId  = idx / kIstNumTimeBins;
+
+            fout_ped_hist << elecId << ' ' << timebin << ' ' << pedDataVecIter->ped << ' ' << pedDataVecIter->rms << endl;
+        }
+        fout_ped_hist.close();
+    }
 
     //save common mode noise
     mCmNoiseFilename.Replace(found, mCmNoiseFilename.Length() - found, ".istCmNoise.dat");
@@ -481,9 +518,11 @@ Int_t StIstCalibrationMaker::saveToFile()
         LOG_ERROR << "Error opening file '" << mCmNoiseFilename << "'" << endm;
         ierr = kStFatal;
     }
+    fout_cmn.setf(std::ios::fixed, std::ios::floatfield);
+    fout_cmn.precision(5);
 
     cmNoiseDataVec_t::iterator cmnDataVecIter;
-    idx = 0;
+    int idx = 0;
     for( cmnDataVecIter = mCmnVec.begin(); cmnDataVecIter != mCmnVec.end() && !ierr; ++cmnDataVecIter, ++idx ){
         short timebin = idx % kIstNumTimeBins;
         int apvId  = idx / kIstNumTimeBins;

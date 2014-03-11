@@ -10,6 +10,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/11 17:44:20  ypwang
+* minor updates to add a flag mRunHist to choose whether run histogram calculation method
+*
 * Revision 1.5  2014/03/05 16:52:29  ypwang
 * mathematical method added for pedestal/RMS calculation and minor updates done for histogram method
 *
@@ -47,6 +50,8 @@ public:
 
     // modifiers
     void setTimeBinMask( short mask = 0xFF );
+    void setRunHist(bool flag =false);
+    void setPedCutFlag(bool flag =false);
     void setPedCut(float pedCut = 3.0);
     // Get CVS
     virtual const char *GetCVS() const;
@@ -54,14 +59,22 @@ public:
 protected:
     // mask for which time bins to save
     Short_t mTimeBinMask;
+    // whether or not to run Histogram method
+    Bool_t mRunHist;
+    // whether or not put constraints 
+    Bool_t  mDoPedCut;
     Float_t mPedCut;
     //containers for histogram calculation method
-    std::vector< TH1F* > mHistPedVec;
+    std::vector< TH1S* > mHistPedVec;
     std::vector< TH1F* > mHistCmnVec;
 
+    //containers for 1st loop's pedestal/rms values
+    std::vector< float > mPedVec1stLoop;
+    std::vector< float > mRmsVec1stLoop;
+
     //containers for mathematical calculation mathod
-    std::vector< float > mMathPedVec;
-    std::vector< float > mMathRmsVec;   
+    std::vector< double > mMathPedVec;
+    std::vector< double > mMathRmsVec;   
     std::vector< int > mMathCouVec;
 
     Int_t evtIdx; 
@@ -114,6 +127,8 @@ private:
 
 // modifiers
 inline void StIstCalibrationMaker::setTimeBinMask( short mask )			{ mTimeBinMask = mask; };
+inline void StIstCalibrationMaker::setRunHist(bool flag)                       { mRunHist = flag; };
+inline void StIstCalibrationMaker::setPedCutFlag(bool flag)			{ mDoPedCut = flag; };
 inline void StIstCalibrationMaker::setPedCut(float pedCut)			{ mPedCut = pedCut; };
 inline const char *StIstCalibrationMaker::GetCVS() const {
    static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
