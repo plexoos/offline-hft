@@ -1,25 +1,36 @@
 #!/bin/tcsh
 
+
 # To read PXL raw data:
 #
 #setenv BFC_OPTIONS '"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
 
+
 # To run over PXL simulation:
 #
+# Uncomment next starsim command to generate a simple simulation with 10 events.
+# A mytest.fz file should be generated and it can be used as input for the
+# sample simulation BFC chain below
+#
 #starsim -w 0 -b offline/hft/tests/singlepion.kumac
-# 2011 production chain     "tpcRS  y2011      MakeEvent ITTF                                                   NoSsdIt NoSvtIt Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
-#setenv BFC_OPTIONS '"Debug2 tpcRS ry2014 AgML MakeEvent ITTF pxlFastSim pxlRaw pxlDb pxlCluster pxlHit PixelIt NoSsdIt NoSvtIt Idst BAna l0          Tree logger Sti VFMCE  tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-setenv BFC_OPTIONS '"Debug2 tpcRS ry2014 AgML MakeEvent ITTF pxlFastSim pxlRaw pxlDb pxlCluster pxlHit PixelIt NoSsdIt NoSvtIt Idst BAna l0          Tree logger Sti  tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-#setenv BFC_OPTIONS '"Debug2 y2014 AgML MakeEvent ITTF pxlRaw pxlDb pxlCluster pxlHit PixelIt NoSsdIt NoSvtIt logger Sti fzin"'
+#
+# For comparison purposes the next line shows the options used for the official 2011 production
+#
+# 2011 production chain    "tpcRS  y2011      MakeEvent ITTF                          NoSsdIt NoSvtIt Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
+#
+setenv BFC_OPTIONS '"Debug2 tpcRS ry2014 AgML MakeEvent ITTF pxlFastSim pxlDb PixelIt NoSsdIt NoSvtIt Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
 setenv BFC_INPFILE '"mytest.fz"'
+
 
 # For IST
 #
 #setenv BFC_OPTIONS '"in,istRaw,istDb,istCluster,istHit,istQA"'
 
+
 # For IST calibration
 #
 #setenv BFC_OPTIONS '"in,istRaw,istDb,istCalib"'
+
 
 # Data files for tests
 #
