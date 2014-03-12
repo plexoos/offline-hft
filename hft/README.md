@@ -20,11 +20,11 @@ How to build development hft libraries
 
     # The following package is in the official CVS StRoot area but not yet in
     # $STAR/StRoot. Check it out to compile locally as the official library is
-    # not yet available
+    # not yet available (as of March 11, 2014)
 
     cvs checkout -r HEAD StRoot/StPxlRawHitMaker
 
-    # Copy new files to the official StRoot area
+    # Copy new files to the local StRoot area
 
     cp offline/hft/StRoot/StEvent/StIstHitCollection.cxx       StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstHitCollection.h         StRoot/StEvent/
@@ -34,6 +34,13 @@ How to build development hft libraries
     cp offline/hft/StRoot/StEvent/StIstLadderHitCollection.h   StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.cxx StRoot/StEvent/
     cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.h   StRoot/StEvent/
+
+    # According to Xin simulation jobs cannot use the pixel survey geometry
+    # from the STAR database due to improper default setting of the simulation
+    # timestamp... Hence, one need to use the local files from CVS:
+
+    mkdir -p StarDb/Geometry
+    cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
 
     # The following new submodules can aslo be copied to your local StRoot but
     # you may chose to link them instead
