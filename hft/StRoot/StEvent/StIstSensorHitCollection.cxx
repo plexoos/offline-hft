@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/13 22:10:36  smirnovd
+* Collapse vector after clean up
+*
 * Revision 1.5  2014/03/13 22:10:21  smirnovd
 * Fixed constructor's initialization list
 *
@@ -39,10 +42,10 @@ StIstSensorHitCollection::StIstSensorHitCollection() : StObject() { /* noop */ }
 
 StIstSensorHitCollection::~StIstSensorHitCollection()
 {
-   for (unsigned int i = 0; i < mHits.size(); i++) {
+   for (unsigned int i = 0; i < mHits.size(); i++)
       delete mHits[i];
-      mHits[i] = 0;
-   }
+
+   mHits.clear();
 }
 
 const StSPtrVecIstHit & StIstSensorHitCollection::hits() const { return mHits; }
