@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.10  2014/03/13 22:17:09  smirnovd
+* Minor whitespace alignment fixes
+*
 * Revision 1.9  2014/03/13 22:10:30  smirnovd
 * Expand tabs and trim trailing whitespace
 *
@@ -55,22 +58,22 @@ public:
    void    setDetectorId(StDetectorId);
 
    //accessories
-   unsigned char        getLadder() const;
-   unsigned char        getSensor() const;
-   unsigned char        getMaxTimeBin() const;
-   float                getChargeErr() const;
-   unsigned char        getNRawHits() const;
-   unsigned char        getNRawHitsZ() const;
-   unsigned char        getNRawHitsRPhi() const;
-   float                localPosition(unsigned int ) const;
+   unsigned char getLadder() const;
+   unsigned char getSensor() const;
+   unsigned char getMaxTimeBin() const;
+   float         getChargeErr() const;
+   unsigned char getNRawHits() const;
+   unsigned char getNRawHitsZ() const;
+   unsigned char getNRawHitsRPhi() const;
+   float         localPosition(unsigned int ) const;
 
    //modifiers
-   void    setMaxTimeBin(unsigned char tb);
-   void    setChargeErr(float chargeErr);
-   void    setNRawHits(unsigned char nRawHits);//cluster size
-   void    setNRawHitsZ(unsigned char nRawHitsZ);
-   void    setNRawHitsRPhi(unsigned char nRawHitsRPhi);
-   void    setLocalPosition(float, float, float);
+   void setMaxTimeBin(unsigned char tb);
+   void setChargeErr(float chargeErr);
+   void setNRawHits(unsigned char nRawHits);//cluster size
+   void setNRawHitsZ(unsigned char nRawHitsZ);
+   void setNRawHitsRPhi(unsigned char nRawHitsRPhi);
+   void setLocalPosition(float, float, float);
 
 protected:
    UChar_t mMaxTimeBin;        // max charge time bin
@@ -78,9 +81,7 @@ protected:
    UChar_t mNRawHits;          // nRawHits: cluster size
    UChar_t mNRawHitsZ;         // cluster size in Z direction
    UChar_t mNRawHitsRPhi;      // cluster size in r-phi direction
-
    Float_t mLocalPosition[3];  //local position of hit inside the sensor
-
    StDetectorId mDetectorId;
 
    ClassDef(StIstHit, 1)

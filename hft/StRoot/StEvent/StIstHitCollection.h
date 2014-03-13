@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/13 22:17:09  smirnovd
+* Minor whitespace alignment fixes
+*
 * Revision 1.6  2014/03/13 22:10:30  smirnovd
 * Expand tabs and trim trailing whitespace
 *
@@ -50,7 +53,7 @@ public:
    unsigned int  numberOfLadders() const;
 
    unsigned char getClusteringType() const;
-   void           setClusteringType(unsigned char clusteringType);
+   void          setClusteringType(unsigned char clusteringType);
 
    StIstLadderHitCollection       *ladder(unsigned int);
    const StIstLadderHitCollection *ladder(unsigned int) const;
