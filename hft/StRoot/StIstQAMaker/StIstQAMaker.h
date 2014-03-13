@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.6  2014/03/11 17:51:32  ypwang
 * Histogram type changed from TH2F to TH2S, and reduce several histogram's bin number
 *
@@ -32,11 +35,14 @@
 
 #include "StMaker.h"
 #include "StIOMaker/StIOMaker.h"
-#include "StRoot/StIstUtil/StIstConsts.h"
+#include "StEvent/StEnumerations.h"
+#include "StIstUtil/StIstConsts.h"
 #include "TString.h"
 #include "TNtuple.h"
 #include "TH2F.h"
 #include "TProfile.h"
+
+using namespace StIstConsts;
 
 class StIOMaker;
 class StEvent;

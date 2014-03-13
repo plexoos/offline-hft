@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.4  2014/03/13 22:05:25  smirnovd
 * Style issue: Function return types on same line
 *
@@ -34,8 +37,6 @@ ClassImp(StIstLadderHitCollection)
 StIstLadderHitCollection::StIstLadderHitCollection() { /* noop */ }
 
 StIstLadderHitCollection::~StIstLadderHitCollection() { /* noop */ }
-
-unsigned int StIstLadderHitCollection::numberOfSensors() const {return mMaxNumberOfSensors;}
 
 unsigned int StIstLadderHitCollection::numberOfHits() const
 {

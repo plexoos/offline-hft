@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.6  2014/02/26 21:18:08  smirnovd
 * Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
@@ -29,7 +32,9 @@
 #define StIstHit_hh
 
 #include "StHit.h"
-#include "StEnumerations.h"
+#include "StEvent/StEnumerations.h"
+
+using namespace StIstConsts;
 
 class StIstHit : public StHit
 {
@@ -71,8 +76,6 @@ protected:
    Float_t mLocalPosition[3];  //local position of hit inside the sensor
 
    StDetectorId mDetectorId;
-private:
-   enum { mIstNumSensorsPerLadder = 6};
 
    ClassDef(StIstHit, 1)
 };
@@ -80,8 +83,8 @@ private:
 ostream &operator<<(ostream &, const StIstHit &);
 
 ////////////////////////
-inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition - 1) / mIstNumSensorsPerLadder;};
-inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition - 1) % mIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition - 1) / kIstNumSensorsPerLadder;};
+inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition - 1) % kIstNumSensorsPerLadder;};
 inline unsigned char StIstHit::getMaxTimeBin() const      { return mMaxTimeBin;     	};
 inline float StIstHit::getChargeErr()    const    	  { return mChargeErr;      	};
 inline unsigned char StIstHit::getNRawHits() const        { return mNRawHits;       	};

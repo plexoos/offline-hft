@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.5  2014/03/13 22:05:24  smirnovd
 * Style issue: Function return types on same line
 *
@@ -38,8 +41,6 @@ StIstHitCollection::StIstHitCollection() { /* no op */ }
 
 StIstHitCollection::~StIstHitCollection() { /* no op */ }
 
-unsigned int StIstHitCollection::numberOfLadders() const { return mNumberOfLadders; }
-
 bool StIstHitCollection::addHit(StIstHit *hit)
 {
    unsigned int l, w;
@@ -47,7 +48,7 @@ bool StIstHitCollection::addHit(StIstHit *hit)
    w = (unsigned int)hit->getSensor() - 1;
 
    if (hit &&
-         l < mNumberOfLadders &&
+         l < kIstNumLadders &&
          w < mLadders[l].numberOfSensors()) {
       mLadders[l].sensor(w)->hits().push_back(hit);
       return kTRUE;
@@ -61,7 +62,7 @@ unsigned int StIstHitCollection::numberOfHits() const
 {
    unsigned int sum = 0;
 
-   for (unsigned int i = 0; i < mNumberOfLadders; i++)
+   for (unsigned int i = 0; i < kIstNumLadders; i++)
       for (unsigned int j = 0; j < mLadders[i].numberOfSensors(); j++)
          sum += mLadders[i].sensor(j)->hits().size();
 
@@ -73,7 +74,7 @@ void StIstHitCollection::setClusteringType(unsigned char clusteringType) {   mCl
 
 StIstLadderHitCollection* StIstHitCollection::ladder(unsigned int i)
 {
-   if (i < mNumberOfLadders)
+   if (i < kIstNumLadders)
       return &(mLadders[i]);
    else
       return 0;
@@ -81,7 +82,7 @@ StIstLadderHitCollection* StIstHitCollection::ladder(unsigned int i)
 
 const StIstLadderHitCollection* StIstHitCollection::ladder(unsigned int i) const
 {
-   if (i < mNumberOfLadders)
+   if (i < kIstNumLadders)
       return &(mLadders[i]);
    else
       return 0;

@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.4  2014/02/26 21:18:08  smirnovd
 * Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
@@ -27,6 +30,10 @@
 
 #include "StObject.h"
 #include "StIstLadderHitCollection.h"
+#include "StEvent/StEnumerations.h"
+
+using namespace StIstConsts;
+
 class StIstHit;
 
 class StIstHitCollection : public StObject
@@ -46,8 +53,7 @@ public:
    const StIstLadderHitCollection *ladder(unsigned int) const;
 
 private:
-   enum { mNumberOfLadders = 24 };
-   StIstLadderHitCollection mLadders[mNumberOfLadders];
+   StIstLadderHitCollection mLadders[kIstNumLadders];
    UChar_t mClusteringType;  // clustering algorithm type
 
    ClassDef(StIstHitCollection, 1)

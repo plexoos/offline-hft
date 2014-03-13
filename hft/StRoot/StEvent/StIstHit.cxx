@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/13 22:10:12  smirnovd
+* Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
+*
 * Revision 1.5  2014/02/26 21:18:08  smirnovd
 * Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
@@ -32,7 +35,7 @@
 
 StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB, unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi)
 {
-   StHit::setHardwarePosition((ladder - 1)*mIstNumSensorsPerLadder + sensor);
+   StHit::setHardwarePosition((ladder - 1)*kIstNumSensorsPerLadder + sensor);
    StHit::setCharge(charge);
    mChargeErr = chargeErr;
    mMaxTimeBin = maxTB;
