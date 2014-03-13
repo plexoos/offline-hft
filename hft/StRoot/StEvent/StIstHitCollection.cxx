@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/03/13 22:05:24  smirnovd
+* Style issue: Function return types on same line
+*
 * Revision 1.4  2014/02/26 21:18:08  smirnovd
 * Style corrected with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
@@ -35,11 +38,9 @@ StIstHitCollection::StIstHitCollection() { /* no op */ }
 
 StIstHitCollection::~StIstHitCollection() { /* no op */ }
 
-unsigned int
-StIstHitCollection::numberOfLadders() const { return mNumberOfLadders; }
+unsigned int StIstHitCollection::numberOfLadders() const { return mNumberOfLadders; }
 
-bool
-StIstHitCollection::addHit(StIstHit *hit)
+bool StIstHitCollection::addHit(StIstHit *hit)
 {
    unsigned int l, w;
    l = (unsigned int)hit->getLadder() - 1;
@@ -56,8 +57,7 @@ StIstHitCollection::addHit(StIstHit *hit)
    }
 }
 
-unsigned int
-StIstHitCollection::numberOfHits() const
+unsigned int StIstHitCollection::numberOfHits() const
 {
    unsigned int sum = 0;
 
@@ -71,8 +71,7 @@ StIstHitCollection::numberOfHits() const
 unsigned char StIstHitCollection::getClusteringType() const {   return mClusteringType; }
 void StIstHitCollection::setClusteringType(unsigned char clusteringType) {   mClusteringType = clusteringType; }
 
-StIstLadderHitCollection *
-StIstHitCollection::ladder(unsigned int i)
+StIstLadderHitCollection* StIstHitCollection::ladder(unsigned int i)
 {
    if (i < mNumberOfLadders)
       return &(mLadders[i]);
@@ -80,12 +79,10 @@ StIstHitCollection::ladder(unsigned int i)
       return 0;
 }
 
-const StIstLadderHitCollection *
-StIstHitCollection::ladder(unsigned int i) const
+const StIstLadderHitCollection* StIstHitCollection::ladder(unsigned int i) const
 {
    if (i < mNumberOfLadders)
       return &(mLadders[i]);
    else
       return 0;
 }
-
