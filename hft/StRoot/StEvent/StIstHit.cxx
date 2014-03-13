@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/03/13 22:10:30  smirnovd
+* Expand tabs and trim trailing whitespace
+*
 * Revision 1.7  2014/03/13 22:10:21  smirnovd
 * Fixed constructor's initialization list
 *
@@ -38,7 +41,7 @@
 
 
 StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB,
-	unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi) : StHit(),
+   unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi) : StHit(),
    mMaxTimeBin(maxTB),
    mChargeErr(chargeErr),
    mNRawHits(nRawHits),

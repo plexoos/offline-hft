@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/03/13 22:10:30  smirnovd
+* Expand tabs and trim trailing whitespace
+*
 * Revision 1.5  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -47,7 +50,7 @@ public:
    unsigned int  numberOfLadders() const;
 
    unsigned char getClusteringType() const;
-   void 	  setClusteringType(unsigned char clusteringType);
+   void           setClusteringType(unsigned char clusteringType);
 
    StIstLadderHitCollection       *ladder(unsigned int);
    const StIstLadderHitCollection *ladder(unsigned int) const;

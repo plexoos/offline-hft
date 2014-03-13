@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.9  2014/03/13 22:10:30  smirnovd
+* Expand tabs and trim trailing whitespace
+*
 * Revision 1.8  2014/03/13 22:10:21  smirnovd
 * Fixed constructor's initialization list
 *
@@ -52,14 +55,14 @@ public:
    void    setDetectorId(StDetectorId);
 
    //accessories
-   unsigned char     	getLadder() const;
-   unsigned char     	getSensor() const;
-   unsigned char     	getMaxTimeBin() const;
-   float     		getChargeErr() const;
-   unsigned char     	getNRawHits() const;
-   unsigned char     	getNRawHitsZ() const;
-   unsigned char     	getNRawHitsRPhi() const;
-   float     		localPosition(unsigned int ) const;
+   unsigned char        getLadder() const;
+   unsigned char        getSensor() const;
+   unsigned char        getMaxTimeBin() const;
+   float                getChargeErr() const;
+   unsigned char        getNRawHits() const;
+   unsigned char        getNRawHitsZ() const;
+   unsigned char        getNRawHitsRPhi() const;
+   float                localPosition(unsigned int ) const;
 
    //modifiers
    void    setMaxTimeBin(unsigned char tb);
@@ -88,16 +91,16 @@ ostream &operator<<(ostream &, const StIstHit &);
 ////////////////////////
 inline unsigned char StIstHit::getLadder() const          { return 1 + (mHardwarePosition - 1) / kIstNumSensorsPerLadder;};
 inline unsigned char StIstHit::getSensor() const          { return 1 + (mHardwarePosition - 1) % kIstNumSensorsPerLadder;};
-inline unsigned char StIstHit::getMaxTimeBin() const      { return mMaxTimeBin;     	};
-inline float StIstHit::getChargeErr()    const    	  { return mChargeErr;      	};
-inline unsigned char StIstHit::getNRawHits() const        { return mNRawHits;       	};
-inline unsigned char StIstHit::getNRawHitsZ() const       { return mNRawHitsZ;   	};
-inline unsigned char StIstHit::getNRawHitsRPhi() const    { return mNRawHitsRPhi;	};
+inline unsigned char StIstHit::getMaxTimeBin() const      { return mMaxTimeBin;         };
+inline float StIstHit::getChargeErr()    const            { return mChargeErr;          };
+inline unsigned char StIstHit::getNRawHits() const        { return mNRawHits;           };
+inline unsigned char StIstHit::getNRawHitsZ() const       { return mNRawHitsZ;          };
+inline unsigned char StIstHit::getNRawHitsRPhi() const    { return mNRawHitsRPhi;       };
 
-inline void StIstHit::setMaxTimeBin(unsigned char tb)     	     	{ mMaxTimeBin = tb;       	};
-inline void StIstHit::setChargeErr(float chargeErr)        		{ mChargeErr = chargeErr;     	};
-inline void StIstHit::setNRawHits(unsigned char nRawHits)   	     	{ mNRawHits = nRawHits;   	};
-inline void StIstHit::setNRawHitsZ(unsigned char nRawHitsZ)        	{ mNRawHitsZ = nRawHitsZ;   	};
-inline void StIstHit::setNRawHitsRPhi(unsigned char nRawHitsRPhi)  	{ mNRawHitsRPhi = nRawHitsRPhi; };
+inline void StIstHit::setMaxTimeBin(unsigned char tb)                   { mMaxTimeBin = tb;             };
+inline void StIstHit::setChargeErr(float chargeErr)                     { mChargeErr = chargeErr;       };
+inline void StIstHit::setNRawHits(unsigned char nRawHits)               { mNRawHits = nRawHits;         };
+inline void StIstHit::setNRawHitsZ(unsigned char nRawHitsZ)             { mNRawHitsZ = nRawHitsZ;       };
+inline void StIstHit::setNRawHitsRPhi(unsigned char nRawHitsRPhi)       { mNRawHitsRPhi = nRawHitsRPhi; };
 
 #endif
