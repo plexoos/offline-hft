@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/13 22:10:21  smirnovd
+* Fixed constructor's initialization list
+*
 * Revision 1.6  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -37,7 +40,7 @@ static const char rcsid[] = "$Id$";
 
 ClassImp(StIstHitCollection)
 
-StIstHitCollection::StIstHitCollection() { /* no op */ }
+StIstHitCollection::StIstHitCollection() : StObject() { /* no op */ }
 
 StIstHitCollection::~StIstHitCollection() { /* no op */ }
 

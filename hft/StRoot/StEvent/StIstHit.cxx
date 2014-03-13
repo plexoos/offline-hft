@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/13 22:10:21  smirnovd
+* Fixed constructor's initialization list
+*
 * Revision 1.6  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -33,35 +36,34 @@
 
 #include "StIstHit.h"
 
-StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB, unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi)
+
+StIstHit::StIstHit(unsigned char ladder, unsigned char sensor, float charge, float chargeErr, unsigned char maxTB,
+	unsigned char nRawHits, unsigned char nRawHitsZ, unsigned char nRawHitsRPhi) : StHit(),
+   mMaxTimeBin(maxTB),
+   mChargeErr(chargeErr),
+   mNRawHits(nRawHits),
+   mNRawHitsZ(nRawHitsZ),
+   mNRawHitsRPhi(nRawHitsRPhi),
+   mLocalPosition(),
+   mDetectorId(kIstId)
 {
    StHit::setHardwarePosition((ladder - 1)*kIstNumSensorsPerLadder + sensor);
    StHit::setCharge(charge);
-   mChargeErr = chargeErr;
-   mMaxTimeBin = maxTB;
-   mNRawHits = nRawHits;
-   mNRawHitsZ = nRawHitsZ;
-   mNRawHitsRPhi = nRawHitsRPhi;
-   mLocalPosition[0] = 0.;
-   mLocalPosition[1] = 0.;
-   mLocalPosition[2] = 0.;
-   mDetectorId = kIstId;
 }
 
-StIstHit::StIstHit(const StThreeVectorF &p,
-                   const StThreeVectorF &e,
-                   unsigned int hw, float q, unsigned char c) : StHit(p, e, hw, q, c)
+
+StIstHit::StIstHit(const StThreeVectorF &p, const StThreeVectorF &e, unsigned int hw, float q, unsigned char c) :
+   StHit(p, e, hw, q, c),
+   mMaxTimeBin(0),
+   mChargeErr(0),
+   mNRawHits(1),
+   mNRawHitsZ(0),
+   mNRawHitsRPhi(0),
+   mLocalPosition(),
+   mDetectorId(kIstId)
 {
-   mChargeErr = 0.;
-   mMaxTimeBin = -1;
-   mNRawHits = -1;
-   mNRawHitsZ = -1;
-   mNRawHitsRPhi = -1;
-   mLocalPosition[0] = 0.;
-   mLocalPosition[1] = 0.;
-   mLocalPosition[2] = 0.;
-   mDetectorId = kIstId;
 }
+
 
 StDetectorId StIstHit::detector() const {return mDetectorId;}
 

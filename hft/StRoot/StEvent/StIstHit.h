@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/03/13 22:10:21  smirnovd
+* Fixed constructor's initialization list
+*
 * Revision 1.7  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -39,11 +42,11 @@ using namespace StIstConsts;
 class StIstHit : public StHit
 {
 public:
-   StIstHit(unsigned char ladder = -1, unsigned char sensor = -1, float Charge = 0., float ChargeErr = 0., unsigned char maxTB = 0, unsigned char nRawHits = 1, unsigned char nRawHitsZ = 0, unsigned char nRawHitsRPhi = 0);
-   StIstHit(const StThreeVectorF &position,
-            const StThreeVectorF &error,
-            unsigned int hwPosition, float charge,
-            unsigned char trackRefCount = 0);
+   StIstHit(unsigned char ladder = -1, unsigned char sensor = -1, float Charge = 0., float ChargeErr = 0.,
+      unsigned char maxTB = 0, unsigned char nRawHits = 1, unsigned char nRawHitsZ = 0,
+      unsigned char nRawHitsRPhi = 0);
+   StIstHit(const StThreeVectorF &position, const StThreeVectorF &error, unsigned int hwPosition, float charge,
+      unsigned char trackRefCount = 0);
 
    virtual StDetectorId detector() const;
    void    setDetectorId(StDetectorId);

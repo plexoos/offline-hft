@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/03/13 22:10:21  smirnovd
+* Fixed constructor's initialization list
+*
 * Revision 1.4  2014/03/13 22:05:25  smirnovd
 * Style issue: Function return types on same line
 *
@@ -32,7 +35,7 @@ static const char rcsid[] = "$Id$";
 
 ClassImp(StIstSensorHitCollection)
 
-StIstSensorHitCollection::StIstSensorHitCollection() { /* noop */ }
+StIstSensorHitCollection::StIstSensorHitCollection() : StObject() { /* noop */ }
 
 StIstSensorHitCollection::~StIstSensorHitCollection()
 {
