@@ -4,7 +4,7 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullCha
 retrieving revision 1.204
 diff -u -r1.204 BigFullChain.h
 --- StRoot/StBFChain/BigFullChain.h	18 Feb 2014 16:46:19 -0000	1.204
-+++ StRoot/StBFChain/BigFullChain.h	20 Feb 2014 15:28:58 -0000
++++ StRoot/StBFChain/BigFullChain.h	13 Mar 2014 23:59:14 -0000
 @@ -1172,7 +1172,6 @@
    {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
    {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
@@ -45,19 +45,21 @@ diff -u -r1.204 BigFullChain.h
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
-@@ -1474,13 +1487,13 @@
+@@ -1474,13 +1487,14 @@
    {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
    {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
    {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
 -  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiRnD","Sti tracking: Pixel geom",kFALSE},
+-  {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Ist geom",kFALSE},
 +  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiPxl","Sti tracking: Pixel geom",kFALSE},
-   {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Ist geom",kFALSE},
++  {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiIst","Sti tracking: Ist geom",kFALSE},
    {"BTofIT"  ,""  ,"","ITTF",""                            ,"Sti,StiBTof","Sti tracking: BTof geom",kFALSE},
    {"NoSvtIT"     ,""  ,"","-SvtIT",""                    ,"","ITTF: track with switch off SVT geom",kFALSE},
    {"NoSsdIT"     ,""  ,"","-SsdIT",""                    ,"","ITTF: track with switch off SSD geom",kFALSE},
    {"skip1row"    ,""  ,"","",""                           ,"","ITTF: skip the first pad row in TPC",kFALSE},
 -  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
 +  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
++  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
    {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
    {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
    {"BeamBack" ,"","","StEvent","StBeamBackMaker","Minuit,StBeamBackMaker"
