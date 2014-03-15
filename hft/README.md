@@ -12,7 +12,8 @@ How to build development hft libraries
     starver dev
     mkdir myhft
     cd myhft
-    cvs checkout -r HEAD offline/hft
+    cvs checkout -r HEAD offline/hft/StRoot
+    cvs checkout -r HEAD offline/hft/StarDb
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
