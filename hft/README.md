@@ -41,6 +41,7 @@ How to build development hft libraries
 
     mkdir -p StarDb/Geometry
     cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
+    cp -r offline/hft/StarDb/Geometry/ist StarDb/Geometry
 
     # The following new submodules can aslo be copied to your local StRoot but
     # you may chose to link them instead
