@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "StEvent.h"
+#include "StEvent/StEnumerations.h"
 #include "StHit.h"
 #include "StEventHitIter.h"
 #include "StTpcHitCollection.h"
@@ -500,7 +501,7 @@ const TObject *StIstHitIter::GetObject (int idx) const
 //________________________________________________________________________________
 int StIstHitIter::GetSize () const
 {
-  return ((StIstHitCollection*)fCont)->numberOfLadders();
+  return kIstNumLadders;
 }
 
 //________________________________________________________________________________
@@ -511,7 +512,7 @@ const TObject *StIstLadderHitIter::GetObject (int idx) const
 //________________________________________________________________________________
 int StIstLadderHitIter::GetSize () const
 {
-  return ((StIstLadderHitCollection*)fCont)->numberOfSensors();
+  return kIstNumSensorsPerLadder;
 }
 //________________________________________________________________________________
 const TObject *StIstSensorHitIter::GetObject (int idx) const

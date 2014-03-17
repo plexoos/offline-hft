@@ -10,6 +10,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/03/17 21:27:03  ypwang
+* add 2D histogram set for StIstCalibrationMaker
+*
 * Revision 1.6  2014/03/11 17:44:20  ypwang
 * minor updates to add a flag mRunHist to choose whether run histogram calculation method
 *
@@ -32,6 +35,7 @@
 #include <string>
 #include "StMaker.h"
 #include "StRoot/StIstUtil/StIstConsts.h"
+#include "TH2S.h"
 
 class StIstDbMaker;
 class St_istMapping;
@@ -118,6 +122,7 @@ protected:
     TH1F *hist_sumPed[kIstNumTimeBins];  // summary pedestal over all channels
     TH1F *hist_sumRms[kIstNumTimeBins]; // summary rms noise over all channels
     TH1F *hist_sumCmn[kIstNumTimeBins]; // summary common mode noise over all channels
+    TH2S *hist_adcSpectrum[kIstNumTimeBins]; // ADC spectrum over all channels
     static const string sectionLabel[72];
 
 private:
