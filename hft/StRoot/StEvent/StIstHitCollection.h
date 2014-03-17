@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/03/17 20:27:57  ypwang
+* remove numOfLadder() and numOfSensor() from StIstHitCollection.h and StIstLadderHitCollection.h, respectively
+*
 * Revision 1.7  2014/03/13 22:17:09  smirnovd
 * Minor whitespace alignment fixes
 *
@@ -50,7 +53,6 @@ public:
 
    bool          addHit(StIstHit *);
    unsigned int  numberOfHits() const;
-   unsigned int  numberOfLadders() const;
 
    unsigned char getClusteringType() const;
    void          setClusteringType(unsigned char clusteringType);

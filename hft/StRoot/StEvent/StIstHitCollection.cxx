@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/03/17 20:27:57  ypwang
+* remove numOfLadder() and numOfSensor() from StIstHitCollection.h and StIstLadderHitCollection.h, respectively
+*
 * Revision 1.7  2014/03/13 22:10:21  smirnovd
 * Fixed constructor's initialization list
 *
@@ -52,7 +55,7 @@ bool StIstHitCollection::addHit(StIstHit *hit)
 
    if (hit &&
          l < kIstNumLadders &&
-         w < mLadders[l].numberOfSensors()) {
+         w < kIstNumSensorsPerLadder) {
       mLadders[l].sensor(w)->hits().push_back(hit);
       return kTRUE;
    }
@@ -66,7 +69,7 @@ unsigned int StIstHitCollection::numberOfHits() const
    unsigned int sum = 0;
 
    for (unsigned int i = 0; i < kIstNumLadders; i++)
-      for (unsigned int j = 0; j < mLadders[i].numberOfSensors(); j++)
+      for (unsigned int j = 0; j < kIstNumSensorsPerLadder; j++)
          sum += mLadders[i].sensor(j)->hits().size();
 
    return sum;

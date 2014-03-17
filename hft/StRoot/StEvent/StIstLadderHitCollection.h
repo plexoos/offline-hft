@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/03/17 20:27:57  ypwang
+* remove numOfLadder() and numOfSensor() from StIstHitCollection.h and StIstLadderHitCollection.h, respectively
+*
 * Revision 1.4  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -41,7 +44,6 @@ public:
    ~StIstLadderHitCollection();
 
    unsigned int  numberOfHits() const;
-   unsigned int  numberOfSensors() const;
 
    StIstSensorHitCollection       *sensor(unsigned int);
    const StIstSensorHitCollection *sensor(unsigned int) const;
