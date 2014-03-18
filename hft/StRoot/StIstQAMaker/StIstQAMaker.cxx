@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.13  2014/03/18 02:19:37  ypwang
+* add two 2D histogram sets for max ADC time bin vs APV/Group electronics ID
+*
 * Revision 1.12  2014/03/11 17:51:32  ypwang
 * Histogram type changed from TH2F to TH2S, and reduce several histogram's bin number
 *
@@ -79,6 +82,8 @@ StIstQAMaker::StIstQAMaker( const char* name ) :
    for(unsigned char iTimeBin=0; iTimeBin<kIstNumTimeBins; iTimeBin++)
     	rawHitCharge_TimeBin[iTimeBin] = NULL;
 
+   rawHitMaxTimeBin_APV = NULL;
+   rawHitMaxTimeBin_Section = NULL;
    hitMapOfIST = NULL;
    hitMapOfAPV = NULL;
    hitGlobalXY = NULL;
@@ -108,6 +113,14 @@ Int_t StIstQAMaker::Init()
     numOfRawHits_SensorId = new TH2S("numOfRawHits_SensorId", "The number of RawHits vs. sensor ID", 144, 1, 145, 128, 0, 128);
     numOfRawHits_SensorId->GetXaxis()->SetTitle("Sensor ID");
     numOfRawHits_SensorId->GetYaxis()->SetTitle("Number of Raw Hits");
+
+    rawHitMaxTimeBin_Section = new TH2S("rawHitMaxTimeBin_Section", "Max time bin of raw hits vs group ID", 72, 0, 72, kIstNumTimeBins, 0, kIstNumTimeBins);
+    rawHitMaxTimeBin_Section->GetXaxis()->SetTitle("Group ID [12*(RDO-1)+2*ARM+GROUP]");
+    rawHitMaxTimeBin_Section->GetYaxis()->SetTitle("Max Time Bin Index");
+
+    rawHitMaxTimeBin_APV = new TH2S("rawHitMaxTimeBin_APV", "Max time bin of raw hits vs APV ID", 864, 0, 864, kIstNumTimeBins, 0, kIstNumTimeBins);
+    rawHitMaxTimeBin_APV->GetXaxis()->SetTitle("APV ID [144*(RDO-1)+24*ARM+APV]");
+    rawHitMaxTimeBin_APV->GetYaxis()->SetTitle("Max Time Bin Index");
 
     char buffer[100];
     for(int iTimeBin=0; iTimeBin<kIstNumTimeBins; iTimeBin++) {
@@ -252,7 +265,7 @@ Int_t StIstQAMaker::Make(){
          for(int ladderIdx=0; ladderIdx<kIstNumLadders; ladderIdx++ )	{
 	    StIstLadderHitCollection* ladderHitCollection = istHitCollection->ladder(ladderIdx);
 	    unsigned char nClusteringType = istHitCollection->getClusteringType();
-	    for(int sensorIdx=0; sensorIdx<(int)ladderHitCollection->numberOfSensors() && sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
+	    for(int sensorIdx=0; sensorIdx<kIstNumSensorsPerLadder; sensorIdx++)	{
 	       StIstSensorHitCollection* sensorHitCollection = ladderHitCollection->sensor(sensorIdx);
 	       int sensorIdxTemp = 0;
                for(int idx=0; idx<(int)sensorHitCollection->hits().size(); idx++ ){
@@ -333,6 +346,8 @@ Int_t StIstQAMaker::Make(){
 		   }
 		   rawHitChargeErr->Fill(rawHit->getGeoId(), (int)(rawHit->getChargeErr( maxTimeBin )+0.5));
 		   rawHitMap[sensorId-1]->Fill((int)rawHit->getColumn(), (int)rawHit->getRow());
+		   rawHitMaxTimeBin_Section->Fill(((int)rawHit->getRdo()-1)*12+(int)rawHit->getArm()*2+(int)rawHit->getApv()/12, (int)maxTimeBin);
+		   rawHitMaxTimeBin_APV->Fill(((int)rawHit->getRdo()-1)*144+(int)rawHit->getArm()*24+(int)rawHit->getApv(), (int)maxTimeBin);
 
 		   istRawHit.channelId 	= (int)rawHit->getChannelId();
 		   istRawHit.geoId      = (int)rawHit->getGeoId();
@@ -402,6 +417,8 @@ Int_t StIstQAMaker::Finish(){
     myRootFile->WriteTObject(rawHitChargeErr);
     myRootFile->WriteTObject(hitCharge_SensorId);
     myRootFile->WriteTObject(hitChargeErr_SensorId);
+    myRootFile->WriteTObject(rawHitMaxTimeBin_Section);
+    myRootFile->WriteTObject(rawHitMaxTimeBin_APV);
     myRootFile->WriteTObject(maxTimeBin_SensorId);
     myRootFile->WriteTObject(clusterSize_SensorId);
     myRootFile->WriteTObject(clusterSizeZ_SensorId);

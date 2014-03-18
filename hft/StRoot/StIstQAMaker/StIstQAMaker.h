@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/03/18 02:19:37  ypwang
+* add two 2D histogram sets for max ADC time bin vs APV/Group electronics ID
+*
 * Revision 1.7  2014/03/13 22:10:12  smirnovd
 * Move some constants from StIstUtil/StIstConsts.h to StEvent/StEnumerations.h to avoid external dependance of StEvent on StIstUtil
 *
@@ -78,15 +81,17 @@ protected:
   TH2S* rawHitMap[kIstNumSensors]; // raw hit column vs row per sensor
   TH2S* hitMap[kIstNumSensors];    // hit mean column vs mean row per sensor
   TH2S* hitMapOfIST;		   // hit map of IST layer in r-phi vs. Z area
-  TH2S* hitMapOfAPV;		   // hit map in ladder vs. APV Id
+  TH2S* hitMapOfAPV;		   // hit map in ladder vs. APV geometry Id
   TH2F* hitGlobalXY;		   // hit global x vs y
   TH2F* hitGlobalPhiZ;		   // hit global z
   //Charge
   TH2S* rawHitCharge_TimeBin[kIstNumTimeBins]; // Charge (ADC) vs channel ID over all time bins
   TH2S* rawHitChargeErr;  // RMS noise vs channel ID
+  TH2S* rawHitMaxTimeBin_Section;   // Raw hit max ADC time bin vs section electronics ID [12*(ARC-1)+2*ARM+GROUP]
+  TH2S* rawHitMaxTimeBin_APV;       // Raw hit max ADC time bin vs APV electronics ID [144*(ARC-1)+24*ARM+APV]
   TH2S* hitCharge_SensorId;         // Charge vs sensorID
   TH2S* hitChargeErr_SensorId;      // Charge uncertainty vs sensorID
-  TH2S* maxTimeBin_SensorId;	    // max ADC time bin vs sensorID
+  TH2S* maxTimeBin_SensorId;	    // hit max ADC time bin vs sensorID
   //hit or raw hit number
   TH2S* numOfRawHits_SensorId;      // number of raw hits vs sensor Id
   TH2S* numOfHits_SensorId;	    // number of hits vs sensor Id
