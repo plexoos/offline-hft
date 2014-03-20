@@ -12,8 +12,7 @@ How to build development hft libraries
     starver dev
     mkdir myhft
     cd myhft
-    cvs checkout -r HEAD offline/hft/StRoot
-    cvs checkout -r HEAD offline/hft/StarDb
+    cvs checkout -r HEAD -ko offline/hft
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
@@ -24,17 +23,6 @@ How to build development hft libraries
     # not yet available (as of March 11, 2014)
 
     cvs checkout -r HEAD StRoot/StPxlRawHitMaker
-
-    # Copy new files to the local StRoot area
-
-    cp offline/hft/StRoot/StEvent/StIstHitCollection.cxx       StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstHitCollection.h         StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstHit.cxx                 StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstHit.h                   StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstLadderHitCollection.cxx StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstLadderHitCollection.h   StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.cxx StRoot/StEvent/
-    cp offline/hft/StRoot/StEvent/StIstSensorHitCollection.h   StRoot/StEvent/
 
     # According to Xin simulation jobs cannot use the pixel survey geometry
     # from the STAR database due to improper default setting of the simulation
@@ -64,11 +52,14 @@ How to build development hft libraries
 
     # Apply changes to existing files
 
+    patch -p1 < ../offline/hft/StRoot/StEvent.patch
+    patch -p1 < ../offline/hft/StRoot/StEventUtilities.patch
+
     cd ..
+
     patch -p0 < offline/hft/StRoot/StBFChain.patch
-    patch -p0 < offline/hft/StRoot/StEvent.patch
-    patch -p0 < offline/hft/StRoot/StEventUtilities.patch
     patch -p0 < offline/hft/StRoot/StiMaker.patch
+
     cons
 
 
