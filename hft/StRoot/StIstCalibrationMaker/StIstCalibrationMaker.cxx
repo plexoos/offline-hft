@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.14  2014/03/24 15:55:07  ypwang
+* minor updates due to returned const pointers in StIstDbMaker
+*
 * Revision 1.13  2014/03/17 21:27:03  ypwang
 * add 2D histogram set for StIstCalibrationMaker
 *
@@ -194,29 +197,23 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
    Int_t ierr = kStOk;
 
    //control parameter
-   St_istControl *istControl = mIstDbMaker->GetControl();
-   if (!istControl)  LOG_WARN << " no istControl table " << endm;
-
+   const St_istControl *istControl = mIstDbMaker->GetControl();
    istControl_st *istControlTable = istControl->GetTable() ;
+   if (!istControlTable)  LOG_WARN << "Pointer to IST control table is null" << endm;
    mPedCut = istControlTable[0].kIstPedCutDefault;
 
    //channel mapping
-   St_istMapping *istMapping;
-   istMapping_st *gM;
-   istMapping = mIstDbMaker->GetMapping();
-   if(istMapping) {
-       gM = istMapping->GetTable();
-       if( !gM ) {
-            LOG_WARN << "Pointer to IST mapping table is null" << endm;
-            ierr = kStWarn;
-       }
-
-       for(int i=0; i<kIstNumElecIds; i++) {
-           LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
-           mMappingVec[i] = gM[0].mapping[i];
-       }
+   const St_istMapping *istMapping = mIstDbMaker->GetMapping();
+   istMapping_st *gM = istMapping->GetTable();
+   if( !gM ) {
+       LOG_WARN << "Pointer to IST mapping table is null" << endm;
+       ierr = kStWarn;
    }
-   else LOG_DEBUG << " no IST mapping table found" << endm;
+
+   for(int i=0; i<kIstNumElecIds; i++) {
+       LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
+       mMappingVec[i] = gM[0].mapping[i];
+   }
 
    return ierr;
 };
