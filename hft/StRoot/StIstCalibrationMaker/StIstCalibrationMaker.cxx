@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.15  2014/03/25 03:06:52  ypwang
+* updates on Db table accessory method
+*
 * Revision 1.14  2014/03/24 15:55:07  ypwang
 * minor updates due to returned const pointers in StIstDbMaker
 *
@@ -197,22 +200,43 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
    Int_t ierr = kStOk;
 
    //control parameter
-   const St_istControl *istControl = mIstDbMaker->GetControl();
-   istControl_st *istControlTable = istControl->GetTable() ;
-   if (!istControlTable)  LOG_WARN << "Pointer to IST control table is null" << endm;
-   mPedCut = istControlTable[0].kIstPedCutDefault;
-
-   //channel mapping
-   const St_istMapping *istMapping = mIstDbMaker->GetMapping();
-   istMapping_st *gM = istMapping->GetTable();
-   if( !gM ) {
-       LOG_WARN << "Pointer to IST mapping table is null" << endm;
-       ierr = kStWarn;
+   const TDataSet *dbControl = mIstDbMaker->GetControl();
+   St_istControl *istControl = 0;
+   istControl = (St_istControl *)dbControl->Find("istControl");
+   if(!istControl) {
+	LOG_ERROR << "Dataset does not contain IST control table!" << endm;
+	ierr = kStErr;
+   }
+   else {
+   	istControl_st *istControlTable = istControl->GetTable() ;
+   	if (!istControlTable)  {
+	    LOG_ERROR << "Pointer to IST control table is null" << endm;
+	    ierr = kStErr;
+	}
+	else
+   	    mPedCut = istControlTable[0].kIstPedCutDefault;
    }
 
-   for(int i=0; i<kIstNumElecIds; i++) {
-       LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
-       mMappingVec[i] = gM[0].mapping[i];
+   //channel mapping
+   const TDataSet *dbMapping = mIstDbMaker->GetMapping();
+   St_istMapping *istMapping = 0;
+   istMapping = (St_istMapping *)dbMapping->Find("istMapping");
+   if(!istMapping) {
+	LOG_ERROR << "Dataset does not contain IST mapping table!" << endm;
+        ierr = kStErr;
+   }
+   else {
+   	istMapping_st *gM = istMapping->GetTable();
+   	if( !gM ) {
+       	    LOG_ERROR << "Pointer to IST mapping table is null" << endm;
+       	    ierr = kStErr;
+   	}
+	else {
+   	    for(int i=0; i<kIstNumElecIds; i++) {
+       		LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
+       		mMappingVec[i] = gM[0].mapping[i];
+   	    }
+	}
    }
 
    return ierr;
