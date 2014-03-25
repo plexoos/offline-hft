@@ -1,17 +1,25 @@
-From e1a6f256efd473b9b41c30e310c4399a3bb9d95e Mon Sep 17 00:00:00 2001
+From 190d8c3f20be1344625f3e94a8e003504c1e9380 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Thu, 20 Mar 2014 14:22:14 -0400
-Subject: [PATCH 1/2] IST realted patches for files in StEventUtilities
+Date: Mon, 24 Mar 2014 22:13:39 -0400
+Subject: [PATCH] Squashed dsbranch upto 2edfb475
 
 ---
- StEventUtilities/StEventHitIter.cxx | 79 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
+ StEventUtilities/StEventHitIter.cxx | 80 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 79 insertions(+), 1 deletion(-)
 
 diff --git a/StEventUtilities/StEventHitIter.cxx b/StEventUtilities/StEventHitIter.cxx
-index 90f9daa..5c3f088 100644
+index 90f9daa..498f242 100644
 --- a/StEventUtilities/StEventHitIter.cxx
 +++ b/StEventUtilities/StEventHitIter.cxx
-@@ -17,6 +17,7 @@
+@@ -2,6 +2,7 @@
+ #include <stdlib.h>
+ #include <assert.h>
+ #include "StEvent.h"
++#include "StEvent/StEnumerations.h"
+ #include "StHit.h"
+ #include "StEventHitIter.h"
+ #include "StTpcHitCollection.h"
+@@ -17,6 +18,7 @@
  #include "StFgtCollection.h"
  #include "StFgtHitCollection.h"
  #include "StFgtPointCollection.h"
@@ -19,7 +27,7 @@ index 90f9daa..5c3f088 100644
  //________________________________________________________________________________
  StHitIter::StHitIter()
  {
-@@ -446,6 +447,82 @@ int StSsdWaferHitIter::GetSize () const
+@@ -446,6 +448,82 @@ int StSsdWaferHitIter::GetSize () const
    return ((StSsdWaferHitCollection*)fCont)->hits().size();
  }
  
@@ -76,7 +84,7 @@ index 90f9daa..5c3f088 100644
 +//________________________________________________________________________________
 +int StIstHitIter::GetSize () const
 +{
-+  return ((StIstHitCollection*)fCont)->numberOfLadders();
++  return kIstNumLadders;
 +}
 +//________________________________________________________________________________
 +const TObject *StIstLadderHitIter::GetObject (int idx) const
@@ -86,7 +94,7 @@ index 90f9daa..5c3f088 100644
 +//________________________________________________________________________________
 +int StIstLadderHitIter::GetSize () const
 +{
-+  return ((StIstLadderHitCollection*)fCont)->numberOfSensors();
++  return kIstNumSensorsPerLadder;
 +}
 +//________________________________________________________________________________
 +const TObject *StIstSensorHitIter::GetObject (int idx) const
@@ -102,7 +110,7 @@ index 90f9daa..5c3f088 100644
  //________________________________________________________________________________
  //_______FTPC______FTPC______FTPC______FTPC______FTPC______FTPC______FTPC______TPC
  //________________________________________________________________________________
-@@ -671,7 +748,7 @@ int StEventHitIter::AddDetector(StDetectorId detId)
+@@ -671,7 +749,7 @@ int StEventHitIter::AddDetector(StDetectorId detId)
     case kFtpcEastId:
       Add(new StFtpcHitIter());break;
     case kPxlId: 
@@ -111,50 +119,6 @@ index 90f9daa..5c3f088 100644
       /* case kFgtId: n.b. This will be removing the RnD version of the FGT */ 
     case kFmsId: 
       Add(new StRnDHitIter(detId));break;
--- 
-1.8.2.GIT
-
-
-From aecd480db1136f19d3ba474f427b1ac754a5548f Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Thu, 20 Mar 2014 14:57:10 -0400
-Subject: [PATCH 2/2] Replaced function calls by constants as that what they
- were returning anyway
-
----
- StEventUtilities/StEventHitIter.cxx | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/StEventUtilities/StEventHitIter.cxx b/StEventUtilities/StEventHitIter.cxx
-index 5c3f088..498f242 100644
---- a/StEventUtilities/StEventHitIter.cxx
-+++ b/StEventUtilities/StEventHitIter.cxx
-@@ -2,6 +2,7 @@
- #include <stdlib.h>
- #include <assert.h>
- #include "StEvent.h"
-+#include "StEvent/StEnumerations.h"
- #include "StHit.h"
- #include "StEventHitIter.h"
- #include "StTpcHitCollection.h"
-@@ -500,7 +501,7 @@ const TObject *StIstHitIter::GetObject (int idx) const
- //________________________________________________________________________________
- int StIstHitIter::GetSize () const
- {
--  return ((StIstHitCollection*)fCont)->numberOfLadders();
-+  return kIstNumLadders;
- }
- //________________________________________________________________________________
- const TObject *StIstLadderHitIter::GetObject (int idx) const
-@@ -510,7 +511,7 @@ const TObject *StIstLadderHitIter::GetObject (int idx) const
- //________________________________________________________________________________
- int StIstLadderHitIter::GetSize () const
- {
--  return ((StIstLadderHitCollection*)fCont)->numberOfSensors();
-+  return kIstNumSensorsPerLadder;
- }
- //________________________________________________________________________________
- const TObject *StIstSensorHitIter::GetObject (int idx) const
 -- 
 1.8.2.GIT
 
