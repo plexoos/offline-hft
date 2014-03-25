@@ -17,6 +17,7 @@ How to build development hft libraries
     cvs checkout -r HEAD StRoot/StEvent
     cvs checkout -r HEAD StRoot/StEventUtilities
     cvs checkout -r HEAD StRoot/StiMaker
+    cvs checkout -r HEAD StRoot/Sti
 
     # The following package is in the official CVS StRoot area but not yet in
     # $STAR/StRoot. Check it out to compile locally as the official library is
@@ -54,11 +55,11 @@ How to build development hft libraries
 
     patch -p1 < ../offline/hft/StRoot/StEvent.patch
     patch -p1 < ../offline/hft/StRoot/StEventUtilities.patch
+    patch -p1 < ../offline/hft/StRoot/Sti_StiMaker.patch
 
     cd ..
 
     patch -p0 < offline/hft/StRoot/StBFChain.patch
-    patch -p0 < offline/hft/StRoot/StiMaker.patch
 
     cons
 
