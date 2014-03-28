@@ -4,8 +4,27 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullCha
 retrieving revision 1.204
 diff -u -r1.204 BigFullChain.h
 --- StRoot/StBFChain/BigFullChain.h	18 Feb 2014 16:46:19 -0000	1.204
-+++ StRoot/StBFChain/BigFullChain.h	13 Mar 2014 23:59:14 -0000
-@@ -1172,7 +1172,6 @@
++++ StRoot/StBFChain/BigFullChain.h	27 Mar 2014 21:48:13 -0000
+@@ -966,6 +966,8 @@
+    ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
+   {"B2013_c1","","","ry2013_1,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
+    ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
++  {"B2013_c3","","","ry2013_1c,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
++   ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
+ 
+   {"pp2013a","" ,"",
+    "B2013_c2,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
+@@ -973,6 +975,9 @@
+   {"pp2013b","" ,"",
+    "B2013_c1,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
+    "","",                "Production chain for 2013 data - no Corr (+ l3, bcc/fpd, e/b-emc, no VF)",kFALSE},
++  {"pp2013c","" ,"",
++   "B2013_c3,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
++   "","",                "Production chain for 2013 data - no Corr (+ l3, bcc/fpd, e/b-emc, no VF)",kFALSE},
+ 
+   // option is bare, no tracker and no Geom
+   {"pp2013","" ,"",
+@@ -1172,7 +1177,6 @@
    {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
    {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
    {"StEvent"   ,"","","globT,SCL,TRGDef,StBichsel,EmcUtil,TbUtil,detDb","","StEvent","Load StEvent",kFALSE},
@@ -13,7 +32,7 @@ diff -u -r1.204 BigFullChain.h
    {"SsdUtil"     ,""  ,"","StarMagField,StEvent",""               ,"Geom,StSsdUtil","Load SSD Util",kFALSE},
    {"EmcUtil"     ,""  ,"","emc_T,geomT,StDbT",""                      ,"StEmcUtil","Load StEmcUtil",kFALSE},
    {"EEmcUtil"    ,""  ,"","",""                                     ,"StEEmcUtil","Load StEEmcUtil",kFALSE},
-@@ -1236,7 +1235,6 @@
+@@ -1236,7 +1240,6 @@
    {"eemcDb"      ,"eeDb" ,"","db,EEmcUtil",      "StEEmcDbMaker","StEEmcDbMaker","Load EEmcDbMaker",kFALSE},
    {"fmsDb"       ,"fmsDb","","db",                  "StFmsDbMaker","StFmsDbMaker","Load FmsDbMaker",kFALSE},
    {"fgtDb"       ,"fgtDb","","db,fgtutil",          "StFgtDbMaker","StFgtDbMaker","Load FgtDbMaker",kFALSE},
@@ -21,7 +40,7 @@ diff -u -r1.204 BigFullChain.h
  
    {"------------","-----------","-----------","------------------------------------------","","","",kFALSE},
    {"MAKERS      ","-----------","-----------","------------------------------------------","","","",kFALSE},
-@@ -1348,8 +1346,23 @@
+@@ -1348,8 +1351,23 @@
    {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
    {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
    {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
@@ -45,7 +64,7 @@ diff -u -r1.204 BigFullChain.h
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
-@@ -1474,13 +1487,14 @@
+@@ -1474,13 +1492,16 @@
    {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
    {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
    {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
@@ -59,6 +78,8 @@ diff -u -r1.204 BigFullChain.h
    {"skip1row"    ,""  ,"","",""                           ,"","ITTF: skip the first pad row in TPC",kFALSE},
 -  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
 +  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
++  {"StiPxlSimpleBox", "", "", "", "",                              "", "A geometry debugging flag", kFALSE},
++  {"StiPxlSimpleTube", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
 +  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
    {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
    {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
