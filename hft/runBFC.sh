@@ -4,6 +4,11 @@
 # To read PXL raw data:
 #
 #setenv BFC_OPTIONS '"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013b mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
+ setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleTube"'
+setenv BFC_INPFILE '"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_1920001.daq"'
 
 
 # To run over PXL simulation:
@@ -16,10 +21,11 @@
 #
 # For comparison purposes the next line shows the options used for the official 2011 production
 #
-# 2011 production chain    "tpcRS  y2011      MakeEvent ITTF                          NoSsdIt NoSvtIt Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
-#
-setenv BFC_OPTIONS '"Debug2 tpcRS ry2014 AgML MakeEvent ITTF pxlFastSim pxlDb PixelIt NoSsdIt NoSvtIt Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-setenv BFC_INPFILE '"mytest.fz"'
+# 2011 production chain     "tpcRS  y2011         MakeEvent ITTF                                                      NoSsdIt NoSvtIT Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
+# 
+#setenv BFC_OPTIONS '"Debug2 tpcRS ry2014    AgML MakeEvent ITTF pxlFastSim pxlDb PixelIT                             NoSsdIT NoSvtIt Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
+
+#setenv BFC_INPFILE '"mytest.fz"'
 
 
 # For IST
@@ -37,4 +43,4 @@ setenv BFC_INPFILE '"mytest.fz"'
 #setenv BFC_INPFILE '"/star/institutions/lbl_prod/hft/Run14/daq/038/15038019/st_cosmic_adc_15038019_raw_1000001.daq"'
 #setenv BFC_INPFILE '"/star/institutions/lbl_prod/hft/Run14/daq/053/15053044/st_hft_15053044_raw_0500005.daq"'
 
-root4star -b -q -l "bfc.C(1, 10, $BFC_OPTIONS, $BFC_INPFILE)"
+root4star -b -q -l "bfc.C(1, 5, $BFC_OPTIONS, $BFC_INPFILE)"
