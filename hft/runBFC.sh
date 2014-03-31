@@ -4,10 +4,12 @@
 # To read PXL raw data:
 #
 #setenv BFC_OPTIONS '"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
+
 #setenv BFC_OPTIONS '"DbV20140222 pp2013b mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
 #setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT"'
 #setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
- setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleTube"'
+ setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimplePlane"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleTube"'
 setenv BFC_INPFILE '"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_1920001.daq"'
 
 
