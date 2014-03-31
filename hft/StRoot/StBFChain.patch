@@ -4,7 +4,7 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullCha
 retrieving revision 1.204
 diff -u -r1.204 BigFullChain.h
 --- StRoot/StBFChain/BigFullChain.h	18 Feb 2014 16:46:19 -0000	1.204
-+++ StRoot/StBFChain/BigFullChain.h	27 Mar 2014 21:48:13 -0000
++++ StRoot/StBFChain/BigFullChain.h	31 Mar 2014 19:47:32 -0000
 @@ -966,6 +966,8 @@
     ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
    {"B2013_c1","","","ry2013_1,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
@@ -64,7 +64,7 @@ diff -u -r1.204 BigFullChain.h
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
-@@ -1474,13 +1492,16 @@
+@@ -1474,13 +1492,18 @@
    {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
    {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
    {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
@@ -79,6 +79,7 @@ diff -u -r1.204 BigFullChain.h
 -  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
 +  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
 +  {"StiPxlSimpleBox", "", "", "", "",                              "", "A geometry debugging flag", kFALSE},
++  {"StiPxlSimplePlane", "", "", "", "",                            "", "A geometry debugging flag", kFALSE},
 +  {"StiPxlSimpleTube", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
 +  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
    {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
