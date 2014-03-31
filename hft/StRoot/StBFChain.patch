@@ -81,6 +81,7 @@ diff -u -r1.204 BigFullChain.h
 +  {"StiPxlSimpleBox", "", "", "", "",                              "", "A geometry debugging flag", kFALSE},
 +  {"StiPxlSimplePlane", "", "", "", "",                            "", "A geometry debugging flag", kFALSE},
 +  {"StiPxlSimpleTube", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
++  {"StiPxlSimpleTubeSector", "", "", "", "",                       "", "A geometry debugging flag", kFALSE},
 +  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
    {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
    {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
