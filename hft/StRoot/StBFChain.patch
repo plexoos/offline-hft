@@ -4,7 +4,7 @@ RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullCha
 retrieving revision 1.204
 diff -u -r1.204 BigFullChain.h
 --- StRoot/StBFChain/BigFullChain.h	18 Feb 2014 16:46:19 -0000	1.204
-+++ StRoot/StBFChain/BigFullChain.h	4 Apr 2014 18:57:54 -0000
++++ StRoot/StBFChain/BigFullChain.h	7 Apr 2014 20:40:57 -0000
 @@ -966,6 +966,8 @@
     ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
    {"B2013_c1","","","ry2013_1,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
@@ -24,6 +24,21 @@ diff -u -r1.204 BigFullChain.h
  
    // option is bare, no tracker and no Geom
    {"pp2013","" ,"",
+@@ -981,12 +986,12 @@
+ 
+ 
+   // Year 14 chains 
+-  {"B2014","","","ry2014,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
++  {"B2014","","","ry2014a,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
+    ,                                                               "Base chain for 2014 ITTF (tpc)",kFALSE},
+ 
+   {"P2014a","" ,"",
+    "B2014,ITTF,UseXgeom,BAna,hitfilt,VFMinuit,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis"
+-   ,                      "","","Production chain for 2011 data - no Corr (+ l3, bcc/fpd, e/b-emc)",kFALSE},
++   ,                      "","","Production chain for 2014 data - no Corr (+ l3, bcc/fpd, e/b-emc)",kFALSE},
+ 
+   // TEST
+   //{"B2013_X","","","ry2012,in,tpcX,ITTF,AgML,UseXgeom,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
 @@ -1172,7 +1177,6 @@
    {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
    {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
@@ -64,7 +79,7 @@ diff -u -r1.204 BigFullChain.h
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
-@@ -1474,13 +1492,20 @@
+@@ -1474,13 +1492,21 @@
    {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
    {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
    {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
@@ -78,13 +93,14 @@ diff -u -r1.204 BigFullChain.h
    {"skip1row"    ,""  ,"","",""                           ,"","ITTF: skip the first pad row in TPC",kFALSE},
 -  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
 +  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
-+  {"StiPxlSimpleBox", "", "", "", "",                              "", "A geometry debugging flag", kFALSE},
-+  {"StiPxlSimpleBox2", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
-+  {"StiPxlSimpleBox8", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
-+  {"StiPxlSimplePlane", "", "", "", "",                            "", "A geometry debugging flag", kFALSE},
-+  {"StiPxlSimpleTube", "", "", "", "",                             "", "A geometry debugging flag", kFALSE},
-+  {"StiPxlSimpleTubeSector", "", "", "", "",                       "", "A geometry debugging flag", kFALSE},
++  {"StiPxlSimpleBox", "", "", "", "",                        "", "Flag to build test Sti geometry", kFALSE},
++  {"StiPxlSimpleBox2", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
++  {"StiPxlSimpleBox8", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
++  {"StiPxlSimplePlane", "", "", "", "",                      "", "Flag to build test Sti geometry", kFALSE},
++  {"StiPxlSimpleTube", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
++  {"StiPxlSimpleTubeSector", "", "", "", "",                 "", "Flag to build test Sti geometry", kFALSE},
 +  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
++  {"StiIstCrude", "", "", "", "",                            "", "Flag to build test Sti geometry", kFALSE},
    {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
    {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
    {"BeamBack" ,"","","StEvent","StBeamBackMaker","Minuit,StBeamBackMaker"
