@@ -33,6 +33,12 @@ How to build development hft libraries
     cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
     cp -r offline/hft/StarDb/Geometry/ist StarDb/Geometry
 
+    # Rollback the change in StarVMC to group pxl volumes in an assembly before
+    # its fully tested
+
+    cvs co StarVMC
+    cvs update -r 1.4 StarVMC/Geometry/PixlGeo/PsupGeo.xml
+
     # The following new submodules can aslo be copied to your local StRoot but
     # you may chose to link them instead
 
@@ -61,6 +67,7 @@ How to build development hft libraries
 
     patch -p0 < offline/hft/StRoot/StBFChain.patch
 
+    cons +StarVMC/Geometry
     cons
 
 
