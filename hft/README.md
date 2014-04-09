@@ -95,12 +95,4 @@ The BFC chain options for data and simulation processing can be found in
     offline/hft/runBFC.sh
 
 
-To do
-=====
 
-- <del>Move development from StRoot/StiRnD/Hft to offline/hft/StRoot/StiPxl</del>
-- <del>Rename StiPixel... classes to StiPxl... to be consistent with the other
-detector subsystems</del>
-- Add instructions for how to run simulation with hft detectors
-- Add location for test simulation and data files
-- <del>Need a patch for StiMaker due to StRoot/StiRnD/Hft -> offline/hft/StRoot/StiPxl change </del>
