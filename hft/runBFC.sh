@@ -5,17 +5,17 @@
 #
 #setenv BFC_OPTIONS '"pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
 
-#setenv BFC_OPTIONS '"DbV20140222 pp2013b mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013b mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
 
-#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT"'
 #setenv BFC_OPTIONS '"Debug2 DbV20140222 P2014a  mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt istDb IstIT"'
  setenv BFC_OPTIONS '"Debug2             P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT istDb IstIT StiIstCrude"'
 #setenv BFC_OPTIONS '"Debug2             P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT istDb IstIT ssdDb SsdIT"'
 
-#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox"'
-#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleBox2"'
-#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimplePlane"'
-#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT StiPxlSimpleTube"'
+#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
+#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox2"'
+#setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimplePlane"'
+#setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleTube"'
 setenv BFC_INPFILE '"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_1920001.daq"'
 
 
@@ -31,7 +31,7 @@ setenv BFC_INPFILE '"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_
 #
 # 2011 production chain     "tpcRS  y2011         MakeEvent ITTF                                                      NoSsdIt NoSvtIT Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
 # 
-#setenv BFC_OPTIONS '"Debug2 tpcRS ry2014    AgML MakeEvent ITTF pxlFastSim pxlDb PixelIT                             NoSsdIT NoSvtIt Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
+#setenv BFC_OPTIONS '"Debug2 tpcRS ry2014    AgML MakeEvent ITTF pxlFastSim pxlDb PxlIT                               NoSsdIT NoSvtIt Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
 
 #setenv BFC_INPFILE '"mytest.fz"'
 
