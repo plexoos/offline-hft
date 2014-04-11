@@ -95,18 +95,18 @@ The BFC chain options for data and simulation processing can be found in
     offline/hft/runBFC.sh
 
 
-Patching for preview production release
-=======================================
+Modules required before dev production released
+===============================================
 
     # Setup the environment and prepare directories
 
     starver dev
-    mkdir my_test_dir
-    cd my_test_dir
+    mkdir my_hft_test_dir
+    cd my_hft_test_dir
 
     # Checkout the new code
 
-    cvs checkout -r HEAD -ko offline/hft
+    cvs checkout -r HEAD offline/hft
 
     # Checkout the modules which need to be patched
 
@@ -116,26 +116,7 @@ Patching for preview production release
     cvs checkout -r HEAD StRoot/Sti
     cvs checkout -r HEAD StRoot/StiMaker
     cvs checkout -r HEAD StRoot/StiSsd
-
-    # Patch the existing code
-
-    patch -d StRoot/StBFChain -p1 < offline/hft/StRoot/StBFChain.patch
-    patch -d StRoot -p1 < offline/hft/StRoot/Sti_StiMaker.patch
-    patch -d StRoot -p1 < offline/hft/StRoot/StEvent.patch
-
-    # Rollback the change in StarVMC that groups PXL volumes in an assembly
-    # before its fully tested
-
-    cvs co -r HEAD StarVMC
-    cvs update -r 1.4 StarVMC/Geometry/PixlGeo/PsupGeo.xml
-
-    # The following new submodules should be copied to local StRoot for future
-    # transfer
-
-    cp -r offline/hft/StRoot/StIstDbMaker StRoot/
-    cp -r offline/hft/StRoot/StIstUtil StRoot/
-    cp -r offline/hft/StRoot/StiPxl StRoot/
-    cp -r offline/hft/StRoot/StiIst StRoot/
-
-    cons +StarVMC/Geometry
-    cons
+    cvs checkout -r HEAD StRoot/StIstDbMaker
+    cvs checkout -r HEAD StRoot/StIstUtil
+    cvs checkout -r HEAD StRoot/StiPxl
+    cvs checkout -r HEAD StRoot/StiIst
