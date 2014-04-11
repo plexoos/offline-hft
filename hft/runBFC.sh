@@ -9,8 +9,7 @@
 
 #setenv BFC_OPTIONS '"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT"'
 #setenv BFC_OPTIONS '"Debug2 DbV20140222 P2014a  mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt istDb IstIT"'
- setenv BFC_OPTIONS '"Debug2             P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT istDb IstIT StiIstCrude"'
-#setenv BFC_OPTIONS '"Debug2             P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PixelIT istDb IstIT ssdDb SsdIT"'
+ setenv BFC_OPTIONS '"Debug2             P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
 
 #setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
 #setenv BFC_OPTIONS '"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox2"'
