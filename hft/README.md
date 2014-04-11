@@ -9,15 +9,13 @@ official StRoot area.
 How to build development hft libraries
 ======================================
 
+    # Setup the environment and prepare directories
+
     starver dev
-    mkdir myhft
-    cd myhft
-    cvs checkout -r HEAD -ko offline/hft
-    cvs checkout -r HEAD StRoot/StBFChain
-    cvs checkout -r HEAD StRoot/StEvent
-    cvs checkout -r HEAD StRoot/StEventUtilities
-    cvs checkout -r HEAD StRoot/StiMaker
-    cvs checkout -r HEAD StRoot/Sti
+    mkdir my_hft_test_dir
+    cd my_hft_test_dir
+
+    cvs checkout -r HEAD offline/hft
 
     # The following package is in the official CVS StRoot area but not yet in
     # $STAR/StRoot. Check it out to compile locally as the official library is
@@ -33,41 +31,22 @@ How to build development hft libraries
     cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
     cp -r offline/hft/StarDb/Geometry/ist StarDb/Geometry
 
-    # Rollback the change in StarVMC to group pxl volumes in an assembly before
-    # its fully tested
-
-    cvs co StarVMC
-    cvs update -r 1.4 StarVMC/Geometry/PixlGeo/PsupGeo.xml
-
-    # The following new submodules can aslo be copied to your local StRoot but
+    # The following new submodules can also be copied to your local StRoot but
     # you may chose to link them instead
 
     cd StRoot
     ln -s ../offline/hft/StRoot/StIstCalibrationMaker
     ln -s ../offline/hft/StRoot/StIstClusterMaker
-    ln -s ../offline/hft/StRoot/StIstDbMaker
     ln -s ../offline/hft/StRoot/StIstFastSimMaker
     ln -s ../offline/hft/StRoot/StIstHitMaker
     ln -s ../offline/hft/StRoot/StIstQAMaker
     ln -s ../offline/hft/StRoot/StIstRawHitMaker
-    ln -s ../offline/hft/StRoot/StIstUtil
     ln -s ../offline/hft/StRoot/StPxlClusterMaker
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
-    ln -s ../offline/hft/StRoot/StiPxl
-    ln -s ../offline/hft/StRoot/StiIst
-
-    # Apply changes to existing files
-
-    patch -p1 < ../offline/hft/StRoot/StEvent.patch
-    patch -p1 < ../offline/hft/StRoot/StEventUtilities.patch
-    patch -p1 < ../offline/hft/StRoot/Sti_StiMaker.patch
 
     cd ..
 
-    patch -p0 < offline/hft/StRoot/StBFChain.patch
-
-    cons +StarVMC/Geometry
     cons
 
 
