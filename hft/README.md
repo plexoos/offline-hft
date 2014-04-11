@@ -23,6 +23,10 @@ How to build development hft libraries
 
     cvs checkout -r HEAD StRoot/StPxlRawHitMaker
 
+    # In addition, it may happen that other packages are not yet compiled in
+    # dev. In this case follow the instructions in section "Modules required
+    # before dev production released" below
+
     # According to Xin simulation jobs cannot use the pixel survey geometry
     # from the STAR database due to improper default setting of the simulation
     # timestamp... Hence, one need to use the local files from CVS:
