@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.14  2014/04/15 06:46:59  ypwang
+* updates for collections clear due to Clear() function removed from StIstCollection
+*
 * Revision 1.13  2014/03/18 02:19:37  ypwang
 * add two 2D histogram sets for max ADC time bin vs APV/Group electronics ID
 *
@@ -258,7 +261,7 @@ Int_t StIstQAMaker::Make(){
           LOG_DEBUG << "no primaryVertex found" << endm;
       }
       
-      if(mEventCounter%10 == 0)
+      if(mEventCounter%100 == 0)
       	  LOG_DEBUG << "event index: " << mEventCounter << endm; 
 
       if(istHitCollection->numberOfHits() > 0) {
@@ -271,7 +274,6 @@ Int_t StIstQAMaker::Make(){
                for(int idx=0; idx<(int)sensorHitCollection->hits().size(); idx++ ){
 		  StIstHit* &hitT = sensorHitCollection->hits()[idx];
 		  StIstDigiHit* hit = new StIstDigiHit(*hitT);
-
 		  if(hit)	{
 			const StThreeVectorF &P = hit->position();
 
@@ -315,6 +317,7 @@ Int_t StIstQAMaker::Make(){
 		 }//hit cut
               }//end loop over hits
 	      numOfHits_SensorId->Fill(sensorIdxTemp, sensorHitCollection->hits().size());
+	      sensorHitCollection->hits().clear();
 	   }//loop over sensors
         }//loop over ladders 
       }//end of hits cut
@@ -365,6 +368,7 @@ Int_t StIstQAMaker::Make(){
 
 		   istRawHitTree->Fill();
                 }//loop over raw hits
+		while (!rawHitVec.empty()) delete rawHitVec.back(), rawHitVec.pop_back();
              }//end raw hit collection
           }//loop over ladders
 

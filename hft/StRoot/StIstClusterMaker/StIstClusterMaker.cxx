@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.11  2014/04/15 06:46:59  ypwang
+* updates for collections clear due to Clear() function removed from StIstCollection
+*
 * Revision 1.10  2014/03/25 03:06:52  ypwang
 * updates on Db table accessory method
 *
@@ -57,8 +60,12 @@ StIstClusterMaker::StIstClusterMaker( const char* name ) : StMaker(name), mIstCo
 
 void StIstClusterMaker::Clear( Option_t *opts )
 {
-   if( mIstCollectionPtr )
-      mIstCollectionPtr->Clear( opts );
+   if( mIstCollectionPtr ) {
+	for ( unsigned char i = 0; i < kIstNumLadders; ++i ) {
+	    mIstCollectionPtr->getRawHitCollection(i)->Clear( "" );
+	    mIstCollectionPtr->getClusterCollection(i)->Clear( "" );
+	}
+   }
 };
 
 Int_t StIstClusterMaker::Make()
