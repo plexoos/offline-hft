@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.16  2014/04/16 16:13:57  ypwang
+* add rdo/arm/apv/channnel electronics information for produced data files
+*
 * Revision 1.15  2014/03/25 03:06:52  ypwang
 * updates on Db table accessory method
 *
@@ -173,10 +176,10 @@ Int_t StIstCalibrationMaker::Init()
             LOG_WARN << "Could not find istPedNoiseTable.dat! Set mDoPedCut to false" << endm;
         } else {
             LOG_INFO << "Read Pedestal and RMS from istPedNoiseTable.dat!"<< endm;
-	    int chElecId, chTimeBin, chCode;
+	    int chElecId, rdo, arm, apv, chan, chTimeBin, chCode;
 	    float chPed, chRms;
 	    while(!in.eof()) {
-	        in >> chElecId >> chTimeBin >> chPed >> chRms;
+	        in >> chElecId >> rdo >> arm >> apv >> chan >> chTimeBin >> chPed >> chRms;
 
 	        chCode = kIstNumTimeBins * chElecId + chTimeBin;
 	        mPedVec1stLoop[chCode] = chPed;
@@ -518,7 +521,13 @@ Int_t StIstCalibrationMaker::saveToFile()
     for(int i=0; i<kIstNumTimeBins*kIstNumElecIds; i++) {
 	short timebin = i % kIstNumTimeBins;
         int elecId  = i / kIstNumTimeBins;
-	fout_ped_math << elecId << ' ' << timebin << ' ' << mMathPedVec[i] << ' ' << mMathRmsVec[i] << endl;
+	//obtain rdo/arm/apv/chan
+	int rdo = 0, arm = -1, apv = -1, chan = -1;
+	rdo = 1 + elecId/(kIstNumArmsPerRdo*kIstNumChanPerArm);
+	arm = (elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))/kIstNumChanPerArm;
+	apv = ((elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))%kIstNumChanPerArm)/kIstNumApvChannels;
+	chan = ((elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))%kIstNumChanPerArm)%kIstNumApvChannels;
+	fout_ped_math << elecId << ' ' << rdo << ' ' << arm << ' ' << apv << ' ' << chan << ' ' << timebin << ' ' << mMathPedVec[i] << ' ' << mMathRmsVec[i] << endl;
     }
     fout_ped_math.close();
 
@@ -547,8 +556,14 @@ Int_t StIstCalibrationMaker::saveToFile()
         for( pedDataVecIter = mPedVec.begin(); pedDataVecIter != mPedVec.end() && !ierr; ++pedDataVecIter, ++idx ){
             short timebin = idx % kIstNumTimeBins;
             int elecId  = idx / kIstNumTimeBins;
+	    //obtain rdo/arm/apv/chan
+	    int rdo = 0, arm = -1, apv = -1, chan = -1;
+            rdo = 1 + elecId/(kIstNumArmsPerRdo*kIstNumChanPerArm);
+            arm = (elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))/kIstNumChanPerArm;
+            apv = ((elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))%kIstNumChanPerArm)/kIstNumApvChannels;
+            chan = ((elecId%(kIstNumArmsPerRdo*kIstNumChanPerArm))%kIstNumChanPerArm)%kIstNumApvChannels;
 
-            fout_ped_hist << elecId << ' ' << timebin << ' ' << pedDataVecIter->ped << ' ' << pedDataVecIter->rms << endl;
+            fout_ped_hist << elecId << ' ' << rdo << ' ' << arm << ' ' << apv << ' ' << chan << ' ' << timebin << ' ' << pedDataVecIter->ped << ' ' << pedDataVecIter->rms << endl;
         }
         fout_ped_hist.close();
     }
@@ -570,8 +585,17 @@ Int_t StIstCalibrationMaker::saveToFile()
     for( cmnDataVecIter = mCmnVec.begin(); cmnDataVecIter != mCmnVec.end() && !ierr; ++cmnDataVecIter, ++idx ){
         short timebin = idx % kIstNumTimeBins;
         int apvId  = idx / kIstNumTimeBins;
+	int ladderGeomId = 1 + apvId/kIstApvsPerLadder;
+	int ladderElecId = -1;
+	if(ladderGeomId<23)	ladderElecId = 22 - ladderGeomId;
+	else			ladderElecId = 46 - ladderGeomId;
+	int apvElecIdxOnLadder = 35 - apvId%kIstApvsPerLadder;
+	int apvElecId = ladderElecId*kIstApvsPerLadder + apvElecIdxOnLadder;
+	int rdo = 1 + apvElecId/(kIstNumArmsPerRdo*kIstNumApvsPerArm);
+	int arm = (apvElecId%(kIstNumArmsPerRdo*kIstNumApvsPerArm))/kIstNumApvsPerArm;
+	int apv = (apvElecId%(kIstNumArmsPerRdo*kIstNumApvsPerArm))%kIstNumApvsPerArm;	
 
-        fout_cmn << apvId << ' ' << timebin << ' ' << cmnDataVecIter->cmn << endl;
+        fout_cmn << apvId << ' ' << rdo << ' ' << arm << ' '<< apv << ' ' << timebin << ' ' << cmnDataVecIter->cmn << endl;
     }
     fout_cmn.close();
 
