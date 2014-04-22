@@ -17,8 +17,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.1  2014/03/25 14:57:50  zhoulong
- * First version of SST DAQ maker .
+ * Revision 1.2  2014/04/22 17:19:17  zhoulong
+ * This version solved one bug(too many token error in one event)
  *
  *
  ***************************************************************************
@@ -314,12 +314,14 @@ void StSstDaqMaker::DecodeRdoData()
   if(m_rdoDataLength==0 || !m_rdoData) {
     LOG_WARN<<"NO RDO OUTPUT DATA!"<<endm;
     m_rdoflag=0;
+    return;
   }
 
   if(m_rdoData[0]!=HEADER_TOKEN)
     {
       LOG_WARN<<"SST DAQ DATA HEADER_TOKEN is not correct!!"<<endm;
       m_rdoflag=0;
+      return;
     }
   else
     {
@@ -341,7 +343,7 @@ void StSstDaqMaker::DecodeRdoData()
 
   LOG_DEBUG<<"Current RDO number is :"<<m_RDO<<endm;
 
-  if(m_RDO<1 || m_RDO >nSstRdo) {LOG_WARN<<"RDO number is BAD number(<1 || >5), reject this RDO"<<endm; m_rdoflag=0;}
+  if(m_RDO<1 || m_RDO >nSstRdo) {LOG_WARN<<"RDO number is BAD number(<1 || >5), reject this RDO"<<endm; m_rdoflag=0;return;}
 
   index += HEADER_LENGTH;
  
@@ -363,6 +365,7 @@ void StSstDaqMaker::DecodeRdoData()
 	      {
 		LOG_WARN<<"Fiber ["<<i<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 		m_fiberflag[i]=0;
+		continue;
 	      }
 	  if(m_dataMode[i]==RAWMODE)
 	  
@@ -377,6 +380,7 @@ void StSstDaqMaker::DecodeRdoData()
 	    {
 	      LOG_WARN<<"DO not have this data mode; error mode = "<<m_dataMode[i]<<endm;
 	      m_fiberflag[i]=0;
+	      continue;
 	    }
 	  if(m_flag[i]==NODATA)
 	    {
@@ -387,11 +391,12 @@ void StSstDaqMaker::DecodeRdoData()
                 {
 		  LOG_WARN<<"Fiber Flag and adc length is not consistent,Stop !"<<endm;
 		  m_fiberflag[i]=0;
+		  continue;
                 }
 	    }
-	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0;}
-	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;}
-	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0;}
+	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
+	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
+	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0; continue;}
 	}
       else  
 	{
@@ -410,6 +415,7 @@ void StSstDaqMaker::DecodeRdoData()
 	    {
 	      LOG_WARN<<"Fiber ["<<i<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 	      m_fiberflag[i]=0;
+	      continue;
 	    }
 	  if(m_dataMode[i]==RAWMODE)
 	    {
@@ -423,6 +429,7 @@ void StSstDaqMaker::DecodeRdoData()
 	    {
 	      LOG_WARN<<"DO not have this data mode; error data mode = "<<m_dataMode[i]<<endm;
 	      m_fiberflag[i]=0;
+	      continue;
 	    }
 	  if(m_flag[i]==NODATA)
 	    {
@@ -433,11 +440,12 @@ void StSstDaqMaker::DecodeRdoData()
                 {
 		  LOG_WARN<<"Fiber Flag and adc length is not consistent,Stop !"<<endm;
 		  m_fiberflag[i]=0;
+		  continue;
                 }
 	    }
-	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0;}
-	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;}
-	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0;}
+	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
+	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
+	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0;continue;}
 	}
 	   
       LOG_DEBUG<<"Fiber["<<i<<"]: ADC Length = "<<m_adcLength[i]<<endm;
@@ -452,6 +460,7 @@ void StSstDaqMaker::DecodeRdoData()
     {
       LOG_WARN<<"End Token Wrong : 0x"<<hex<<m_rdoData[m_rdoDataLength/sizeof(UInt_t)-1]<<dec<<endm;
       m_rdoflag=0;
+      return;
     }
   //tcd end token
   if(m_rdoData[m_rdoDataLength/sizeof(UInt_t)-3]==TCD_END_TOKEN)
@@ -462,6 +471,7 @@ void StSstDaqMaker::DecodeRdoData()
     {
       LOG_WARN<<"TCD End Token Wrong : 0x"<<hex<<m_rdoData[m_rdoDataLength/sizeof(UInt_t)-3]<<dec<<endm;
       m_rdoflag=0;
+      return;
     }
     //tcd token
   m_trailerData = m_adcHeader[7]+m_adcLength[7];
@@ -473,6 +483,7 @@ void StSstDaqMaker::DecodeRdoData()
     {
       LOG_WARN<<"TCD Token Wrong : 0x"<<hex<<m_trailerData[0]<<dec<<endm;
       m_rdoflag=0;
+      return;
     }
   for(int t=0;t<10;t++)
     {

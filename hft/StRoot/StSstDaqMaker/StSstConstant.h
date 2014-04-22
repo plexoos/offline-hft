@@ -15,8 +15,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.1  2014/03/25 14:57:50  zhoulong
- * First version of SST DAQ maker .
+ * Revision 1.2  2014/04/22 17:19:17  zhoulong
+ * This version solved one bug(too many token error in one event)
  *
  *
  **************************************************************************/
