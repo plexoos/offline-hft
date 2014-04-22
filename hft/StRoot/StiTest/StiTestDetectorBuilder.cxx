@@ -262,51 +262,54 @@ void StiTestDetectorBuilder::buildSimpleTube()
 {
    Info("StiTestDetectorBuilder::buildSimpleTube", "XXX");
 
-   // Build average inactive volumes
-   const VolumeMap_t pxlVolumes[] = {
-      {"DTUH1", "Dtube part of pixel support",  "HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/DTUH_1", "", ""},
-      {"DTUH2", "Dtube part of pixel support",  "HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/DTUH_2", "", ""}
-   };
+   // aluminum
+   double z = 13;
+   double a_mass = 26.98;
+   double density = 2.7;
+   double radLength = 24;
+   double ionization = 100e-9; // XXX:ds: Need correct value. Victor claims this value is not used anywhere
 
-   int nPxlVolumes = sizeof(pxlVolumes) / sizeof(VolumeMap_t);
-   LOG_DEBUG << " # of volume(s) : " << nPxlVolumes << endm;
+   // z, A, density, radLength, ionization
+   StiMaterial *stiMaterial = new StiMaterial("aluminum", z, a_mass, density, radLength, ionization);
 
-   for (int i = 0; i < nPxlVolumes; i++) {
-      TString path(pxlVolumes[i].path);
+   add(stiMaterial);
 
-      bool isAvail = gGeoManager->cd(path);
+   // First tube
+   StiElossCalculator *elossCalculator = new StiElossCalculator(z/a_mass, ionization * ionization, a_mass, z, density);
 
-      if (!isAvail) {
-         Error("buildSimpleTube()", "Cannot find node %s. Skipping to next node...", path.Data());
-         continue;
-      }
+   double halfDepth = 20;
+   double thickness = 1;
+   double outerRadius = 13;
 
-      TGeoNode *geoNode = gGeoManager->GetCurrentNode();
+   StiShape *stiShape = new StiCylindricalShape("cylone", halfDepth, thickness, outerRadius, 2*M_PI);
 
-      if (!geoNode) continue;
+   add(stiShape);
 
-      LOG_DEBUG << "Current node : " << i << "/" << nPxlVolumes << " path is : " << pxlVolumes[i].name << endm;
-      LOG_DEBUG << "Number of daughters : " << geoNode->GetNdaughters() << " weight : " << geoNode->GetVolume()->Weight() << endm;
+   StiPlacement *stiPlacement = new StiPlacement();
 
-      StiVMCToolKit::LoopOverNodes(geoNode, path, pxlVolumes[i].name, MakeAverageVolume);
+   stiPlacement->setZcenter(0);
+   stiPlacement->setLayerRadius(outerRadius-thickness/2);
+   stiPlacement->setLayerAngle(0);
+   stiPlacement->setRegion(StiPlacement::kMidRapidity);
+   stiPlacement->setNormalRep(0, outerRadius-thickness/2, 0);
 
-      // Access last added volume
-      int row = getNRows() - 1;
-      int sector = 0;
-      StiDetector *stiDetector = getDetector(row, sector);
-      stiDetector->setIsOn(true);
-      StiMaterial *mat = stiDetector->getMaterial();
-      mat->set(mat->getName(), mat->getZ(), mat->getA(), mat->getDensity()*10, mat->getRadLength(), mat->getIonization());
+   StiDetector *stiDetector = getDetectorFactory()->getInstance();
 
-      // Replace the original StiElossCalculator with one based on the modified material
-      StiElossCalculator *elossCalculator = stiDetector->getElossCalculator();
-      delete elossCalculator;
-      stiDetector->setElossCalculator(new StiElossCalculator(mat->getZOverA(), mat->getIonization(), mat->getA(), mat->getZ(), mat->getDensity()));
+   stiDetector->setName("tubeone");
+   stiDetector->setIsOn(true);
+   stiDetector->setIsActive(new StiNeverActiveFunctor());
+   stiDetector->setIsContinuousMedium(false); // true for gases
+   stiDetector->setIsDiscreteScatterer(true); // true for anything other than gas
+   stiDetector->setGroupId(kTestGeomId);
+   stiDetector->setShape(stiShape);
+   stiDetector->setPlacement(stiPlacement);
+   stiDetector->setGas(getGasMat()); // XXX:ds: Not sure what this does
+   stiDetector->setMaterial(stiMaterial);
+   stiDetector->setElossCalculator(elossCalculator);
 
-      // Adjust the volume position by placing it at z=0
-      StiPlacement *stiPlacement = stiDetector->getPlacement();
-      stiPlacement->setZcenter(0);
-   }
+   int layer = getNRows();
+   add(layer, 0, stiDetector);
+   cout << "StiTestDetectorBuilder::buildEnclosedTubes build detector " << stiDetector->getName() << " at layer " << layer << endl;
 }
 
 
