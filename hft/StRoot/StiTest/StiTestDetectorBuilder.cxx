@@ -237,27 +237,27 @@ void StiTestDetectorBuilder::buildSimplePlane()
       int sector = 0;
       StiDetector *stiDetector = getDetector(row, sector);
       stiDetector->setIsOn(true);
-   
+
       StiMaterial *mat = stiDetector->getMaterial();
       // Set density to 2.7 g/cm^3
       mat->set(mat->getName(), mat->getZ(), mat->getA(), 2.7, mat->getRadLength(), mat->getIonization());
-   
+
       // Replace the original StiElossCalculator with one based on the modified material
       StiElossCalculator *elossCalculator = stiDetector->getElossCalculator();
       delete elossCalculator;
       stiDetector->setElossCalculator(new StiElossCalculator(mat->getZOverA(), mat->getIonization(), mat->getA(), mat->getZ(), mat->getDensity()));
-   
+
       // Adjust the volume position by placing it at z=0
       StiPlacement *stiPlacement = stiDetector->getPlacement();
       stiPlacement->setZcenter(0);
-   
+
       StiPlanarShape *stiShape = (StiPlanarShape*) stiDetector->getShape();
       stiShape->setThickness(2); // set thickness to 2 cm
    }
 }
 
 
-/** Creates inactive sti volumes for the pixel support material. */
+/** Creates a single aluminum tube. */
 void StiTestDetectorBuilder::buildSimpleTube()
 {
    Info("StiTestDetectorBuilder::buildSimpleTube", "XXX");
@@ -375,7 +375,6 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
 {
    Info("StiTestDetectorBuilder::buildEnclosedTubes", "XXX");
 
-   // z, A, density, radLength, ionization
    // aluminum
    double z = 13;
    double a_mass = 26.98;
@@ -394,7 +393,7 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    double thickness = 1;
    double outerRadius = 13;
 
-	StiShape *stiShape = new StiCylindricalShape("cylone", halfDepth, thickness, outerRadius, 2*M_PI);
+   StiShape *stiShape = new StiCylindricalShape("cylone", halfDepth, thickness, outerRadius, 2*M_PI);
 
    add(stiShape);
 
@@ -419,10 +418,9 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    stiDetector->setGas(getGasMat()); // XXX:ds: Not sure what this does
    stiDetector->setMaterial(stiMaterial);
    stiDetector->setElossCalculator(elossCalculator);
-   //stiDetector->setHitErrorCalculator(StiPxlHitErrorCalculator::instance());
-   
+
    int layer = getNRows();
-   add(layer, 0, stiDetector); 
+   add(layer, 0, stiDetector);
    cout << "StiTestDetectorBuilder::buildEnclosedTubes build detector " << stiDetector->getName() << " at layer " << layer << endl;
 
    // Second tube
@@ -432,7 +430,7 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    thickness = 5;
    outerRadius = 15;
 
-	stiShape = new StiCylindricalShape("cyltwo", halfDepth, thickness, outerRadius, 2*M_PI);
+   stiShape = new StiCylindricalShape("cyltwo", halfDepth, thickness, outerRadius, 2*M_PI);
 
    add(stiShape);
 
@@ -457,9 +455,8 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    stiDetector->setGas(getGasMat()); // XXX:ds: Not sure what this does
    stiDetector->setMaterial(_gasMat);
    stiDetector->setElossCalculator(elossCalculator);
-   //stiDetector->setHitErrorCalculator(StiPxlHitErrorCalculator::instance());
-   
+
    layer = getNRows();
-   add(layer, 0, stiDetector); 
+   add(layer, 0, stiDetector);
    cout << "StiTestDetectorBuilder::buildEnclosedTubes build detector " << stiDetector->getName() << " at layer " << layer << endl;
 }
