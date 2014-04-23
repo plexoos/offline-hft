@@ -69,6 +69,12 @@ void StiTestDetectorBuilder::buildDetectors(StMaker &source)
    case kEnclosedTubes:
       buildEnclosedTubes();
       break;
+   case kOverlapTubes:
+      buildEnclosedTubes(2, 13, 3, 15);
+      break;
+   case kNoOverlapTubes:
+      buildEnclosedTubes(2, 11.99, 3, 15);
+      break;
    default:
       buildSimpleBox();
    }
@@ -371,7 +377,7 @@ void StiTestDetectorBuilder::buildSimpleTubeSector()
 
 
 /** Creates inactive sti volumes for the pixel support material. */
-void StiTestDetectorBuilder::buildEnclosedTubes()
+void StiTestDetectorBuilder::buildEnclosedTubes(double tubeAThickness, double tubeAOutterR, double tubeBThickness, double tubeBOutterR)
 {
    Info("StiTestDetectorBuilder::buildEnclosedTubes", "XXX");
 
@@ -390,8 +396,8 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    StiElossCalculator *elossCalculator = new StiElossCalculator(z/a_mass, ionization * ionization, a_mass, z, density);
 
    double halfDepth = 20;
-   double thickness = 1;
-   double outerRadius = 13;
+   double thickness = tubeAThickness;
+   double outerRadius = tubeAOutterR;
 
    StiShape *stiShape = new StiCylindricalShape("cylone", halfDepth, thickness, outerRadius, 2*M_PI);
 
@@ -427,8 +433,8 @@ void StiTestDetectorBuilder::buildEnclosedTubes()
    elossCalculator = new StiElossCalculator(_gasMat->getZ()/_gasMat->getA(), _gasMat->getIonization()*_gasMat->getIonization(), _gasMat->getA(), _gasMat->getZ(), _gasMat->getDensity());
 
    halfDepth = 20;
-   thickness = 5;
-   outerRadius = 15;
+   thickness = tubeBThickness;
+   outerRadius = tubeBOutterR;
 
    stiShape = new StiCylindricalShape("cyltwo", halfDepth, thickness, outerRadius, 2*M_PI);
 

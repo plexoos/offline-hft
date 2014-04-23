@@ -10,7 +10,8 @@ class StiTestDetectorBuilder : public StiDetectorBuilder
 {
 public:
 
-   enum ETestGeomType {kDefault, kSimpleBox, kSimpleBox2, kSimpleBox8, kSimplePlane, kSimpleTube, kSimpleTubeSector, kEnclosedTubes};
+   enum ETestGeomType {kDefault, kSimpleBox, kSimpleBox2, kSimpleBox8, kSimplePlane, kSimpleTube, kSimpleTubeSector,
+      kEnclosedTubes, kOverlapTubes, kNoOverlapTubes};
 
    StiTestDetectorBuilder(StiTestDetectorBuilder::ETestGeomType geomType);
    virtual void buildDetectors(StMaker &source);
@@ -27,7 +28,7 @@ private:
    void buildSimplePlane();
    void buildSimpleTube();
    void buildSimpleTubeSector();
-   void buildEnclosedTubes();
+   void buildEnclosedTubes(double tubeAThickness=1, double tubeAOutterR=13, double tubeBThickness=5, double tubeBOutterR=15);
 
    ETestGeomType mTestGeomType;
 };
