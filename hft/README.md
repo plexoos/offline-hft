@@ -17,19 +17,7 @@ How to build development hft libraries
 
     cvs checkout -r HEAD offline/hft
 
-    # The following package is in the official CVS StRoot area but not yet in
-    # $STAR/StRoot. Check it out to compile locally as the official library is
-    # not yet available (as of March 11, 2014)
-
-    cvs checkout -r HEAD StRoot/StPxlRawHitMaker
-
-    # In addition, it may happen that other packages are not yet compiled in
-    # dev. In this case follow the instructions in section "Modules required
-    # before dev production released" below
-
-    # According to Xin simulation jobs cannot use the pixel survey geometry
-    # from the STAR database due to improper default setting of the simulation
-    # timestamp... Hence, one need to use the local files from CVS:
+    # For simulation jobs you may need to use the local geometry files from CVS:
 
     mkdir -p StarDb/Geometry
     cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
@@ -65,30 +53,3 @@ How to run tests
 The BFC chain options for data and simulation processing can be found in
 
     offline/hft/runBFC.sh
-
-
-Modules required before dev production released
-===============================================
-
-    # Setup the environment and prepare directories
-
-    starver dev
-    mkdir my_hft_test_dir
-    cd my_hft_test_dir
-
-    # Checkout the new code
-
-    cvs checkout -r HEAD offline/hft
-
-    # Checkout the modules which need to be patched
-
-    cvs checkout -r HEAD StRoot/StBFChain
-    cvs checkout -r HEAD StRoot/StEvent
-    cvs checkout -r HEAD StRoot/StEventUtilities
-    cvs checkout -r HEAD StRoot/Sti
-    cvs checkout -r HEAD StRoot/StiMaker
-    cvs checkout -r HEAD StRoot/StiSsd
-    cvs checkout -r HEAD StRoot/StIstDbMaker
-    cvs checkout -r HEAD StRoot/StIstUtil
-    cvs checkout -r HEAD StRoot/StiPxl
-    cvs checkout -r HEAD StRoot/StiIst
