@@ -35,6 +35,11 @@ How to build development hft libraries
     cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
     cp -r offline/hft/StarDb/Geometry/ist StarDb/Geometry
 
+    # Checkout the modules which need to be patched
+
+    cvs checkout -r HEAD StRoot/StBFChain
+    patch -p1 -d StRoot/StBFChain < offline/hft/StRoot/StBFChain.patch
+
     # The following new submodules can also be copied to your local StRoot but
     # you may chose to link them instead
 
