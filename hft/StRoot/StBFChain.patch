@@ -1,106 +1,110 @@
-Index: StRoot/StBFChain/BigFullChain.h
-===================================================================
-RCS file: /afs/rhic.bnl.gov/star/packages/repository/StRoot/StBFChain/BigFullChain.h,v
-retrieving revision 1.204
-diff -u -r1.204 BigFullChain.h
---- StRoot/StBFChain/BigFullChain.h	18 Feb 2014 16:46:19 -0000	1.204
-+++ StRoot/StBFChain/BigFullChain.h	7 Apr 2014 20:40:57 -0000
-@@ -966,6 +966,8 @@
-    ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
-   {"B2013_c1","","","ry2013_1,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
-    ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
-+  {"B2013_c3","","","ry2013_1c,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
-+   ,                                                               "Base chain for 2013 ITTF (tpc)",kFALSE},
- 
-   {"pp2013a","" ,"",
-    "B2013_c2,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
-@@ -973,6 +975,9 @@
-   {"pp2013b","" ,"",
-    "B2013_c1,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
-    "","",                "Production chain for 2013 data - no Corr (+ l3, bcc/fpd, e/b-emc, no VF)",kFALSE},
-+  {"pp2013c","" ,"",
-+   "B2013_c3,ITTF,UseXgeom,BAna,hitfilt,ppOpt,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis",
-+   "","",                "Production chain for 2013 data - no Corr (+ l3, bcc/fpd, e/b-emc, no VF)",kFALSE},
- 
-   // option is bare, no tracker and no Geom
-   {"pp2013","" ,"",
-@@ -981,12 +986,12 @@
- 
- 
-   // Year 14 chains 
--  {"B2014","","","ry2014,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
-+  {"B2014","","","ry2014a,in,tpcX,AgML,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
-    ,                                                               "Base chain for 2014 ITTF (tpc)",kFALSE},
- 
-   {"P2014a","" ,"",
-    "B2014,ITTF,UseXgeom,BAna,hitfilt,VFMinuit,l3onl,emcDY2,fpd,trgd,ZDCvtx,NosvtIT,NossdIT,analysis"
--   ,                      "","","Production chain for 2011 data - no Corr (+ l3, bcc/fpd, e/b-emc)",kFALSE},
-+   ,                      "","","Production chain for 2014 data - no Corr (+ l3, bcc/fpd, e/b-emc)",kFALSE},
- 
-   // TEST
-   //{"B2013_X","","","ry2012,in,tpcX,ITTF,AgML,UseXgeom,tpcDB,TpcHitMover,Idst,tags,Tree,evout","",""
-@@ -1172,7 +1177,6 @@
-   {"MtdUtil"    ,""  ,"","",""                                        ,"StMtdUtil","Load StMtdUtil",kFALSE},
-   {"StBichsel"   ,""  ,"","",""                         ,"StBichsel","Load Bichsel model for dE/dx",kFALSE},
-   {"StEvent"   ,"","","globT,SCL,TRGDef,StBichsel,EmcUtil,TbUtil,detDb","","StEvent","Load StEvent",kFALSE},
--  {"PxlUtil"     ,""  ,"","","",                                       "StPxlUtil","Load StPxlUtil",kFALSE},
-   {"SsdUtil"     ,""  ,"","StarMagField,StEvent",""               ,"Geom,StSsdUtil","Load SSD Util",kFALSE},
-   {"EmcUtil"     ,""  ,"","emc_T,geomT,StDbT",""                      ,"StEmcUtil","Load StEmcUtil",kFALSE},
-   {"EEmcUtil"    ,""  ,"","",""                                     ,"StEEmcUtil","Load StEEmcUtil",kFALSE},
-@@ -1236,7 +1240,6 @@
+From 991467b17e305745aa3f46c8c918d028b4edb833 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Thu, 24 Apr 2014 16:28:11 -0400
+Subject: [PATCH] Squashed changes for StBFChain.patch
+
+---
+ BigFullChain.h | 23 ++++++++++++++++++++++-
+ StBFChain.cxx  | 17 +++++++++++++++++
+ 2 files changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/BigFullChain.h b/BigFullChain.h
+index 60426a4..7f7e50d 100644
+--- a/BigFullChain.h
++++ b/BigFullChain.h
+@@ -1246,7 +1246,6 @@ Bfc_st BFC[] = {
    {"eemcDb"      ,"eeDb" ,"","db,EEmcUtil",      "StEEmcDbMaker","StEEmcDbMaker","Load EEmcDbMaker",kFALSE},
    {"fmsDb"       ,"fmsDb","","db",                  "StFmsDbMaker","StFmsDbMaker","Load FmsDbMaker",kFALSE},
    {"fgtDb"       ,"fgtDb","","db,fgtutil",          "StFgtDbMaker","StFgtDbMaker","Load FgtDbMaker",kFALSE},
 -  {"pxlDb"       ,"pxlDb","","tpcDb",               "StPxlDbMaker","StPxlDbMaker","Load PxlDbMaker",kFALSE},
+   {"istDb"       ,"istDb","","tpcDb",               "StIstDbMaker","StIstDbMaker","Load IstDbMaker",kFALSE},
  
    {"------------","-----------","-----------","------------------------------------------","","","",kFALSE},
-   {"MAKERS      ","-----------","-----------","------------------------------------------","","","",kFALSE},
-@@ -1348,8 +1351,23 @@
-   {"dEdx"        ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
-   {"svtdEdx"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+@@ -1361,6 +1360,18 @@ Bfc_st BFC[] = {
    {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
-+  {"pxlDb"      ,"","","pxlUtil,tpcDb","StPxlDbMaker","StPxlDbMaker","Load and run PxlDbMaker",        kFALSE},
    {"pxlFastSim","","","StMcEvent,StEvent"
     ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
-+  {"pxlUtil"     ,"","","","","StPxlUtil","Pxl Utilities",kFALSE},
-+  {"pxlRaw"      ,"","","pxlUtil","StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
-+  {"pxlCluster"      ,"","","pxlUtil","StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
-+  {"pxlHit"      ,"","","pxlUtil,event,pxlDb","StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
-+  {"pxlMon"    ,"","","StEvent"        ,"StPxlMonMaker","StPxlMonMaker","Example of Pxl QA",kFALSE},
-+  {"istDb"      ,"istDb","","tpcDb","StIstDbMaker","StIstDbMaker","Load and run IstDbMaker",        kFALSE},
-+  {"istFastSim","","","StMcEvent,StEvent"
-+   ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
-+  {"istUtil"     ,"","","","","StIstUtil","Ist Utilities",kFALSE},
-+  {"istRaw"      ,"","","istUtil,istDb","StIstRawHitMaker","StIstRawHitMaker","Ist Raw Hit Maker",kFALSE},
-+  {"istCluster"      ,"","","istUtil","StIstClusterMaker","StIstClusterMaker","Ist Cluster Maker",kFALSE},
-+  {"istHit"      ,"","","istUtil,event,istDb","StIstHitMaker","StIstHitMaker","Ist Hit Maker",kFALSE},
-+  {"istQA"    ,"","","istUtil,StEvent"        ,"StIstQAMaker","StIstQAMaker","Example of Ist QA",kFALSE},
-+  {"istCalib" ,"","","istUtil","StIstCalibrationMaker","StIstCalibrationMaker","Ist Calibration Maker",kFALSE},
++  {"pxlDb"      , "" , "" , "pxlUtil tpcDb"       , "StPxlDbMaker"          , "StPxlDbMaker"                            , "Load and run StPxlDbMaker"          , kFALSE} , 
++  {"pxlRaw"     , "" , "" , "pxlUtil"             , "StPxlRawHitMaker"      , "StPxlRawHitMaker"                        , "Load and run StPxlRawHitMaker"      , kFALSE} , 
++  {"pxlCluster" , "" , "" , "pxlUtil"             , "StPxlClusterMaker"     , "StPxlClusterMaker"                       , "Load and run StPxlClusterMaker"     , kFALSE} , 
++  {"pxlHit"     , "" , "" , "pxlUtil event pxlDb" , "StPxlHitMaker"         , "StPxlHitMaker"                           , "Load and run StPxlHitMaker"         , kFALSE} , 
++  {"pxlMon"     , "" , "" , "StEvent"             , "StPxlMonMaker"         , "StPxlMonMaker"                           , "Produce QA histograms for PXL"      , kFALSE} , 
++  {"istFastSim" , "" , "" , "StMcEvent StEvent"   , "StIstFastSimMaker"     , "StIstFastSimMaker"                       , "Load and run StFastIstSimulator"    , kFALSE} , 
++  {"istRaw"     , "" , "" , "istUtil istDb"       , "StIstRawHitMaker"      , "StIstRawHitMaker"                        , "Load and run StIstRawHitMaker"      , kFALSE} , 
++  {"istCluster" , "" , "" , "istUtil"             , "StIstClusterMaker"     , "StIstClusterMaker"                       , "Load and run StIstClusterMaker"     , kFALSE} , 
++  {"istHit"     , "" , "" , "istUtil event istDb" , "StIstHitMaker"         , "StIstHitMaker"                           , "Load and run StIstHitMaker"         , kFALSE} , 
++  {"istQA"      , "" , "" , "istUtil StEvent"     , "StIstQAMaker"          , "StIstQAMaker"                            , "Produce QA histograms for IST"      , kFALSE} , 
++  {"istCalib"   , "" , "" , "istUtil"             , "StIstCalibrationMaker" , "StIstCalibrationMaker"                   , "Load and run StIstCalibrationMaker" , kFALSE} , 
++  {"HftMatTree" , "" , "" , "pxlUtil"             , "HftMatchedTree"        , "StHftPoolEventT StHftPoolHftMatchedTree" , "Create HftMatchedTree"              , kFALSE} , 
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
    {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
-@@ -1474,13 +1492,21 @@
-   {"SvtIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SVT",kFALSE},
-   {"SsdIT"    ,"","","ITTF"                                              ,"","","Sti tracking: SSD",kFALSE},
-   {"HpdIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Hpd geom",kFALSE},
--  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiRnD","Sti tracking: Pixel geom",kFALSE},
--  {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiRnD","Sti tracking: Ist geom",kFALSE},
-+  {"PixelIT",""  ,"","ITTF",""                             ,"Sti,StiPxl","Sti tracking: Pixel geom",kFALSE},
-+  {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiIst","Sti tracking: Ist geom",kFALSE},
+@@ -1461,6 +1472,15 @@ Bfc_st BFC[] = {
+   {"StiSst"   ,"","",""                        ,"","StSsdUtil,StSsdDbMaker,StiSsd","Load StiSsd(t)",kFALSE},
+   {"StiPxl"   ,"","",""                           ,"","StPxlUtil,StPxlDbMaker,StiPxl","Load StiPxl",kFALSE},
+   {"StiIst"   ,"","",""                           ,"","StIstUtil,StIstDbMaker,StiIst","Load StiIst",kFALSE},
++  {"StiTestSimpleBox", "", "", "", "",              "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestSimpleBox2", "", "", "", "",             "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestSimpleBox8", "", "", "", "",             "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestSimplePlane", "", "", "", "",            "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestSimpleTube", "", "", "", "",             "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestSimpleTubeSector", "", "", "", "",       "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestEnclosedTubes", "", "", "", "",          "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestOverlapTubes", "", "", "", "",           "", "Flag to build specific test Sti geometry", kFALSE},
++  {"StiTestNoOverlapTubes", "", "", "", "",         "", "Flag to build specific test Sti geometry", kFALSE},
+ 
+   // left for historical purpose
+   {"StiLibs"    ,"","","StiTpc,StiSvt,StiSsd,BTofUtil"   
+@@ -1503,6 +1523,7 @@ Bfc_st BFC[] = {
+   {"PxlIT"  ,""  ,"","ITTF",""                             ,"Sti,StiPxl","Sti tracking: Pixel geom",kFALSE},
+   {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiIst","Sti tracking: Ist geom",kFALSE},
+   {"SstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiSst","Sti tracking: Sst geom",kFALSE},
++  {"TestIT" ,""  ,"","ITTF",""                             ,"Sti,StiTest","Sti tracking: Test geom",kFALSE},
+ 
    {"BTofIT"  ,""  ,"","ITTF",""                            ,"Sti,StiBTof","Sti tracking: BTof geom",kFALSE},
    {"NoSvtIT"     ,""  ,"","-SvtIT",""                    ,"","ITTF: track with switch off SVT geom",kFALSE},
-   {"NoSsdIT"     ,""  ,"","-SsdIT",""                    ,"","ITTF: track with switch off SSD geom",kFALSE},
-   {"skip1row"    ,""  ,"","",""                           ,"","ITTF: skip the first pad row in TPC",kFALSE},
--  {"StiRnD"   ,"","","",                                  "","StiRnD", "Load StiRnD shared library",kFALSE},
-+  {"StiPxl"   ,"","","",                                  "","StiPxl", "Load StiPxl shared library",kFALSE},
-+  {"StiPxlSimpleBox", "", "", "", "",                        "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiPxlSimpleBox2", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiPxlSimpleBox8", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiPxlSimplePlane", "", "", "", "",                      "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiPxlSimpleTube", "", "", "", "",                       "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiPxlSimpleTubeSector", "", "", "", "",                 "", "Flag to build test Sti geometry", kFALSE},
-+  {"StiIst"   ,"","","",                                  "","StiIst", "Load StiIst shared library",kFALSE},
-+  {"StiIstCrude", "", "", "", "",                            "", "Flag to build test Sti geometry", kFALSE},
-   {"Alignment"   ,"","","",                   "","", "Sti Tpc Alignment, reconstruction per sector",kFALSE},
-   {"StiPulls" ,"","","Sti",                                      "","", "Request to make Sti Pulls",kFALSE},
-   {"BeamBack" ,"","","StEvent","StBeamBackMaker","Minuit,StBeamBackMaker"
+diff --git a/StBFChain.cxx b/StBFChain.cxx
+index 62d6978..fd39171 100644
+--- a/StBFChain.cxx
++++ b/StBFChain.cxx
+@@ -425,6 +425,7 @@ Int_t StBFChain::Instantiate()
+ 
+       // old logic for svt and ssd
+       if (GetOption("NoSvtIT")){
++	mk->SetAttr("useSvt"	, ".remove");
+ 	mk->SetAttr("useSvt"	,kFALSE);
+       } else {
+ 	if (GetOption("SvtIT")){
+@@ -434,6 +435,7 @@ Int_t StBFChain::Instantiate()
+       }
+       if (   GetOption("NoSsdIT") &&
+ 	    !GetOption("SstIT") ){
++	mk->SetAttr("useSsd"	,".remove");
+ 	mk->SetAttr("useSsd"	,kFALSE);
+       } else {
+ 	if (GetOption("SsdIT")){
+@@ -462,6 +464,21 @@ Int_t StBFChain::Instantiate()
+ 	mk->SetAttr("useSst"	 ,kTRUE);
+ 	mk->SetAttr("activeSst"  ,kTRUE);
+       }
++      if (GetOption("TestIT")){
++
++         if      (GetOption("StiTestSimpleBox"))        mk->SetAttr("StiTestSimpleBox", true);
++         else if (GetOption("StiTestSimpleBox2"))       mk->SetAttr("StiTestSimpleBox2", true);
++         else if (GetOption("StiTestSimpleBox8"))       mk->SetAttr("StiTestSimpleBox8", true);
++         else if (GetOption("StiTestSimplePlane"))      mk->SetAttr("StiTestSimplePlane", true);
++         else if (GetOption("StiTestSimpleTube"))       mk->SetAttr("StiTestSimpleTube", true);
++         else if (GetOption("StiTestSimpleTubeSector")) mk->SetAttr("StiTestSimpleTubeSector", true);
++         else if (GetOption("StiTestEnclosedTubes"))    mk->SetAttr("StiTestEnclosedTubes", true);
++         else if (GetOption("StiTestOverlapTubes"))     mk->SetAttr("StiTestOverlapTubes", true);
++         else if (GetOption("StiTestNoOverlapTubes"))   mk->SetAttr("StiTestNoOverlapTubes", true);
++
++         mk->SetAttr("useTestGeom", kTRUE);
++         mk->SetAttr("activeTestGeom", kFALSE);
++      }
+ 
+       // other sub-systems
+       if (GetOption("BTofIT")){
+-- 
+1.8.2.GIT
+
