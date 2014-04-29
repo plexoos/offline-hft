@@ -1,14 +1,14 @@
-From da10f51eebac9f8f7c605736a9fdc9a0eb7a1085 Mon Sep 17 00:00:00 2001
+From 29dfcc6c4dcfbf8565cabb91250e56bf0f0adf45 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 29 Apr 2014 14:24:36 -0400
-Subject: [PATCH 1/7] Individual options for making HFT hits
+Subject: [PATCH 1/6] Individual options for making HFT hits
 
 ---
  BigFullChain.h | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 60426a4..b377568 100644
+index a011622..fcf2869 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1246,7 +1246,6 @@ Bfc_st BFC[] = {
@@ -42,10 +42,10 @@ index 60426a4..b377568 100644
 1.8.2.GIT
 
 
-From 4a1725585902fea216daa8c28fc24efce7e28f97 Mon Sep 17 00:00:00 2001
+From 76fd05690c240ccb1ad8fa43a48a47e645249057 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 21 Apr 2014 19:01:43 -0400
-Subject: [PATCH 2/7] BFC options for building test geometries
+Subject: [PATCH 2/6] BFC options for building test geometries
 
 ---
  BigFullChain.h |  8 ++++++++
@@ -53,7 +53,7 @@ Subject: [PATCH 2/7] BFC options for building test geometries
  2 files changed, 21 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index b377568..7c647be 100644
+index fcf2869..01b5355 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1472,6 +1472,13 @@ Bfc_st BFC[] = {
@@ -106,10 +106,10 @@ index 62d6978..37d2b08 100644
 1.8.2.GIT
 
 
-From cbd63f4a8c7f235913df0b69d79b6b95d877228b Mon Sep 17 00:00:00 2001
+From 290c9de0ad6f90a80f3e5e52276db5e1e644332c Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 22 Apr 2014 16:27:17 -0400
-Subject: [PATCH 3/7] Change to get rid of doubly defined StiMaker attributes
+Subject: [PATCH 3/6] Change to get rid of doubly defined StiMaker attributes
 
 ---
  StBFChain.cxx | 2 ++
@@ -139,10 +139,10 @@ index 37d2b08..9aadc68 100644
 1.8.2.GIT
 
 
-From da70e6260018a62a6d2b5387f2b181b34f3d947c Mon Sep 17 00:00:00 2001
+From 08b25dff353f59eb03e54e058366613e3f3667aa Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 24 Apr 2014 16:25:31 -0400
-Subject: [PATCH 4/7] Added new options for Sti test to check overlapping and
+Subject: [PATCH 4/6] Added new options for Sti test to check overlapping and
  non-overlapping tubes
 
 ---
@@ -151,7 +151,7 @@ Subject: [PATCH 4/7] Added new options for Sti test to check overlapping and
  2 files changed, 4 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 7c647be..e0b9a62 100644
+index 01b5355..91921fc 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1479,6 +1479,8 @@ Bfc_st BFC[] = {
@@ -180,39 +180,10 @@ index 9aadc68..fd39171 100644
 1.8.2.GIT
 
 
-From 5d427c63645487546b9cf75521fb53b80a52be82 Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Mon, 28 Apr 2014 11:20:43 -0400
-Subject: [PATCH 5/7] Add pxlDB option to allow user to build PXL geometry from
- DB definitions
-
----
- BigFullChain.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/BigFullChain.h b/BigFullChain.h
-index e0b9a62..4bfc607 100644
---- a/BigFullChain.h
-+++ b/BigFullChain.h
-@@ -1487,8 +1487,8 @@ Bfc_st BFC[] = {
-                                                        ,"","StEEmcDbMaker","Load Sti Detector libs",kFALSE},
-   // switch to the HFT based chain
-   {"StiLibsHft" ,"","","StiLibs,StiSst,StiPxl,StiIst"       ,"","","Load Sti Detector libs for HFT",kFALSE},
--  {"StiHftP", "","","StiLibsHft,-SvtIT,-SsdIT,PxlIT",""            ,"","Enables partial  Hft (PXL)",kFALSE},
--  {"StiHftC", "","","StiLibsHft,-SvtIT,-SsdIT,PxlIT,IstIT,istDb,SstIT,ssdDb"
-+  {"StiHftP", "","","StiLibsHft,-SvtIT,-SsdIT,pxlIT,pxlDb",""      ,"","Enables partial  Hft (PXL)",kFALSE},
-+  {"StiHftC", "","","StiLibsHft,-SvtIT,-SsdIT,pxlIT,pxlDb,istIT,istDb,sstIT,ssdDb"
-                                                            ,"","Enables complete Hft (PXL+IST+SST)",kFALSE},
- 
- 
--- 
-1.8.2.GIT
-
-
-From 2a615762129cc27f647eaae08bbcfa6b542a5067 Mon Sep 17 00:00:00 2001
+From 16ab10745fd7b45d01c7a9a117d3b6960b10ffcb Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 28 Apr 2014 18:04:07 -0400
-Subject: [PATCH 6/7] Add BFC option for StiMaker to build ideal geometry
+Subject: [PATCH 5/6] Add BFC option for StiMaker to build ideal geometry
 
 ---
  BigFullChain.h | 2 ++
@@ -220,7 +191,7 @@ Subject: [PATCH 6/7] Add BFC option for StiMaker to build ideal geometry
  2 files changed, 6 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 4bfc607..52d752b 100644
+index 91921fc..491c673 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1472,6 +1472,8 @@ Bfc_st BFC[] = {
@@ -251,17 +222,17 @@ index fd39171..22c7e2c 100644
 1.8.2.GIT
 
 
-From 1ef49edd1ee50883ac5dc0d510c8b68926eab311 Mon Sep 17 00:00:00 2001
+From 9d214b1b4aff375863bb89db0c40439f97df3a7a Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 29 Apr 2014 14:30:09 -0400
-Subject: [PATCH 7/7] First attempt to build options for using SSD hits
+Subject: [PATCH 6/6] First attempt to build options for using SSD hits
 
 ---
  BigFullChain.h | 3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 52d752b..b8c2fe1 100644
+index 491c673..4082298 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1371,7 +1371,10 @@ Bfc_st BFC[] = {
