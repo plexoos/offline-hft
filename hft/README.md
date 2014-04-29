@@ -17,16 +17,15 @@ How to build development hft libraries
 
     cvs checkout -r HEAD offline/hft
 
-    # For simulation jobs you may need to use the local geometry files from CVS:
-
-    mkdir -p StarDb/Geometry
-    cp -r offline/hft/StarDb/Geometry/pxl StarDb/Geometry
-    cp -r offline/hft/StarDb/Geometry/ist StarDb/Geometry
-
     # Checkout the modules which need to be patched
 
     cvs checkout -r HEAD StRoot/StBFChain
+    cvs checkout -r HEAD StRoot/StiMaker
+    cvs checkout -r HEAD StRoot/StEvent
+
     patch -p1 -d StRoot/StBFChain < offline/hft/StRoot/StBFChain.patch
+    patch -p1 -d StRoot < offline/hft/StRoot/StiMaker.patch
+    patch -p1 -d StRoot < offline/hft/StRoot/StEvent.patch
 
     # The following new submodules can also be copied to your local StRoot but
     # you may chose to link them instead
@@ -41,6 +40,7 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StPxlClusterMaker
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
+    ln -s ../offline/hft/StRoot/StiTest
 
     cd ..
 

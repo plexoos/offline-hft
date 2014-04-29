@@ -3,25 +3,28 @@
 
 # To read PXL raw data:
 #
-#export BFC_OPTIONS='"   pp2013b pxlRaw pxlDb pxlCluster pxlHit pxlMon mtd btof VFMinuit beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
-
-#export BFC_OPTIONS='"       DbV20140222 pp2013b mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
-#export BFC_OPTIONS='"       DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT"'
-
-#export BFC_OPTIONS='"Debug2 DbV20140222 P2014a  mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt istDb IstIT"'
- export BFC_OPTIONS='"       DbV20140412 P2014a  mtd btof                                         BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt"'
-
-#export BFC_OPTIONS='"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
-#export BFC_OPTIONS='"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox2"'
-#export BFC_OPTIONS='"Debug2 DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimplePlane"'
-#export BFC_OPTIONS='"       DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleTube"'
-#export BFC_INPFILE='"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_1920001.daq"'
- export BFC_INPFILE='"/star/data03/daq/2014/079/15079042/st_physics_15079042_raw_5500008.daq"'
-
-
-# To run over PXL simulation:
+# Add pxlMon to produce QA histograms
 #
-# Uncomment next starsim command to generate a simple simulation with 10 events.
+# Current Run 14 production options with HFT systems. Add StiIdealGeom to switch between Sti
+# geometry built with either default ROOT/XML or DB-based geometry transofrmations
+#
+#export BFC_OPTIONS='"DbV20140412 P2014a  mtd btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt StiIdealGeom"'
+#
+# As above Run 14 production options extended with options to use HFT hits
+#
+ export BFC_OPTIONS='"DbV20140412 P2014a  mtd btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlRaw pxlCluster pxlHit istRaw istCluster istHit sstHit"'
+#
+# Standard production options for Run 13 extended with simple test geometries
+#
+#export BFC_OPTIONS='"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
+#export BFC_OPTIONS='"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox2"'
+#export BFC_OPTIONS='"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimplePlane"'
+#export BFC_OPTIONS='"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleTube"'
+
+
+# To run over HFT simulation:
+#
+# Uncomment next starsim command to generate a simple simulation with 20 events.
 # A mytest.fz file should be generated and it can be used as input for the
 # sample simulation BFC chain below
 #
@@ -29,13 +32,10 @@
 #
 # For comparison purposes the next line shows the options used for the official 2011 production
 #
-# 2011 production chain     "tpcRS  y2011         MakeEvent ITTF                                                      NoSsdIt NoSvtIT Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
+# 2011 production chain     "tpcRS  y2011         MakeEvent ITTF                    NoSsdIt NoSvtIT Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
 # 
-#export BFC_OPTIONS='"Debug2 tpcRS ry2014    AgML MakeEvent ITTF pxlFastSim StiHftP                                                   Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-#export BFC_OPTIONS='"Debug2 tpcRS ry2014    AgML MakeEvent ITTF pxlFastSim StiHftP istRaw istDb istCluster istHit istQA              Idst BAna l0          Tree logger Sti        tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"'
-#export BFC_OPTIONS='"Debug2 in    ry2014                                           istRaw istDb istCluster istHit istQA"'
-
-
+#export BFC_OPTIONS='"       tpcRS ry2014a AgML MakeEvent ITTF pxlFastSim StiHftC Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem pxlHit"'
+#
 #export BFC_INPFILE='"mytest.fz"'
 
 
@@ -53,5 +53,7 @@
 #
 #export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run14/daq/038/15038019/st_cosmic_adc_15038019_raw_1000001.daq"'
 #export BFC_INPFILE='"/star/institutions/lbl_prod/hft/Run14/daq/053/15053044/st_hft_15053044_raw_0500005.daq"'
+#export BFC_INPFILE='"/star/data03/daq/2013/152/14152026/st_physics_14152026_raw_1920001.daq"'
+ export BFC_INPFILE='"/star/data03/daq/2014/079/15079042/st_physics_15079042_raw_5500008.daq"'
 
 root4star -b -q -l "bfc.C(1, 5, $BFC_OPTIONS, $BFC_INPFILE)"
