@@ -41,6 +41,7 @@ How to build development hft libraries
     ln -s ../offline/hft/StRoot/StPxlHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
     ln -s ../offline/hft/StRoot/StiTest
+    ln -s ../offline/hft/StRoot/StHftPool
 
     cd ..
 

@@ -14,6 +14,8 @@
 #
  export BFC_OPTIONS='"DbV20140412 P2014a  mtd btof BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlRaw pxlCluster pxlHit istRaw istCluster istHit sstHit"'
 #
+# HftMatTree:   Creates custom tree. Can be used with offline/hft/tests/hft_display.C to produce event displays
+#
 # Standard production options for Run 13 extended with simple test geometries
 #
 #export BFC_OPTIONS='"DbV20140222 pp2013c mtd btof fmsDat fgt fgtPoint VFPPVnoCTB beamline BEmcChkStat Corr4 OSpaceZ2 OGridLeak3D -hitfilt pxlDb PxlIT StiPxlSimpleBox"'
