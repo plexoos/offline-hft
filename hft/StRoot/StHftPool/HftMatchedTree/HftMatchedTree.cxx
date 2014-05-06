@@ -42,7 +42,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
       if(!mPxlDb) {
          LOG_ERROR << "InitRun : Found the dataset, but no pxlDb content" << endm;
 
-         StPxlDbMaker *pxlDbMaker = (StPxlDbMaker *)GetMaker("pxl_db");
+         StPxlDbMaker *pxlDbMaker = (StPxlDbMaker *)GetMaker("pxlDb");
          mPxlDb = (StPxlDb *)pxlDbMaker->GetPxlDb();
          if(!mPxlDb) {
             LOG_ERROR << "InitRun : through dbMaker direct function, but no pxlDb content" << endm;
