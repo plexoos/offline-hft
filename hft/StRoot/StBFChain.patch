@@ -1,48 +1,39 @@
-From 29dfcc6c4dcfbf8565cabb91250e56bf0f0adf45 Mon Sep 17 00:00:00 2001
+From ba7f169b6e67311c26e8673cf059a2af14279642 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Tue, 29 Apr 2014 14:24:36 -0400
+Date: Tue, 6 May 2014 17:40:57 -0400
 Subject: [PATCH 1/6] Individual options for making HFT hits
 
 ---
- BigFullChain.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ BigFullChain.h | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index a011622..fcf2869 100644
+index 63cf8ad..0e15c07 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
-@@ -1246,7 +1246,6 @@ Bfc_st BFC[] = {
-   {"eemcDb"      ,"eeDb" ,"","db,EEmcUtil",      "StEEmcDbMaker","StEEmcDbMaker","Load EEmcDbMaker",kFALSE},
-   {"fmsDb"       ,"fmsDb","","db",                  "StFmsDbMaker","StFmsDbMaker","Load FmsDbMaker",kFALSE},
-   {"fgtDb"       ,"fgtDb","","db,fgtutil",          "StFgtDbMaker","StFgtDbMaker","Load FgtDbMaker",kFALSE},
--  {"pxlDb"       ,"pxlDb","","tpcDb",               "StPxlDbMaker","StPxlDbMaker","Load PxlDbMaker",kFALSE},
-   {"istDb"       ,"istDb","","tpcDb",               "StIstDbMaker","StIstDbMaker","Load IstDbMaker",kFALSE},
- 
-   {"------------","-----------","-----------","------------------------------------------","","","",kFALSE},
-@@ -1361,6 +1360,18 @@ Bfc_st BFC[] = {
-   {"Event"       ,  "","","MakeEvent",                          "","","Request to initialize event",kFALSE},
-   {"pxlFastSim","","","StMcEvent,StEvent"
-    ,                               "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
-+  {"pxlDb"      , "" , "" , "pxlUtil tpcDb"       , "StPxlDbMaker"          , "StPxlDbMaker"                            , "Load and run StPxlDbMaker"          , kFALSE},
-+  {"pxlRaw"     , "" , "" , "pxlUtil"             , "StPxlRawHitMaker"      , "StPxlRawHitMaker"                        , "Load and run StPxlRawHitMaker"      , kFALSE},
-+  {"pxlCluster" , "" , "" , "pxlUtil"             , "StPxlClusterMaker"     , "StPxlClusterMaker"                       , "Load and run StPxlClusterMaker"     , kFALSE},
-+  {"pxlHit"     , "" , "" , "pxlUtil event pxlDb" , "StPxlHitMaker"         , "StPxlHitMaker"                           , "Load and run StPxlHitMaker"         , kFALSE},
+@@ -1365,7 +1365,16 @@ Bfc_st BFC[] = {
+   {"pxlRaw"      ,"","","pxlUtil",        "StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
+   {"pxlCluster"  ,"","","pxlUtil",      "StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
+   {"pxlHit"      ,"","","pxlUtil,event,pxlDb",      "StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
+-
 +  {"pxlMon"     , "" , "" , "StEvent"             , "StPxlMonMaker"         , "StPxlMonMaker"                           , "Produce QA histograms for PXL"      , kFALSE},
-+  {"istFastSim" , "" , "" , "StMcEvent StEvent"   , "StIstFastSimMaker"     , "StIstFastSimMaker"                       , "Load and run StFastIstSimulator"    , kFALSE},
++
++  {"istFastSim","","","StMcEvent,StEvent"
++     ,                               "StIstFastSimMaker","StIstFastSimMaker","FastIstSimulator",kFALSE},
 +  {"istRaw"     , "" , "" , "istUtil istDb"       , "StIstRawHitMaker"      , "StIstRawHitMaker"                        , "Load and run StIstRawHitMaker"      , kFALSE},
 +  {"istCluster" , "" , "" , "istUtil"             , "StIstClusterMaker"     , "StIstClusterMaker"                       , "Load and run StIstClusterMaker"     , kFALSE},
 +  {"istHit"     , "" , "" , "istUtil event istDb" , "StIstHitMaker"         , "StIstHitMaker"                           , "Load and run StIstHitMaker"         , kFALSE},
 +  {"istQA"      , "" , "" , "istUtil StEvent"     , "StIstQAMaker"          , "StIstQAMaker"                            , "Produce QA histograms for IST"      , kFALSE},
 +  {"istCalib"   , "" , "" , "istUtil"             , "StIstCalibrationMaker" , "StIstCalibrationMaker"                   , "Load and run StIstCalibrationMaker" , kFALSE},
-+  {"HftMatTree" , "" , "" , "pxlUtil"             , "HftMatchedTree"        , "StHftPoolEventT StHftPoolHftMatchedTree" , "Create HftMatchedTree"              , kFALSE},
++  {"sstHit"     , "" , "" , "ssddat"              , "StSsdPointMaker"       , "StSsdPointMaker"                         , "Load and run StSsdPointMaker"       , kFALSE},
+ 
    {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
    {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
-   {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
 -- 
 1.8.2.GIT
 
 
-From 76fd05690c240ccb1ad8fa43a48a47e645249057 Mon Sep 17 00:00:00 2001
+From cca7a130fbb703a7cee32ec43ac904516eceead0 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 21 Apr 2014 19:01:43 -0400
 Subject: [PATCH 2/6] BFC options for building test geometries
@@ -53,10 +44,10 @@ Subject: [PATCH 2/6] BFC options for building test geometries
  2 files changed, 21 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index fcf2869..01b5355 100644
+index 0e15c07..626f104 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
-@@ -1472,6 +1472,13 @@ Bfc_st BFC[] = {
+@@ -1479,6 +1479,13 @@ Bfc_st BFC[] = {
    {"StiSst"   ,"","",""                        ,"","StSsdUtil,StSsdDbMaker,StiSsd","Load StiSsd(t)",kFALSE},
    {"StiPxl"   ,"","",""                           ,"","StPxlUtil,StPxlDbMaker,StiPxl","Load StiPxl",kFALSE},
    {"StiIst"   ,"","",""                           ,"","StIstUtil,StIstDbMaker,StiIst","Load StiIst",kFALSE},
@@ -70,7 +61,7 @@ index fcf2869..01b5355 100644
  
    // left for historical purpose
    {"StiLibs"    ,"","","StiTpc,StiSvt,StiSsd,BTofUtil"   
-@@ -1514,6 +1521,7 @@ Bfc_st BFC[] = {
+@@ -1521,6 +1528,7 @@ Bfc_st BFC[] = {
    {"PxlIT"  ,""  ,"","ITTF",""                             ,"Sti,StiPxl","Sti tracking: Pixel geom",kFALSE},
    {"IstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiIst","Sti tracking: Ist geom",kFALSE},
    {"SstIT"  ,""  ,"","ITTF",""                               ,"Sti,StiSst","Sti tracking: Sst geom",kFALSE},
@@ -106,7 +97,7 @@ index 62d6978..37d2b08 100644
 1.8.2.GIT
 
 
-From 290c9de0ad6f90a80f3e5e52276db5e1e644332c Mon Sep 17 00:00:00 2001
+From b586dc4b4764e19b8e117ef6d10b9a9594c09936 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 22 Apr 2014 16:27:17 -0400
 Subject: [PATCH 3/6] Change to get rid of doubly defined StiMaker attributes
@@ -139,7 +130,7 @@ index 37d2b08..9aadc68 100644
 1.8.2.GIT
 
 
-From 08b25dff353f59eb03e54e058366613e3f3667aa Mon Sep 17 00:00:00 2001
+From d0d752b9fe92a636f88f6862344cd3ca220c718a Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 24 Apr 2014 16:25:31 -0400
 Subject: [PATCH 4/6] Added new options for Sti test to check overlapping and
@@ -151,10 +142,10 @@ Subject: [PATCH 4/6] Added new options for Sti test to check overlapping and
  2 files changed, 4 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 01b5355..91921fc 100644
+index 626f104..36c37f3 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
-@@ -1479,6 +1479,8 @@ Bfc_st BFC[] = {
+@@ -1486,6 +1486,8 @@ Bfc_st BFC[] = {
    {"StiTestSimpleTube", "", "", "", "",             "", "Flag to build specific test Sti geometry", kFALSE},
    {"StiTestSimpleTubeSector", "", "", "", "",       "", "Flag to build specific test Sti geometry", kFALSE},
    {"StiTestEnclosedTubes", "", "", "", "",          "", "Flag to build specific test Sti geometry", kFALSE},
@@ -180,9 +171,9 @@ index 9aadc68..fd39171 100644
 1.8.2.GIT
 
 
-From 16ab10745fd7b45d01c7a9a117d3b6960b10ffcb Mon Sep 17 00:00:00 2001
+From 8fc6bd25433c2927d9ecfdd979df4284b96917e9 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Mon, 28 Apr 2014 18:04:07 -0400
+Date: Wed, 7 May 2014 16:01:19 -0400
 Subject: [PATCH 5/6] Add BFC option for StiMaker to build ideal geometry
 
 ---
@@ -191,10 +182,10 @@ Subject: [PATCH 5/6] Add BFC option for StiMaker to build ideal geometry
  2 files changed, 6 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 91921fc..491c673 100644
+index 36c37f3..be263bf 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
-@@ -1472,6 +1472,8 @@ Bfc_st BFC[] = {
+@@ -1479,6 +1479,8 @@ Bfc_st BFC[] = {
    {"StiSst"   ,"","",""                        ,"","StSsdUtil,StSsdDbMaker,StiSsd","Load StiSsd(t)",kFALSE},
    {"StiPxl"   ,"","",""                           ,"","StPxlUtil,StPxlDbMaker,StiPxl","Load StiPxl",kFALSE},
    {"StiIst"   ,"","",""                           ,"","StIstUtil,StIstDbMaker,StiIst","Load StiIst",kFALSE},
@@ -222,30 +213,28 @@ index fd39171..22c7e2c 100644
 1.8.2.GIT
 
 
-From 9d214b1b4aff375863bb89db0c40439f97df3a7a Mon Sep 17 00:00:00 2001
+From 340c4766a448b81c3e6574863ad287069c9b190d Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Tue, 29 Apr 2014 14:30:09 -0400
-Subject: [PATCH 6/6] First attempt to build options for using SSD hits
+Date: Wed, 7 May 2014 17:52:00 -0400
+Subject: [PATCH 6/6] Added option to create a tree used in event display
 
 ---
- BigFullChain.h | 3 +++
- 1 file changed, 3 insertions(+)
+ BigFullChain.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 491c673..4082298 100644
+index be263bf..5a3fdc6 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
-@@ -1371,7 +1371,10 @@ Bfc_st BFC[] = {
-   {"istHit"     , "" , "" , "istUtil event istDb" , "StIstHitMaker"         , "StIstHitMaker"                           , "Load and run StIstHitMaker"         , kFALSE},
-   {"istQA"      , "" , "" , "istUtil StEvent"     , "StIstQAMaker"          , "StIstQAMaker"                            , "Produce QA histograms for IST"      , kFALSE},
-   {"istCalib"   , "" , "" , "istUtil"             , "StIstCalibrationMaker" , "StIstCalibrationMaker"                   , "Load and run StIstCalibrationMaker" , kFALSE},
-+  {"sstHit"     , "" , "" , "ssddat"              , "StSsdPointMaker"       , "StSsdPointMaker"                         , "Load and run StSsdPointMaker"       , kFALSE},
-+
-   {"HftMatTree" , "" , "" , "pxlUtil"             , "HftMatchedTree"        , "StHftPoolEventT StHftPoolHftMatchedTree" , "Create HftMatchedTree"              , kFALSE},
-+
-   {"ssddat"      ,"","","ssd_daq"                             ,"","","SSD full chain for Real Data",kFALSE},
-   {"ssd_daq","","","ssdCalDb,svt_T,-sls,-spa,ssdUtil","StSsdDaqMaker","StSsdDaqMaker","... SSD Daq",kFALSE},
-   {"ssdfast"     ,"","","ssdDb,StMcEvent,StEvent","StSsdFastSimMaker","StSsdFastSimMaker",
+@@ -1665,6 +1665,8 @@ Bfc_st BFC[] = {
+    ,                                                             "Creates tree in minimc.root file",kFALSE},
+   {"SvtMatTree","","","","SvtMatchedTree"
+    ,                              "StSvtPoolEventT,StSvtPoolSvtMatchedTree","Create SvtMatchedTree",kFALSE},
++  {"HftMatTree", "", "", "pxlUtil", "HftMatchedTree",
++	                      "libEve StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
+   {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
+    ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
+   {"SpinTag"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
 -- 
 1.8.2.GIT
 
