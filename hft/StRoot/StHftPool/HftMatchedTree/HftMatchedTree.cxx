@@ -12,7 +12,6 @@
 
 #include "StIstDbMaker/StIstDbMaker.h"
 #include "StPxlDbMaker/StPxlDb.h"
-#include "StPxlDbMaker/StPxlDbMaker.h"
 #include "StHftPool/EventT/EventT.h"
 
 
@@ -35,19 +34,11 @@ Int_t HftMatchedTree::Init()
 Int_t HftMatchedTree::InitRun(Int_t runnumber)
 {
 
-   TObjectSet *pxlDbDataSet = (TObjectSet *)GetDataSet("pxlDb");
+   TObjectSet *pxlDbDataSet = (TObjectSet *)GetDataSet("pxl_db");
 
    if (pxlDbDataSet) {
       mPxlDb = (StPxlDb *)pxlDbDataSet->GetObject();
-      if(!mPxlDb) {
-         LOG_ERROR << "InitRun : Found the dataset, but no pxlDb content" << endm;
-
-         StPxlDbMaker *pxlDbMaker = (StPxlDbMaker *)GetMaker("pxlDb");
-         mPxlDb = (StPxlDb *)pxlDbMaker->GetPxlDb();
-         if(!mPxlDb) {
-            LOG_ERROR << "InitRun : through dbMaker direct function, but no pxlDb content" << endm;
-         }
-      }
+      assert(mPxlDb);
    }
    else {
       LOG_ERROR << "InitRun : not pxlDb" << endm;
