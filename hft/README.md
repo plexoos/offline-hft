@@ -54,3 +54,17 @@ How to run tests
 The BFC chain options for data and simulation processing can be found in
 
     offline/hft/runBFC.sh
+
+
+How to look at events with event display
+========================================
+
+Run a BFC chain with the HftMatTree option. See offline/hft/runBFC.sh for
+example BFC options. A file named EventAAAAAAA.root will be created in the
+current directory. To see the produced events in the event display execute the
+following commands:
+
+    mkdir output
+    mv EventAAAAAAA.root output/Event_NNNNNN.root
+    root -l offline/hft/tests/displayHft.C
+    root.exe [1] hft_display(-1,NNNNNN);
