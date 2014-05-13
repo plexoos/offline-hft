@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <stdint.h>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -54,8 +55,8 @@ const Double_t kZ_IST_d = 20;
 
 // Solenoid field along z, in Tesla.
 const Double_t kMagField = 0.498948;
-const Int_t kPXL_Cluster_Min = 1;  // hit cluster > Min
-const Int_t kPXL_Cluster_Max = 20;  // hit cluster <= Max
+const uintmax_t kPXL_Cluster_Min =  0; // Min cluster size to be accepted, i.e. nRawHits in cluster >= kPXL_Cluster_Min
+const uintmax_t kPXL_Cluster_Max = 20; // Max cluster size to be accepted, i.e. nRawHits in cluster <= kPXL_Cluster_Max
 
 // Draw Options
 const Bool_t kPlotHFTSupport = false;
@@ -262,7 +263,7 @@ void process_event(Int_t iEvt)
    for (int j = 0; j < nHits; j++) {
       int id = t->fHits_Id[j];
 
-      if (id < 1000 && ( t->fHits_nRawHits[j] <= kPXL_Cluster_Min ||  t->fHits_nRawHits[j] > kPXL_Cluster_Max ) ) continue;
+      if (id < 1000 && ( t->fHits_nRawHits[j] < kPXL_Cluster_Min ||  t->fHits_nRawHits[j] > kPXL_Cluster_Max ) ) continue;
 
       if (id < 1000 && Status_PXL[id - 1]) continue; // remove noisy channels
 
