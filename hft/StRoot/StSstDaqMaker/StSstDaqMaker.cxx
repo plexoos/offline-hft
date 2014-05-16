@@ -17,8 +17,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.2  2014/04/22 17:19:17  zhoulong
- * This version solved one bug(too many token error in one event)
+ * Revision 1.3  2014/05/16 19:30:17  zhoulong
+ * updated compression data and some small details
  *
  *
  ***************************************************************************
@@ -79,6 +79,8 @@ ClassImp(StSstDaqMaker)
 #define HYBRID_TWO_END       20
 #define HYBRID_THREE_START   20
 #define HYBRID_THREE_END     30
+#define COM_ADC_START        0
+#define COM_ADC_END          10
 #define HYBRID_START         10
 #define HYBRID_END           14
 #define STRIP_START          14
@@ -240,10 +242,10 @@ Int_t StSstDaqMaker::Make()
       for(StRtsTable::iterator it=rts_table->begin();it!=rts_table->end();it++)
 	{
 	  daq_sst_pedrms_t *f = (daq_sst_pedrms_t *)*it;
-	  for(int h=0;h<nSstWaferPerLadder;h++)
-	    { //wafer
-	    for(int c=0;c<nSstStripsPerWafer;c++)
-	      {//channel
+	  for(int c=0;c<nSstStripsPerWafer;c++)
+	    { //channel
+	      for(int h=0;h<nSstWaferPerLadder;h++)
+	      {//wafer
 		int s = c;
 		FindStripNumber(s);
 		m_ped  = (Float_t)f->ped[h][c];
@@ -303,12 +305,12 @@ Int_t StSstDaqMaker::Make()
 void StSstDaqMaker::DecodeRdoData()
 {
   int index = 0;
-  m_RDO = 0;
-  m_trigger = 0;
-  m_headerData = 0;
-  m_trailerData = 0;
+  m_RDO               = 0;
+  m_trigger           = 0;
+  m_headerData        = 0;
+  m_trailerData       = 0;
   m_trailerDataLength = 0;
-  m_rdoflag=1;
+  m_rdoflag           =1;
 
   for(int f=0;f<8;f++) m_fiberflag[f]=1;//flag=0-->bad, flag=1-->good  
   if(m_rdoDataLength==0 || !m_rdoData) {
@@ -359,22 +361,22 @@ void StSstDaqMaker::DecodeRdoData()
 	  m_flag[i] = Mid(FLAG_START,FLAG_END,m_adcHeader[i][1]);
 	  if(m_adcHeader[i][0]==FIBER_LINK_TOKEN)
 	    {
-	      LOG_DEBUG<<"#Fiber ["<<i<< "] link Token correct : 0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
+	      LOG_DEBUG<<"#Fiber ["<<m_channel[i]<< "] link Token correct : 0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 	    }
             else
 	      {
-		LOG_WARN<<"Fiber ["<<i<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
+		LOG_WARN<<"Fiber ["<<m_channel[i]<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 		m_fiberflag[i]=0;
 		continue;
 	      }
 	  if(m_dataMode[i]==RAWMODE)
 	  
 	    {
-	      LOG_INFO<<"Current data mode is RAW data"<<endm;
+	      LOG_DEBUG<<"Fiber ["<<m_channel[i]<< "]:Data mode is RAW data. ADC Length "<<m_adcLength[i]<<endm;
 	    }
 	  else if(m_dataMode[i]==COMPRESSEDMODE)
 	    {
-	      LOG_INFO<<"Current data mode is COMPRESSED data"<<endm;
+	      LOG_DEBUG<<"Fiber ["<<m_channel[i]<< "]:Data mode is COMPRESSED data. ADC Length "<<m_adcLength[i]<<endm;
 	    }
 	  else 
 	    {
@@ -384,19 +386,19 @@ void StSstDaqMaker::DecodeRdoData()
 	    }
 	  if(m_flag[i]==NODATA)
 	    {
-	      LOG_DEBUG<<"Fiber Flag:NO DATA FLAG,reject this fiber data"<<endm;
+	      LOG_DEBUG<<"Fiber "<<m_channel[i]<<" Flag:NO DATA FLAG,reject this fiber data"<<endm;
 	      if(m_adcLength[i]==FIBER_HEADER_LENGTH)
-		LOG_DEBUG<<"Fiber Flag and adc length is consistent! let's look at next fiber.."<<endm;
+		LOG_DEBUG<<"Fiber "<<m_channel[i]<<" Flag and adc length is consistent! let's look at next fiber.."<<endm;
 	      if(m_adcLength[i]!=FIBER_HEADER_LENGTH)
                 {
-		  LOG_WARN<<"Fiber Flag and adc length is not consistent,Stop !"<<endm;
+		  LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag and adc length is not consistent,Stop !"<<endm;
 		  m_fiberflag[i]=0;
 		  continue;
                 }
 	    }
-	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
-	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
-	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0; continue;}
+	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
+	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
+	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER "<<m_channel[i]<<" Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0; continue;}
 	}
       else  
 	{
@@ -409,21 +411,21 @@ void StSstDaqMaker::DecodeRdoData()
 	
 	  if(m_adcHeader[i][0]==FIBER_LINK_TOKEN)
 	    {
-	      LOG_DEBUG<<"#Fiber ["<<i<< "] link Token correct : 0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
+	      LOG_DEBUG<<"#Fiber ["<<m_channel[i]<< "] link Token correct : 0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 	    }
 	  else 
 	    {
-	      LOG_WARN<<"Fiber ["<<i<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
+	      LOG_WARN<<"Fiber ["<<m_channel[i]<<"] Link Token wrong :0x"<<hex<<m_adcHeader[i][0]<<dec<<endm;
 	      m_fiberflag[i]=0;
 	      continue;
 	    }
 	  if(m_dataMode[i]==RAWMODE)
 	    {
-	      LOG_INFO<<"Current data mode is RAW data"<<endm;
+	      LOG_DEBUG<<"Fiber ["<<m_channel[i]<< "]:Data mode is RAW data. ADC Length "<<m_adcLength[i]<<endm;
 	    }
 	  else if(m_dataMode[i]==COMPRESSEDMODE)
 	    {
-	      LOG_INFO<<"Current data mode is COMPRESSED data"<<endm;
+	      LOG_DEBUG<<"Fiber ["<<m_channel[i]<< "]:Data mode is COMPRESSED data. ADC Length "<<m_adcLength[i]<<endm;
 	    }
 	  else 
 	    {
@@ -433,22 +435,22 @@ void StSstDaqMaker::DecodeRdoData()
 	    }
 	  if(m_flag[i]==NODATA)
 	    {
-	      LOG_DEBUG<<"Fiber Flag:NO DATA FLAG,reject this fiber data"<<endm;
+	      LOG_DEBUG<<"Fiber "<<m_channel[i]<<" Flag:NO DATA FLAG,reject this fiber data"<<endm;
 	      if(m_adcLength[i]==FIBER_HEADER_LENGTH)
-		LOG_DEBUG<<"Fiber Flag and adc length is consistent! let's look at next fiber.."<<endm;
+		LOG_DEBUG<<"Fiber "<<m_channel[i]<<" Flag and adc length is consistent! let's look at next fiber.."<<endm;
 	      if(m_adcLength[i]!=FIBER_HEADER_LENGTH)
                 {
-		  LOG_WARN<<"Fiber Flag and adc length is not consistent,Stop !"<<endm;
+		  LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag and adc length is not consistent,Stop !"<<endm;
 		  m_fiberflag[i]=0;
 		  continue;
                 }
 	    }
-	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
-	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
-	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0;continue;}
+	  if(m_flag[i]==OVERFLOW) {LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag:Over Flow"<<endm; m_fiberflag[i]=0; continue;}
+	  if(m_flag[i]==EARLY_ABORT) {LOG_WARN<<"Fiber "<<m_channel[i]<<" Flag:Abort Early!"<<endm; m_fiberflag[i]=0;continue;}
+	  if(m_flag[i]==WRONG_PIPE_MODE) {LOG_WARN<<"FIBER "<<m_channel[i]<<" Flag:Wrong pipe mode!"<<endm; m_fiberflag[i]=0;continue;}
 	}
 	   
-      LOG_DEBUG<<"Fiber["<<i<<"]: ADC Length = "<<m_adcLength[i]<<endm;
+      LOG_DEBUG<<"Fiber["<<m_channel[i]<<"]: ADC Length = "<<m_adcLength[i]<<endm;
     }
   
     //check the end token,TCD end token TCD header
@@ -504,7 +506,7 @@ Int_t StSstDaqMaker::GetHitsDataLength(int FiberNumber)
 void StSstDaqMaker::DecodeHitsData()
 {
   if(m_rdoflag!=1) return;
-  LOG_INFO<<"#START Decoding RDO " <<m_RDO<<" data, rdo flag is "<<m_rdoflag<<endm;
+  LOG_DEBUG<<"#START Decoding RDO " <<m_RDO<<" data, rdo flag is "<<m_rdoflag<<endm;
   for(Int_t j=0;j<8;j++)
     {
       if(m_fiberflag[j]!=1) continue;
@@ -598,8 +600,8 @@ else
      wafer[n] = hybrid[n];
      FindStripNumber(strip[n]);
     
-     if(id_side==0) AdcStrip[0][ladder]->Fill(strip[n]+wafer[n]*nSstStripsPerWafer,data[n]);
-     if(id_side==1) AdcStrip[1][ladder]->Fill(strip[n]+wafer[n]*nSstStripsPerWafer,data[n]);
+     if(id_side==0) AdcStrip[0][ladder]->Fill(strip[n]+wafer[n]*nSstStripsPerWafer,(int)(data[n]+375)%1024);
+     if(id_side==1) AdcStrip[1][ladder]->Fill(strip[n]+wafer[n]*nSstStripsPerWafer,(int)(data[n]+375)%1024);
      /*if(id_side==0) AdcStrip[0][ladder]->Fill(readout[n]+wafer[n]*nSstStripsPerWafer,data[n]);
        if(id_side==1) AdcStrip[1][ladder]->Fill(readout[n]+wafer[n]*nSstStripsPerWafer,data[n]);*/
    }
@@ -681,10 +683,11 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t* val,int vallength,int channel)
   //----
   for(int i=0;i<vallength;i++)
     {
+      if(i%400==0) LOG_DEBUG<<"Fiber["<<channel<<"] :PROCESSING "<<(float)i/(float)vallength*100.<<"%"<<endm;
       wafer = Mid(HYBRID_START,HYBRID_END,val[i]);
       strip = Mid(STRIP_START,STRIP_END,val[i]);
       readout = strip;
-      data  = Mid(ADC_START,ADC_END,val[i]);
+      data  = Mid(COM_ADC_START,COM_ADC_END,val[i]);
      
       FindStripNumber(strip);//convert to physic strip number 
       if(id_side==0) AdcStrip[0][ladder]->Fill(strip+wafer*nSstStripsPerWafer,data);
@@ -712,6 +715,7 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t* val,int vallength,int channel)
       out_strip.id_mchit[3] = 0 ;
       out_strip.id_mchit[4] = 0 ;
       spa_strip->AddAt(&out_strip);
+
       if(id_side ==0) ladderCountP[ladder]++;
       else            ladderCountN[ladder]++;
       count = count + 1;

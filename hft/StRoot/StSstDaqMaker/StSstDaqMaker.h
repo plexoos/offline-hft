@@ -16,8 +16,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.2  2014/04/22 17:19:17  zhoulong
- * This version solved one bug(too many token error in one event)
+ * Revision 1.3  2014/05/16 19:30:17  zhoulong
+ * updated compression data and some small details
  *
  *
  **************************************************************************/
