@@ -1,4 +1,3 @@
-#define __USE_GLOBAL__
 #include "StMaker.h"
 #include "StEvent.h"
 #include "StPrimaryVertex.h"

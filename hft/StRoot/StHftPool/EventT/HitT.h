@@ -1,9 +1,7 @@
 #ifndef __HIT__
 #define __HIT__
-#define __USE_GLOBAL__
 #include <string.h>
 #include "TObject.h"
-class StHit;
 class HitT : public TObject {
  private:
   Char_t start;
