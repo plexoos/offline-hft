@@ -180,10 +180,10 @@ Int_t  EventT::Build(StEvent *stEvent, UInt_t MinNoHits, Double_t pCut, StMaker 
 
   UInt_t nT = 0;
 
-  const double IST_Width_X = 3.8016;
-  const double IST_Width_Z = 7.53;
-  const double PXL_Width_X = 2.07;
-  const double PXL_Width_Z = 2.07;
+  const double IST_Width_X = 3.8016; // cm
+  const double IST_Width_Z = 7.53;   // cm
+  const double PXL_Width_X = 1.9210; // cm
+  const double PXL_Width_Z = 1.9872; // cm
 
 
   // Load hits - PXL
