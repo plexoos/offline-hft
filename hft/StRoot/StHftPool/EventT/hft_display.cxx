@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "TChain.h"
 #include "TEveTrack.h"
 #include "TEveTrackPropagator.h"
 #include "TGeoManager.h"

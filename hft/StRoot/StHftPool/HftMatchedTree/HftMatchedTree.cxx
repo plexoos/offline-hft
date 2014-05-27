@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "HftMatchedTree.h"
+#include "StHftPool/HftMatchedTree/HftMatchedTree.h"
 
 #include "TROOT.h"
 #include "TSystem.h"
@@ -10,9 +10,14 @@
 #include "StEvent.h"
 #include "StBFChain.h"
 
+#include "Sti/StiToolkit.h"
+#include "Sti/StiTrackContainer.h"
+#include "Sti/StiKalmanTrack.h"
+#include "StiMaker/StiMaker.h"
+
+#include "StHftPool/EventT/EventT.h"
 #include "StIstDbMaker/StIstDbMaker.h"
 #include "StPxlDbMaker/StPxlDb.h"
-#include "StHftPool/EventT/EventT.h"
 
 
 HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name), fFile(0), fTree(0), fEvent(0)
@@ -33,7 +38,6 @@ Int_t HftMatchedTree::Init()
 
 Int_t HftMatchedTree::InitRun(Int_t runnumber)
 {
-
    TObjectSet *pxlDbDataSet = (TObjectSet *)GetDataSet("pxl_db");
 
    if (pxlDbDataSet) {
@@ -75,6 +79,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    return kStOK;
 }
 
+
 Int_t HftMatchedTree::Finish()
 {
    fFile = fTree->GetCurrentFile(); //just in case we switched to a new file
@@ -83,7 +88,7 @@ Int_t HftMatchedTree::Finish()
    return kStOK;
 }
 
-//________________________________________________________________________________
+
 void HftMatchedTree::SetTree()
 {
    StBFChain *chain = (StBFChain *) StMaker::GetChain();
@@ -123,7 +128,8 @@ void HftMatchedTree::SetTree()
    TBranch *branch = fTree->Branch("EventT", &fEvent, bufsize, split);
    branch->SetAutoDelete(kFALSE);
 }
-//________________________________________________________________________________
+
+
 Int_t HftMatchedTree::Make()
 {
    StEvent *pEvent = (StEvent *) GetInputDS("StEvent");
