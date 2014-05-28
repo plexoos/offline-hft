@@ -6,7 +6,7 @@
 class TrackT : public TObject
 {
 
-private:
+public:
    Char_t          beg;
    Double32_t      fPxDca;        //signed - global
    Double32_t      fPyDca;

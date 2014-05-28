@@ -46,6 +46,19 @@ How to build development hft libraries
     cons
 
 
+How to compile standalone executables
+=====================================
+
+Set the environment OFFLINE_HFT_DIR variable to contain the path to your local
+working directory, e.g.
+
+    setenv OFFLINE_HFT_DIR ~/my_hft_test_dir
+    mkdir build
+    cd build
+    cmake28 ../offline/hft
+    make
+
+
 How to run tests
 ================
 

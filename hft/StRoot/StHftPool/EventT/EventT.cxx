@@ -56,8 +56,10 @@ TClonesArray *EventT::fgTracks = 0;
 TClonesArray *EventT::fgHits = 0;
 TClonesArray *EventT::fgMatchHits = 0;
 TClonesArray *EventT::fgVertices = 0;
-static Int_t _debug = 22;
-//______________________________________________________________________________
+
+static Int_t _debug = 2;
+
+
 EventT::EventT() : fIsValid(kFALSE)
 {
    // Create an EventT object.
@@ -92,12 +94,11 @@ EventT::~EventT()
 }
 
 //______________________________________________________________________________
-Int_t  EventT::Build(StEvent *stEvent, UInt_t MinNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
+Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
 {
-
    Clear();
 
-   Int_t iok    = 1;
+   Int_t iok = 1;
 
    if (! stEvent) return iok;
 
@@ -240,7 +241,7 @@ Int_t  EventT::Build(StEvent *stEvent, UInt_t MinNoHits, Double_t pCut, StMaker 
 
                if (vec.size() <= 0) continue;
 
-               if (_debug == 2)
+               if (_debug >= 2)
                   cout << "curr i/j/l (starting from 0) : " << i << "/" << j << "/" << l << " ==> StiPixelHitLoader - collection size: " << vec.size() << endl;
 
                UInt_t NoHits = vec.size();
@@ -365,7 +366,7 @@ Int_t  EventT::Build(StEvent *stEvent, UInt_t MinNoHits, Double_t pCut, StMaker 
    cout << " TrackNode size = " << nodes.size() << endl;
 
    for (size_t t = 0; t < nodes.size(); t++) {
-      if (_debug == 1)cout << " current track # :" << t << "/" << nodes.size() << endl;
+      if (_debug >= 1)cout << " current track # :" << t << "/" << nodes.size() << endl;
 
       StGlobalTrack *gTrackT = dynamic_cast<StGlobalTrack *>(nodes[t]->track(global));
 
@@ -624,7 +625,7 @@ Int_t  EventT::Build(StEvent *stEvent, UInt_t MinNoHits, Double_t pCut, StMaker 
          for (int i_ladder = 0; i_ladder < 4; i_ladder++) {
             for (int i_sensor = 0; i_sensor < 10; i_sensor++) {
                UInt_t id = i_sector * 40 + i_ladder * 10 + i_sensor + 1;
-               TGeoHMatrix *comb = (TGeoHMatrix *)pxlDb->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
+               TGeoHMatrix *comb = (TGeoHMatrix*) pxlDb->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
                //          if(t==0) comb->Print();
 
                Double_t *rot = comb->GetRotationMatrix();

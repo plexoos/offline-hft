@@ -1,4 +1,8 @@
+
+#include <string>
+
 #include "TGeoNode.h"
+
 
 class MyHftDisplayDummy
 {
@@ -7,6 +11,7 @@ class MyHftDisplayDummy
 
 void make_geometry();
 void decodeId(int id, int *sector, int *ladder, int *sensor);
+void hft_display(std::string fileName, const double B = 1);
 void hft_display(const double B = 1, const Int_t runnumber = 15037068);
 void loadStatus(const int runnumber);
 void decodeId(int id, int *sector, int *ladder, int *sensor);

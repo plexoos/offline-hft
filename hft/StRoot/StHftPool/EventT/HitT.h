@@ -1,10 +1,13 @@
 #ifndef __HIT__
 #define __HIT__
+
 #include <string.h>
 #include "TObject.h"
+
+
 class HitT : public TObject
 {
-private:
+public:
    Char_t start;
    Int_t Id;
    UInt_t nRawHits;  // cluseter size
@@ -37,4 +40,5 @@ public:
    virtual void Print(Option_t *opt = "") const;
    ClassDef(HitT, 1)
 };
+
 #endif

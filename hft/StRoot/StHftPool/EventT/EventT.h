@@ -1,5 +1,6 @@
 #ifndef __EVENT__
 #define __EVENT__
+
 #include <string.h>
 #include "TObject.h"
 #include "HitT.h"
@@ -9,12 +10,15 @@
 #include "TClonesArray.h"
 #include "TRefArray.h"
 #include "TRef.h"
+#include "StHftPool/EventT/TStiKalmanTrackNode.h"
+
 class StMaker;
 class StPxlDb;
 
+
 class EventTHeader
 {
-private:
+public:
    Int_t      fEvtNum;
    Int_t      fRun;
    Int_t      fDate;
@@ -36,7 +40,7 @@ class StEvent;
 class EventT : public TObject
 {
 
-private:
+public:
    UInt_t         fNPTracks;
    UInt_t         fNvertex;           //Number of vertex
    UInt_t         fNtrack;            //Number of tracks
@@ -54,6 +58,7 @@ private:
    TClonesArray  *fHits;              //->array with all hits
    TClonesArray  *fMatchHits;         //->array with hit-track match
    Bool_t         fIsValid;           //
+   TStiKalmanTrackNode fStiKalmanTrackNode;
 
    static TClonesArray *fgVertices;
    static TClonesArray *fgTracks;
@@ -63,7 +68,7 @@ private:
 public:
    EventT();
    virtual ~EventT();
-   Int_t             Build(StEvent *pEventT, UInt_t MinNoHits = 2, Double_t pCut = 0.2, StMaker *maker = 0, StPxlDb *pxlDb = 0);
+   Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2, StMaker *maker = 0, StPxlDb *pxlDb = 0);
    void              Clear(Option_t *option = "");
    Bool_t            IsValid() const { return fIsValid; }
    static void       Reset(Option_t *option = "");
@@ -101,6 +106,7 @@ public:
    Int_t             GetIndexOfVertexT(const VertexT *obj) const {return fgVertices->IndexOf(obj);}
    Int_t             GetIndexOfHitMatchT(const HitMatchT *obj) const {return fgMatchHits->IndexOf(obj);}
    virtual void      Print(Option_t *opt = "") const;
+
    ClassDef(EventT, 1) //EventT structure
 };
 #endif
