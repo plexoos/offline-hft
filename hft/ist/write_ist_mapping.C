@@ -35,7 +35,13 @@
                     else
                         ladder = 46 - channelId/4608;
 
-                    sensor = 6 - (channelId%4608)/768;
+		    //sections B and C swapped on ladder 13
+		    if(elecId>=43008 && elecId<44544) //section C
+                        sensor = 4 - (elecId%4608)/768;
+                    else if(elecId>=44544 && elecId<46080) //section B
+                        sensor = 8 - (elecId%4608)/768;
+                    else
+                        sensor = 6 - (elecId%4608)/768;
 
                     Int_t pad = (channelId%4608)%768;
                     column = 12 - pad/64;
