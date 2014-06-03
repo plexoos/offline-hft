@@ -79,3 +79,26 @@ following commands:
     mv EventAAAAAAA.root output/Event_NNNNNN.root
     root -l offline/hft/tests/displayHft.C
     root.exe [1] hft_display(-1,NNNNNN);
+
+
+How to add PXL pileup events:
+======================================
+
+You need to patch StPxlSimMaker with the pileup adder as follows:
+
+First, checkout trhe patch if you do not have localy already:
+
+cvs co offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
+cvs co offline/hft/runPxlSimWithPileup.csh
+
+Then checkout HEAD StPxlSimMaker from official STAR repo:
+
+cvs co StRoot/StPxlSimMaker
+
+Now patch it:
+
+cd StRoot/
+patch -p1 < ../offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
+
+to run it, look at:
+offline/hft/runPxlSimWithPileup.csh
