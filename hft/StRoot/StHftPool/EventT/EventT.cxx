@@ -60,7 +60,7 @@ TClonesArray *EventT::fgVertices = 0;
 static Int_t _debug = 2;
 
 
-EventT::EventT() : fIsValid(kFALSE)
+EventT::EventT() : TObject(), fIsValid(kFALSE)
 {
    // Create an EventT object.
    // When the constructor is invoked for the first time, the class static
@@ -87,13 +87,13 @@ EventT::EventT() : fIsValid(kFALSE)
    fNvertex = 0;
 }
 
-//______________________________________________________________________________
+
 EventT::~EventT()
 {
    Clear();
 }
 
-//______________________________________________________________________________
+
 Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
 {
    Clear();
@@ -707,7 +707,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
    iok = 0;
    return iok;
 }
-//______________________________________________________________________________
 TrackT *EventT::AddTrackT()
 {
    // Add a new track to the list of tracks for this event.
@@ -721,7 +720,8 @@ TrackT *EventT::AddTrackT()
    //Save reference to last TrackT in the collection of Tracks
    return track;
 }
-//______________________________________________________________________________
+
+
 HitT *EventT::AddHitT()
 {
    // Add a new hit to the list of hits for this event.
@@ -735,7 +735,8 @@ HitT *EventT::AddHitT()
    //Save reference to last HitT in the collection of Hits
    return hit;
 }
-//______________________________________________________________________________
+
+
 HitMatchT *EventT::AddHitMatchT()
 {
    // Add a new hit to the list of hits for this event.
@@ -750,7 +751,8 @@ HitMatchT *EventT::AddHitMatchT()
 
    return hitmatch;
 }
-//______________________________________________________________________________
+
+
 VertexT *EventT::AddVertexT()
 {
    // Add a new hit to the list of vertices for this event.
@@ -764,7 +766,8 @@ VertexT *EventT::AddVertexT()
    //Save reference to last VertexT in the collection of Hits
    return vertex;
 }
-//______________________________________________________________________________
+
+
 void EventT::Clear(Option_t * /*option*/)
 {
    fTracks->Clear("C"); //will also call TrackT::Clear
@@ -773,7 +776,7 @@ void EventT::Clear(Option_t * /*option*/)
    fMatchHits->Clear("C");
 }
 
-//______________________________________________________________________________
+
 void EventT::Reset(Option_t * /*option*/)
 {
    // Static function to reset all static objects for this event
@@ -785,7 +788,7 @@ void EventT::Reset(Option_t * /*option*/)
    delete fgMatchHits; fgMatchHits = 0;
 }
 
-//______________________________________________________________________________
+
 void EventT::SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field)
 {
    fNtrack = 0;
@@ -794,7 +797,8 @@ void EventT::SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field)
    fNmatchhit = 0;
    fEvtHdr.Set(i, run, date, field);
 }
-//________________________________________________________________________________
+
+
 void EventT::Print(Option_t *opt) const
 {
    cout << "Run/EventT\t" << fEvtHdr.GetRun() << "/" << fEvtHdr.GetEvtNum() << "\tDate " << fEvtHdr.GetDate()
@@ -813,20 +817,22 @@ void EventT::Print(Option_t *opt) const
    //  for (UInt_t i = 0; i < GetNvertex(); i++) {cout << i << "\t"; GetVertexT(i)->Print();}
 
 }
-//________________________________________________________________________________
+
+
 void TrackT::Print(Option_t *opt) const
 {
    cout << endl;
 }
-//________________________________________________________________________________
 void HitT::Print(Option_t *opt) const
 {
 }
-//________________________________________________________________________________
+
+
 void VertexT::Print(Option_t *opt) const
 {
 }
-//________________________________________________________________________________
+
+
 void HitMatchT::Print(Option_t *opt) const
 {
 }

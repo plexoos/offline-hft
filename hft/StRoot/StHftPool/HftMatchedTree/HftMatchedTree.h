@@ -36,4 +36,5 @@ private:
 
    ClassDef(HftMatchedTree, 1)
 };
+
 #endif

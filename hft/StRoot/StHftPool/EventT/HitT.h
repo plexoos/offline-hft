@@ -1,5 +1,5 @@
-#ifndef __HIT__
-#define __HIT__
+#ifndef HitT_h
+#define HitT_h
 
 #include <string.h>
 #include "TObject.h"
@@ -8,6 +8,7 @@
 class HitT : public TObject
 {
 public:
+
    Char_t start;
    Int_t Id;
    UInt_t nRawHits;  // cluseter size
@@ -15,7 +16,7 @@ public:
    Double32_t xL, yL, zL;    // hit in Ladder CS
    UInt_t     index2Track;
    Char_t end;
-public:
+
    HitT(Int_t Id = 0,
         Double32_t X = 0, Double32_t Y = 0, Double32_t Z = 0,
         Double32_t XL = 0, Double32_t YL = 0, Double32_t ZL = 0) {
@@ -26,7 +27,8 @@ public:
    virtual ~HitT() {}
    void Clear(Option_t *option = "") {if (option); memset(&start, 0, &end - &start);}
    void Set(Double32_t X, Double32_t Y, Double32_t Z,
-            Double32_t XL = 0, Double32_t YL = 0, Double32_t ZL = 0) {
+            Double32_t XL = 0, Double32_t YL = 0, Double32_t ZL = 0)
+   {
       xG = X; yG = Y; zG = Z;
       xL = XL; yL = YL; zL = ZL;
    }
@@ -38,6 +40,7 @@ public:
    void SetIndex2Track(Int_t index) {index2Track = index;}
 
    virtual void Print(Option_t *opt = "") const;
+
    ClassDef(HitT, 1)
 };
 

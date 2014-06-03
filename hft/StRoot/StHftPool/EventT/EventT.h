@@ -1,5 +1,5 @@
-#ifndef __EVENT__
-#define __EVENT__
+#ifndef EventT_h
+#define EventT_h
 
 #include <string.h>
 #include "TObject.h"
@@ -14,6 +14,7 @@
 
 class StMaker;
 class StPxlDb;
+class StEvent;
 
 
 class EventTHeader
@@ -35,7 +36,7 @@ public:
 
    ClassDef(EventTHeader, 1) //EventT Header
 };
-class StEvent;
+
 
 class EventT : public TObject
 {
@@ -107,6 +108,7 @@ public:
    Int_t             GetIndexOfHitMatchT(const HitMatchT *obj) const {return fgMatchHits->IndexOf(obj);}
    virtual void      Print(Option_t *opt = "") const;
 
-   ClassDef(EventT, 1) //EventT structure
+   ClassDef(EventT, 1)
 };
+
 #endif
