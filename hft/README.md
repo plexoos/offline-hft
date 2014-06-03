@@ -86,10 +86,10 @@ How to add PXL pileup events:
 
 You need to patch StPxlSimMaker with the pileup adder as follows:
 
-First, checkout trhe patch if you do not have localy already:
+First, checkout the patch (notice the -ko option):
 
-cvs co offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
-cvs co offline/hft/runPxlSimWithPileup.csh
+cvs co -ko offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
+cvs co -ko offline/hft/runPxlSimWithPileup.csh
 
 Then checkout HEAD StPxlSimMaker from official STAR repo:
 
