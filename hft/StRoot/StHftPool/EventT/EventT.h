@@ -61,18 +61,11 @@ public:
    Bool_t         fIsValid;           //
    TStiKalmanTrackNode fStiKalmanTrackNode;
 
-   static TClonesArray *fgVertices;
-   static TClonesArray *fgTracks;
-   static TClonesArray *fgHits;
-   static TClonesArray *fgMatchHits;
-
-public:
    EventT();
    virtual ~EventT();
    Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2, StMaker *maker = 0, StPxlDb *pxlDb = 0);
    void              Clear(Option_t *option = "");
    Bool_t            IsValid() const { return fIsValid; }
-   static void       Reset(Option_t *option = "");
    void              SetNtrack(UInt_t n) { fNtrack = n; }
    void              SetNhit(UInt_t n) { fNhit = n; }
    void              SetNvertex(UInt_t n) { fNvertex = n; }
@@ -102,10 +95,10 @@ public:
    HitT             *GetHitT(UInt_t i = 0) const {return fHits && i < fNhit ? (HitT *) fHits->At(i) : 0;}
    VertexT          *GetVertexT(UInt_t i = 0) const {return fVertices && i < fNvertex ? (VertexT *) fVertices->At(i) : 0;}
    HitMatchT        *GetHitMatchT(UInt_t i = 0) const {return fMatchHits && i < fNmatchhit ? (HitMatchT *) fMatchHits->At(i) : 0; }
-   Int_t             GetIndexOfTrackT(const TrackT *obj) const {return fgTracks->IndexOf(obj);}
-   Int_t             GetIndexOfHitT(const HitT *obj) const {return fgHits->IndexOf(obj);}
-   Int_t             GetIndexOfVertexT(const VertexT *obj) const {return fgVertices->IndexOf(obj);}
-   Int_t             GetIndexOfHitMatchT(const HitMatchT *obj) const {return fgMatchHits->IndexOf(obj);}
+   Int_t             GetIndexOfTrackT(const TrackT *obj) const {return fTracks->IndexOf(obj);}
+   Int_t             GetIndexOfHitT(const HitT *obj) const {return fHits->IndexOf(obj);}
+   Int_t             GetIndexOfVertexT(const VertexT *obj) const {return fVertices->IndexOf(obj);}
+   Int_t             GetIndexOfHitMatchT(const HitMatchT *obj) const {return fMatchHits->IndexOf(obj);}
    virtual void      Print(Option_t *opt = "") const;
 
    ClassDef(EventT, 1)

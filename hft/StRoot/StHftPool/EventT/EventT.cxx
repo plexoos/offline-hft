@@ -52,39 +52,16 @@ ClassImp(HitT);
 ClassImp(HitMatchT);
 ClassImp(VertexT);
 
-TClonesArray *EventT::fgTracks = 0;
-TClonesArray *EventT::fgHits = 0;
-TClonesArray *EventT::fgMatchHits = 0;
-TClonesArray *EventT::fgVertices = 0;
-
 static Int_t _debug = 2;
 
 
-EventT::EventT() : TObject(), fIsValid(kFALSE)
+EventT::EventT() : TObject(), fIsValid(kFALSE), fTStiKalmanTracks(),
+   fNvertex(0), fNtrack(0), fNhit(0), fNmatchhit(0),
+   fVertices(new TClonesArray("VertexT", 1000)),
+   fTracks(new TClonesArray("TrackT", 1000)),
+   fHits(new TClonesArray("HitT", 1000)),
+   fMatchHits(new TClonesArray("HitMatchT", 1000))
 {
-   // Create an EventT object.
-   // When the constructor is invoked for the first time, the class static
-   // variable fgTracks is 0 and the TClonesArray fgTracks is created.
-
-   if (!fgTracks) fgTracks = new TClonesArray("TrackT", 1000);
-
-   fTracks = fgTracks;
-   fNtrack = 0;
-
-   if (!fgHits) fgHits = new TClonesArray("HitT", 1000);
-
-   fHits = fgHits;
-   fNhit = 0;
-
-   if (!fgMatchHits) fgMatchHits = new TClonesArray("HitMatchT", 1000);
-
-   fMatchHits = fgMatchHits;
-   fNmatchhit = 0;
-
-   if (!fgVertices) fgVertices = new TClonesArray("VertexT", 1000);
-
-   fVertices = fgVertices;
-   fNvertex = 0;
 }
 
 
@@ -800,18 +777,7 @@ void EventT::Clear(Option_t * /*option*/)
    fHits->Clear("C"); //will also call HitT::Clear
    fVertices->Clear("C");
    fMatchHits->Clear("C");
-}
 
-
-void EventT::Reset(Option_t * /*option*/)
-{
-   // Static function to reset all static objects for this event
-   //   fgTracks->Delete(option);
-
-   delete fgTracks; fgTracks = 0;
-   delete fgHits; fgHits = 0;
-   delete fgVertices; fgVertices = 0;
-   delete fgMatchHits; fgMatchHits = 0;
 }
 
 
