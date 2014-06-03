@@ -113,7 +113,7 @@ void HftMatchedTree::SetTree()
 
    if (fMinNoHits > 0) fileName += Form("_%i_%f2.1_", fMinNoHits, fpCut);
 
-   fileName += ".evdisp.root";
+   fileName += ".hftree.root";
 
    fFile = new TFile(fileName, "RECREATE", "TTree with HFT hits and tracks");
    fFile->SetCompressionLevel(1); // Set file compression level
