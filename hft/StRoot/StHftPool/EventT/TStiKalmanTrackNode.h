@@ -19,7 +19,7 @@ public:
 protected:
 
    double      fEnergyLosses;
-   double      fLayerRadius;
+   double      fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
    std::string fStiDetectorName;
 
    ClassDef(TStiKalmanTrackNode, 1)

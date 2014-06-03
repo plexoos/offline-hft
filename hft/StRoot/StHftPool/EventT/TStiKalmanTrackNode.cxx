@@ -8,13 +8,13 @@ ClassImp(TStiKalmanTrackNode)
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
-   fEnergyLosses(-1), fLayerRadius(0), fStiDetectorName()
+   fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
 {
 }
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TObject(),
-   fEnergyLosses(-1), fLayerRadius(0), fStiDetectorName()
+   fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
 {
    Info("TStiKalmanTrackNode", "Convert StiKalmanTrackNode to TStiKalmanTrackNode");
 
@@ -27,7 +27,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TOb
 
       StiPlacement* stiPlacement = stiKTN.getDetector()->getPlacement();
       assert(stiPlacement);
-      fLayerRadius = stiPlacement->getLayerRadius();
+      fNodeRadius = stiPlacement->getLayerRadius();
 
    } else {
       Info("TStiKalmanTrackNode", "detector not found:" );
@@ -48,12 +48,12 @@ TStiKalmanTrackNode & TStiKalmanTrackNode::operator=(const StiKalmanTrackNode &s
 void TStiKalmanTrackNode::Print(Option_t *opt) const
 {
    printf("fEnergyLosses:    %f\n", fEnergyLosses);
-   printf("fLayerRadius:     %f\n", fLayerRadius);
+   printf("fNodeRadius:      %f\n", fNodeRadius);
    printf("fStiDetectorName: %s\n", fStiDetectorName.c_str());
 }
 
 
 bool operator< (const TStiKalmanTrackNode& lhs, const TStiKalmanTrackNode& rhs)
 {
-   return lhs.fLayerRadius < rhs.fLayerRadius;
+   return lhs.fNodeRadius < rhs.fNodeRadius;
 }
