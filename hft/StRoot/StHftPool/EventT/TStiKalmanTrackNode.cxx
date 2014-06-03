@@ -1,6 +1,7 @@
 
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
+#include "StarClassLibrary/StThreeVector.hh"
 #include "Sti/StiPlacement.h"
 
 
@@ -8,15 +9,21 @@ ClassImp(TStiKalmanTrackNode)
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
-   fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
 {
 }
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TObject(),
-   fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
 {
    Info("TStiKalmanTrackNode", "Convert StiKalmanTrackNode to TStiKalmanTrackNode");
+
+   // Access node parameters
+   fPosition.SetXYZ(stiKTN.x_g(), stiKTN.y_g(), stiKTN.z_g());
+
+   StThreeVector<double> p3 = stiKTN.getGlobalMomentum();
+   fTrackP.SetXYZ( p3.x(), p3.y(),  p3.z() );
 
    fEnergyLosses = stiKTN.getEnergyLosses();
 

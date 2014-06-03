@@ -2,6 +2,8 @@
 #define TStiKalmanTrackNode_h
 
 #include "TObject.h"
+#include "TVector3.h"
+
 #include "Sti/StiKalmanTrackNode.h"
 
 
@@ -18,7 +20,9 @@ public:
 
 protected:
 
-   double      fEnergyLosses;
+   TVector3    fPosition;          ///< Coordinates of the track state/node position
+   TVector3    fTrackP;            ///< Local track momentum vector
+   double      fEnergyLosses;      ///< Energy lost in the volume
    double      fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
    std::string fStiDetectorName;
 
