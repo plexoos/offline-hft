@@ -73,8 +73,6 @@ EventT::~EventT()
 
 Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
 {
-   Clear();
-
    Int_t iok = 1;
 
    if (! stEvent) return iok;
@@ -778,6 +776,7 @@ void EventT::Clear(Option_t * /*option*/)
    fVertices->Clear("C");
    fMatchHits->Clear("C");
 
+   fTStiKalmanTracks.clear();
 }
 
 
@@ -807,7 +806,12 @@ void EventT::Print(Option_t *opt) const
    for (UInt_t i = 0; i < GetNhit(); i++) {cout << i << "\t"; GetHitT(i)->Print();}
 
    //  for (UInt_t i = 0; i < GetNvertex(); i++) {cout << i << "\t"; GetVertexT(i)->Print();}
+   //
+   std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = fTStiKalmanTracks.begin();
 
+   for ( ; iTStiKTrack != fTStiKalmanTracks.end(); ++iTStiKTrack) {
+      iTStiKTrack->Print();
+   }
 }
 
 
