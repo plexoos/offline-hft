@@ -1,0 +1,263 @@
+diff -rupN StRoot/StPxlSimMaker/.consign ../code_dev_pileup/StRoot/StPxlSimMaker/.consign
+--- StRoot/StPxlSimMaker/.consign	1969-12-31 19:00:00.000000000 -0500
++++ ../code_dev_pileup/StRoot/StPxlSimMaker/.consign	2014-06-02 16:17:20.026929000 -0400
+@@ -0,0 +1 @@
++StPxlSimMaker.h:1401739747 - 459795ea10089132faff566fc6a802c3
+Binary files StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf and ../code_dev_pileup/StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf differ
+diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.cxx ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.cxx
+--- StRoot/StPxlSimMaker/StPxlPileupAdder.cxx	1969-12-31 19:00:00.000000000 -0500
++++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.cxx	2014-06-02 16:17:12.000000000 -0400
+@@ -0,0 +1,76 @@
++/*
++ *
++ * Author: M. Mustafa
++ */
++
++#include <stdio.h>
++
++#include "StMessMgr.h"
++#include "Stypes.h"
++#include "Stiostream.h"
++#include "StPxlPileupAdder.h"
++#include "StMcEvent/StMcPxlHitCollection.hh"
++#include "StMcEvent/StMcPxlHit.hh"
++#include "StThreeVectorF.hh"
++
++#include "TString.h"
++#include "TFile.h"
++#include "TTree.h"
++#include "TBranch.h"
++
++
++StPxlPileupAdder::~StPxlPileupAdder()
++{
++}
++//____________________________________________________________
++Int_t StPxlPileupAdder::init(TString pileupFileName)
++{
++   // run is not used in the current implementation, but might be necessary in the future.
++   LOG_INFO << "StPxlPileupAdder::init()" << endm;
++
++   mPileupFile = new TFile(pileupFileName.Data());
++   if(!mPileupFile)
++   {
++	   LOG_ERROR << "StPxlPileupAdder: pileup file not found." << endm;
++	   return kStErr;
++   }
++
++   // set tree addresses
++   mPileupTree = (TTree*)mPileupFile->Get("pileup_tree");
++   mPileupTree->SetBranchAddress("nhits", &nhits, &b_nhits);
++   mPileupTree->SetBranchAddress("x", x, &b_x);
++   mPileupTree->SetBranchAddress("y", y, &b_y);
++   mPileupTree->SetBranchAddress("z", z, &b_z);
++   mPileupTree->SetBranchAddress("xLoc", xLoc, &b_xLoc);
++   mPileupTree->SetBranchAddress("yLoc", yLoc, &b_yLoc);
++   mPileupTree->SetBranchAddress("zLoc", zLoc, &b_zLoc);
++   mPileupTree->SetBranchAddress("px", px, &b_px);
++   mPileupTree->SetBranchAddress("py", py, &b_py);
++   mPileupTree->SetBranchAddress("pz", pz, &b_pz);
++   mPileupTree->SetBranchAddress("de", de, &b_de);
++   mPileupTree->SetBranchAddress("ds", ds, &b_ds);
++   mPileupTree->SetBranchAddress("key", key, &b_key);
++   mPileupTree->SetBranchAddress("vid", vid, &b_vid);
++   mPileupTree->SetBranchAddress("layer", layer, &b_layer);
++
++   return kStOk;
++}
++//____________________________________________________________
++Int_t StPxlPileupAdder::addPxlHits(StMcPxlHitCollection& mcPxlHitCol)
++{
++
++	// tree has one event
++	mPileupTree->GetEntry(0);
++
++	LOG_INFO<<"StPxlPileupAdder: adding "<<nhits<<" pileup hits."<<endm;
++
++	for(int i=0;i<nhits;i++)
++	{
++		StThreeVectorF hit_x(xLoc[i],yLoc[i],zLoc[i]);
++		StThreeVectorF hit_p(px[i],py[i],pz[i]);
++
++		mcPxlHitCol.addHit(new StMcPxlHit(hit_x,hit_p,de[i],ds[i],0,key[i],vid[i]));
++	}
++
++   return kStOK;
++}
+diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.h
+--- StRoot/StPxlSimMaker/StPxlPileupAdder.h	1969-12-31 19:00:00.000000000 -0500
++++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.h	2014-06-02 15:01:29.000000000 -0400
+@@ -0,0 +1,82 @@
++/*
++ * $Id$
++ *
++ * Author: M. Mustafa
++ *
++ * 
++ **********************************************************
++ * $Log$
++ * Revision 1.1  2014/06/03 17:00:04  mstftsm
++ * A patch to StPxlSimMaker to add pileup adder.
++ *
++ *
++ */
++
++/**
++   \class StPxlPileupAdder
++
++   \brief Class to add pile up hits to StMcPxlHitCollection
++
++   THIS IS A HACK THAT IS NOT IN THE OFFICIAL STAR VERSION
++
++   This class conforms to the STAR StMaker standards.
++*/
++
++#ifndef STAR_StPxlPileupAdder
++#define STAR_StPxlPileupAdder
++
++class TString;
++class TBranch;
++class TFile;
++class TTree;
++class StMcPxlHitCollection;
++
++const int MAXHIT = 200000;
++
++class StPxlPileupAdder
++{
++ public:
++
++  /*! \brief Constructor */ 
++  StPxlPileupAdder(){}
++
++  /*! \brief This class does not own any hit containers.
++  */
++  ~StPxlPileupAdder();
++
++
++  Int_t init(TString pileupFileName);
++  Int_t addPxlHits(StMcPxlHitCollection&);
++
++  /*! \brief Documentation method. GetCVS can be called from the chain, providing a list
++   *  of all maker versions in use.
++  */
++
++ virtual const char *GetCVS() const
++  {static const char cvs[]=""__DATE__" "__TIME__ ; return cvs;}
++
++ private:
++ TFile* mPileupFile;
++ TTree* mPileupTree;
++
++ // pileup tree 
++    float x[MAXHIT], y[MAXHIT], z[MAXHIT], xLoc[MAXHIT], yLoc[MAXHIT], zLoc[MAXHIT],
++	 px[MAXHIT], py[MAXHIT], pz[MAXHIT], de[MAXHIT], ds[MAXHIT];
++   long key[MAXHIT], vid[MAXHIT];
++   int layer[MAXHIT], nhits;
++
++   TBranch  *b_nhits;   //! 
++   TBranch  *b_x;   //! 
++   TBranch  *b_y;   //! 
++   TBranch  *b_z;   //! 
++   TBranch  *b_xLoc;   //! 
++   TBranch  *b_yLoc;   //! 
++   TBranch  *b_zLoc;   //! 
++   TBranch  *b_px;   //! 
++   TBranch  *b_py;   //! 
++   TBranch  *b_pz;   //! 
++   TBranch  *b_de;   //! 
++   TBranch  *b_ds;   //! 
++   TBranch  *b_key;   //! 
++   TBranch  *b_vid;   //! 
++   TBranch  *b_layer;   //! 
++ 
++};
++#endif
+diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.cxx
+--- StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-03-13 13:00:19.000000000 -0400
++++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-06-02 15:01:50.000000000 -0400
+@@ -17,6 +17,8 @@
+ #include "StMcEvent/StMcPxlHitCollection.hh"
+ #include "StEvent/StPxlHitCollection.h"
+ 
++#include "StPxlPileupAdder.h"
++
+ #include "Stiostream.h"
+ #include "StHit.h"
+ #include "StEventTypes.h"
+@@ -28,12 +30,13 @@
+ #include "TGeoMatrix.h"
+ 
+ #include "TObjectSet.h"
++#include "TString.h"
+ 
+ ClassImp(StPxlSimMaker)
+ 
+ using namespace std;
+ 
+-StPxlSimMaker::StPxlSimMaker(const Char_t* name) : StMaker(name) , mPxlSimulator(0), mUseFastSim(kFALSE), mUseDIGMAPSSim(kFALSE) , mUseIdealGeom(kTRUE), mUseDbGeom(kFALSE), mUseRandomSeed(kFALSE)
++StPxlSimMaker::StPxlSimMaker(const Char_t* name) : StMaker(name) , mPxlSimulator(0), mUseFastSim(kFALSE), mUseDIGMAPSSim(kFALSE) , mUseIdealGeom(kTRUE), mUseDbGeom(kFALSE), mUseRandomSeed(kFALSE),mAddPileup(kFALSE)
+ {
+ }
+ //____________________________________________________________
+@@ -56,6 +59,13 @@ Int_t StPxlSimMaker::Init()
+    //{
+    // temporary till DIGMAPS algorithm is added and option added in StMaker
+    mUseFastSim = kTRUE;
++
++   if(mAddPileup)
++   {
++	   mPileupAdder = new StPxlPileupAdder();
++	   mPileupAdder->init(mPileupFile);
++   }
++
+    mPxlSimulator = new StPxlFastSim("pxlFastSim",mUseRandomSeed);
+ 
+    LOG_INFO << "StPxlSimMaker: using StPxlFastSim " << endm;
+@@ -118,6 +128,12 @@ Int_t StPxlSimMaker::Make()
+       return kStOk;
+    }
+ 
++   // add pile up 
++   if(mAddPileup)
++   {
++	   mPileupAdder->addPxlHits(*mcPxlHitCol);
++   }
++
+    if (mUseIdealGeom && !gGeoManager) GetDataBase("VmcGeometry");
+    if (mUseIdealGeom && !gGeoManager)
+    {
+diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.h ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.h
+--- StRoot/StPxlSimMaker/StPxlSimMaker.h	2014-03-13 13:00:19.000000000 -0400
++++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.h	2014-06-02 16:09:07.000000000 -0400
+@@ -37,6 +37,8 @@
+ #endif
+ 
+ class StPxlISim;
++class TString;
++class StPxlPileupAdder;
+ 
+ class StPxlSimMaker : public StMaker 
+ {
+@@ -70,6 +72,10 @@ class StPxlSimMaker : public StMaker 
+   void useDbGeom() {mUseDbGeom = kTRUE;}
+   void useRandomSeed() {mUseRandomSeed = kTRUE;}
+ 
++
++  void addPileup(){mAddPileup = kTRUE;}
++  void setPileupFile(TString pileupFile) {mPileupFile = pileupFile;}
++
+   /*! \brief Documentation method. GetCVS can be called from the chain, providing a list
+    *  of all maker versions in use.
+   */
+@@ -86,6 +92,10 @@ private:
+     Bool_t mUseDbGeom;
+     Bool_t mUseRandomSeed;
+ 
++    TString mPileupFile; // THIS IS A HACK THAT IS NOT IN THE OFFICIAL STAR VERSION
++    Bool_t mAddPileup;
++    StPxlPileupAdder* mPileupAdder;
++
+ 
+   ClassDef(StPxlSimMaker,1)   //StAF chain virtual base class for Makers
+ };
