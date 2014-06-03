@@ -45,12 +45,7 @@
 #include "StEvent/StEnumerations.h"
 
 
-ClassImp(EventTHeader);
 ClassImp(EventT);
-ClassImp(TrackT);
-ClassImp(HitT);
-ClassImp(HitMatchT);
-ClassImp(VertexT);
 
 static Int_t _debug = 2;
 
@@ -782,9 +777,9 @@ void EventT::Clear(Option_t * /*option*/)
 
 void EventT::SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field)
 {
-   fNtrack = 0;
-   fNhit = 0;
-   fNvertex = 0;
+   fNtrack    = 0;
+   fNhit      = 0;
+   fNvertex   = 0;
    fNmatchhit = 0;
    fEvtHdr.Set(i, run, date, field);
 }
@@ -812,23 +807,4 @@ void EventT::Print(Option_t *opt) const
    for ( ; iTStiKTrack != fTStiKalmanTracks.end(); ++iTStiKTrack) {
       iTStiKTrack->Print();
    }
-}
-
-
-void TrackT::Print(Option_t *opt) const
-{
-   cout << endl;
-}
-void HitT::Print(Option_t *opt) const
-{
-}
-
-
-void VertexT::Print(Option_t *opt) const
-{
-}
-
-
-void HitMatchT::Print(Option_t *opt) const
-{
 }

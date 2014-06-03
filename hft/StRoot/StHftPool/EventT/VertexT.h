@@ -1,12 +1,12 @@
-#ifndef __VERTEX__
-#define __VERTEX__
+#ifndef VertexT_h
+#define VertexT_h
+
 #include <string.h>
 #include "TObject.h"
 #include "TMath.h"
 
 class VertexT : public TObject
 {
-
 private:
    Char_t          beg;
    Double32_t      fVx;
@@ -28,7 +28,7 @@ public:
    virtual void SetVertex(Double32_t *xyz) { fVx = xyz[0]; fVy = xyz[1]; fVz = xyz[2]; }
    virtual void SetNtracks(Int_t n) { fNtracks = n; }
 
-   virtual void Print(Option_t *opt = "") const;
    ClassDef(VertexT, 1)
 };
+
 #endif

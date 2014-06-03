@@ -17,7 +17,7 @@ public:
    TStiKalmanTrack(const StiKalmanTrack & stiKTrack);
    virtual void Print(Option_t *opt = "") const;
 
-//protected:
+protected:
 
    std::set<TStiKalmanTrackNode> fNodes;
 

@@ -39,8 +39,6 @@ public:
 
    void SetIndex2Track(Int_t index) {index2Track = index;}
 
-   virtual void Print(Option_t *opt = "") const;
-
    ClassDef(HitT, 1)
 };
 

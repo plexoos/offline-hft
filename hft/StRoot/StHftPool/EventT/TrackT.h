@@ -1,11 +1,13 @@
-#ifndef __TRACK__
-#define __TRACK__
+#ifndef TrackT_h
+#define TrackT_h
+
 #include <string.h>
 #include "TObject.h"
 #include "TMath.h"
+
+
 class TrackT : public TObject
 {
-
 public:
    Char_t          beg;
    Double32_t      fPxDca;        //signed - global
@@ -55,6 +57,7 @@ public:
    Double32_t      fSsdHitZ[2];
 
    Char_t          end;
+
 public:
    TrackT() { Clear(); }
    virtual ~TrackT() {Clear();}
@@ -102,8 +105,7 @@ public:
    virtual void SetSsdHit(UInt_t i, Double32_t *xyz) { fSsdHitX[i] = xyz[0]; fSsdHitY[i] = xyz[1]; fSsdHitZ[i] = xyz[2]; }
    virtual void SetTpcHit(UInt_t i, Double32_t *xyz) { fTpcHitX[i] = xyz[0]; fTpcHitY[i] = xyz[1]; fTpcHitZ[i] = xyz[2]; }
 
-
-   virtual void Print(Option_t *opt = "") const;
    ClassDef(TrackT, 1)
 };
+
 #endif

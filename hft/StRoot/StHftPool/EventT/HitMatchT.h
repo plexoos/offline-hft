@@ -1,5 +1,6 @@
-#ifndef __HITMATCH__
-#define __HITMATCH__
+#ifndef HitMatchT_h
+#define HitMatchT_h
+
 #include <string.h>
 #include "TObject.h"
 
@@ -56,7 +57,7 @@ public:
    void SetTrackFirstPointR(Double32_t r) {firstPointR = r;}
    void SetTrackFirstPointZ(Double32_t z) {firstPointZ = z;}
 
-   virtual void Print(Option_t *opt = "") const;
    ClassDef(HitMatchT, 1)
 };
+
 #endif
