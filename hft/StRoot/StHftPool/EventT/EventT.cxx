@@ -707,6 +707,32 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
    iok = 0;
    return iok;
 }
+
+
+Int_t EventT::Fill(StiTrackContainer &stiTrackContainer)
+{
+   vector<StiTrack*>::iterator trackIt = stiTrackContainer.begin();
+
+   for ( ; trackIt != stiTrackContainer.end(); ++trackIt)
+   {
+      StiKalmanTrack* kalmanTrack = static_cast<StiKalmanTrack*>(*trackIt);
+
+      if ( !kalmanTrack ) {
+         Info("Fill", "Invalid kalman kTrack. Skipping to next one...");
+         continue;
+      }
+
+      Info("Fill", "P: %f", kalmanTrack->getP());
+
+      kalmanTrack->print("XYZEPTC");
+
+      fTStiKalmanTracks.push_back( TStiKalmanTrack(*kalmanTrack) );
+   }
+
+   return kStOK;
+}
+
+
 TrackT *EventT::AddTrackT()
 {
    // Add a new track to the list of tracks for this event.

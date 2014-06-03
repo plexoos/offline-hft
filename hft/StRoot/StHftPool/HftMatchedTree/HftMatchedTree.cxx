@@ -133,9 +133,22 @@ void HftMatchedTree::SetTree()
 
 Int_t HftMatchedTree::Make()
 {
-   StEvent *stEvent = (StEvent *) GetInputDS("StEvent");
+   fEvent->Clear();
 
-   if (stEvent && !fEvent->Build(stEvent, fMinNoHits, fpCut, this, fPxlDb)) fTree->Fill(); //fill the tree
+   // Fill event with information from Sti tracks
+   StiMaker* stiMaker = (StiMaker*) GetMaker("Sti");
+   assert(stiMaker);
+
+   StiToolkit *stiToolkit = stiMaker->getToolkit();
+   StiTrackContainer *stiTrackContainer = stiToolkit->getTrackContainer();
+
+   fEvent->Fill(*stiTrackContainer);
+
+   // Fill the rest of event with information from StEvent
+   StEvent *stEvent = (StEvent*) GetInputDS("StEvent");
+
+   if (stEvent && !fEvent->Build(stEvent, fMinNoHits, fpCut, this, fPxlDb))
+      fTree->Fill(); // fill the tree
 
    return kStOK;
 }
