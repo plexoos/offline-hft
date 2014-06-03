@@ -21,9 +21,11 @@ How to build development hft libraries
 
     cvs checkout -r HEAD StRoot/StBFChain
     cvs checkout -r HEAD StRoot/StiMaker
+    cvs checkout -r HEAD StRoot/Sti
     cvs checkout -r HEAD StRoot/StEvent
 
     patch -p1 -d StRoot/StBFChain < offline/hft/StRoot/StBFChain.patch
+    patch -p1 -d StRoot < offline/hft/StRoot/Sti.patch
     patch -p1 -d StRoot < offline/hft/StRoot/StiMaker.patch
     patch -p1 -d StRoot < offline/hft/StRoot/StEvent.patch
 
@@ -81,24 +83,25 @@ following commands:
     root.exe [1] hft_display(-1,NNNNNN);
 
 
-How to add PXL pileup events:
-======================================
+How to add PXL pileup events
+============================
 
 You need to patch StPxlSimMaker with the pileup adder as follows:
 
 First, checkout the patch (notice the -ko option):
 
-cvs co -ko offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
-cvs co -ko offline/hft/runPxlSimWithPileup.csh
+    cvs co -ko offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
+    cvs co -ko offline/hft/runPxlSimWithPileup.csh
 
 Then checkout HEAD StPxlSimMaker from official STAR repo:
 
-cvs co StRoot/StPxlSimMaker
+    cvs co StRoot/StPxlSimMaker
 
 Now patch it:
 
-cd StRoot/
-patch -p1 < ../offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
+    cd StRoot/
+    patch -p1 < ../offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
 
 to run it, look at:
-offline/hft/runPxlSimWithPileup.csh
+
+    offline/hft/runPxlSimWithPileup.csh
