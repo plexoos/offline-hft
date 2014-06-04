@@ -14,6 +14,7 @@ public:
    TStiKalmanTrackNode();
    TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN);
    TStiKalmanTrackNode & operator=(const StiKalmanTrackNode &stiKTN);
+   const TVector3& GetTrackP() const { return fTrackP; }
    virtual void Print(Option_t *opt = "") const;
 
    friend bool operator< (const TStiKalmanTrackNode& lhs, const TStiKalmanTrackNode& rhs);
@@ -21,7 +22,7 @@ public:
 protected:
 
    TVector3    fPosition;          ///< Coordinates of the track state/node position
-   TVector3    fTrackP;            ///< Local track momentum vector
+   TVector3    fTrackP;            ///< Track momentum vector in global CS
    double      fEnergyLosses;      ///< Energy lost in the volume
    double      fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
    std::string fStiDetectorName;
