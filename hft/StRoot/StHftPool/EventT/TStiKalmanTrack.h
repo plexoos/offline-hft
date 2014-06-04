@@ -15,6 +15,7 @@ public:
 
    TStiKalmanTrack();
    TStiKalmanTrack(const StiKalmanTrack & stiKTrack);
+   const TStiKalmanTrackNode& GetDcaNode() const;
    double GetEnergyLosses() const;
    virtual void Print(Option_t *opt = "") const;
 

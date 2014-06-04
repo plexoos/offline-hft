@@ -36,6 +36,8 @@ TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
 }
 
 
+const TStiKalmanTrackNode& TStiKalmanTrack::GetDcaNode() const { return *fNodes.begin(); }
+
 double TStiKalmanTrack::GetEnergyLosses() const { return fEnergyLosses; }
 
 
