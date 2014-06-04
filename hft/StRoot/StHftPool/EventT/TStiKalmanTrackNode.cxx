@@ -54,6 +54,8 @@ TStiKalmanTrackNode & TStiKalmanTrackNode::operator=(const StiKalmanTrackNode &s
 
 void TStiKalmanTrackNode::Print(Option_t *opt) const
 {
+   fPosition.Print();
+   fTrackP.Print();
    printf("fEnergyLosses:    %f\n", fEnergyLosses);
    printf("fNodeRadius:      %f\n", fNodeRadius);
    printf("fStiDetectorName: %s\n", fStiDetectorName.c_str());

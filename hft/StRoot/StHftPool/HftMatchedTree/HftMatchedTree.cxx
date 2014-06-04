@@ -119,7 +119,7 @@ void HftMatchedTree::SetTree()
    fFile->SetCompressionLevel(1); // Set file compression level
 
    // Create a ROOT Tree and one superbranch
-   fTree = new TTree("T", "TTree with HFT hits and tracks");
+   fTree = new TTree("t", "TTree with HFT hits and tracks");
    fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 
    Int_t bufsize = 64000;

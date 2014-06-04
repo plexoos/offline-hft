@@ -85,7 +85,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
    StThreeVectorF xyzP(-999, -999, -999);
    StMatrixF vCM(3, 3);
 
-   static const Int_t NoFitPointCutForGoodTrackT = 15;
+   static const Int_t nFitPointCutForGoodTrackT = 15;
 
    if (NprimVtx) {
       Int_t ibest = -1;
@@ -110,7 +110,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
          for (UInt_t i = 0; i < nDaughters; i++) {
             StTrack *pTrackT = pVertex->daughter(i);
 
-            if ( pTrackT->fitTraits().numberOfFitPoints(kTpcId) >=  NoFitPointCutForGoodTrackT) nGoodTpcTracks++;
+            if ( pTrackT->fitTraits().numberOfFitPoints(kTpcId) >= nFitPointCutForGoodTrackT) nGoodTpcTracks++;
          }
 
          if (nBestTracks < nGoodTpcTracks) {nBestTracks = nGoodTpcTracks; ibest = ipr;}
@@ -342,7 +342,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
 
       if (!gTrackT) continue;
 
-      if (gTrackT->fitTraits().numberOfFitPoints(kTpcId) < NoFitPointCutForGoodTrackT) continue;
+      if (gTrackT->fitTraits().numberOfFitPoints(kTpcId) < nFitPointCutForGoodTrackT) continue;
 
       StDcaGeometry *dcaGeometry = gTrackT->dcaGeometry();
 
@@ -352,16 +352,17 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
 
       if (pTrackT && pTrackT->vertex() != pVertex) pTrackT = 0;
 
-      StTrackDetectorInfo  *dInfo = gTrackT->detectorInfo();
+      StTrackDetectorInfo *dInfo = gTrackT->detectorInfo();
 
-      if (! dInfo) continue;
+      if ( !dInfo ) continue;
 
       TrackT *track = AddTrackT();
 
       int ii = 0;
       StPtrVecHit tpcHits = dInfo->hits(kTpcId);
 
-      for (size_t ih = 0; ih < tpcHits.size(); ih++) {
+      for (size_t ih = 0; ih < tpcHits.size(); ih++)
+      {
          StTpcHit *aHit = dynamic_cast<StTpcHit *>(tpcHits[ih]);
 
          if (!aHit) continue;
@@ -800,8 +801,8 @@ void EventT::Print(Option_t *opt) const
 
    for (UInt_t i = 0; i < GetNhit(); i++) {cout << i << "\t"; GetHitT(i)->Print();}
 
-   //  for (UInt_t i = 0; i < GetNvertex(); i++) {cout << i << "\t"; GetVertexT(i)->Print();}
-   //
+   //for (UInt_t i = 0; i < GetNvertex(); i++) {cout << i << "\t"; GetVertexT(i)->Print();}
+
    std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = fTStiKalmanTracks.begin();
 
    for ( ; iTStiKTrack != fTStiKalmanTracks.end(); ++iTStiKTrack) {

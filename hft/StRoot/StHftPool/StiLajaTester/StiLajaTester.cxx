@@ -62,8 +62,6 @@ Int_t StiLajaTester::Make()
       Info("Make", "P: %f", kalmanTrack->getP());
 
       kalmanTrack->print("XYZEPTC");
-
-      mOutRootFile->FillHists();
    }
 
    return kStOK;

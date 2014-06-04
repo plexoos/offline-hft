@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -172,7 +173,7 @@ void process_options(po::options_description &prgOptions, po::variables_map &prg
 
 void hft_display(std::string fileName, const double B)
 {
-   myTreeFileChain = new TChain("T");
+   myTreeFileChain = new TChain("t");
    myTreeFileChain->AddFile(fileName.c_str());
    NMAX = myTreeFileChain->GetEntries();
    cout << " Total number of events = " << NMAX << endl;
