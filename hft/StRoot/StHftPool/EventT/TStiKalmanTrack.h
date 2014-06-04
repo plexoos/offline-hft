@@ -15,11 +15,13 @@ public:
 
    TStiKalmanTrack();
    TStiKalmanTrack(const StiKalmanTrack & stiKTrack);
+   double GetEnergyLosses() const;
    virtual void Print(Option_t *opt = "") const;
 
 protected:
 
    std::set<TStiKalmanTrackNode> fNodes;
+   double   fEnergyLosses;      ///< Total track energy lost in all volumes
 
    ClassDef(TStiKalmanTrack, 1)
 };

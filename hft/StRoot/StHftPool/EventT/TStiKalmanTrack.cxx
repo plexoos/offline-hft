@@ -8,13 +8,13 @@ ClassImp(TStiKalmanTrack)
 
 
 TStiKalmanTrack::TStiKalmanTrack() : TObject(),
-   fNodes()
+   fNodes(), fEnergyLosses(0)
 {
 }
 
 
 TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
-   fNodes()
+   fNodes(), fEnergyLosses(0)
 {
    Info("TStiKalmanTrack", "Convert StiKalmanTrack to TStiKalmanTrack");
 
@@ -31,12 +31,18 @@ TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
       }
 
       fNodes.insert( TStiKalmanTrackNode(*stiNode) );
+      fEnergyLosses += stiNode->getEnergyLosses();
    }
 }
 
 
+double TStiKalmanTrack::GetEnergyLosses() const { return fEnergyLosses; }
+
+
 void TStiKalmanTrack::Print(Option_t *opt) const
 {
+   printf("fEnergyLosses: %f\n", fEnergyLosses);
+
    std::set<TStiKalmanTrackNode>::const_iterator iTStiKTrackNode = fNodes.begin();
 
    for ( ; iTStiKTrackNode != fNodes.end(); ++iTStiKTrackNode) {
