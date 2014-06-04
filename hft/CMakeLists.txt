@@ -57,6 +57,7 @@ link_directories(
 set( HFT_LIBRARIES
    StHftPoolEventT
    StHftPoolHftMatchedTree
+   StiLajaTester
 )
 
 set( STAR_LIBRARIES
@@ -127,6 +128,10 @@ set( STAR_LIBRARIES
 add_executable( display_hft tests/display_hft.cc )
 target_link_libraries( display_hft ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} ${MYSQL_LIBRARY} Table Geom Eve)
 
+add_executable( loop_hftree tests/loop_hftree.cc )
+target_link_libraries( loop_hftree ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} Table Geom Eve)
+
 if(FORCE_32BIT)
    set_target_properties(display_hft PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
+   set_target_properties(loop_hftree PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
 endif()
