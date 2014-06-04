@@ -670,10 +670,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
    UInt_t val[4] = {onPXL1, onPXL2, onIST, 0};
    SetNPredHFT(val);
 
-   if (!onIST && !onPXL2 && !onPXL1) return iok; // only fill events with tracks that can be projected to HFT
-
    LOG_INFO << " Number of predicted hits on PXL1/PXL2/IST/SSD = " << onPXL1 << "/" << onPXL2 << "/" << onIST << "/" << 0 << endm;
-
 
    iok = 0;
    return iok;
