@@ -16,8 +16,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.3  2014/05/16 19:30:17  zhoulong
- * updated compression data and some small details
+ * Revision 1.4  2014/06/05 14:55:24  zhoulong
+ * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *
  *
  **************************************************************************/
@@ -56,6 +56,7 @@ class StSstDaqMaker : public StRTSBaseMaker {
   void DecodeRawWords(UInt_t* val,int vallength,int channel);
   void DecodeCompressedWords(UInt_t* val,int valength,int channel);
   UInt_t Mid(Int_t start, Int_t end, UInt_t input);//used to grab the valuable info in middle of 32-bit .
+  Int_t Shift(int runnumber,int &channel);
   void FindLadderSide(int RDO,int channel,int &ladder,int &side);//use RDO no and channel no to grab ladder info and p-side or n-side info
   void FindStripNumber(int &strip);
   virtual const char *GetCVS() const {
@@ -98,6 +99,7 @@ protected:
   Int_t   m_channel[8];
   Int_t   m_dataMode[8];// Raw or Compressed data .
   Int_t   eventnumber;
+  Int_t   eventrunumber;
   ClassDef(StSstDaqMaker,1)   
 };
 

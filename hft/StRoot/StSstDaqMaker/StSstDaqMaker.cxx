@@ -17,8 +17,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.3  2014/05/16 19:30:17  zhoulong
- * updated compression data and some small details
+ * Revision 1.4  2014/06/05 14:55:23  zhoulong
+ * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *
  *
  ***************************************************************************
@@ -106,6 +106,7 @@ StSstDaqMaker::StSstDaqMaker(const Char_t *name):StRTSBaseMaker("sst",name)
 //-----------------------------------------------                                        
 Int_t StSstDaqMaker::InitRun(int runumber)
 {
+  eventrunumber = runumber;
   LOG_INFO <<"InitRun(int runumber) - Read now Databases"<<endm;
   Int_t run = (runumber/1000000)-1;
 
@@ -222,7 +223,7 @@ Int_t StSstDaqMaker::Make()
       int ladderCountN[20]={0};
       int ladderCountP[20]={0};
       Int_t count = 1;    
-      
+      Int_t c_correct;
       m_sec     = rts_table->Sector();
       m_RDO     = rts_table->Rdo();
       m_fiber   = rts_table->Pad();
@@ -244,12 +245,14 @@ Int_t StSstDaqMaker::Make()
 	  daq_sst_pedrms_t *f = (daq_sst_pedrms_t *)*it;
 	  for(int c=0;c<nSstStripsPerWafer;c++)
 	    { //channel
+	      c_correct = c;
+	      if(!Shift(eventrunumber,c_correct)) {LOG_INFO<<"First readout channel in old LC FPGA is not usable."<<endm; continue;}
 	      for(int h=0;h<nSstWaferPerLadder;h++)
 	      {//wafer
-		int s = c;
+		int s = c_correct;
 		FindStripNumber(s);
-		m_ped  = (Float_t)f->ped[h][c];
-		m_rms  = (Float_t)f->rms[h][c]/16.;
+		m_ped  = (Float_t)f->ped[h][c_correct];
+		m_rms  = (Float_t)f->rms[h][c_correct]/16.;
 		strip_number=s+1;
 		if (id_side==0)
 		  id_wafer=7000+100*(nSstWaferPerLadder-h)+ladder+1;
@@ -270,7 +273,7 @@ Int_t StSstDaqMaker::Make()
 		  PedestalNTuple[4]=ladder;
 		  PedestalNTuple[5]=h;
 		  PedestalNTuple[6]=s;
-		  PedestalNTuple[7]=c;
+		  PedestalNTuple[7]=c_correct;
 		  PedestalNTuple[8]=m_ped;
 		  PedestalNTuple[9]=m_rms;
 		  pTuple->Fill(PedestalNTuple);
@@ -310,7 +313,7 @@ void StSstDaqMaker::DecodeRdoData()
   m_headerData        = 0;
   m_trailerData       = 0;
   m_trailerDataLength = 0;
-  m_rdoflag           =1;
+  m_rdoflag           = 1;
 
   for(int f=0;f<8;f++) m_fiberflag[f]=1;//flag=0-->bad, flag=1-->good  
   if(m_rdoDataLength==0 || !m_rdoData) {
@@ -531,7 +534,7 @@ void StSstDaqMaker::DecodeRawWords(UInt_t* val,int vallength,int channel)
   int strip_number[3],id_wafer[3],id_side,count;
   int ladderCountN[20]={0};
   int ladderCountP[20]={0};
-  int data[3],pedestal[3],wafer[3],hybrid[3],noise[3],strip[3],readout[3],ladder;
+  int data[3],pedestal[3],wafer[3],hybrid[3],noise[3],strip[3],readout[3],readout_correct[3],ladder;
   for(int i=0;i<3;i++)
     {
       data[i]     = 0;
@@ -596,6 +599,8 @@ else
  
  for(int n=0;n<3;n++)
    {
+     readout_correct[n] = readout[n];
+     if(!Shift(eventrunumber,readout_correct[n])) {LOG_INFO<<"First readout channel in old LC FPGA is not usable."<<endm; continue;} 
      strip[n] = readout[n];
      wafer[n] = hybrid[n];
      FindStripNumber(strip[n]);
@@ -604,37 +609,28 @@ else
      if(id_side==1) AdcStrip[1][ladder]->Fill(strip[n]+wafer[n]*nSstStripsPerWafer,(int)(data[n]+375)%1024);
      /*if(id_side==0) AdcStrip[0][ladder]->Fill(readout[n]+wafer[n]*nSstStripsPerWafer,data[n]);
        if(id_side==1) AdcStrip[1][ladder]->Fill(readout[n]+wafer[n]*nSstStripsPerWafer,data[n]);*/
+  
+     if(id_side == 0)
+       id_wafer[n]=7000+100*(nSstWaferPerLadder-wafer[n])+ladder+1;
+     else 
+       id_wafer[n]=7000+100*((wafer[n])+1)+ladder+1;
+     strip_number[n] = strip[n]+1;//strip[n]+1 . in mapping, strip[1-128];
+
+     out_strip.id          = count;
+     out_strip.adc_count   = data[n];
+     out_strip.id_strip    = 10000*(10*strip_number[n]+id_side)+id_wafer[n];//id_side:0-->p,1-->N
+     out_strip.id_mchit[0] = 0 ;
+     out_strip.id_mchit[1] = 0 ;
+     out_strip.id_mchit[2] = 0 ;
+     out_strip.id_mchit[3] = 0 ;
+     out_strip.id_mchit[4] = 0 ;
+
+     spa_strip->AddAt(&out_strip);
+     if(id_side ==0) ladderCountP[ladder]++;
+     else            ladderCountN[ladder]++;
+
+     count = count + 1;
    }
-if(id_side == 0)
-{
-for(int i=0;i<3;i++)
-	id_wafer[i]=7000+100*(nSstWaferPerLadder-wafer[i])+ladder+1;
-}
-else
-{
-for(int i=0;i<3;i++)
-    id_wafer[i]=7000+100*((wafer[i])+1)+ladder+1;
-}
-for(int i=0;i<3;i++)
-  strip_number[i] = strip[i]+1;//strip[i]+1 . in mapping, strip[1-128];
-
-for(int j=0;j<3;j++)
-{
-out_strip.id          = count + j;
-out_strip.adc_count   = data[j];
-out_strip.id_strip    = 10000*(10*strip_number[j]+id_side)+id_wafer[j];//id_side:0-->p,1-->N
-out_strip.id_mchit[0] = 0 ;
-out_strip.id_mchit[1] = 0 ;
-out_strip.id_mchit[2] = 0 ;
-out_strip.id_mchit[3] = 0 ;
-out_strip.id_mchit[4] = 0 ;
-
-spa_strip->AddAt(&out_strip);
-if(id_side ==0) ladderCountP[ladder]++;
- else            ladderCountN[ladder]++;
-}
-count = count + 3;
-
  }
 LOG_DEBUG<<"last readout number readout[0]:readout[1]:readout[2] = ["<<readout[0]<<","<<readout[1]<<","<<readout[2]<<"]"<<endm;
 
@@ -686,9 +682,10 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t* val,int vallength,int channel)
       if(i%400==0) LOG_DEBUG<<"Fiber["<<channel<<"] :PROCESSING "<<(float)i/(float)vallength*100.<<"%"<<endm;
       wafer = Mid(HYBRID_START,HYBRID_END,val[i]);
       strip = Mid(STRIP_START,STRIP_END,val[i]);
-      readout = strip;
       data  = Mid(COM_ADC_START,COM_ADC_END,val[i]);
-     
+      if(!Shift(eventrunumber,strip)) {LOG_INFO<<"First readout channel in old LC FPGA is not usable."<<endm; continue;}   
+      readout = strip;
+      
       FindStripNumber(strip);//convert to physic strip number 
       if(id_side==0) AdcStrip[0][ladder]->Fill(strip+wafer*nSstStripsPerWafer,data);
       if(id_side==1) AdcStrip[1][ladder]->Fill(strip+wafer*nSstStripsPerWafer,data);
@@ -743,6 +740,26 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t* val,int vallength,int channel)
     LOG_DEBUG << "Make()/ Read Signal from Physics Run"<< endm;
     LOG_DEBUG << "Make()/  spa_strip->NRows= "<<spa_strip->GetNRows()<<endm;
   }
+}
+
+//-------------------------------------------------
+Int_t StSstDaqMaker::Shift(Int_t runnumber,Int_t &channel)
+{
+  if(runnumber<15150058) 
+    {
+      LOG_DEBUG<<"We are using Old LC FPGA with one readout channel shift. "<<endm;
+      if(channel==0) return 0;
+      else 
+	{
+	channel = channel - 1;
+	return 1;
+	}
+    }
+  else
+    { 
+      LOG_DEBUG<<"We are using Thorsten's LC FPGA without readout channel shift."<<endm;
+      return 1;
+    }
 }
 //-------------------------------------------------
 UInt_t StSstDaqMaker::Mid(Int_t start,Int_t end, UInt_t input)

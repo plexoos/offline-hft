@@ -15,8 +15,8 @@
  ***************************************************************************
  *
  * $Log$
- * Revision 1.2  2014/04/22 17:19:17  zhoulong
- * This version solved one bug(too many token error in one event)
+ * Revision 1.3  2014/06/05 14:55:23  zhoulong
+ * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *
  *
  **************************************************************************/
