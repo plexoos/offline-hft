@@ -23,11 +23,15 @@ How to build development hft libraries
     cvs checkout -r HEAD StRoot/StiMaker
     cvs checkout -r HEAD StRoot/Sti
     cvs checkout -r HEAD StRoot/StEvent
+    cvs checkout -r HEAD StRoot/StiSsd
+    cvs checkout -r HEAD StRoot/StSsdDbMaker
 
     patch -p1 -d StRoot/StBFChain < offline/hft/StRoot/StBFChain.patch
     patch -p1 -d StRoot < offline/hft/StRoot/Sti.patch
     patch -p1 -d StRoot < offline/hft/StRoot/StiMaker.patch
     patch -p1 -d StRoot < offline/hft/StRoot/StEvent.patch
+    patch -p1 -d StRoot < offline/hft/StRoot/StiSsd.patch
+    patch -p1 -d StRoot < offline/hft/StRoot/StSsdDbMaker.patch
 
     # The following new submodules can also be copied to your local StRoot but
     # you may chose to link them instead

@@ -1,0 +1,940 @@
+From caf3bfae6bb8d5a51b00fa27551c5b16f3e20f1e Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Tue, 20 May 2014 15:54:58 -0400
+Subject: [PATCH 1/4] Copied StSsdDbMaker.* files to StSstDbMaker.*
+
+---
+ StSsdDbMaker/StSstDbMaker.cxx | 278 ++++++++++++++++++++++++++++++++++++++++++
+ StSsdDbMaker/StSstDbMaker.h   |  73 +++++++++++
+ 2 files changed, 351 insertions(+)
+ create mode 100644 StSsdDbMaker/StSstDbMaker.cxx
+ create mode 100644 StSsdDbMaker/StSstDbMaker.h
+
+diff --git a/StSsdDbMaker/StSstDbMaker.cxx b/StSsdDbMaker/StSstDbMaker.cxx
+new file mode 100644
+index 0000000..f11a2bf
+--- /dev/null
++++ b/StSsdDbMaker/StSstDbMaker.cxx
+@@ -0,0 +1,278 @@
++// $Id$
++//
++// $Log$
++// Revision 1.1  2014/06/06 21:15:44  smirnovd
++// Add patches for StSsdDbMaker and StiSsd
++//
++// Revision 1.16  2010/09/01 21:04:06  fisyak
++// Disable sim flavor, now sim parameters is coming via DB associated with simulation time stamp
++//
++// Revision 1.15  2008/08/12 22:45:47  bouchet
++// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
++//
++// Revision 1.14  2008/08/01 22:07:31  bouchet
++// fix bug for geometry : simulation takes ideal geometry
++//
++// Revision 1.13  2007/09/25 13:36:51  bouchet
++// add m_Mode to constructor
++//
++// Revision 1.12  2007/07/12 20:01:15  fisyak
++// Don't read whole database but only the table requested
++//
++// Revision 1.11  2007/03/21 17:17:16  fisyak
++// use TGeoHMatrix for coordinate transformation, eliminate ssdWafersPostion
++//
++// Revision 1.10  2007/02/18 13:32:35  bouchet
++// Changes for the new Logger
++//
++// Revision 1.9  2006/10/16 19:53:24  fisyak
++// Adjust for new Ssd chain
++//
++// Revision 1.8  2006/09/18 16:40:14  fisyak
++// Add sim flag for ssdWafersPosition
++//
++// Revision 1.7  2005/06/03 21:30:41  perev
++// Move configuration Init()==>InitRun()
++//
++// Revision 1.6  2005/05/10 12:48:06  reinnart
++// The new StSsdDbMaker without DirectDataBase Access
++// 
++
++/***************************************************************************
++ * Author: christelle roy
++ * Description: SSD DB access Maker
++ **************************************************************************/
++
++#include "StSsdDbMaker.h"
++#include "TDataSetIter.h"
++#include "StMessMgr.h"
++#include "tables/St_ssdWafersPosition_Table.h"
++#include "tables/St_ssdConfiguration_Table.h"
++#include "tables/St_ssdDimensions_Table.h"
++#include "tables/St_slsCtrl_Table.h"
++#include "tables/St_Survey_Table.h"
++#include "TMath.h"
++#include "TVector3.h"
++#include "StTpcDb/StTpcDb.h"
++StSsdDbMaker* gStSsdDbMaker=NULL; 
++THashList *StSsdDbMaker::fRotList = 0;
++
++ClassImp(StSsdDbMaker)
++//_____________________________________________________________________________
++StSsdDbMaker::StSsdDbMaker(const char *name) : 
++  StMaker(name), mySsd(0),m_dimensions(0),m_positions(0),m_config(0),m_ctrl(0){
++  gStSsdDbMaker = this;mode=0;
++}
++//_____________________________________________________________________________
++StSsdDbMaker::~StSsdDbMaker() {SafeDelete(mySsd); gStSsdDbMaker = 0;}
++//_____________________________________________________________________________
++Int_t StSsdDbMaker::Init()
++{
++  LOG_DEBUG << "Init - Start - " << endm;
++#if 0
++  if( m_Mode == 1) {
++    LOG_INFO << "Init setting WafersPositions to simulation" << endm;
++    //SetFlavor("sim","ssdWafersPosition");   
++    SetFlavor("sim","SsdOnGlobal");
++    SetFlavor("sim","SsdSectorsOnGlobal");
++    SetFlavor("sim","SsdLaddersOnSectors");
++    SetFlavor("sim","SsdWafersOnLadders");
++  }
++#endif
++  LOG_DEBUG << "StSsdDbMaker::Init() - Done - "<<endm;
++  return StMaker::Init();
++}
++//_____________________________________________________________________________
++Int_t StSsdDbMaker::InitRun(Int_t runNumber) {
++  mode = m_Mode;
++  m_ctrl          = ((St_slsCtrl           *) GetInputDB("Geometry/ssd/slsCtrl"))->GetTable();
++  if (!m_ctrl) {
++    gMessMgr->Error() << "No  access to control parameters" << endm;
++    return kStFatal;
++  }   
++  m_dimensions    =  (St_ssdDimensions     *) GetInputDB("Geometry/ssd/ssdDimensions"); 
++  m_positions     =  CalculateWafersPosition();  
++
++  if ((!m_dimensions)||(!m_positions)) {
++    gMessMgr->Error() << "No  access to geometry parameters" << endm;
++    return kStFatal;
++  }
++  LOG_DEBUG << " geometry loaded " << endm;
++  St_ssdConfiguration* configTable = (St_ssdConfiguration*) GetInputDB("Geometry/ssd/ssdConfiguration");
++  if (!configTable) {
++    gMessMgr->Error() << "InitRun : No access to ssdConfiguration database" << endm;
++    return kStFatal;
++  }
++  //mConfig = new StSsdConfig();
++  m_config = (ssdConfiguration_st*) configTable->GetTable() ; 
++  ssdDimensions_st *dimensions = m_dimensions->GetTable();
++  mySsd = new StSsdBarrel(dimensions, m_config);
++  if (Debug()) mySsd->SetDebug(Debug());
++  mySsd->initLadders(m_positions);
++  LOG_DEBUG << " StSsdBarrel built " << endm;
++  return kStOK;
++}
++//_____________________________________________________________________________
++Int_t StSsdDbMaker::Make()
++{
++  LOG_DEBUG << "Make" << endm;
++
++  return kStOK;
++}
++
++//_____________________________________________________________________________
++void StSsdDbMaker::Clear(const char*)
++{
++  LOG_DEBUG << "Clear" << endm;
++  StMaker::Clear();
++}
++
++//_____________________________________________________________________________
++Int_t StSsdDbMaker::Finish()
++{
++  LOG_DEBUG << "Finish" << endm;
++  return kStOK;
++}
++//_____________________________________________________________________________
++St_ssdWafersPosition *StSsdDbMaker::CalculateWafersPosition(){
++  SafeDelete(fRotList);
++  fRotList = new THashList(100,0);
++  fRotList->SetOwner(kFALSE);
++#if 0
++  St_ssdWafersPosition *ssdWafersPosition = (St_ssdWafersPosition *) GetDataBase("Geometry/ssd/ssdWafersPosition");
++  if (! ssdWafersPosition)  {cout << "ssdWafersPosition has not been found"    << endl; return 0;}
++  ssdWafersPosition_st *WafersPosition = ssdWafersPosition->GetTable(); 
++  Int_t NoWafers  = ssdWafersPosition->GetNRows();
++#endif
++  St_Survey *SsdOnGlobal = (St_Survey *) GetDataBase("Geometry/ssd/SsdOnGlobal");
++  if (! SsdOnGlobal)  {cout << "SsdOnGlobal has not been found"  << endl; return 0;}
++  TGeoHMatrix GL, LS,SG,LA,WG;
++  Survey_st *OnGlobal         = SsdOnGlobal->GetTable();        // SSD and SVT as whole 
++  GL.SetRotation(&OnGlobal->r00);
++  GL.SetTranslation(&OnGlobal->t0);
++  assert(gStTpcDb);
++  const TGeoHMatrix &Tpc2Global = gStTpcDb->Tpc2GlobalMatrix();
++  // SSD 
++  St_Survey *SsdSectorsOnGlobal = (St_Survey *) GetDataBase("Geometry/ssd/SsdSectorsOnGlobal");
++  if (! SsdSectorsOnGlobal)  {cout << "SsdSectorsOnGlobal has not been found"  << endl; return 0;}
++  St_Survey *SsdLaddersOnSectors = (St_Survey *) GetDataBase("Geometry/ssd/SsdLaddersOnSectors");// ladders in the SSD sector coordinate systems
++  if (! SsdLaddersOnSectors) {cout << "SsdLaddersOnSectors has not been found" << endl; return 0;}
++  St_Survey *SsdWafersOnLadders = (St_Survey *) GetDataBase("Geometry/ssd/SsdWafersOnLadders");  // wafers in the SSD ladder coordinate systems
++  if (! SsdWafersOnLadders)  {cout << "SsdWafersOnLadders has not been found"  << endl; return 0;}
++  Survey_st *SectorsOnGlobal = SsdSectorsOnGlobal->GetTable();  // sectors in the SSD barrel coordinate system
++  Survey_st *LaddersOnSectors = SsdLaddersOnSectors->GetTable();// ladders in the SSD sector coordinate systems
++  Survey_st *WafersOnLadders = SsdWafersOnLadders->GetTable();  // wafers in the SSD ladder coordinate systems
++  Int_t NoSectors = SsdSectorsOnGlobal->GetNRows();
++  Int_t NoLadders = SsdLaddersOnSectors->GetNRows();
++  Int_t NoWafers  = SsdWafersOnLadders->GetNRows();
++  St_ssdWafersPosition *ssdwafer = new St_ssdWafersPosition("ssdWafersPosition",NoWafers);
++  AddConst(ssdwafer);
++  Int_t num = 0;
++//#if 1 
++  for (Int_t i = 0; i < NoWafers; i++,WafersOnLadders++) {
++    Int_t Id = WafersOnLadders->Id;
++    ssdWafersPosition_st row;
++    memset (&row, 0, sizeof(ssdWafersPosition_st));
++// #else
++//   for (Int_t w  = 0; w < NoWafers; w++, WafersPosition++) {
++//     ssdWafersPosition_st row = *WafersPosition;
++//     WafersOnLadders = SsdWafersOnLadders->GetTable();
++//     Int_t Id = 0;
++//     for (Int_t i = 0; i < NoWafers; i++,WafersOnLadders++) {
++//       if (WafersOnLadders->Id != row.id) continue;
++//       Id = row.id;
++//       break;
++//     }
++//     if (! Id ) {cout << "Wafer Id\t" << Id << " has not been found" << endl; continue;}
++//#endif
++    TGeoHMatrix *comb = (TGeoHMatrix *) fRotList->FindObject(Form("R%04i",Id));
++    if (comb) continue;
++    comb = new TGeoHMatrix(Form("R%04i",Id)); 
++    Int_t layer  = Id/1000;
++    if (layer > 7) layer = 7;
++    Int_t ladder  = Id%100;
++    TGeoHMatrix WLL;
++    WLL.SetRotation(&WafersOnLadders->r00);
++    WLL.SetTranslation(&WafersOnLadders->t0); //cout << "WL\t"; WL.Print();
++    TGeoHMatrix *WL = (TGeoHMatrix *) fRotList->FindObject(Form("WL%04i",Id));
++    if (! WL) {
++      WL = new  TGeoHMatrix(Form("WL%04i",Id)); 
++      Double_t *r = WLL.GetRotationMatrix();   
++      Double_t rot[9] = {r[0], r[2], r[1],   
++			 r[3], r[5], r[4],   
++			 r[6], r[8], r[7]};   
++      // {7101,  1.000000,0, 0.000052,0, 1,0,-0.000052,0, 1.000000,-0.000600,0,-32.625900, 
++      WL->SetRotation(rot);
++      WL->SetTranslation(WLL.GetTranslation());
++      fRotList->Add(WL);
++    }
++    LaddersOnSectors = SsdLaddersOnSectors->GetTable();
++    Int_t Ladder = 0;
++    Int_t Sector = 0;
++    for (Int_t l = 0; l < NoLadders; l++, LaddersOnSectors++) {
++      //cout << "LaddersOnSectors Id\t" << LaddersOnSectors->Id << endl;
++      Ladder = LaddersOnSectors->Id%100;
++      if (Ladder == ladder) {
++	Sector = LaddersOnSectors->Id/100;
++	LS.SetRotation(&LaddersOnSectors->r00);
++	LS.SetTranslation(&LaddersOnSectors->t0);
++	//cout << "LS\t"; LS.Print();
++	break;
++      }
++    }
++    if (Sector <= 0 || Sector > 4) {cout << "Sector has not been defined" << endl; continue;}
++    SectorsOnGlobal = SsdSectorsOnGlobal->GetTable();
++    Int_t sector = 0;
++    for (Int_t s = 0; s <NoSectors; s++, SectorsOnGlobal++) {
++      //cout << "SectorsOnGlobal Id\t" << SectorsOnGlobal->Id << endl;
++      if (SectorsOnGlobal->Id != Sector) continue;
++      sector = Sector;
++      SG.SetRotation(&SectorsOnGlobal->r00);
++      SG.SetTranslation(&SectorsOnGlobal->t0); //cout << "Sector\t" << Sector << "\tSG\t"; SG.Print();
++      break;
++    }
++    if (! sector) {cout << "Sector\t" << Sector << " has not been found" << endl; continue;}
++    //    WG = SG * LS * WL * LA; //cout << "WG\t"; WG.Print();
++    //    WG = SG * LS * WL * LA = SG * ( LS * WL * LA * WL**-1 ) *WL
++    if (Debug()) {
++      cout << "Tpc2Global "; Tpc2Global.Print();
++      cout << "GL "; GL.Print();
++      TGeoHMatrix test =  Tpc2Global * GL; cout << "test "; test.Print();
++    }
++    WG = Tpc2Global * GL * SG * LS * WLL; //cout << "WG\t"; WG.Print();
++    row.id = Id;
++    row.id_shape  = 2;
++    row.ladder = ladder;
++    row.layer  = layer;
++    num++;
++    row.num_chip  = (num-1)%16 + 1;
++    //    TGeoHMatrix WGInv = WG.Inverse();
++    //    Double_t *wgrot = WGInv.GetRotationMatrix();
++    Double_t *r = WG.GetRotationMatrix();
++    row.driftDirection[0] = r[0]; row.normalDirection[0] = r[1]; row.transverseDirection[0] = r[2];
++    row.driftDirection[1] = r[3]; row.normalDirection[1] = r[4]; row.transverseDirection[1] = r[5];
++    row.driftDirection[2] = r[6]; row.normalDirection[2] = r[7]; row.transverseDirection[2] = r[8];
++    Double_t norm;
++    TVector3 d(row.driftDirection); norm = 1/d.Mag(); d *= norm;
++    TVector3 t(row.transverseDirection); norm = 1/t.Mag(); t *= norm;
++    TVector3 n(row.normalDirection);
++    TVector3 c = d.Cross(t);
++    if (c.Dot(n) < 0) c *= -1;
++    d.GetXYZ(row.driftDirection);
++    t.GetXYZ(row.transverseDirection);
++    c.GetXYZ(row.normalDirection);
++    
++    Double_t *wgtr = WG.GetTranslation();
++    memcpy(row.centerPosition,wgtr, 3*sizeof(Double_t));
++    Double_t rot[9] = {
++      row.driftDirection[0], row.transverseDirection[0], row.normalDirection[0],
++      row.driftDirection[1], row.transverseDirection[1], row.normalDirection[1],
++      row.driftDirection[2], row.transverseDirection[2], row.normalDirection[2]};
++    Double_t tr[3] = {row.centerPosition[0],
++		      row.centerPosition[1],
++		      row.centerPosition[2]};
++    comb->SetRotation(rot);
++    comb->SetTranslation(tr);
++    fRotList->Add(comb);
++    ssdwafer->AddAt(&row);
++    
++  }
++  return ssdwafer;
++}
+diff --git a/StSsdDbMaker/StSstDbMaker.h b/StSsdDbMaker/StSstDbMaker.h
+new file mode 100644
+index 0000000..50eb460
+--- /dev/null
++++ b/StSsdDbMaker/StSstDbMaker.h
+@@ -0,0 +1,73 @@
++// $Id$
++//
++// $Log$
++// Revision 1.1  2014/06/06 21:15:44  smirnovd
++// Add patches for StSsdDbMaker and StiSsd
++//
++// Revision 1.9  2008/08/12 22:45:47  bouchet
++// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
++//
++// Revision 1.8  2007/09/25 13:36:55  bouchet
++// add m_Mode to constructor
++//
++// Revision 1.7  2007/03/21 17:17:16  fisyak
++// use TGeoHMatrix for coordinate transformation, eliminate ssdWafersPostion
++//
++// Revision 1.6  2006/10/16 19:53:24  fisyak
++// Adjust for new Ssd chain
++//
++// Revision 1.5  2005/06/20 14:21:38  lmartin
++// CVS tags added
++//
++
++/***************************************************************************
++ * Author: christelle roy
++ * Description: SSD DB access Maker
++ **************************************************************************/
++
++#ifndef STSSDDBMAKER_H
++#define STSSDDBMAKER_H
++
++#ifndef StMaker_H
++#include "StMaker.h"
++#endif
++class St_ssdDimensions;
++class St_ssdWafersPosition;
++class St_slsCtrl;
++class slsCtrl_st;
++class ssdConfiguration_st;
++#include "StSsdUtil/StSsdBarrel.hh"
++#include "THashList.h"
++
++class StSsdDbMaker : public StMaker {
++ private:
++  StSsdBarrel           *mySsd;
++  St_ssdDimensions      *m_dimensions;//!
++  St_ssdWafersPosition  *m_positions;//!
++  ssdConfiguration_st   *m_config;//!
++  slsCtrl_st            *m_ctrl;//!
++  Int_t                   mode;//!
++  static THashList *fRotList;
++
++ public: 
++  StSsdDbMaker(const char *name="SsdDb");
++  virtual       ~StSsdDbMaker();
++  virtual Int_t  Init();
++  virtual Int_t  InitRun(Int_t runNumber);
++  virtual Int_t  Make();
++  virtual Int_t  Finish();
++  virtual void   Clear(const char *opt);
++  virtual THashList *GetRotations() {return fRotList;}
++  virtual St_ssdWafersPosition *CalculateWafersPosition();
++  virtual StSsdBarrel  *GetSsd() {return mySsd;}
++  virtual slsCtrl_st   *GetSlsCtrl() {return m_ctrl;}
++  virtual Int_t        GetMode(){return mode;}
++  virtual St_ssdWafersPosition *GetssdWafersPos(){return m_positions;}
++  virtual St_ssdDimensions     *GetssdDimensions(){return m_dimensions;}
++
++  virtual const char *GetCVS() const
++  {static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; return cvs;}
++  ClassDef(StSsdDbMaker,0)   //StAF chain virtual base class for Makers
++};
++// Global pointers:
++R__EXTERN StSsdDbMaker* gStSsdDbMaker;
++#endif
++
++
+-- 
+1.8.2.GIT
+
+
+From c03784be6d17538e7417f1517accd2988e99fa28 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Fri, 2 May 2014 11:31:04 -0400
+Subject: [PATCH 2/4] StSsdDbMaker patch from Jonathan Bouchet
+
+---
+ StSsdDbMaker/StSstDbMaker.cxx | 253 +++++++++++++++++++-----------------------
+ StSsdDbMaker/StSstDbMaker.h   |  40 ++-----
+ 2 files changed, 123 insertions(+), 170 deletions(-)
+
+diff --git a/StSsdDbMaker/StSstDbMaker.cxx b/StSsdDbMaker/StSstDbMaker.cxx
+index f11a2bf..69272cd 100644
+--- a/StSsdDbMaker/StSstDbMaker.cxx
++++ b/StSsdDbMaker/StSstDbMaker.cxx
+@@ -1,46 +1,9 @@
+-// $Id$
+-//
+-// $Log$
+-// Revision 1.1  2014/06/06 21:15:44  smirnovd
+-// Add patches for StSsdDbMaker and StiSsd
+-//
+-// Revision 1.16  2010/09/01 21:04:06  fisyak
+-// Disable sim flavor, now sim parameters is coming via DB associated with simulation time stamp
+-//
+-// Revision 1.15  2008/08/12 22:45:47  bouchet
+-// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
+-//
+-// Revision 1.14  2008/08/01 22:07:31  bouchet
+-// fix bug for geometry : simulation takes ideal geometry
+-//
+-// Revision 1.13  2007/09/25 13:36:51  bouchet
+-// add m_Mode to constructor
+-//
+-// Revision 1.12  2007/07/12 20:01:15  fisyak
+-// Don't read whole database but only the table requested
+-//
+-// Revision 1.11  2007/03/21 17:17:16  fisyak
+-// use TGeoHMatrix for coordinate transformation, eliminate ssdWafersPostion
+-//
+-// Revision 1.10  2007/02/18 13:32:35  bouchet
+-// Changes for the new Logger
+-//
+-// Revision 1.9  2006/10/16 19:53:24  fisyak
+-// Adjust for new Ssd chain
+-//
+-// Revision 1.8  2006/09/18 16:40:14  fisyak
+-// Add sim flag for ssdWafersPosition
+-//
+-// Revision 1.7  2005/06/03 21:30:41  perev
+-// Move configuration Init()==>InitRun()
+-//
+-// Revision 1.6  2005/05/10 12:48:06  reinnart
+-// The new StSsdDbMaker without DirectDataBase Access
+-// 
+-
+ /***************************************************************************
+- * Author: christelle roy
+- * Description: SSD DB access Maker
++ * Author: J. Bouchet (KSU)
++ * Description: SST DB access Maker
+  **************************************************************************/
+ 
+-#include "StSsdDbMaker.h"
++#include "StSstDbMaker.h"
+ #include "TDataSetIter.h"
+ #include "StMessMgr.h"
+ #include "tables/St_ssdWafersPosition_Table.h"
+@@ -51,36 +14,35 @@
+ #include "TMath.h"
+ #include "TVector3.h"
+ #include "StTpcDb/StTpcDb.h"
+-StSsdDbMaker* gStSsdDbMaker=NULL; 
+-THashList *StSsdDbMaker::fRotList = 0;
++StSstDbMaker* gStSstDbMaker=NULL; 
++THashList *StSstDbMaker::fRotList = 0;
+ 
+-ClassImp(StSsdDbMaker)
++ClassImp(StSstDbMaker)
+ //_____________________________________________________________________________
+-StSsdDbMaker::StSsdDbMaker(const char *name) : 
++StSstDbMaker::StSstDbMaker(const char *name) : 
+   StMaker(name), mySsd(0),m_dimensions(0),m_positions(0),m_config(0),m_ctrl(0){
+-  gStSsdDbMaker = this;mode=0;
++  gStSstDbMaker = this;mode=0;
+ }
+ //_____________________________________________________________________________
+-StSsdDbMaker::~StSsdDbMaker() {SafeDelete(mySsd); gStSsdDbMaker = 0;}
++StSstDbMaker::~StSstDbMaker() {SafeDelete(mySsd); gStSstDbMaker = 0;}
+ //_____________________________________________________________________________
+-Int_t StSsdDbMaker::Init()
++Int_t StSstDbMaker::Init()
+ {
+   LOG_DEBUG << "Init - Start - " << endm;
+-#if 0
+-  if( m_Mode == 1) {
+-    LOG_INFO << "Init setting WafersPositions to simulation" << endm;
++  //#if 0
++  //if( m_Mode == 1) {
++  //LOG_INFO << "Init setting WafersPositions to simulation" << endm;
+     //SetFlavor("sim","ssdWafersPosition");   
+-    SetFlavor("sim","SsdOnGlobal");
+-    SetFlavor("sim","SsdSectorsOnGlobal");
+-    SetFlavor("sim","SsdLaddersOnSectors");
+-    SetFlavor("sim","SsdWafersOnLadders");
+-  }
+-#endif
+-  LOG_DEBUG << "StSsdDbMaker::Init() - Done - "<<endm;
++    //SetFlavor("sim","OscOnGlobal");
++    //SetFlavor("sim","SsdLaddersOnOsc");
++    //SetFlavor("sim","SsdSensorOnLadders");
++  //}
++  //#endif
++  LOG_DEBUG << "StSstDbMaker::Init() - Done - "<<endm;
+   return StMaker::Init();
+ }
+ //_____________________________________________________________________________
+-Int_t StSsdDbMaker::InitRun(Int_t runNumber) {
++Int_t StSstDbMaker::InitRun(Int_t runNumber) {
+   mode = m_Mode;
+   m_ctrl          = ((St_slsCtrl           *) GetInputDB("Geometry/ssd/slsCtrl"))->GetTable();
+   if (!m_ctrl) {
+@@ -110,7 +72,7 @@ Int_t StSsdDbMaker::InitRun(Int_t runNumber) {
+   return kStOK;
+ }
+ //_____________________________________________________________________________
+-Int_t StSsdDbMaker::Make()
++Int_t StSstDbMaker::Make()
+ {
+   LOG_DEBUG << "Make" << endm;
+ 
+@@ -118,22 +80,22 @@ Int_t StSsdDbMaker::Make()
+ }
+ 
+ //_____________________________________________________________________________
+-void StSsdDbMaker::Clear(const char*)
++void StSstDbMaker::Clear(const char*)
+ {
+   LOG_DEBUG << "Clear" << endm;
+   StMaker::Clear();
+ }
+ 
+ //_____________________________________________________________________________
+-Int_t StSsdDbMaker::Finish()
++Int_t StSstDbMaker::Finish()
+ {
+   LOG_DEBUG << "Finish" << endm;
+   return kStOK;
+ }
+ //_____________________________________________________________________________
+-St_ssdWafersPosition *StSsdDbMaker::CalculateWafersPosition(){
++St_ssdWafersPosition *StSstDbMaker::CalculateWafersPosition(){
+   SafeDelete(fRotList);
+-  fRotList = new THashList(100,0);
++  fRotList = new THashList(320,0);
+   fRotList->SetOwner(kFALSE);
+ #if 0
+   St_ssdWafersPosition *ssdWafersPosition = (St_ssdWafersPosition *) GetDataBase("Geometry/ssd/ssdWafersPosition");
+@@ -141,47 +103,40 @@ St_ssdWafersPosition *StSsdDbMaker::CalculateWafersPosition(){
+   ssdWafersPosition_st *WafersPosition = ssdWafersPosition->GetTable(); 
+   Int_t NoWafers  = ssdWafersPosition->GetNRows();
+ #endif
+-  St_Survey *SsdOnGlobal = (St_Survey *) GetDataBase("Geometry/ssd/SsdOnGlobal");
+-  if (! SsdOnGlobal)  {cout << "SsdOnGlobal has not been found"  << endl; return 0;}
+-  TGeoHMatrix GL, LS,SG,LA,WG;
+-  Survey_st *OnGlobal         = SsdOnGlobal->GetTable();        // SSD and SVT as whole 
+-  GL.SetRotation(&OnGlobal->r00);
+-  GL.SetTranslation(&OnGlobal->t0);
++  TGeoHMatrix LS,SG,LA,WG;
+   assert(gStTpcDb);
+   const TGeoHMatrix &Tpc2Global = gStTpcDb->Tpc2GlobalMatrix();
++
+   // SSD 
+-  St_Survey *SsdSectorsOnGlobal = (St_Survey *) GetDataBase("Geometry/ssd/SsdSectorsOnGlobal");
+-  if (! SsdSectorsOnGlobal)  {cout << "SsdSectorsOnGlobal has not been found"  << endl; return 0;}
+-  St_Survey *SsdLaddersOnSectors = (St_Survey *) GetDataBase("Geometry/ssd/SsdLaddersOnSectors");// ladders in the SSD sector coordinate systems
+-  if (! SsdLaddersOnSectors) {cout << "SsdLaddersOnSectors has not been found" << endl; return 0;}
+-  St_Survey *SsdWafersOnLadders = (St_Survey *) GetDataBase("Geometry/ssd/SsdWafersOnLadders");  // wafers in the SSD ladder coordinate systems
+-  if (! SsdWafersOnLadders)  {cout << "SsdWafersOnLadders has not been found"  << endl; return 0;}
+-  Survey_st *SectorsOnGlobal = SsdSectorsOnGlobal->GetTable();  // sectors in the SSD barrel coordinate system
+-  Survey_st *LaddersOnSectors = SsdLaddersOnSectors->GetTable();// ladders in the SSD sector coordinate systems
+-  Survey_st *WafersOnLadders = SsdWafersOnLadders->GetTable();  // wafers in the SSD ladder coordinate systems
+-  Int_t NoSectors = SsdSectorsOnGlobal->GetNRows();
+-  Int_t NoLadders = SsdLaddersOnSectors->GetNRows();
+-  Int_t NoWafers  = SsdWafersOnLadders->GetNRows();
+-  St_ssdWafersPosition *ssdwafer = new St_ssdWafersPosition("ssdWafersPosition",NoWafers);
++  St_Survey *SsdOscOnGlobal      = (St_Survey *) GetDataBase("Geometry/ssd/SsdOscOnGlobal");  // OSC in IDS
++  if (! SsdOscOnGlobal)      {cout << "OscOnGlobal has not been found"  << endl; return 0;}
++  St_Survey *SsdLaddersOnOsc     = (St_Survey *) GetDataBase("Geometry/ssd/SsdLaddersOnOsc");// ladders in the SSD sector coordinate systems
++  if (! SsdLaddersOnOsc)     {cout << "SsdLaddersOnOsc has not been found" << endl; return 0;}
++  St_Survey *SsdSensorsOnLadders = (St_Survey *) GetDataBase("Geometry/ssd/SsdSensorsOnLadders");  // wafers in the SSD ladder coordinate systems
++  if (! SsdSensorsOnLadders) {cout << "SsdSensorsOnLadders has not been found"  << endl; return 0;}
++ 
++  Survey_st *OscOnGlobal      = SsdOscOnGlobal->GetTable();      
++  Survey_st *LaddersOnOsc     = SsdLaddersOnOsc->GetTable();     
++  Survey_st *SensorsOnLadders = SsdSensorsOnLadders->GetTable(); 
++
++  Int_t NoOsc     = SsdOscOnGlobal->GetNRows();
++  Int_t NoLadders = SsdLaddersOnOsc->GetNRows();
++  Int_t NoSensors = SsdSensorsOnLadders->GetNRows();
++
++  LOG_DEBUG <<" # of Osc : " << NoOsc << endm;
++  LOG_DEBUG <<" # of Ladders : " << NoLadders << endm;
++  LOG_DEBUG <<" # of Sensors : " << NoSensors << endm;
++
++  St_ssdWafersPosition *ssdwafer = new St_ssdWafersPosition("ssdWafersPosition",NoSensors);
+   AddConst(ssdwafer);
+   Int_t num = 0;
+-//#if 1 
+-  for (Int_t i = 0; i < NoWafers; i++,WafersOnLadders++) {
+-    Int_t Id = WafersOnLadders->Id;
++
++  for (Int_t i = 0; i < NoSensors; i++,SensorsOnLadders++) 
++    {
++      Int_t Id = SensorsOnLadders->Id;
+     ssdWafersPosition_st row;
+     memset (&row, 0, sizeof(ssdWafersPosition_st));
+-// #else
+-//   for (Int_t w  = 0; w < NoWafers; w++, WafersPosition++) {
+-//     ssdWafersPosition_st row = *WafersPosition;
+-//     WafersOnLadders = SsdWafersOnLadders->GetTable();
+-//     Int_t Id = 0;
+-//     for (Int_t i = 0; i < NoWafers; i++,WafersOnLadders++) {
+-//       if (WafersOnLadders->Id != row.id) continue;
+-//       Id = row.id;
+-//       break;
+-//     }
+-//     if (! Id ) {cout << "Wafer Id\t" << Id << " has not been found" << endl; continue;}
+-//#endif
++      
+     TGeoHMatrix *comb = (TGeoHMatrix *) fRotList->FindObject(Form("R%04i",Id));
+     if (comb) continue;
+     comb = new TGeoHMatrix(Form("R%04i",Id)); 
+@@ -189,62 +144,65 @@ St_ssdWafersPosition *StSsdDbMaker::CalculateWafersPosition(){
+     if (layer > 7) layer = 7;
+     Int_t ladder  = Id%100;
+     TGeoHMatrix WLL;
+-    WLL.SetRotation(&WafersOnLadders->r00);
+-    WLL.SetTranslation(&WafersOnLadders->t0); //cout << "WL\t"; WL.Print();
++      WLL.SetRotation(&SensorsOnLadders->r00);
++      WLL.SetTranslation(&SensorsOnLadders->t0);
++      //cout << "WL\t"; WLL.Print();
+     TGeoHMatrix *WL = (TGeoHMatrix *) fRotList->FindObject(Form("WL%04i",Id));
+-    if (! WL) {
++      if (! WL) 
++	{
+       WL = new  TGeoHMatrix(Form("WL%04i",Id)); 
+       Double_t *r = WLL.GetRotationMatrix();   
+-      Double_t rot[9] = {r[0], r[2], r[1],   
+-			 r[3], r[5], r[4],   
+-			 r[6], r[8], r[7]};   
+-      // {7101,  1.000000,0, 0.000052,0, 1,0,-0.000052,0, 1.000000,-0.000600,0,-32.625900, 
++	  Double_t rot[9] = {r[0], r[1], r[2],   
++			     r[3], r[4], r[5],   
++			     r[6], r[7], r[8]};   
+       WL->SetRotation(rot);
+       WL->SetTranslation(WLL.GetTranslation());
+       fRotList->Add(WL);
+     }
+-    LaddersOnSectors = SsdLaddersOnSectors->GetTable();
++      LaddersOnOsc = SsdLaddersOnOsc->GetTable();
+     Int_t Ladder = 0;
+-    Int_t Sector = 0;
+-    for (Int_t l = 0; l < NoLadders; l++, LaddersOnSectors++) {
+-      //cout << "LaddersOnSectors Id\t" << LaddersOnSectors->Id << endl;
+-      Ladder = LaddersOnSectors->Id%100;
+-      if (Ladder == ladder) {
+-	Sector = LaddersOnSectors->Id/100;
+-	LS.SetRotation(&LaddersOnSectors->r00);
+-	LS.SetTranslation(&LaddersOnSectors->t0);
++      Int_t OSC    = 0;
++      for (Int_t l = 0; l < NoLadders; l++, LaddersOnOsc++) 
++	{
++	  //cout << "LaddersOnOsc Id\t" << LaddersOnOsc->Id << endl;
++	  Ladder = LaddersOnOsc->Id%100;
++	  if (Ladder == ladder) 
++	    {
++	      OSC = LaddersOnOsc->Id/100;
++	      LS.SetRotation(&LaddersOnOsc->r00);
++	      LS.SetTranslation(&LaddersOnOsc->t0);
+ 	//cout << "LS\t"; LS.Print();
+ 	break;
+       }
+     }
+-    if (Sector <= 0 || Sector > 4) {cout << "Sector has not been defined" << endl; continue;}
+-    SectorsOnGlobal = SsdSectorsOnGlobal->GetTable();
+-    Int_t sector = 0;
+-    for (Int_t s = 0; s <NoSectors; s++, SectorsOnGlobal++) {
+-      //cout << "SectorsOnGlobal Id\t" << SectorsOnGlobal->Id << endl;
+-      if (SectorsOnGlobal->Id != Sector) continue;
+-      sector = Sector;
+-      SG.SetRotation(&SectorsOnGlobal->r00);
+-      SG.SetTranslation(&SectorsOnGlobal->t0); //cout << "Sector\t" << Sector << "\tSG\t"; SG.Print();
++      
++      if (OSC != 1) {cout << "Osc has not been defined" << endl; continue;}
++      OscOnGlobal = SsdOscOnGlobal->GetTable();
++      Int_t osc = 0;
++      for (Int_t s = 0; s <NoOsc; s++, OscOnGlobal++) 
++	{
++	  //cout << "OscOnGlobal Id\t" << OscOnGlobal->Id << endl;
++	  if (OscOnGlobal->Id != OSC) continue;
++	  osc = OSC;
++	  SG.SetRotation(&OscOnGlobal->r00);
++	  SG.SetTranslation(&OscOnGlobal->t0); 
++	  //cout << "OSC\t" << OSC << "\tSG\t"; //SG.Print();
+       break;
+     }
+-    if (! sector) {cout << "Sector\t" << Sector << " has not been found" << endl; continue;}
+-    //    WG = SG * LS * WL * LA; //cout << "WG\t"; WG.Print();
+-    //    WG = SG * LS * WL * LA = SG * ( LS * WL * LA * WL**-1 ) *WL
+-    if (Debug()) {
+-      cout << "Tpc2Global "; Tpc2Global.Print();
+-      cout << "GL "; GL.Print();
+-      TGeoHMatrix test =  Tpc2Global * GL; cout << "test "; test.Print();
++      if (! osc) {cout << "OSC\t" << OSC << " has not been found" << endl; continue;}
++      
++      if (Debug()) 
++	{
++	  cout << "Tpc2Global "; //Tpc2Global.Print();
+     }
+-    WG = Tpc2Global * GL * SG * LS * WLL; //cout << "WG\t"; WG.Print();
++      WG = Tpc2Global * SG * LS * WLL; //cout << "WG\t"; WG.Print();
++      
+     row.id = Id;
+     row.id_shape  = 2;
+     row.ladder = ladder;
+     row.layer  = layer;
+     num++;
+     row.num_chip  = (num-1)%16 + 1;
+-    //    TGeoHMatrix WGInv = WG.Inverse();
+-    //    Double_t *wgrot = WGInv.GetRotationMatrix();
+     Double_t *r = WG.GetRotationMatrix();
+     row.driftDirection[0] = r[0]; row.normalDirection[0] = r[1]; row.transverseDirection[0] = r[2];
+     row.driftDirection[1] = r[3]; row.normalDirection[1] = r[4]; row.transverseDirection[1] = r[5];
+@@ -261,18 +219,37 @@ St_ssdWafersPosition *StSsdDbMaker::CalculateWafersPosition(){
+     
+     Double_t *wgtr = WG.GetTranslation();
+     memcpy(row.centerPosition,wgtr, 3*sizeof(Double_t));
+-    Double_t rot[9] = {
++      /*
++	Double_t rot[9] = 
++	{
++	row.driftDirection[0], row.normalDirection[0], row.transverseDirection[0],
++	row.driftDirection[1], row.normalDirection[1], row.transverseDirection[1],
++	row.driftDirection[2], row.normalDirection[2], row.transverseDirection[2]
++	};
++      */
++      //jb : 2014/04/24  swap normal <--> transverse here
++
++      Double_t rot[9] = 
++	{
+       row.driftDirection[0], row.transverseDirection[0], row.normalDirection[0],
+       row.driftDirection[1], row.transverseDirection[1], row.normalDirection[1],
+-      row.driftDirection[2], row.transverseDirection[2], row.normalDirection[2]};
+-    Double_t tr[3] = {row.centerPosition[0],
++	  row.driftDirection[2], row.transverseDirection[2], row.normalDirection[2]
++	};
++      
++      Double_t tr[3] = {
++	row.centerPosition[0],
+ 		      row.centerPosition[1],
+ 		      row.centerPosition[2]};
+-    comb->SetRotation(rot);
+-    comb->SetTranslation(tr);
++      
++      comb->SetRotation(WG.GetRotationMatrix());
++      comb->SetTranslation(WG.GetTranslation());
++      
+     fRotList->Add(comb);
+     ssdwafer->AddAt(&row);
+-    
++      comb->Print();
++      //for(int ii=0;ii<3;++ii){
++      //cout <<"d:"<<row.driftDirection[ii]<<" n:"<<row.normalDirection[ii]<<" t :"<<row.transverseDirection[ii]<<endl;
++      //}
+   }
+   return ssdwafer;
+ }
+diff --git a/StSsdDbMaker/StSstDbMaker.h b/StSsdDbMaker/StSstDbMaker.h
+index 50eb460..357184d 100644
+--- a/StSsdDbMaker/StSstDbMaker.h
++++ b/StSsdDbMaker/StSstDbMaker.h
+@@ -1,29 +1,5 @@
+-// $Id$
+-//
+-// $Log$
+-// Revision 1.1  2014/06/06 21:15:44  smirnovd
+-// Add patches for StSsdDbMaker and StiSsd
+-//
+-// Revision 1.9  2008/08/12 22:45:47  bouchet
+-// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
+-//
+-// Revision 1.8  2007/09/25 13:36:55  bouchet
+-// add m_Mode to constructor
+-//
+-// Revision 1.7  2007/03/21 17:17:16  fisyak
+-// use TGeoHMatrix for coordinate transformation, eliminate ssdWafersPostion
+-//
+-// Revision 1.6  2006/10/16 19:53:24  fisyak
+-// Adjust for new Ssd chain
+-//
+-// Revision 1.5  2005/06/20 14:21:38  lmartin
+-// CVS tags added
+-//
+-
+-/***************************************************************************
+- * Author: christelle roy
+- * Description: SSD DB access Maker
+- **************************************************************************/
+-
+-#ifndef STSSDDBMAKER_H
+-#define STSSDDBMAKER_H
++#ifndef STSSTDBMAKER_H
++#define STSSTDBMAKER_H
+ 
+ #ifndef StMaker_H
+ #include "StMaker.h"
+@@ -36,7 +12,7 @@ class ssdConfiguration_st;
+ #include "StSsdUtil/StSsdBarrel.hh"
+ #include "THashList.h"
+ 
+-class StSsdDbMaker : public StMaker {
++class StSstDbMaker : public StMaker {
+  private:
+   StSsdBarrel           *mySsd;
+   St_ssdDimensions      *m_dimensions;//!
+@@ -47,8 +23,8 @@ class StSsdDbMaker : public StMaker {
+   static THashList *fRotList;
+ 
+  public: 
+-  StSsdDbMaker(const char *name="SsdDb");
+-  virtual       ~StSsdDbMaker();
++  StSstDbMaker(const char *name="SsdDb");
++  virtual       ~StSstDbMaker();
+   virtual Int_t  Init();
+   virtual Int_t  InitRun(Int_t runNumber);
+   virtual Int_t  Make();
+@@ -63,11 +39,11 @@ class StSsdDbMaker : public StMaker {
+   virtual St_ssdDimensions     *GetssdDimensions(){return m_dimensions;}
+ 
+   virtual const char *GetCVS() const
+-  {static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; return cvs;}
+-  ClassDef(StSsdDbMaker,0)   //StAF chain virtual base class for Makers
++  {static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; return cvs;}
++  ClassDef(StSstDbMaker,0)   //StAF chain virtual base class for Makers
+ };
+ // Global pointers:
+-R__EXTERN StSsdDbMaker* gStSsdDbMaker;
++R__EXTERN StSstDbMaker* gStSstDbMaker;
+ #endif
+ 
+ 
+-- 
+1.8.2.GIT
+
+
+From b15e73001b6f8f492a76b8e228561c7a16a72dad Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Fri, 9 May 2014 19:01:35 -0400
+Subject: [PATCH 3/4] Another StSsdDbMaker patch from Jonathan Bouchet
+
+---
+ StSsdDbMaker/StSstDbMaker.cxx | 22 +---------------------
+ StSsdDbMaker/StSstDbMaker.h   |  2 +-
+ 2 files changed, 2 insertions(+), 22 deletions(-)
+
+diff --git a/StSsdDbMaker/StSstDbMaker.cxx b/StSsdDbMaker/StSstDbMaker.cxx
+index 69272cd..1bb07d7 100644
+--- a/StSsdDbMaker/StSstDbMaker.cxx
++++ b/StSsdDbMaker/StSstDbMaker.cxx
+@@ -29,15 +29,6 @@ StSstDbMaker::~StSstDbMaker() {SafeDelete(mySsd); gStSstDbMaker = 0;}
+ Int_t StSstDbMaker::Init()
+ {
+   LOG_DEBUG << "Init - Start - " << endm;
+-  //#if 0
+-  //if( m_Mode == 1) {
+-  //LOG_INFO << "Init setting WafersPositions to simulation" << endm;
+-    //SetFlavor("sim","ssdWafersPosition");   
+-    //SetFlavor("sim","OscOnGlobal");
+-    //SetFlavor("sim","SsdLaddersOnOsc");
+-    //SetFlavor("sim","SsdSensorOnLadders");
+-  //}
+-  //#endif
+   LOG_DEBUG << "StSstDbMaker::Init() - Done - "<<endm;
+   return StMaker::Init();
+ }
+@@ -219,16 +210,8 @@ St_ssdWafersPosition *StSstDbMaker::CalculateWafersPosition(){
+     
+     Double_t *wgtr = WG.GetTranslation();
+     memcpy(row.centerPosition,wgtr, 3*sizeof(Double_t));
+-      /*
+-	Double_t rot[9] = 
+-	{
+-	row.driftDirection[0], row.normalDirection[0], row.transverseDirection[0],
+-	row.driftDirection[1], row.normalDirection[1], row.transverseDirection[1],
+-	row.driftDirection[2], row.normalDirection[2], row.transverseDirection[2]
+-	};
+-      */
+-      //jb : 2014/04/24  swap normal <--> transverse here
+ 
++      //jb : 2014/04/24  swap normal <--> transverse here
+       Double_t rot[9] = 
+ 	{
+       row.driftDirection[0], row.transverseDirection[0], row.normalDirection[0],
+@@ -247,9 +230,6 @@ St_ssdWafersPosition *StSstDbMaker::CalculateWafersPosition(){
+     fRotList->Add(comb);
+     ssdwafer->AddAt(&row);
+       comb->Print();
+-      //for(int ii=0;ii<3;++ii){
+-      //cout <<"d:"<<row.driftDirection[ii]<<" n:"<<row.normalDirection[ii]<<" t :"<<row.transverseDirection[ii]<<endl;
+-      //}
+   }
+   return ssdwafer;
+ }
+diff --git a/StSsdDbMaker/StSstDbMaker.h b/StSsdDbMaker/StSstDbMaker.h
+index 357184d..5049a75 100644
+--- a/StSsdDbMaker/StSstDbMaker.h
++++ b/StSsdDbMaker/StSstDbMaker.h
+@@ -23,7 +23,7 @@ class StSstDbMaker : public StMaker {
+   static THashList *fRotList;
+ 
+  public: 
+-  StSstDbMaker(const char *name="SsdDb");
++  StSstDbMaker(const char *name="SstDb");
+   virtual       ~StSstDbMaker();
+   virtual Int_t  Init();
+   virtual Int_t  InitRun(Int_t runNumber);
+-- 
+1.8.2.GIT
+
+
+From e60d3882a9e8ab9a3f0d9f4641c8e378bade446c Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Tue, 20 May 2014 15:44:46 -0400
+Subject: [PATCH 4/4] Add ROOT dictionary declarations for SST
+
+---
+ StSsdDbMaker/StSsdLinkDef.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/StSsdDbMaker/StSsdLinkDef.h b/StSsdDbMaker/StSsdLinkDef.h
+index d491b6c..96a29c0 100644
+--- a/StSsdDbMaker/StSsdLinkDef.h
++++ b/StSsdDbMaker/StSsdLinkDef.h
+@@ -10,6 +10,8 @@
+ #pragma link off all classes;
+ #pragma link off all functions;
+ #pragma link C++ class StSsdDbMaker;
++#pragma link C++ class StSstDbMaker;
+ #pragma link C++ global gStSsdDbMaker;
++#pragma link C++ global gStSstDbMaker;
+ 
+ #endif
+-- 
+1.8.2.GIT
+
