@@ -28,6 +28,7 @@ public:
    const std::set<std::string>&  GetVolumeList() const { return fVolumeList; }
    unsigned int GetMaxEventsUser() const;
    void ProcessOptions(int argc, char **argv);
+   bool MatchedVolName(std::string & volName) const;
 
 protected:
 

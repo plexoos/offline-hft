@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <boost/regex.hpp>
 
 #include "PrgOptionProcessor.h"
 
@@ -88,4 +89,23 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    {
       std::cout << "max-events: " << fMaxEventsUser << std::endl;
    }
+}
+
+
+bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
+{
+   if (volName.empty() || fVolumeList.empty())
+      return false;
+
+   std::set<std::string>::const_iterator iPattern = fVolumeList.begin();
+
+   for( ; iPattern != fVolumeList.end(); ++iPattern )
+   {
+      boost::regex r(*iPattern);
+
+      if ( boost::regex_match(volName, r) )
+         return true;
+   }
+
+   return false;
 }
