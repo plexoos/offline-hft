@@ -25,7 +25,7 @@ protected:
    TVector3    fTrackP;            ///< Track momentum vector in global CS
    double      fEnergyLosses;      ///< Energy lost in the volume
    double      fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
-   std::string fStiDetectorName;
+   std::string fVolumeName;
 
    ClassDef(TStiKalmanTrackNode, 1)
 };

@@ -9,13 +9,13 @@ ClassImp(TStiKalmanTrackNode)
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
-   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fVolumeName()
 {
 }
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TObject(),
-   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fStiDetectorName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fVolumeName()
 {
    Info("TStiKalmanTrackNode", "Convert StiKalmanTrackNode to TStiKalmanTrackNode");
 
@@ -29,8 +29,8 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TOb
 
    if (stiKTN.getDetector()) {
       Info("TStiKalmanTrackNode", "detector found: %s", stiKTN.getDetector()->getName().c_str());
-      fStiDetectorName = stiKTN.getDetector()->getName();
-      Info("TStiKalmanTrackNode", "detector found: %s", fStiDetectorName.c_str());
+      fVolumeName = stiKTN.getDetector()->getName();
+      Info("TStiKalmanTrackNode", "detector found: %s", fVolumeName.c_str());
 
       StiPlacement* stiPlacement = stiKTN.getDetector()->getPlacement();
       assert(stiPlacement);
@@ -46,7 +46,7 @@ TStiKalmanTrackNode & TStiKalmanTrackNode::operator=(const StiKalmanTrackNode &s
 {
    TStiKalmanTrackNode tmpNode(stiKTN);
 
-   fStiDetectorName = tmpNode.fStiDetectorName;
+   fVolumeName = tmpNode.fVolumeName;
 
    return *this;
 }
@@ -58,7 +58,7 @@ void TStiKalmanTrackNode::Print(Option_t *opt) const
    fTrackP.Print();
    printf("fEnergyLosses:    %f\n", fEnergyLosses);
    printf("fNodeRadius:      %f\n", fNodeRadius);
-   printf("fStiDetectorName: %s\n", fStiDetectorName.c_str());
+   printf("fVolumeName:      %s\n", fVolumeName.c_str());
 }
 
 
