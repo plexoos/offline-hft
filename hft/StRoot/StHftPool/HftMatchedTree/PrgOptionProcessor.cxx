@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <boost/regex.hpp>
 
 #include "PrgOptionProcessor.h"
@@ -32,8 +33,8 @@ void PrgOptionProcessor::InitOptions()
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
    ;
 
-   fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_1/.*$");
-   fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_7/.*$");
+   //fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_1/.*$");
+   //fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_7/.*$");
 }
 
 
@@ -47,6 +48,8 @@ std::string PrgOptionProcessor::GetHftreeFile() const { return fHftreeFile; }
  */
 void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
 {
+   using namespace std;
+
    po::store(po::parse_command_line(argc, argv, fOptions), fOptionsValues);
    po::notify(fOptionsValues);
 
@@ -66,6 +69,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::ifstream tmpFileCheck(hftreeFile.c_str());
       if (!tmpFileCheck.good()) {
          Error("process_options", "File \"%s\" does not exist", hftreeFile.c_str());
+         tmpFileCheck.close();
          exit(EXIT_FAILURE);
       }
    } else {
@@ -78,11 +82,25 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::string fileName = boost::any_cast<std::string>(fOptionsValues["volumelist"].value());
 
       std::cout << "fVolumeListFile: " << fileName << std::endl;
-      std::ifstream tmpFileCheck(fileName.c_str());
-      if (!tmpFileCheck.good()) {
+      std::ifstream volListFile(fileName.c_str());
+
+      if (!volListFile.good()) {
          Error("process_options", "File \"%s\" does not exist", fileName.c_str());
+         volListFile.close();
          exit(EXIT_FAILURE);
       }
+
+      std::string pattern;
+
+      while ( volListFile.good() )
+      {
+         volListFile >> pattern;
+         if (volListFile.eof()) break;
+
+         fVolumeList.insert(pattern);
+      }
+
+      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(cout, "\n"));
    }
 
    if (fOptionsValues.count("max-events"))
