@@ -18,6 +18,9 @@ public:
    TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN);
    TStiKalmanTrackNode & operator=(const StiKalmanTrackNode &stiKTN);
    const TVector3& GetTrackP() const { return fTrackP; }
+   const TVector3& GetPosition() const { return fPosition; }
+   double GetEnergyLosses() const { return fEnergyLosses; }
+   std::string GetVolumeName() const { return fVolumeName; }
    bool   MatchedVolName(const std::string & pattern) const;
    bool   MatchedVolName(const std::set<std::string> & patterns) const;
    virtual void Print(Option_t *opt = "") const;
