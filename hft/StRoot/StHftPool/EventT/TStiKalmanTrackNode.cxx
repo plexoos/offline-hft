@@ -1,6 +1,8 @@
 
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
+#include <boost/regex.hpp>
+
 #include "StarClassLibrary/StThreeVector.hh"
 #include "Sti/StiPlacement.h"
 
@@ -49,6 +51,38 @@ TStiKalmanTrackNode & TStiKalmanTrackNode::operator=(const StiKalmanTrackNode &s
    fVolumeName = tmpNode.fVolumeName;
 
    return *this;
+}
+
+
+bool TStiKalmanTrackNode::MatchedVolName(const std::string & pattern) const
+{
+   if (fVolumeName.empty()) return false;
+
+   boost::regex r(pattern);
+   bool matched = boost::regex_match(fVolumeName, r);
+
+   if (matched)
+      Info("MatchedVolName", "Volume [%s] matched pattern [%s]", fVolumeName.c_str(), pattern.c_str());
+
+   return matched;
+}
+
+
+bool TStiKalmanTrackNode::MatchedVolName(const std::set<std::string> & patterns) const
+{
+   if (fVolumeName.empty() || patterns.empty())
+      return false;
+
+   std::set<std::string>::const_iterator iPattern = patterns.begin();
+
+   for( ; iPattern != patterns.end(); ++iPattern )
+   {
+      //Info("MatchedVolName", "Looking for pattern [%s] in fVolumeName [%s]", (*iPattern).c_str(), fVolumeName.c_str());
+      if ( MatchedVolName(*iPattern) )
+         return true;
+   }
+
+   return false;
 }
 
 
