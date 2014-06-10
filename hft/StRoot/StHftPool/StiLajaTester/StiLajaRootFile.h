@@ -2,6 +2,8 @@
 #define StiLajaRootFile_h
 
 #include <map>
+#include <set>
+#include <string>
 
 #include "TH2S.h"
 #include "TFile.h"
@@ -23,7 +25,8 @@ public:
    StiLajaRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
    ~StiLajaRootFile();
 
-   void FillHists(EventT &eventT);
+   void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
+   void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
    void Close(Option_t *option="");
 
  private:
