@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <boost/regex.hpp>
 
+#include "TFile.h"
+
 #include "PrgOptionProcessor.h"
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
-   fOptions("Allowed options"), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumeList(), fMaxEventsUser(0)
 {
    InitOptions();
@@ -15,7 +17,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 
 
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
-   fOptions("Allowed options"), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumeList(), fMaxEventsUser(0)
 {
    InitOptions();
@@ -28,14 +30,12 @@ void PrgOptionProcessor::InitOptions()
    // Declare supported options
    fOptions.add_options()
       ("help,h",              "Print help message")
-      ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full name including path of input file with ROOT tree")
-      ("volumelist,l",        po::value<std::string>(&fVolumeListFile), "Full path to file with Sti/TGeo volume names")
+      ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file with hftree " \
+       "OR text file with a list of ROOT files containing the same")
+      ("volume-pattern-flist,p",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
    ;
 }
-
-
-std::string PrgOptionProcessor::GetHftreeFile() const { return fHftreeFile; }
 
 
 /**
@@ -58,6 +58,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
 
    Info("ProcessOptions", "User provided options:");
 
+
    if (fOptionsValues.count("hftree-file"))
    {
       std::string hftreeFile = boost::any_cast<std::string>(fOptionsValues["hftree-file"].value());
@@ -74,9 +75,9 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       exit(EXIT_FAILURE);
    }
 
-   if (fOptionsValues.count("volumelist"))
+   if (fOptionsValues.count("volume-pattern-flist"))
    {
-      std::string fileName = boost::any_cast<std::string>(fOptionsValues["volumelist"].value());
+      std::string fileName = boost::any_cast<std::string>(fOptionsValues["volume-pattern-flist"].value());
 
       std::cout << "fVolumeListFile: " << fileName << std::endl;
       std::ifstream volListFile(fileName.c_str());

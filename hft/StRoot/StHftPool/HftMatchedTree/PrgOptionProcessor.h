@@ -16,6 +16,7 @@ namespace {
    namespace po = boost::program_options;
 }
 
+
 /**
  * Processes and controls user options provided in the command line.
  */
@@ -26,17 +27,15 @@ public:
    PrgOptionProcessor();
    PrgOptionProcessor(int argc, char **argv);
 
-   std::string  GetHftreeFile() const;
+   std::string  GetHftreeFile() const { return fHftreeFile; }
    const std::set<std::string>&  GetVolumeList() const { return fVolumeList; }
    unsigned int GetMaxEventsUser() const;
+
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
    TChain* BuildHftreeChain(std::string name);
 
 protected:
-
-   void ReadEnvVars();
-   void MakeOutDir();
 
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
