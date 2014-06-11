@@ -32,9 +32,6 @@ void PrgOptionProcessor::InitOptions()
       ("volumelist,l",        po::value<std::string>(&fVolumeListFile), "Full path to file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
    ;
-
-   //fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_1/.*$");
-   //fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_7/.*$");
 }
 
 
@@ -101,7 +98,13 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       }
 
       copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(cout, "\n"));
+
+   } else // Default list of patterns
+   {
+      fVolumeList.insert("^.*IDSM_1/IBMO_1/IBAM_[\\d]+/ILSB.*$");
+      fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_[\\d]+/LADR_\\d/PXSI_[\\d]+/PLAC.*$");
    }
+
 
    if (fOptionsValues.count("max-events"))
    {
