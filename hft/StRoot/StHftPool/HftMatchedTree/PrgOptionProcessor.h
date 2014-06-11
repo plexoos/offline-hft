@@ -9,6 +9,8 @@
 #include <boost/program_options/parsers.hpp>
 
 #include "TObject.h"
+#include "TChain.h"
+
 
 namespace {
    namespace po = boost::program_options;
@@ -29,6 +31,7 @@ public:
    unsigned int GetMaxEventsUser() const;
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
+   TChain* BuildHftreeChain(std::string name);
 
 protected:
 

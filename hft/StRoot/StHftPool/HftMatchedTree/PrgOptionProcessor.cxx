@@ -127,3 +127,33 @@ bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 
    return false;
 }
+
+
+TChain* PrgOptionProcessor::BuildHftreeChain(std::string name)
+{
+   TChain *chain = new TChain(name.c_str(), "READ");
+
+   TFile file( fHftreeFile.c_str() );
+
+   if ( file.IsZombie() )
+   {
+      Warning("BuildHftreeChain", "Not a root file: %s", fHftreeFile.c_str());
+
+      std::ifstream hftreeListFile(fHftreeFile.c_str());
+      std::string hftreeFile;
+
+      while ( hftreeListFile.good() )
+      {
+         hftreeListFile >> hftreeFile;
+         if (hftreeListFile.eof()) break;
+
+         chain->AddFile( hftreeFile.c_str() );
+      }
+   } else
+   {
+      Info("BuildHftreeChain", "Good root file: %s", fHftreeFile.c_str());
+      chain->AddFile( fHftreeFile.c_str() );
+   }
+
+   return chain;
+}
