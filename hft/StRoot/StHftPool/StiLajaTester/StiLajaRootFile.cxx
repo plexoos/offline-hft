@@ -39,17 +39,17 @@ void StiLajaRootFile::BookHists()
 
    mHs["hTrackCountVsEtaVsPhi"] = h = new TH2S("hTrackCountVsEtaVsPhi", " ; Eta; Phi, rad; Num. of Tracks", 101, -1, 1, 101, -M_PI, M_PI);
    h->SetOption("colz");
-   mHs["hTrackCountVsZVsPhi"]   = h = new TH2S("hTrackCountVsZVsPhi", " ; Z, cm; Phi, rad; Num. of Tracks", 101, -15, 15, 101, -M_PI, M_PI);
+   mHs["hTrackCountVsZVsPhi"]   = h = new TH2S("hTrackCountVsZVsPhi", " ; Z, cm; Phi, rad; Num. of Tracks", 30, -15.5, 14.5, 101, -M_PI, M_PI);
    h->SetOption("colz");
 
    mHs["hTotalELossVsEtaVsPhi"] = h = new TProfile2D("hTotalELossVsEtaVsPhi", " ; Eta; Phi, rad; Total Energy Losses, keV", 101, -1, 1, 101, -M_PI, M_PI);
    h->SetOption("colz");
-   mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; Z, cm; Phi, rad; Total Energy Losses, keV", 101, -15, 15, 101, -M_PI, M_PI);
+   mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; Z, cm; Phi, rad; Total Energy Losses, keV", 30, -15.5, 14.5, 101, -M_PI, M_PI);
    h->SetOption("colz");
 
    mHs["hSelectVolELossVsEtaVsPhi"] = h = new TProfile2D("hSelectVolELossVsEtaVsPhi", " ; Eta; Phi, rad; Energy Losses in Select Volumes, keV", 101, -1, 1, 101, -M_PI, M_PI);
    h->SetOption("colz");
-   mHs["hSelectVolELossVsZVsPhi"]   = h = new TProfile2D("hSelectVolELossVsZVsPhi", " ; Z, cm; Phi, rad; Energy Losses in Select Volumes, keV", 101, -15, 15, 101, -M_PI, M_PI);
+   mHs["hSelectVolELossVsZVsPhi"]   = h = new TProfile2D("hSelectVolELossVsZVsPhi", " ; Z, cm; Phi, rad; Energy Losses in Select Volumes, keV", 30, -15.5, 14.5, 101, -M_PI, M_PI);
    h->SetOption("colz");
 }
 
