@@ -16,8 +16,6 @@ TStiKalmanTrack::TStiKalmanTrack() : TObject(),
 TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
    fNodes(), fEnergyLosses(0)
 {
-   Info("TStiKalmanTrack", "Convert StiKalmanTrack to TStiKalmanTrack");
-
    StiKTNIterator it = stiKTrack.begin();
 
    // Loop over track nodes
@@ -26,7 +24,7 @@ TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
       StiKalmanTrackNode *stiNode = &(*it);
 
       if ( !stiNode ) {
-         Info("TStiKalmanTrack", "Invalid kalman node. Skipping to next one...");
+         Warning("TStiKalmanTrack", "Invalid kalman node. Skipping to next one...");
          continue;
       }
 

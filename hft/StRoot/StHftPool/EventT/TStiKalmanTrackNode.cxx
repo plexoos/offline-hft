@@ -19,8 +19,6 @@ TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
 TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TObject(),
    fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fVolumeName()
 {
-   Info("TStiKalmanTrackNode", "Convert StiKalmanTrackNode to TStiKalmanTrackNode");
-
    // Access node parameters
    fPosition.SetXYZ(stiKTN.x_g(), stiKTN.y_g(), stiKTN.z_g());
 
@@ -61,8 +59,8 @@ bool TStiKalmanTrackNode::MatchedVolName(const std::string & pattern) const
    boost::regex r(pattern);
    bool matched = boost::regex_match(fVolumeName, r);
 
-   if (matched)
-      Info("MatchedVolName", "Volume [%s] matched pattern [%s]", fVolumeName.c_str(), pattern.c_str());
+   //if (matched)
+   //   Info("MatchedVolName", "Volume [%s] matched pattern [%s]", fVolumeName.c_str(), pattern.c_str());
 
    return matched;
 }
