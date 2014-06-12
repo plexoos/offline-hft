@@ -1,85 +1,44 @@
 
 #include <fstream>
 #include <string>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/parsers.hpp>
 
 #include "TChain.h"
 #include "TError.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
 #include "StHftPool/StiLajaTester/StiLajaRootFile.h"
 
 
-namespace po = boost::program_options;
-
-void process_options(po::options_description &prgOptions, po::variables_map &prgOptionValues);
-void loop_hftree(std::string inpFileName);
+void loop_hftree(PrgOptionProcessor &poProc);
 
 
 int main(int argc, char **argv)
 {
-   std::string inputRootFile;
-   std::string stiGeoPatternFile;
+   PrgOptionProcessor poProc(argc, argv);
 
-   po::options_description prgOptions;
-   po::variables_map       prgOptionValues;
-
-   prgOptions.add_options()
-      ("help,h",          "Print help message")
-      ("inputfile,f",      po::value<std::string>(&inputRootFile), "Full path to input file with ROOT tree")
-      ("stigeofile,s",     po::value<std::string>(&stiGeoPatternFile), "Full path to file with Sti/TGeo volume names")
-   ;
-
-   po::store(po::parse_command_line(argc, argv, prgOptions), prgOptionValues);
-   po::notify(prgOptionValues);
-
-   process_options(prgOptions, prgOptionValues);
-
-   loop_hftree(inputRootFile);
+   loop_hftree(poProc);
 
    return EXIT_SUCCESS;
 }
 
 
-void process_options(po::options_description &prgOptions, po::variables_map &prgOptionValues)
+void loop_hftree(PrgOptionProcessor &poProc)
 {
-   if (prgOptionValues.count("help"))
-   {
-      std::cout << prgOptions << std::endl;
-      exit(EXIT_SUCCESS);
-   }
-
-   Info("process_options", "User provided options:");
-
-   if (prgOptionValues.count("inputfile"))
-   {
-      std::string inputFile = boost::any_cast<std::string>(prgOptionValues["inputfile"].value());
-
-      std::cout << "inputRootFile: " << inputFile << std::endl;
-      std::ifstream tmpFileCheck(inputFile.c_str());
-      if (!tmpFileCheck.good()) {
-         Error("process_options", "File \"%s\" does not exist", inputFile.c_str());
-         exit(EXIT_FAILURE);
-      }
-
-   } else {
-      Error("process_options", "Input file not set");
-      exit(EXIT_FAILURE);
-   }
-}
-
-
-void loop_hftree(std::string inpFileName)
-{
-   TChain *myTreeFileChain = new TChain("t");
-   myTreeFileChain->AddFile(inpFileName.c_str());
+   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
 
    // Create a new output file
-   std::string outFileName = inpFileName;
+   std::string outFileName = poProc.GetHftreeFile();
+
    std::string postfix("hftree.root");
-   outFileName.replace( outFileName.find(postfix), postfix.length(), "laja.root");
+   std::size_t postfix_pos = outFileName.find(postfix);
+
+   if (postfix_pos != std::string::npos)
+   {
+      outFileName.replace( postfix_pos, postfix.length(), "stiscan.root");
+   } else {
+      outFileName += "_stiscan.root";
+   }
 
    StiLajaRootFile outRootFile( outFileName.c_str(), "recreate");
 
@@ -97,8 +56,8 @@ void loop_hftree(std::string inpFileName)
          Info("loop_hftree", "Analyzing event %d", iEvent);
 
       myTreeFileChain->GetEntry(iEvent-1);
-      eventT->Print();
-      outRootFile.FillHists(*eventT);
+
+      outRootFile.FillHists(*eventT, &poProc.GetVolumeList());
    }
 
    delete eventT;

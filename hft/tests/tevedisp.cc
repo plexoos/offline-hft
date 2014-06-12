@@ -2,15 +2,14 @@
 #include <stdint.h>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
-#include <string>
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <boost/program_options/parsers.hpp>
+#include <boost/regex.hpp>
+
+#include "tevedisp.h"
 
 #include "TChain.h"
 #include "TFile.h"
+#include "TMath.h"
 #include "TEveTrack.h"
 #include "TEveTrackPropagator.h"
 #include "TGeoManager.h"
@@ -22,25 +21,16 @@
 #include "TGButton.h"
 #include "TSystem.h"
 #include "TApplication.h"
+
+#include "tutorials/eve/MultiView.C"
+
 #include "StarVMC/Geometry/Geometry.h"
 #include "StarVMC/StarAgmlLib/StarTGeoStacker.h"
-
-#include "StHftPool/EventT/hft_display.h"
 #include "StHftPool/EventT/EventT.h"
-
-#include "/afs/rhic.bnl.gov/star/ROOT/5.34.09/.sl64_gcc447/rootdeb/tutorials/eve/MultiView.C"
-
-
-TChain *myTreeFileChain = 0;
-EventT *eventT = 0;
-
-using namespace std;
-namespace po = boost::program_options;
+#include "StHftPool/EventT/GuiEventHandler.h"
 
 
-//==============================================================================
-// Constants.
-//------------------------------------------------------------------------------
+// Constants
 const Double_t kR_MAX = 250.;
 const Double_t kZ_MAX = 250.;
 
@@ -88,54 +78,27 @@ const Int_t N_IST = NLAD_IST * NSEN_IST;
 Int_t Status_PXL[N_PXL];
 Int_t Status_IST[N_IST];
 
-//==============================================================================
-// Global variables.
-//------------------------------------------------------------------------------
 
-// Implemented in MultiView.C
-//class MultiView;
-
-MultiView *gMultiView = 0;
-
+// Global variables
+EventT        *eventT = 0;
+MultiView     *gMultiView = 0;
 TEveTrackList *gTrackList = 0;
 TEvePointSet  *gVtxList = 0;
 TEvePointSet  *gHitList = 0;
 TEvePointSet  *gTrackHitList = 0;
 Int_t NMAX = 0;
-TGeoManager *gGeoManager = 0;
-
-//==============================================================================
-// Forward decalarations of CINT functions.
-//------------------------------------------------------------------------------
-
-
-//==============================================================================
-// Main - hft_display()
-//------------------------------------------------------------------------------
-
-void process_options(po::options_description &prgOptions, po::variables_map &prgOptionValues);
+TGeoManager   *gGeoManager = 0;
 
 
 int main(int argc, char **argv)
 {
    std::string inputRootFile;
 
-   po::options_description prgOptions;
-   po::variables_map       prgOptionValues;
-
-   prgOptions.add_options()
-      ("help,h",          "Print help message")
-      ("inputfile,f",      po::value<string>(&inputRootFile), "Full name including path of input file with ROOT tree")
-   ;
-
-   po::store(po::parse_command_line(argc, argv, prgOptions), prgOptionValues);
-   po::notify(prgOptionValues);
-
-   process_options(prgOptions, prgOptionValues);
+   PrgOptionProcessor poProc(argc, argv);
 
    TApplication *myApp = new TApplication("myApp", &argc, argv);
 
-   hft_display(inputRootFile, -1);
+   hft_display(poProc, -1);
 
    myApp->Run();
    delete myApp;
@@ -144,100 +107,55 @@ int main(int argc, char **argv)
 }
 
 
-void process_options(po::options_description &prgOptions, po::variables_map &prgOptionValues)
+void hft_display(PrgOptionProcessor &poProc, const double B)
 {
-   if (prgOptionValues.count("help"))
-   {
-      cout << prgOptions << endl;
-      exit(EXIT_SUCCESS);
-   }
+   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
 
-   Info("ProcessOptions", "User provided options:");
-
-   if (prgOptionValues.count("inputfile"))
-   {
-      std::string inputFile = boost::any_cast<std::string>(prgOptionValues["inputfile"].value());
-
-      cout << "inputRootFile: " << inputFile << endl;
-      ifstream tmpFileCheck(inputFile.c_str());
-      if (!tmpFileCheck.good()) {
-         Error("process_options", "File \"%s\" does not exist", inputFile.c_str());
-         exit(EXIT_FAILURE);
-      }
-   } else {
-      Error("process_options", "Input file not set");
-      exit(EXIT_FAILURE);
-   }
-}
-
-
-void hft_display(std::string fileName, const double B)
-{
-   myTreeFileChain = new TChain("t");
-   myTreeFileChain->AddFile(fileName.c_str());
    NMAX = myTreeFileChain->GetEntries();
-   cout << " Total number of events = " << NMAX << endl;
-   myEventCounter = 0;
+   std::cout << "Total number of events = " << NMAX << endl;
 
    eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e", &eventT);
 
-   //========================================================================
-   // Create views and containers.
-   //========================================================================
-
-   make_geometry();
+   // Create views and containers
+   make_geometry(poProc);
 
    init(B);
 
-   //========================================================================
-   //========================================================================
+   build_gui(*myTreeFileChain);
+   process_event(*myTreeFileChain, gHftGuiEventCounter);
 
-   hft_make_gui();
-   process_event(myEventCounter);
-   //
    gEve->Redraw3D(kTRUE);
 }
 
 
-void hft_display(const double B, const Int_t runnumber)
+void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumber)
 {
-   //========================================================================
    //loadStatus(runnumber);
-   //========================================================================
 
-   //========================================================================
-   //========================================================================
-   myTreeFileChain = new TChain("T");
+   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
    char inname[100];
    sprintf(inname, "output/Event_%d.root", runnumber);
    myTreeFileChain->AddFile(inname);
    NMAX = myTreeFileChain->GetEntries();
    cout << " Total number of events = " << NMAX << endl;
-   myEventCounter = 0;
+   gHftGuiEventCounter = 0;
 
    eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e", &eventT);
 
-   //========================================================================
-   // Create views and containers.
-   //========================================================================
-
-   make_geometry();
+   // Create views and containers
+   make_geometry(poProc);
 
    init(B);
 
-   //========================================================================
-   //========================================================================
+   build_gui(*myTreeFileChain);
+   process_event(*myTreeFileChain, gHftGuiEventCounter);
 
-   hft_make_gui();
-   process_event(myEventCounter);
-   //
    gEve->Redraw3D(kTRUE);
 }
 
 
-//========================================================================
 void loadStatus(const int runnumber)
 {
    // Read in the status - maybe moved int othe loop when loading multiple runs
@@ -276,7 +194,6 @@ void loadStatus(const int runnumber)
 }
 
 
-//========================================================================
 void decodeId(int id, int *sector, int *ladder, int *sensor)
 {
    if (id > 0 && id <= N_PXL) {
@@ -291,11 +208,8 @@ void decodeId(int id, int *sector, int *ladder, int *sensor)
    }
 }
 
-//==============================================================================
-// intitalize track/hit lists
-//------------------------------------------------------------------------------
 
-
+/** Intitalize track/hit lists */
 void init(const double B)
 {
    gEve->GetBrowser()->GetTabRight()->SetTab(1);
@@ -331,25 +245,23 @@ void init(const double B)
    gTrackHitList->SetMarkerColor(kYellow);
    gTrackHitList->SetMarkerStyle(20);
    gTrackHitList->SetMarkerSize(0.8);
-
 }
 
-//==============================================================================
-// Next event
-//------------------------------------------------------------------------------
 
-void process_event(Int_t iEvt)
+/** Process next event */
+void process_event(TChain &fhtree, Int_t iEvt)
 {
    if (iEvt >= NMAX) {
-      cout << " End of the tree! Go backward! " << endl;
+      cout << "End of the tree! Go backward! " << endl;
+      return;
    }
    else if (iEvt < 0) {
-      cout << " Beginning of the tree! Go forward! " << endl;
+      cout << "Beginning of the tree! Go forward! " << endl;
+      return;
    }
 
-   cout << "begin " << myEventCounter << "th entry...." << endl;
-   myTreeFileChain->GetEntry(iEvt);
-   printf("myTreeFileChain: %p\n", myTreeFileChain);
+   cout << "Displaying " << gHftGuiEventCounter << "th entry...." << endl;
+   fhtree.GetEntry(iEvt);
 
    gTrackList->DestroyElements();
    gVtxList->Reset();
@@ -361,10 +273,10 @@ void process_event(Int_t iEvt)
 
    cout << Form("run#%d event#%d", runId, evtId) << endl;
 
-   // Load verteice/hits
+   // Load vertices and hits
    cout << " Event vertex = " << eventT->fVertex[0] << " " << eventT->fVertex[1] << " " << eventT->fVertex[2] << endl;
-   //  gVtxList->SetNextPoint(eventT->fVertex[0], eventT->fVertex[1], eventT->fVertex[2]);
-   //  gEve->AddElement(gVtxList);
+   //gVtxList->SetNextPoint(eventT->fVertex[0], eventT->fVertex[1], eventT->fVertex[2]);
+   //gEve->AddElement(gVtxList);
 
    Int_t nHits = eventT->fHits->GetEntriesFast();
 
@@ -374,12 +286,10 @@ void process_event(Int_t iEvt)
 
       int id = hitT->Id;
 
-      cout << " Adding a new hit " << id << " " <<  hitT->xG << " " << hitT->yG << " " << hitT->zG << endl;
+      //cout << "Adding a new hit " << id << " " <<  hitT->xG << " " << hitT->yG << " " << hitT->zG << endl;
 
       if (id < 1000 && ( hitT->nRawHits < kPXL_Cluster_Min ||  hitT->nRawHits > kPXL_Cluster_Max ) ) continue;
-
       if (id < 1000 && Status_PXL[id - 1]) continue; // remove noisy channels
-
       if (id > 1000 && Status_IST[id - 1 - 1000]) continue;
 
       gHitList->SetNextPoint(hitT->xG, hitT->yG, hitT->zG);
@@ -415,7 +325,7 @@ void process_event(Int_t iEvt)
       else
          track->SetLineColor(kColors[1]);
 
-      cout << " Adding a new track " << trackT->fPx << " " << trackT->fPy << " " << trackT->fPz << endl;
+      //cout << "Adding a new track " << trackT->fPx << " " << trackT->fPy << " " << trackT->fPz << endl;
       gTrackList->AddElement(track);
 
       // add track hit
@@ -459,188 +369,144 @@ void process_event(Int_t iEvt)
 
    gEve->SetStatusLine(Form("run#%d event#%d", runId, evtId));
 
-   TEveElement *top = (TEveElement *) gEve->GetCurrentEvent();
+   //TEveElement *top = (TEveElement *) gEve->GetCurrentEvent();
 
-   gMultiView->DestroyEventRPhi();
-   gMultiView->ImportEventRPhi(top);
+   //gMultiView->DestroyEventRPhi();
+   //gMultiView->ImportEventRPhi(top);
 
-   gMultiView->DestroyEventRhoZ();
-   gMultiView->ImportEventRhoZ(top);
+   //gMultiView->DestroyEventRhoZ();
+   //gMultiView->ImportEventRhoZ(top);
 
    gEve->Redraw3D();
 }
 
 
-void selectDaughterVisible(TGeoNode *node, const char *name)
+void make_visible_select_volumes(TGeoNavigator &geoNav, PrgOptionProcessor &poProc)
 {
-   int nDaughters = node->GetVolume()->GetNdaughters();
+   // First, make all volumes invisible
+   make_visible_daughters(geoNav, poProc, false);
 
-   for (int i = 0; i < nDaughters; i++) {
-      TGeoNode *daughter = node->GetVolume()->GetNode(i);
+   // Then make select volumes visible
+   make_visible_daughters(geoNav, poProc, true);
+}
 
-      if (!daughter) continue;
 
-      if (strstr(daughter->GetName(), name) != 0) {
-         daughter->GetVolume()->SetVisibility(1);
+void make_visible_daughters(TGeoNavigator &geoNav, PrgOptionProcessor &poProc, bool usePattern)
+{
+   TGeoNode* currNode = geoNav.GetCurrentNode();
+
+   if (!currNode) {
+      Warning("make_visible_daughters", "Invalid TGeoNode provided as input. Skipping...");
+      return;
+   }
+
+   // Keep track of current level with respect to the original node
+   static int level = 0;
+
+   if (!usePattern) {
+      currNode->SetVisibility(false);
+      currNode->VisibleDaughters(false);
+   }
+
+   std::string currentPath( geoNav.GetPath() );
+   //Info("make_visible_daughters", "gmc path b: %s: level: %d", currentPath.c_str(), level);
+
+   int nDaughters = currNode->GetVolume()->GetNdaughters();
+
+   if (nDaughters) {
+
+      TGeoNode* motherNode = currNode;
+      for (int iDaughter = 0; iDaughter < nDaughters; iDaughter++)
+      {
+         TGeoNode *daughter = motherNode->GetVolume()->GetNode(iDaughter);
+
+         geoNav.CdDown(daughter);
+         level++;
+
+         make_visible_daughters(geoNav, poProc, usePattern);
       }
-      else {
-         daughter->GetVolume()->SetVisibility(0);
 
-         selectDaughterVisible(daughter, name);
+   } else { // We are here if this node is a leaf, i.e. no daughters
+
+      if (usePattern && poProc.MatchedVolName(currentPath) )
+      {
+         Info("make_visible_daughters", "Current path [%s] matched pattern", currentPath.c_str());
+         currNode->SetVisibility(true);
+         currNode->VisibleDaughters(true);
+
+         make_visible_mothers(geoNav, level);
+
+         geoNav.cd(currentPath.c_str());
       }
+   }
+
+   if (level > 0) {
+      geoNav.CdUp();
+      level--;
    }
 }
 
 
-void make_geometry()
+void make_visible_mothers(TGeoNavigator &geoNav, int levelsUp)
 {
-   const Char_t *path = ".:./StarVMC/Geometry/macros/:$STAR/StarVMC/Geometry/macros/";
+   if (levelsUp < 0) return;
 
-   //Char_t *file = gSystem->Which(path, "viewStarGeometry.C", kReadPermission);
-   //cout << "Loading macro: " << file << endl;
-   //gROOT->LoadMacro(file);
+   std::string currentPath( geoNav.GetPath() );
+   //Info("MPV", "curr path: %s level: %d", currentPath.c_str(), levelsUp);
 
-   //TRootBrowser *b = new TRootBrowser(0, "browser", 1200, 800);
+   unsigned slash_last_pos = currentPath.find_last_of("/");
+   currentPath.erase(slash_last_pos);
+   levelsUp--;
+   geoNav.cd(currentPath.c_str());
 
+   TGeoNode *currNode = geoNav.GetCurrentNode();
+   currNode->SetVisibility(true);
+   currNode->VisibleDaughters(true);
+
+   if (levelsUp >= 0) {
+      make_visible_mothers(geoNav, levelsUp);
+   }
+}
+
+
+void make_geometry(PrgOptionProcessor &poProc)
+{
    TEveManager::Create();
    std::string myGeomTag("y2014a");
-   //cacheGeometry(myGeomTag.c_str(), "");
 
-   TFile *file = new TFile(Form("%s.root", myGeomTag.c_str()));
-
-   if ( file->IsZombie() )
-   {
-      delete file;
-
-      Error("make_geometry", "No root geometry file found: %s", Form("%s.root", myGeomTag.c_str()));
-      exit(EXIT_FAILURE);
-
-      Info("make_geometry", "Creating new geometry root file");
-
-      const Char_t *path  = ".:./StarVMC/Geometry/macros/:$STAR/StarVMC/Geometry/macros/";
-      //Char_t *file = gSystem->Which(path,"loadStarGeometry.C",kReadPermission);
-      //cout << "Loading macro: " << file << endl;
-      //gROOT->ProcessLine(Form(".L %s",file));
-
-      //loadStarGeometry(myGeomTag.c_str());
-      
-      // ROOT TGeo stacker
-      StarTGeoStacker *stacker = new StarTGeoStacker();
-
-      AgBlock::SetStacker( stacker );
-
-      Geometry *build = new Geometry(); 
-
-      Char_t *macroFile = gSystem->Which(path, "StarGeometryDb.C", kReadPermission);
-      cout << "Loading macro: " << macroFile << endl;
-      gROOT->ProcessLine(Form(".L %s",macroFile));
-      gROOT->ProcessLine("StarGeometryDb();");
-
-      Info("make_geometry", "build: %p, gGeoManager: %p", build, gGeoManager);
-
-      //gROOT->ProcessLine(Form(".!mkdir %s", myGeomTag.c_str()));
-
-      //if ( !gGeoManager )
-      //   gGeoManager = new TGeoManager(myGeomTag.c_str(), (myGeomTag+" | dyson").c_str());	
-
-      //Info("make_geometry", "build: %p, gGeoManager: %p", build, gGeoManager);
-
-      build->ConstructGeometry ( myGeomTag.c_str() );
-
-      gGeoManager->SetVisLevel(99);        
-
-      // Close the geometry
-      gGeoManager->CloseGeometry();
-
-      gGeoManager->Export(Form("%s.root", myGeomTag.c_str()));
-   }
-
-   delete file;
-
-   // Register geometry
-   gEve->RegisterGeometryAlias("Default", Form("%s.root",myGeomTag.c_str()));
-   gGeoManager = gEve->GetDefaultGeometry();
+   TGeoManager::Import( Form("%s.root",myGeomTag.c_str()) );
 
    if (!gGeoManager) {
       Error("make_geometry", "No gGeoManager found");
       exit(EXIT_FAILURE);
    }
 
-   //TGeoVolume* top = gGeoManager->GetTopVolume()->FindNode("CAVE_1")->GetVolume();
-
-   //if (!top) {
-   //   Error("make_geometry", "No top node found");
-   //   exit(EXIT_FAILURE);
-   //}
-
-   //gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/TPCE_1");
-   //TGeoNode *tpc_mom = gGeoManager->GetCurrentNode();
-
-   //if (!tpc_mom) {
-   //   Error("make_geometry", "No tpc_mom node found");
-   //   exit(EXIT_FAILURE);
-   //}
-
    TEveElementList *STAR = new TEveElementList("Geometry");
 
-   //selectDaughterVisible(tpc_mom, "TPCM"); // Central Membrane
-   //selectDaughterVisible(tpc_mom, "TSAW");
-   //selectDaughterVisible(tpc_mom, "TWMR");
-   //selectDaughterVisible(tpc_mom, "TWRB"); // Sector ribs
-   //TEveGeoTopNode* tpc = new TEveGeoTopNode(gGeoManager, tpc_mom);
-   //tpc->SetMainTransparency(80);
-   //tpc->SetVisLevel(5);
-   //STAR->AddElement(tpc);
+   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1");
 
+   TGeoNode *myGeoNode = gGeoManager->GetCurrentNode();
 
-   //gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/PIPI_1"); // retrieve info of IBSS volume
-   //TGeoNode *bp_mom = gGeoManager->GetCurrentNode();
+   TGeoNavigator* geoNav = gGeoManager->GetCurrentNavigator();
+   assert(geoNav);
 
-   ////TGeoNode *bp_mom = top->FindNode("IDSM_1")->GetVolume()->FindNode("PIPI_1");
-   //selectDaughterVisible(bp_mom, "PBES");
-   //TEveGeoTopNode* beampipe = new TEveGeoTopNode(gGeoManager, bp_mom);
-   //beampipe->SetMainTransparency(80);
-   //beampipe->SetVisLevel(3);
-   //STAR->AddElement(beampipe);
+   make_visible_select_volumes(*geoNav, poProc);
 
-   //TGeoNode *ssd_mom = top->FindNode("IDSM_1")->GetVolume()->FindNode("SFMO_1");
-   //if(!kPlotHFTSupport) selectDaughterVisible(ssd_mom, "SFSD");
-   //TEveGeoTopNode* ssd = new TEveGeoTopNode(gGeoManager, ssd_mom);
-   //ssd->SetVisLevel(6);
-   //  STAR->AddElement(ssd);
+   TEveGeoTopNode *myTopNode = new TEveGeoTopNode(gGeoManager, myGeoNode);
+   myTopNode->SetVisLevel(10);
 
-   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/IBMO_1");
-   TGeoNode *ist_mom = gGeoManager->GetCurrentNode();
-
-   //Path += Form("/IBAM_%d/IBLM_%d/IBSS_1", ladderIdx + 1, sensorIdx + 1);
-   if (!kPlotHFTSupport) selectDaughterVisible(ist_mom, "IBSS");
-
-   TEveGeoTopNode *ist = new TEveGeoTopNode(gGeoManager, ist_mom);
-   ist->SetVisLevel(6);
-   STAR->AddElement(ist);
-
-   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/PXMO_1");
-   TGeoNode *pxl_mom = gGeoManager->GetCurrentNode();
-
-   if (!kPlotHFTSupport) selectDaughterVisible(pxl_mom, "PLAC");
-
-   TEveGeoTopNode *pxl = new TEveGeoTopNode(gGeoManager, pxl_mom);
-   pxl->SetVisLevel(6);
-   STAR->AddElement(pxl);
+   STAR->AddElement(myTopNode);
 
    gEve->AddGlobalElement(STAR);
 
-   gMultiView = new MultiView();
-   gMultiView->ImportGeomRPhi(STAR);
-   gMultiView->ImportGeomRhoZ(STAR);
+   //gMultiView = new MultiView();
+   //gMultiView->ImportGeomRPhi(STAR);
+   //gMultiView->ImportGeomRhoZ(STAR);
 }
 
-//==============================================================================
-// GUI stuff
-//------------------------------------------------------------------------------
 
-//______________________________________________________________________________
-void hft_make_gui()
+/** GUI stuff */
+void build_gui(TChain &hftree)
 {
    // Create minimal GUI for event navigation.
 
@@ -652,23 +518,22 @@ void hft_make_gui()
    frmMain->SetCleanup(kDeepCleanup);
 
    TGHorizontalFrame *hf = new TGHorizontalFrame(frmMain);
-   {
-      TString icondir( Form("%s/icons/", gSystem->Getenv("ROOTSYS")) );
-      TGPictureButton *b = 0;
-      EvNavHandler    *fh = new EvNavHandler;
 
-      b = new TGPictureButton(hf, gClient->GetPicture(icondir + "GoBack.gif"));
-      //      b->SetEnabled(kFALSE);
-      b->SetToolTipText("Go to previous event - not supported.");
-      hf->AddFrame(b);
-      b->Connect("Clicked()", "EvNavHandler", fh, "Bck()");
+   TString icondir( Form("%s/icons/", gSystem->Getenv("ROOTSYS")) );
+   TGPictureButton *b = 0;
+   GuiEventHandler *fh = new GuiEventHandler(hftree);
 
-      b = new TGPictureButton(hf, gClient->GetPicture(icondir + "GoForward.gif"));
-      b->SetToolTipText("Generate new event.");
-      hf->AddFrame(b);
-      b->Connect("Clicked()", "EvNavHandler", fh, "Fwd()");
+   b = new TGPictureButton(hf, gClient->GetPicture(icondir + "GoBack.gif"));
+   //b->SetEnabled(kFALSE);
+   b->SetToolTipText("Go to previous event - not supported.");
+   hf->AddFrame(b);
+   b->Connect("Clicked()", "GuiEventHandler", fh, "Bck()");
 
-   }
+   b = new TGPictureButton(hf, gClient->GetPicture(icondir + "GoForward.gif"));
+   b->SetToolTipText("Generate new event.");
+   hf->AddFrame(b);
+   b->Connect("Clicked()", "GuiEventHandler", fh, "Fwd()");
+
    frmMain->AddFrame(hf);
 
    frmMain->MapSubwindows();
