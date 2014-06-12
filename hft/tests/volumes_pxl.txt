@@ -1,0 +1,3 @@
+^.*IDSM_1/PXMO_1/PXLA_[\d]+/PXRB.*$
+^.*IDSM_1/PXMO_1/PXLA_[\d]+/PXLB.*$
+^.*IDSM_1/PXMO_1/PXLA_[\d]+/LADR_\d/PXSI_[\d]+/PLAC.*$
