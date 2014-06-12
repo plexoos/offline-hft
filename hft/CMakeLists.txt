@@ -26,7 +26,7 @@ set(Boost_USE_MULTITHREADED OFF)
 set(BOOST_INCLUDEDIR $ENV{OPTSTAR}/include)
 set(BOOST_LIBRARYDIR $ENV{OPTSTAR}/lib)
 
-find_package( Boost 1.54.0 COMPONENTS program_options )
+find_package( Boost 1.54.0 COMPONENTS program_options regex)
 if(NOT Boost_FOUND)
    message(FATAL_ERROR "Fatal error: Boost (version >= 1.54.0) not found in standard location")
 endif()
@@ -37,6 +37,7 @@ find_package(ROOT)
 include_directories(
    ${Boost_INCLUDE_DIR}
    ${ROOT_INCLUDE_DIR}
+   ${ROOTSYS}
    $ENV{OFFLINE_HFT_DIR}/offline/hft/tests
    $ENV{OFFLINE_HFT_DIR}/StRoot
    /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/
@@ -125,13 +126,13 @@ set( STAR_LIBRARIES
    StarAgmlLib
 )
 
-add_executable( display_hft tests/display_hft.cc )
-target_link_libraries( display_hft ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} ${MYSQL_LIBRARY} Table Geom Eve)
+add_executable( tevedisp tests/tevedisp.cc )
+target_link_libraries( tevedisp ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} ${MYSQL_LIBRARY} Table Geom Eve)
 
-add_executable( loop_hftree tests/loop_hftree.cc )
-target_link_libraries( loop_hftree ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} Table Geom Eve)
+add_executable( stiscan tests/stiscan.cc )
+target_link_libraries( stiscan ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} Table Geom Eve)
 
 if(FORCE_32BIT)
-   set_target_properties(display_hft PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
-   set_target_properties(loop_hftree PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
+   set_target_properties(tevedisp PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
+   set_target_properties(stiscan PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -Wl,--warn-unresolved-symbols")
 endif()
