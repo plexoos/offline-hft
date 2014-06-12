@@ -1,7 +1,7 @@
-From 50b2c93a5589eb45ee9d424bd354d7f86f28c1a2 Mon Sep 17 00:00:00 2001
+From f6fbfbb0822d91b0ef69c3e1a139e5e16310658f Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 11:33:07 -0400
-Subject: [PATCH 01/10] Copied StSsd* files to StSst*. This is to ensure
+Subject: [PATCH 01/13] Copied StSsd* files to StSst*. This is to ensure
  backward compatibility. Currently copied only StSsdDetectorBuilder
 
 ---
@@ -20,8 +20,8 @@ index 0000000..8000d7e
 +// $Id$
 +// 
 +// $Log$
-+// Revision 1.1  2014/06/06 21:15:44  smirnovd
-+// Add patches for StSsdDbMaker and StiSsd
++// Revision 1.2  2014/06/12 23:17:38  smirnovd
++// Updated patches
 +//
 +// Revision 1.36  2013/03/22 23:58:51  fisyak
 +// Remove name[50]
@@ -279,8 +279,8 @@ index 0000000..cdf02dc
 +// $Id$
 +// 
 +// $Log$
-+// Revision 1.1  2014/06/06 21:15:44  smirnovd
-+// Add patches for StSsdDbMaker and StiSsd
++// Revision 1.2  2014/06/12 23:17:38  smirnovd
++// Updated patches
 +//
 +// Revision 1.13  2009/03/16 13:50:09  fisyak
 +// Move out all Sti Chairs into StDetectorDb
@@ -337,10 +337,10 @@ index 0000000..cdf02dc
 1.8.2.GIT
 
 
-From 3d7e6a2030a7fed1664bdb0d9a841e57e94a2cce Mon Sep 17 00:00:00 2001
+From ae0cd6573e63f558dd99edb532077e6563c6d068 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 12:46:27 -0400
-Subject: [PATCH 02/10] Jonathan's changes
+Subject: [PATCH 02/13] Jonathan's changes
 
 ---
  StiSsd/StiSstDetectorBuilder.cxx | 158 +++++++++++++++++++++++----------------
@@ -613,10 +613,10 @@ index cdf02dc..9fbcddc 100644
 1.8.2.GIT
 
 
-From 4646500ef214a53207cafd7b29fb4e11fae9b9f2 Mon Sep 17 00:00:00 2001
+From a2d038884444bbff3dbd639010ed455baa835c03 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 8 May 2014 16:46:11 -0400
-Subject: [PATCH 03/10] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y
+Subject: [PATCH 03/13] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y
  -f
 
 ---
@@ -633,8 +633,8 @@ index 266b7f8..df8087a 100644
 -// 
 +//
  // $Log$
- // Revision 1.1  2014/06/06 21:15:44  smirnovd
- // Add patches for StSsdDbMaker and StiSsd
+ // Revision 1.2  2014/06/12 23:17:38  smirnovd
+ // Updated patches
  //
  // Revision 1.36  2013/03/22 23:58:51  fisyak
  // Remove name[50]
@@ -1026,8 +1026,8 @@ index 9fbcddc..0846978 100644
 -// 
 +//
  // $Log$
- // Revision 1.1  2014/06/06 21:15:44  smirnovd
- // Add patches for StSsdDbMaker and StiSsd
+ // Revision 1.2  2014/06/12 23:17:38  smirnovd
+ // Updated patches
  //
  // Revision 1.13  2009/03/16 13:50:09  fisyak
  // Move out all Sti Chairs into StDetectorDb
@@ -1080,10 +1080,10 @@ index 9fbcddc..0846978 100644
 1.8.2.GIT
 
 
-From 2607b157228ebd7c5bb780b4fd88bc906d4368e0 Mon Sep 17 00:00:00 2001
+From 8c044373454aa723dffdf94f2914c2dc61e79c70 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 12:38:00 -0400
-Subject: [PATCH 04/10] Renamed StiSsdDetectorBuilder to StiSstDetectorBuilder
+Subject: [PATCH 04/13] Renamed StiSsdDetectorBuilder to StiSstDetectorBuilder
 
 ---
  StiSsd/StiSstDetectorBuilder.cxx | 23 +++++++++++------------
@@ -1204,10 +1204,10 @@ index 0846978..1b409cf 100644
 1.8.2.GIT
 
 
-From f20b4a434ee2d0d259442cb4e2d59c93f558f143 Mon Sep 17 00:00:00 2001
+From f35d153c7644137365aca4e5ff12d667f98a29bc Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 11:13:42 -0400
-Subject: [PATCH 05/10] A baby step closer to real SSD geometry (clean up)
+Subject: [PATCH 05/13] A baby step closer to real SSD geometry (clean up)
 
 ---
  StiSsd/StiSstDetectorBuilder.cxx | 5 +----
@@ -1233,10 +1233,10 @@ index 9be49ae..7bcc4f7 100644
 1.8.2.GIT
 
 
-From 0b2b5a561a0eef00c452066d343b867b39b785d8 Mon Sep 17 00:00:00 2001
+From e7f633e72a0a79d1e82c8499ec440fea3c64b3d0 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 11:20:19 -0400
-Subject: [PATCH 06/10] Further clean up to match the StIstDetectorBuilder
+Subject: [PATCH 06/13] Further clean up to match the StIstDetectorBuilder
 
 ---
  StiSsd/StiSstDetectorBuilder.cxx | 10 ++++++++--
@@ -1274,10 +1274,10 @@ index 7bcc4f7..33522c6 100644
 1.8.2.GIT
 
 
-From 63c238eee8edc42c008457820c903548b275d6a9 Mon Sep 17 00:00:00 2001
+From 1cbada541c9c0aa86756192937dd86a9e18a4a6e Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 12:23:25 -0400
-Subject: [PATCH 07/10] Remove CVS log messages and keywords
+Subject: [PATCH 07/13] Remove CVS log messages and keywords
 
 ---
  StiSsd/StiSstDetectorBuilder.cxx | 60 ----------------------------------------
@@ -1292,8 +1292,8 @@ index 33522c6..cfa4a20 100644
 -// $Id$
 -//
 -// $Log$
--// Revision 1.1  2014/06/06 21:15:44  smirnovd
--// Add patches for StSsdDbMaker and StiSsd
+-// Revision 1.2  2014/06/12 23:17:38  smirnovd
+-// Updated patches
 -//
 -// Revision 1.36  2013/03/22 23:58:51  fisyak
 -// Remove name[50]
@@ -1363,8 +1363,8 @@ index 1b409cf..bc73ea3 100644
 -// $Id$
 -//
 -// $Log$
--// Revision 1.1  2014/06/06 21:15:44  smirnovd
--// Add patches for StSsdDbMaker and StiSsd
+-// Revision 1.2  2014/06/12 23:17:38  smirnovd
+-// Updated patches
 -//
 -// Revision 1.13  2009/03/16 13:50:09  fisyak
 -// Move out all Sti Chairs into StDetectorDb
@@ -1405,10 +1405,10 @@ index 1b409cf..bc73ea3 100644
 1.8.2.GIT
 
 
-From ae97ea9b24abc1a150c1e58805cf61d7eef49a3e Mon Sep 17 00:00:00 2001
+From d10fa9897a736244b4ac74c4f107a6052a29ce3b Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 19 May 2014 13:43:14 -0400
-Subject: [PATCH 08/10] New StiSst* files to support SST
+Subject: [PATCH 08/13] New StiSst* files to support SST
 
 ---
  StiSsd/StiSstDetectorGroup.cxx | 18 ++++++++++++++++++
@@ -1471,10 +1471,10 @@ index 0000000..57fc993
 1.8.2.GIT
 
 
-From 53c514c35ebf16becdc97c2eb1c494d9237123f4 Mon Sep 17 00:00:00 2001
+From bcd3d4364582c06eee7579f1ebfc7f80306da141 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 20 May 2014 15:18:14 -0400
-Subject: [PATCH 09/10] Remove unused includes from
+Subject: [PATCH 09/13] Remove unused includes from
  StiSsd/StiSstDetectorBuilder.cxx
 
 ---
@@ -1498,10 +1498,10 @@ index cfa4a20..4d278b1 100644
 1.8.2.GIT
 
 
-From 64d4bf41e97010e95baf05695678c9c62857769b Mon Sep 17 00:00:00 2001
+From 993a20160d30051cf2a9673ca24fb74509708b15 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 12 May 2014 11:12:37 -0400
-Subject: [PATCH 10/10] Variable names changed according to STAR guidelines.
+Subject: [PATCH 10/13] Variable names changed according to STAR guidelines.
  Resolve variable name conflict. Minor comment changes
 
 ---
@@ -1646,6 +1646,186 @@ index 4d278b1..f1ad457 100644
           StiCylindricalShape *stiShape = (StiCylindricalShape *) stiDetector->getShape();
           stiShape->setThickness(stiShape->getThickness()/2);
        }
+-- 
+1.8.2.GIT
+
+
+From c300f06352508a3835e91610436286316f698b52 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Thu, 24 Apr 2014 17:30:45 -0400
+Subject: [PATCH 11/13] Style and cleanup changes
+
+---
+ StiSsd/StiSstDetectorBuilder.cxx | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/StiSsd/StiSstDetectorBuilder.cxx b/StiSsd/StiSstDetectorBuilder.cxx
+index f1ad457..74ef1ea 100644
+--- a/StiSsd/StiSstDetectorBuilder.cxx
++++ b/StiSsd/StiSstDetectorBuilder.cxx
+@@ -149,10 +149,10 @@ void StiSstDetectorBuilder::useVMCGeometry()
+       pPlacement->setZcenter(centerVector.z());
+       // centerVector.z can be different than with this definition
+       // issue ?
+-      pPlacement->setLayerRadius(r); //this is only used for ordering in detector container...
++      pPlacement->setLayerRadius(r);  //this is only used for ordering in detector container...
+       pPlacement->setLayerAngle(phi); //this is only used for ordering in detector container...
+       pPlacement->setRegion(StiPlacement::kMidRapidity);
+-      //		pPlacement->setNormalRep(phi, r, 0.);  //but we have to use this to fix ladders 20 and 12
++      //pPlacement->setNormalRep(phi, r, 0.);  //but we have to use this to fix ladders 20 and 12
+       pPlacement->setNormalRep(phiD, r * TMath::Cos(phi - phiD), r * TMath::Sin(phi - phiD));
+ 
+       //Build final detector object
+@@ -178,6 +178,7 @@ void StiSstDetectorBuilder::useVMCGeometry()
+    }
+ }
+ 
++
+ /**
+  * Creates a crude approximation of the SSD/T detector. The geometry is modeled
+  * with a single tube using the dimensions and other physical properties of the
+@@ -227,6 +228,7 @@ void StiSstDetectorBuilder::buildInactiveVolumes()
+    }
+ }
+ 
++
+ ssdWafersPosition_st *StiSstDetectorBuilder::ssdWafersPosition(Int_t Id, St_ssdWafersPosition *wafers)
+ {
+    Int_t N = wafers->GetNRows();
+-- 
+1.8.2.GIT
+
+
+From d8d3707e8c494913adf3a267a87c2d494dd035ea Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Mon, 14 Apr 2014 10:55:02 -0400
+Subject: [PATCH 12/13] Save Sti detector geometries built by
+ StiXXXDetectorBuilder's as drawable objects in root files
+
+---
+ StiSsd/StiSsdDetectorBuilder.cxx | 11 +++++++++++
+ StiSsd/StiSstDetectorBuilder.cxx | 10 ++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/StiSsd/StiSsdDetectorBuilder.cxx b/StiSsd/StiSsdDetectorBuilder.cxx
+index 8000d7e..1b9a44c 100644
+--- a/StiSsd/StiSsdDetectorBuilder.cxx
++++ b/StiSsd/StiSsdDetectorBuilder.cxx
+@@ -69,6 +69,8 @@ using namespace std;
+ #include "tables/St_ssdConfiguration_Table.h"
+ #include "tables/St_ssdWafersPosition_Table.h"
+ 
++#include "TFile.h"
++
+ #include "Sti/Base/Factory.h"
+ #include "Sti/StiPlanarShape.h"
+ #include "Sti/StiCylindricalShape.h"
+@@ -84,6 +86,8 @@ using namespace std;
+ #include "StiSsd/StiSsdDetectorBuilder.h" 
+ #include "StSsdUtil/StSsdBarrel.hh"
+ #include "StDetectorDbMaker/StiSsdHitErrorCalculator.h"
++#include "StiMaker/StiDetectorVolume.h"
++
+ StiSsdDetectorBuilder::StiSsdDetectorBuilder(bool active, const string & inputFile)
+     : StiDetectorBuilder("Ssd",active,inputFile), _siMat(0), _hybridMat(0)
+ {
+@@ -182,6 +186,13 @@ void StiSsdDetectorBuilder::buildDetectors(StMaker & source)
+       add(layer,ladder,pLadder); 
+     }
+     useVMCGeometry();
++
++   // XXX: Check sti geometry by converting it to drawable root objects
++   TFile fileTmp("sti2rootgeo_ssd.root", "RECREATE");
++   StiDetectorVolume *stiDetVol = new StiDetectorVolume(*this);
++   stiDetVol->Write();
++   fileTmp.Close();
++   delete stiDetVol;
+ }
+ //________________________________________________________________________________
+ void StiSsdDetectorBuilder::useVMCGeometry() {
+diff --git a/StiSsd/StiSstDetectorBuilder.cxx b/StiSsd/StiSstDetectorBuilder.cxx
+index 74ef1ea..fa82027 100644
+--- a/StiSsd/StiSstDetectorBuilder.cxx
++++ b/StiSsd/StiSstDetectorBuilder.cxx
+@@ -9,6 +9,8 @@ using namespace std;
+ #include "tables/St_ssdConfiguration_Table.h"
+ #include "tables/St_ssdWafersPosition_Table.h"
+ 
++#include "TFile.h"
++
+ #include "Sti/Base/Factory.h"
+ #include "Sti/StiPlanarShape.h"
+ #include "Sti/StiCylindricalShape.h"
+@@ -22,6 +24,7 @@ using namespace std;
+ #include "StiSsd/StiSstDetectorBuilder.h"
+ #include "StSsdUtil/StSsdBarrel.hh"
+ #include "StDetectorDbMaker/StiSsdHitErrorCalculator.h"
++#include "StiMaker/StiDetectorVolume.h"
+ 
+ StiSstDetectorBuilder::StiSstDetectorBuilder(bool active, const string &inputFile)
+    : StiDetectorBuilder("Ssd", active, inputFile), _siMat(0), _hybridMat(0)
+@@ -55,6 +58,13 @@ void StiSstDetectorBuilder::buildDetectors(StMaker &source)
+       useVMCGeometry();
+       buildInactiveVolumes();
+    }
++
++   // XXX: Check sti geometry by converting it to drawable root objects
++   TFile fileTmp("sti2rootgeo_sst.root", "RECREATE");
++   StiDetectorVolume *stiDetVol = new StiDetectorVolume(*this);
++   stiDetVol->Write();
++   fileTmp.Close();
++   delete stiDetVol;
+ }
+ 
+ void StiSstDetectorBuilder::useVMCGeometry()
+-- 
+1.8.2.GIT
+
+
+From 8e5fe7696806f7ad03920a007ecb398f38181950 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Thu, 12 Jun 2014 17:06:22 -0400
+Subject: [PATCH 13/13] Doxygen
+
+---
+ StiSsd/StiSstDetectorBuilder.cxx | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/StiSsd/StiSstDetectorBuilder.cxx b/StiSsd/StiSstDetectorBuilder.cxx
+index fa82027..71f26bc 100644
+--- a/StiSsd/StiSstDetectorBuilder.cxx
++++ b/StiSsd/StiSstDetectorBuilder.cxx
+@@ -35,6 +35,8 @@ StiSstDetectorBuilder::StiSstDetectorBuilder(bool active, const string &inputFil
+ StiSstDetectorBuilder::~StiSstDetectorBuilder()
+ {}
+ 
++
++/** Build the SST detector components. */
+ void StiSstDetectorBuilder::buildDetectors(StMaker &source)
+ {
+    gMessMgr->Info() << "StiSstDetectorBuilder::buildDetectors() - I - Started " << endm;
+@@ -67,6 +69,8 @@ void StiSstDetectorBuilder::buildDetectors(StMaker &source)
+    delete stiDetVol;
+ }
+ 
++
++/** Builds the sensors of the SST detector. */
+ void StiSstDetectorBuilder::useVMCGeometry()
+ {
+    cout << "StiSstDetectorBuilder::buildDetectors() -I- Use VMC geometry" << endl;
+@@ -190,9 +194,9 @@ void StiSstDetectorBuilder::useVMCGeometry()
+ 
+ 
+ /**
+- * Creates a crude approximation of the SSD/T detector. The geometry is modeled
+- * with a single tube using the dimensions and other physical properties of the
+- * IST mother volume defined in the ROOT TGeo geometry.
++ * Creates a crude approximation of the SST detector. The geometry is modeled with a single tube
++ * using the dimensions and other physical properties of the IST mother volume defined in the ROOT
++ * TGeo geometry.
+  */
+ void StiSstDetectorBuilder::buildInactiveVolumes()
+ {
 -- 
 1.8.2.GIT
 

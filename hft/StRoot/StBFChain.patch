@@ -1,7 +1,7 @@
 From c7476fba4919815366deec20bcbf7d7bddcd4ed3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 6 May 2014 17:40:57 -0400
-Subject: [PATCH 1/8] Individual options for making HFT hits
+Subject: [PATCH 01/10] Individual options for making HFT hits
 
 ---
  BigFullChain.h | 9 +++++++++
@@ -34,7 +34,7 @@ index 2e3010b..1278dc2 100644
 From e88a803f32da9776c7cc63d6070a3d4ed9ce58f3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 21 Apr 2014 19:01:43 -0400
-Subject: [PATCH 2/8] BFC options for building test geometries
+Subject: [PATCH 02/10] BFC options for building test geometries
 
 ---
  BigFullChain.h |  8 ++++++++
@@ -98,7 +98,7 @@ index fbd072c..7f25864 100644
 From ad5b1d161a30f46c25ee2190bea144438adde0b6 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 22 Apr 2014 16:27:17 -0400
-Subject: [PATCH 3/8] Change to get rid of doubly defined StiMaker attributes
+Subject: [PATCH 03/10] Change to get rid of doubly defined StiMaker attributes
 
 ---
  StBFChain.cxx | 2 ++
@@ -131,7 +131,7 @@ index 7f25864..8948a91 100644
 From e6926b68e29c1e2906c49ea878cce55d634293ac Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 24 Apr 2014 16:25:31 -0400
-Subject: [PATCH 4/8] Added new options for Sti test to check overlapping and
+Subject: [PATCH 04/10] Added new options for Sti test to check overlapping and
  non-overlapping tubes
 
 ---
@@ -172,7 +172,7 @@ index 8948a91..71b0e61 100644
 From 91bf51da84a7e9ef2ee1f83f5ee1e186576c5ce2 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Wed, 7 May 2014 16:01:19 -0400
-Subject: [PATCH 5/8] Add BFC option for StiMaker to build ideal geometry
+Subject: [PATCH 05/10] Add BFC option for StiMaker to build ideal geometry
 
 ---
  BigFullChain.h | 2 ++
@@ -214,7 +214,7 @@ index 71b0e61..066bd9e 100644
 From d3927fe336a57d422dcc32ebadf5c6bb001c81ad Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Wed, 7 May 2014 17:52:00 -0400
-Subject: [PATCH 6/8] Added option to create a tree used in event display
+Subject: [PATCH 06/10] Added option to create a tree used in event display
 
 ---
  BigFullChain.h | 2 ++
@@ -240,7 +240,7 @@ index 20a3454..9fef44c 100644
 From 8ed528fd51401741c55f37207ee8182139748063 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 20 May 2014 16:49:07 -0400
-Subject: [PATCH 7/8] SST changes from Jonathan Bouchet
+Subject: [PATCH 07/10] SST changes from Jonathan Bouchet
 
 ---
  BigFullChain.h | 5 ++++-
@@ -276,7 +276,7 @@ index 9fef44c..457f583 100644
 From fbfb934daaae6b75dcafbf56e1c38b3f47bbc054 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 27 May 2014 11:41:07 -0400
-Subject: [PATCH 8/8] Added an option to run StiLajaTester from
+Subject: [PATCH 08/10] Added an option to run StiLajaTester from
  offline/hft/StHftPool
 
 ---
@@ -295,6 +295,62 @@ index 457f583..9c4f769 100644
    {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
     ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
    {"SpinTag"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
+-- 
+1.8.2.GIT
+
+
+From d5c82c21ffdb68309bb07969c188db835c2f6109 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Thu, 12 Jun 2014 18:21:53 -0400
+Subject: [PATCH 09/10] Load a boost library since StHftPool/HftMatTree depends
+ on it
+
+---
+ BigFullChain.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/BigFullChain.h b/BigFullChain.h
+index 9c4f769..0bf892d 100644
+--- a/BigFullChain.h
++++ b/BigFullChain.h
+@@ -1669,7 +1669,7 @@ Bfc_st BFC[] = {
+   {"SvtMatTree","","","","SvtMatchedTree"
+    ,                              "StSvtPoolEventT,StSvtPoolSvtMatchedTree","Create SvtMatchedTree",kFALSE},
+   {"HftMatTree", "", "", "pxlUtil", "HftMatchedTree",
+-	                      "libEve StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
++	                      "libEve boost_program_options StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
+   {"StiLajaTester", "", "", "", "StiLajaTester",  "StiLajaTester", "A maker to test track reconstruction with Sti", kFALSE},
+   {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
+    ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
+-- 
+1.8.2.GIT
+
+
+From 0ab2f0c8501ed6d892b2fad2cec3cfe3cbfeb532 Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Thu, 12 Jun 2014 18:23:06 -0400
+Subject: [PATCH 10/10] Add explicit dependence of PxlHit on PxlCluster on
+ PxlRaw packages
+
+---
+ BigFullChain.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/BigFullChain.h b/BigFullChain.h
+index 0bf892d..e02d440 100644
+--- a/BigFullChain.h
++++ b/BigFullChain.h
+@@ -1364,8 +1364,8 @@ Bfc_st BFC[] = {
+   {"pxlFastSim"  ,"","","StMcEvent,StEvent"
+    ,                                           "StPxlSimMaker","StPxlSimMaker","FastPixelSimulator",kFALSE},
+   {"pxlRaw"      ,"","","pxlUtil,pxlDb",  "StPxlRawHitMaker","StPxlRawHitMaker","Pxl Raw Hit Maker",kFALSE},
+-  {"pxlCluster"  ,"","","pxlUtil",      "StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
+-  {"pxlHit"      ,"","","pxlUtil,event,pxlDb",      "StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
++  {"pxlCluster"  ,"","","pxlUtil,pxlRaw",      "StPxlClusterMaker","StPxlClusterMaker","Pxl Cluster Maker",kFALSE},
++  {"pxlHit"      ,"","","pxlUtil,event,pxlDb,pxlCluster",      "StPxlHitMaker","StPxlHitMaker","Pxl Hit Maker",kFALSE},
+   //{"pxlMon"    ,"","","StEvent"              ,"StPxlMonMaker","StPxlMonMaker","Example of Pxl QA",kFALSE},
+ 
+   {"istFastSim","","","StMcEvent,StEvent"
 -- 
 1.8.2.GIT
 

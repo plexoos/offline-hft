@@ -19,8 +19,8 @@ index 0000000..f11a2bf
 +// $Id$
 +//
 +// $Log$
-+// Revision 1.1  2014/06/06 21:15:44  smirnovd
-+// Add patches for StSsdDbMaker and StiSsd
++// Revision 1.2  2014/06/12 23:17:38  smirnovd
++// Updated patches
 +//
 +// Revision 1.16  2010/09/01 21:04:06  fisyak
 +// Disable sim flavor, now sim parameters is coming via DB associated with simulation time stamp
@@ -306,8 +306,8 @@ index 0000000..50eb460
 +// $Id$
 +//
 +// $Log$
-+// Revision 1.1  2014/06/06 21:15:44  smirnovd
-+// Add patches for StSsdDbMaker and StiSsd
++// Revision 1.2  2014/06/12 23:17:38  smirnovd
++// Updated patches
 +//
 +// Revision 1.9  2008/08/12 22:45:47  bouchet
 +// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
@@ -401,8 +401,8 @@ index f11a2bf..69272cd 100644
 -// $Id$
 -//
 -// $Log$
--// Revision 1.1  2014/06/06 21:15:44  smirnovd
--// Add patches for StSsdDbMaker and StiSsd
+-// Revision 1.2  2014/06/12 23:17:38  smirnovd
+-// Updated patches
 -//
 -// Revision 1.16  2010/09/01 21:04:06  fisyak
 -// Disable sim flavor, now sim parameters is coming via DB associated with simulation time stamp
@@ -768,8 +768,8 @@ index 50eb460..357184d 100644
 -// $Id$
 -//
 -// $Log$
--// Revision 1.1  2014/06/06 21:15:44  smirnovd
--// Add patches for StSsdDbMaker and StiSsd
+-// Revision 1.2  2014/06/12 23:17:38  smirnovd
+-// Updated patches
 -//
 -// Revision 1.9  2008/08/12 22:45:47  bouchet
 -// use of SsdLaddersOnSectors,SsdOnGlobal,SsdSectorsOnGlobal,SsdWafersOnLadders tables to calculate ssdWafersPositions;add Get methods to access the tables
