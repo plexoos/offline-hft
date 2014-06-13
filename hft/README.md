@@ -49,7 +49,7 @@ How to build development hft libraries
 
     cd ..
 
-    cons
+    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 
 How to compile standalone executables
