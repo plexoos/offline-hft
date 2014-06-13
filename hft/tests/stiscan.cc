@@ -7,7 +7,7 @@
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
-#include "StHftPool/StiLajaTester/StiLajaRootFile.h"
+#include "StHftPool/EventT/StiScanRootFile.h"
 
 
 void loop_hftree(PrgOptionProcessor &poProc);
@@ -40,7 +40,7 @@ void loop_hftree(PrgOptionProcessor &poProc)
       outFileName += "_stiscan.root";
    }
 
-   StiLajaRootFile outRootFile( outFileName.c_str(), "recreate");
+   StiScanRootFile outRootFile( outFileName.c_str(), "recreate");
 
    int nTreeEvents = myTreeFileChain->GetEntries();
    int nProcEvents = 0;

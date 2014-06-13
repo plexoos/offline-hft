@@ -1,17 +1,17 @@
-#include "StiLajaRootFile.h"
+#include "StiScanRootFile.h"
 
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TROOT.h"
 
 
-StiLajaRootFile::StiLajaRootFile() : TFile(), mHs()
+StiScanRootFile::StiScanRootFile() : TFile(), mHs()
 {
    BookHists();
 }
 
 
-StiLajaRootFile::StiLajaRootFile(const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
+StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
    TFile(fname, option, ftitle, compress), mHs()
 {
    printf("Created ROOT file: %s\n", GetName());
@@ -20,7 +20,7 @@ StiLajaRootFile::StiLajaRootFile(const char *fname, Option_t *option, const char
 }
 
 
-StiLajaRootFile::~StiLajaRootFile()
+StiScanRootFile::~StiScanRootFile()
 {
    while (!mHs.empty()) {
       delete mHs.begin()->second;
@@ -29,7 +29,7 @@ StiLajaRootFile::~StiLajaRootFile()
 }
 
 
-void StiLajaRootFile::BookHists()
+void StiScanRootFile::BookHists()
 {
    // Create the root histograms outside of the current root file, i.e. they will not be associated with the file
    // TDirectory and won't be deleted on TFile::Close()
@@ -54,7 +54,7 @@ void StiLajaRootFile::BookHists()
 }
 
 
-void StiLajaRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
+void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
 {
    std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = eventT.fTStiKalmanTracks.begin();
 
@@ -67,7 +67,7 @@ void StiLajaRootFile::FillHists(const EventT &eventT, const std::set<std::string
 }
 
 
-void StiLajaRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
+void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
 {
    // Take the first node with the smallest radius
    const TStiKalmanTrackNode& dcaNode = kalmTrack.GetDcaNode();
@@ -93,7 +93,7 @@ void StiLajaRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
 
 
 /** */
-void StiLajaRootFile::Close(Option_t *option)
+void StiScanRootFile::Close(Option_t *option)
 {
    this->cd();
 

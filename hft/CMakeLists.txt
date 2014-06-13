@@ -58,7 +58,6 @@ link_directories(
 set( HFT_LIBRARIES
    StHftPoolEventT
    StHftPoolHftMatchedTree
-   StiLajaTester
 )
 
 set( STAR_LIBRARIES

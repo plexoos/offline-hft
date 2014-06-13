@@ -1,5 +1,5 @@
-#ifndef StiLajaRootFile_h
-#define StiLajaRootFile_h
+#ifndef StiScanRootFile_h
+#define StiScanRootFile_h
 
 #include <map>
 #include <set>
@@ -17,13 +17,13 @@ typedef std::map<std::string, TH1*>::iterator          HistMapIter;
 typedef std::map<std::string, TH1*>::const_iterator    HistMapConstIter;
 
 
-class StiLajaRootFile : public TFile
+class StiScanRootFile : public TFile
 {
 public:
 
-   StiLajaRootFile();
-   StiLajaRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
-   ~StiLajaRootFile();
+   StiScanRootFile();
+   StiScanRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
+   ~StiScanRootFile();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
@@ -35,7 +35,7 @@ public:
 
    HistMap mHs;
 
-   ClassDef(StiLajaRootFile, 1)
+   ClassDef(StiScanRootFile, 1)
 };
 
 #endif
