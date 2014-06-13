@@ -12,10 +12,10 @@ How to build development hft libraries
     # Setup the environment and prepare directories
 
     starver dev
-    mkdir my_hft_test_dir
-    cd my_hft_test_dir
+    mkdir ~/my_hft_test_dir
+    cd ~/my_hft_test_dir
 
-    cvs checkout -r HEAD offline/hft
+    cvs checkout -ko -r HEAD offline/hft
 
     # Checkout the modules which need to be patched
 
@@ -52,19 +52,6 @@ How to build development hft libraries
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 
-How to compile standalone executables
-=====================================
-
-Set the environment OFFLINE_HFT_DIR variable to contain the path to your local
-working directory, e.g.
-
-    setenv OFFLINE_HFT_DIR ~/my_hft_test_dir
-    mkdir build
-    cd build
-    cmake28 ../offline/hft
-    make
-
-
 How to run tests
 ================
 
@@ -72,19 +59,54 @@ The BFC chain options for data and simulation processing can be found in
 
     offline/hft/runBFC.sh
 
+The reconstruction chains can be extended by running a maker from StHftPool
+libary with the 'HftMatTree' option. The chain will create a root file
+(.hftree.root) with a tree that can be later used to visualize tracks and hits
+along with selected detector volumes or study Sti track losses in these
+volumes. The following is a sample chain to reconstruct an .fz file:
 
-How to look at events with event display
-========================================
+    tpcRS y2014a AgML MakeEvent ITTF pxlFastSim PxlIT pxlDb istDb istFastSim IstIT Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree
 
-Run a BFC chain with the HftMatTree option. See offline/hft/runBFC.sh for
-example BFC options. A file named EventAAAAAAA.root will be created in the
-current directory. To see the produced events in the event display execute the
-following commands:
+A sample starsim kumac to produce events with tracks in transverse planes can
+be found in offline/hft/tests/singlepion.kumac
 
-    mkdir output
-    mv EventAAAAAAA.root output/Event_NNNNNN.root
-    root -l offline/hft/tests/displayHft.C
-    root.exe [1] hft_display(-1,NNNNNN);
+
+How to compile and run standalone HFT tools
+===========================================
+
+To help with Sti geometry debugging and implementation we are developing a
+number of tools. This section explains how to build them as standalone
+executables. First, one need to set environment variable OFFLINE_HFT_DIR to
+contain the path to the local working directory containing StRoot. Assuming the
+commands from the "How to build development hft libraries" section above have
+been executed one can do:
+
+    setenv OFFLINE_HFT_DIR ~/my_hft_test_dir
+    cd ~/my_hft_test_dir
+    mkdir build
+    cd build
+    cmake ../offline/hft
+    make
+
+In the current directory one should see two programs 'stiscan' and 'tevedisp'.
+Both programs accept either a ROOT file with a hftree TTree or a text file with
+a list of such ROOT files (one per line) as input. A text file with regex
+patterns matching the names of TGeo volumes can be also supplied to select only
+specific physical volumes. A typical command to display the events in hftree
+can look as in the following example:
+
+    tevedisp -f path/to/my.hftree.root -p path/to/volumes.txt
+
+To produce a set of basic histograms with tracks losses in Sti volumes one can
+do:
+
+    stiscan -f path/to/my.hftree.root -p path/to/volumes.txt
+
+*Note:* The programs expect that a ROOT file (y2014a.root) with the full STAR
+geometry is located in the current directory. Such file can be produced with
+this command:
+
+    root -l '$STAR/StarVMC/Geometry/macros/viewStarGeometry.C("y2014a")'
 
 
 How to add PXL pileup events
