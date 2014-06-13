@@ -47,7 +47,8 @@ void TStiKalmanTrack::Print(Option_t *opt) const
 
    std::set<TStiKalmanTrackNode>::const_iterator iTStiKTrackNode = fNodes.begin();
 
-   for ( ; iTStiKTrackNode != fNodes.end(); ++iTStiKTrackNode) {
+   for (int nodeIdx=0; iTStiKTrackNode != fNodes.end(); ++iTStiKTrackNode, ++nodeIdx) {
+      printf("node index: %d\n", nodeIdx);
       iTStiKTrackNode->Print();
    }
 }

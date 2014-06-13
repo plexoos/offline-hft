@@ -30,8 +30,8 @@ void PrgOptionProcessor::InitOptions()
    // Declare supported options
    fOptions.add_options()
       ("help,h",              "Print help message")
-      ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file with hftree " \
-       "OR text file with a list of ROOT files containing the same")
+      ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
+       "OR a text file with a list of such ROOT files")
       ("volume-pattern-flist,p",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
    ;
