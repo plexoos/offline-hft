@@ -1,7 +1,7 @@
 From e0da39bd89fb3974c71fc216d9117712d33f8f59 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 25 Mar 2014 16:04:17 -0400
-Subject: [PATCH 01/12] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y
+Subject: [PATCH 01/10] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y
  -f
 
 ---
@@ -6463,7 +6463,7 @@ index cda4988..3a4cf05 100644
 From c300f06352508a3835e91610436286316f698b52 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 24 Apr 2014 17:30:45 -0400
-Subject: [PATCH 02/12] Style and cleanup changes
+Subject: [PATCH 02/10] Style and cleanup changes
 
 ---
  Sti/StiDetector.cxx              |  1 +
@@ -6964,7 +6964,7 @@ index 06ee109..b438c54 100644
 From cb79de8f95df35dc3161e46bcab36b3302d09840 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 6 May 2014 17:37:59 -0400
-Subject: [PATCH 03/12] Uniform improvements in Sti objects output streamers
+Subject: [PATCH 03/10] Uniform improvements in Sti objects output streamers
 
 ---
  Sti/StiDetector.cxx  | 13 ++++++++++---
@@ -7101,7 +7101,7 @@ index 1614b4b..2cc5949 100644
 From 5b3ccb7f53525616469115b35e096e5cbc9a4ce0 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 8 May 2014 15:22:00 -0400
-Subject: [PATCH 04/12] Remove unused variables
+Subject: [PATCH 04/10] Remove unused variables
 
 ---
  Sti/StiDetectorBuilder.cxx | 5 +----
@@ -7137,7 +7137,7 @@ index 8b8fdde..babc65e 100644
 From d8d3707e8c494913adf3a267a87c2d494dd035ea Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 14 Apr 2014 10:55:02 -0400
-Subject: [PATCH 05/12] Save Sti detector geometries built by
+Subject: [PATCH 05/10] Save Sti detector geometries built by
  StiXXXDetectorBuilder's as drawable objects in root files
 
 ---
@@ -7180,7 +7180,7 @@ index 63f9ea4..02d5797 100644
 From 8509d825e680c09caa051c430731f1ce32f506c3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 3 Jun 2014 15:55:08 -0400
-Subject: [PATCH 06/12] Added new data member to keep track of track energy
+Subject: [PATCH 06/10] Added new data member to keep track of track energy
  losses in the node
 
 ---
@@ -7239,7 +7239,7 @@ index 3a4cf05..73ecf89 100644
 From 329547a38140b5dadb10b4cc1c1d5cce6efbbdd3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 3 Jun 2014 16:03:00 -0400
-Subject: [PATCH 07/12] Do not use additional margin/edge for HFT volumes. I
+Subject: [PATCH 07/10] Do not use additional margin/edge for HFT volumes. I
  assume that to some extent the projected track error should prevent losses of
  hits in active volumes. This change was not tested properly. I don't know how
  it may affect track reconstruction with SVT
@@ -7268,7 +7268,7 @@ index 2758563..8e1d7cf 100644
 From 4562db04bdbd5db4a0de8a5635c2fe19854a4d68 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 8 May 2014 15:19:24 -0400
-Subject: [PATCH 08/12] Debug/user feedback improved
+Subject: [PATCH 08/10] Debug/user feedback improved
 
 ---
  Sti/StiDetectorBuilder.cxx   |  1 +
@@ -7532,222 +7532,10 @@ index b438c54..449aab3 100644
 1.8.2.GIT
 
 
-From 03e01b0c2cb339f58f8af0336131e146598c387f Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Thu, 12 Jun 2014 13:51:10 -0400
-Subject: [PATCH 09/12] Converted CRLF line terminators to linux style:
- Sti/StiGenericDetectorGroup.cxx
-
----
- Sti/StiGenericDetectorGroup.cxx | 138 ++++++++++++++++++++--------------------
- 1 file changed, 69 insertions(+), 69 deletions(-)
-
-diff --git a/Sti/StiGenericDetectorGroup.cxx b/Sti/StiGenericDetectorGroup.cxx
-index 1bbcb4b..7215138 100644
---- a/Sti/StiGenericDetectorGroup.cxx
-+++ b/Sti/StiGenericDetectorGroup.cxx
-@@ -3,67 +3,67 @@
--
--#include <stdexcept>
--#include "StiGenericDetectorGroup.h"
--#include "Sti/StiDetectorBuilder.h"
--
--//_____________________________________________________________________________
--StiGenericDetectorGroup::StiGenericDetectorGroup(const string & name)
--  : Named(name),
--     _detectorBuilder(0),
--     _elossCalculator(0),
--     _groupId(-1)
--{
--  
--}
--
--//_____________________________________________________________________________
--StiGenericDetectorGroup::StiGenericDetectorGroup(const string & name,
--		   StiDetectorBuilder * detectorBuilder,
--		   StiElossCalculator * elossCalculator)
--    :  Named(name),
--     _detectorBuilder(detectorBuilder),
--     _elossCalculator(elossCalculator),
--     _groupId(-1)
--{
--}
--
--//_____________________________________________________________________________
--StiGenericDetectorGroup::~StiGenericDetectorGroup()
--{
--  delete _detectorBuilder;
--}
--//_____________________________________________________________________________
--StiDetectorBuilder *StiGenericDetectorGroup::getDetectorBuilder()
--{
--  if (_detectorBuilder==0)
--    {
--      string message = "StiDetectorGroup::getDetectorBuilder() - ERROR - builder == 0 for detector:";
--      message += getName();
--      throw logic_error(message.c_str());
--    }
--  return _detectorBuilder; 
--}
--
--//_____________________________________________________________________________
--StiElossCalculator *StiGenericDetectorGroup::getElossCalculator()
--{
--   if (_elossCalculator==0)
--   {
--      string message = "StiDetectorGroup::getElossCalculator() - ERROR - elossCalculator == 0 for detector:";
--      message += getName();
--      throw logic_error(message.c_str());
--   }
--   return _elossCalculator; 
--}
--
--//_____________________________________________________________________________
--void StiGenericDetectorGroup::setGroupId(int id)
--{
--  if (_detectorBuilder) _detectorBuilder->setGroupId(id);
--  _groupId = id;
--}
--
--//_____________________________________________________________________________
--int  StiGenericDetectorGroup::getGroupId() const
--{
--  return _groupId;
--}
-+
-+#include <stdexcept>
-+#include "StiGenericDetectorGroup.h"
-+#include "Sti/StiDetectorBuilder.h"
-+
-+//_____________________________________________________________________________
-+StiGenericDetectorGroup::StiGenericDetectorGroup(const string & name)
-+  : Named(name),
-+     _detectorBuilder(0),
-+     _elossCalculator(0),
-+     _groupId(-1)
-+{
-+
-+}
-+
-+//_____________________________________________________________________________
-+StiGenericDetectorGroup::StiGenericDetectorGroup(const string & name,
-+         StiDetectorBuilder * detectorBuilder,
-+         StiElossCalculator * elossCalculator)
-+    :  Named(name),
-+     _detectorBuilder(detectorBuilder),
-+     _elossCalculator(elossCalculator),
-+     _groupId(-1)
-+{
-+}
-+
-+//_____________________________________________________________________________
-+StiGenericDetectorGroup::~StiGenericDetectorGroup()
-+{
-+  delete _detectorBuilder;
-+}
-+//_____________________________________________________________________________
-+StiDetectorBuilder *StiGenericDetectorGroup::getDetectorBuilder()
-+{
-+  if (_detectorBuilder==0)
-+    {
-+      string message = "StiDetectorGroup::getDetectorBuilder() - ERROR - builder == 0 for detector:";
-+      message += getName();
-+      throw logic_error(message.c_str());
-+    }
-+  return _detectorBuilder;
-+}
-+
-+//_____________________________________________________________________________
-+StiElossCalculator *StiGenericDetectorGroup::getElossCalculator()
-+{
-+   if (_elossCalculator==0)
-+   {
-+      string message = "StiDetectorGroup::getElossCalculator() - ERROR - elossCalculator == 0 for detector:";
-+      message += getName();
-+      throw logic_error(message.c_str());
-+   }
-+   return _elossCalculator;
-+}
-+
-+//_____________________________________________________________________________
-+void StiGenericDetectorGroup::setGroupId(int id)
-+{
-+  if (_detectorBuilder) _detectorBuilder->setGroupId(id);
-+  _groupId = id;
-+}
-+
-+//_____________________________________________________________________________
-+int  StiGenericDetectorGroup::getGroupId() const
-+{
-+  return _groupId;
-+}
--- 
-1.8.2.GIT
-
-
-From 3f4f632789b42cdebe0ac2e9f7f5239b6f83e721 Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Thu, 12 Jun 2014 13:58:58 -0400
-Subject: [PATCH 10/12] Added a set method to replace the default
- StiDetectorBuilder in StiGenericDetectorGroup
-
----
- Sti/StiGenericDetectorGroup.cxx | 21 +++++++++++++++++++++
- Sti/StiGenericDetectorGroup.h   |  1 +
- 2 files changed, 22 insertions(+)
-
-diff --git a/Sti/StiGenericDetectorGroup.cxx b/Sti/StiGenericDetectorGroup.cxx
-index 7215138..97e5d56 100644
---- a/Sti/StiGenericDetectorGroup.cxx
-+++ b/Sti/StiGenericDetectorGroup.cxx
-@@ -43,6 +43,27 @@ StiDetectorBuilder *StiGenericDetectorGroup::getDetectorBuilder()
-   return _detectorBuilder;
- }
- 
-+
-+/**
-+ * Replaces the existing detector builder with a new one. Returns the old
-+ * detector builder. The ownership is transfered to this class.
-+ */
-+void StiGenericDetectorGroup::setDetectorBuilder(StiDetectorBuilder* detBuilder)
-+{
-+  if (!detBuilder)
-+  {
-+     string message = "StiGenericDetectorGroup::setDetectorBuilder() - ERROR - Non-existing detector builder was provided for detector: ";
-+     //message += getName();
-+     //throw logic_error(message.c_str());
-+  }
-+
-+  // Delete the existing detector builder
-+  delete _detectorBuilder;
-+
-+  _detectorBuilder = detBuilder;
-+}
-+
-+
- //_____________________________________________________________________________
- StiElossCalculator *StiGenericDetectorGroup::getElossCalculator()
- {
-diff --git a/Sti/StiGenericDetectorGroup.h b/Sti/StiGenericDetectorGroup.h
-index 126011a..0c11d74 100644
---- a/Sti/StiGenericDetectorGroup.h
-+++ b/Sti/StiGenericDetectorGroup.h
-@@ -26,6 +26,7 @@ class StiGenericDetectorGroup  : public Named
-      virtual void initialize(){} ; // FIXME:  this method must be abstract = 0;
-     /// Get a detector builder appropriate for this detector group
-     virtual StiDetectorBuilder * getDetectorBuilder();
-+    virtual void setDetectorBuilder(StiDetectorBuilder* detBuilder);
- 
-     /// Get a pid calculator appropriate for this detector group
-     /// A dedx calculator is used after the track are fitted
--- 
-1.8.2.GIT
-
-
-From 8e5fe7696806f7ad03920a007ecb398f38181950 Mon Sep 17 00:00:00 2001
+From fd5e88df26e5b40c2553ed591a8594a90ddbaeaa Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 17:06:22 -0400
-Subject: [PATCH 11/12] Doxygen
+Subject: [PATCH 09/10] Doxygen
 
 ---
  Sti/StiKalmanTrackFinder.cxx | 5 +++++
@@ -7787,10 +7575,10 @@ index 7c8876f..edb3a51 100644
 1.8.2.GIT
 
 
-From 9f373928cc685832a0f991a7b2ac243233a6d48b Mon Sep 17 00:00:00 2001
+From f3ec40786b6f4f11f9e05e13881616f10e6b0cec Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 17:09:24 -0400
-Subject: [PATCH 12/12] Class method is not defined anywhere
+Subject: [PATCH 10/10] Class method is not defined anywhere
 
 ---
  Sti/StiDetectorContainer.h | 2 --
