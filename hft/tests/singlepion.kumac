@@ -22,12 +22,12 @@ physi
 make sim/gstar
 gclose all
 debug off
-gfile o mytest.fz
 
 do z = -20, 20, 1
 
-   user/vxyz 0.0 0.0 [z]
-   user/vsig 0.001 0.001
+   gfile o mytest_z_[z].fz
+   user/vxyz 0.0 0.0 [z].01
+   user/vsig 0.0001 0.0001
    aguser/gkine 50 8 1.0 1.0 0 0 -3.14159 3.14159
    trig 100
 
