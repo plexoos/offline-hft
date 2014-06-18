@@ -23,15 +23,11 @@ make sim/gstar
 gclose all
 debug off
 
-do z = -20, 20, 1
-
-   gfile o mytest_z_[z].fz
-   user/vxyz 0.0 0.0 [z].01
-   user/vsig 0.0001 0.0001
-   aguser/gkine 50 8 5.0 5.0 0 0 -3.14159 3.14159
-   trig 100
-
-enddo
+gfile o ./mytest_z_$env(STISCAN_Z).fz
+user/vxyz 0.0 0.0 $env(STISCAN_Z).01
+user/vsig 0.0001 0.0001
+aguser/gkine 50 8 5.0 5.0 0 0 -3.14159 3.14159
+trig 100
 
 gprint kine
 quit
