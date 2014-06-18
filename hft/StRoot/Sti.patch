@@ -1,8 +1,7 @@
 From e0da39bd89fb3974c71fc216d9117712d33f8f59 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 25 Mar 2014 16:04:17 -0400
-Subject: [PATCH 01/10] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y
- -f
+Subject: [PATCH 1/9] Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 
 ---
  Sti/StiKalmanTrackFinder.cxx | 1635 +++++++++++++-----------
@@ -6463,7 +6462,7 @@ index cda4988..3a4cf05 100644
 From c300f06352508a3835e91610436286316f698b52 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 24 Apr 2014 17:30:45 -0400
-Subject: [PATCH 02/10] Style and cleanup changes
+Subject: [PATCH 2/9] Style and cleanup changes
 
 ---
  Sti/StiDetector.cxx              |  1 +
@@ -6964,7 +6963,7 @@ index 06ee109..b438c54 100644
 From cb79de8f95df35dc3161e46bcab36b3302d09840 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 6 May 2014 17:37:59 -0400
-Subject: [PATCH 03/10] Uniform improvements in Sti objects output streamers
+Subject: [PATCH 3/9] Uniform improvements in Sti objects output streamers
 
 ---
  Sti/StiDetector.cxx  | 13 ++++++++++---
@@ -7101,7 +7100,7 @@ index 1614b4b..2cc5949 100644
 From 5b3ccb7f53525616469115b35e096e5cbc9a4ce0 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 8 May 2014 15:22:00 -0400
-Subject: [PATCH 04/10] Remove unused variables
+Subject: [PATCH 4/9] Remove unused variables
 
 ---
  Sti/StiDetectorBuilder.cxx | 5 +----
@@ -7137,7 +7136,7 @@ index 8b8fdde..babc65e 100644
 From d8d3707e8c494913adf3a267a87c2d494dd035ea Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Mon, 14 Apr 2014 10:55:02 -0400
-Subject: [PATCH 05/10] Save Sti detector geometries built by
+Subject: [PATCH 5/9] Save Sti detector geometries built by
  StiXXXDetectorBuilder's as drawable objects in root files
 
 ---
@@ -7180,7 +7179,7 @@ index 63f9ea4..02d5797 100644
 From 8509d825e680c09caa051c430731f1ce32f506c3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 3 Jun 2014 15:55:08 -0400
-Subject: [PATCH 06/10] Added new data member to keep track of track energy
+Subject: [PATCH 6/9] Added new data member to keep track of track energy
  losses in the node
 
 ---
@@ -7239,7 +7238,7 @@ index 3a4cf05..73ecf89 100644
 From 329547a38140b5dadb10b4cc1c1d5cce6efbbdd3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Tue, 3 Jun 2014 16:03:00 -0400
-Subject: [PATCH 07/10] Do not use additional margin/edge for HFT volumes. I
+Subject: [PATCH 7/9] Do not use additional margin/edge for HFT volumes. I
  assume that to some extent the projected track error should prevent losses of
  hits in active volumes. This change was not tested properly. I don't know how
  it may affect track reconstruction with SVT
@@ -7265,284 +7264,17 @@ index 2758563..8e1d7cf 100644
 1.8.2.GIT
 
 
-From 4562db04bdbd5db4a0de8a5635c2fe19854a4d68 Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Thu, 8 May 2014 15:19:24 -0400
-Subject: [PATCH 08/10] Debug/user feedback improved
-
----
- Sti/StiDetectorBuilder.cxx   |  1 +
- Sti/StiKalmanTrack.cxx       | 23 ++++++++++++++++++++++-
- Sti/StiKalmanTrackFinder.cxx | 34 +++++++++++++++++++++++-----------
- Sti/StiKalmanTrackNode.cxx   | 33 ++++++++++++++++++++++++++-------
- Sti/StiVMCToolKit.cxx        |  1 +
- 5 files changed, 73 insertions(+), 19 deletions(-)
-
-diff --git a/Sti/StiDetectorBuilder.cxx b/Sti/StiDetectorBuilder.cxx
-index babc65e..9f6a4ce 100644
---- a/Sti/StiDetectorBuilder.cxx
-+++ b/Sti/StiDetectorBuilder.cxx
-@@ -274,6 +274,7 @@ void StiDetectorBuilder::AverageVolume(TGeoPhysicalNode *nodeP)
-   Int_t layer = getNRows();
-   add(layer,0,pDetector); 
-   cout << "StiDetectorBuilder::AverageVolume build detector " << pDetector->getName() << " at layer " << layer << endl;
-+  cout << *pDetector;
- }
- ///Returns the number of sectors (or segments) in a the
- ///given row. Sector are expected to be azimuthally
-diff --git a/Sti/StiKalmanTrack.cxx b/Sti/StiKalmanTrack.cxx
-index 871ae68..313013a 100644
---- a/Sti/StiKalmanTrack.cxx
-+++ b/Sti/StiKalmanTrack.cxx
-@@ -1636,10 +1636,27 @@ void StiKalmanTrack::unset()
- //_____________________________________________________________________________
- void StiKalmanTrack::print(const char *opt) const
- {
--  printf("Track %p",(void*)this);
-+  static const char *availOpts = "xyzeptchXYZEPTCH";
-+
-+  printf("Track %p\n",(void*)this);
- 
-   StiKTNIterator it;
-   int n=0;
-+  double mTotalEnergyLoss = 0;
-+
-+  // Build the header first
-+  std::string header(20, ' ');
-+  std::string spacer(15, ' ');
-+
-+  for (int i = 0; availOpts[i]; i++) {
-+     if (!strchr(opt, availOpts[i])) continue;
-+     header += availOpts[i];
-+     header += spacer;
-+  }
-+
-+  std::cout << header << std::endl;
-+
-+  // Loop over track nodes
-   for (it=begin();it!=end();++it) {
-     StiKalmanTrackNode *node = &(*it);
-     StiHit *hit = node->getHit();
-@@ -1648,6 +1665,10 @@ void StiKalmanTrack::print(const char *opt) const
-     n++;
-     printf("%3d - ",n);
-     node->print(opt);
-+
-+    mTotalEnergyLoss += node->getEnergyLosses();
-+    printf("\tetot=%.3f", mTotalEnergyLoss);
-+    printf("\n");
-   }
- }
- //#define APPROX_DEBUG
-diff --git a/Sti/StiKalmanTrackFinder.cxx b/Sti/StiKalmanTrackFinder.cxx
-index f172e56..7c8876f 100644
---- a/Sti/StiKalmanTrackFinder.cxx
-+++ b/Sti/StiKalmanTrackFinder.cxx
-@@ -57,7 +57,7 @@ enum {kSeedTimg, kTrakTimg, kPrimTimg};
- enum {kMaxTrackPerm = 10000, kMaxEventPerm = 10000000};
- 
- static const double kRMinTpc = 55;
--int StiKalmanTrackFinder::_debug = 0;
-+int StiKalmanTrackFinder::_debug = 3;
- ostream &operator<<(ostream &, const StiTrack &);
- int gLevelOfFind = 0;
- //______________________________________________________________________________
-@@ -628,18 +628,18 @@ void StiKalmanTrackFinder::find(StiKalmanTrack *track, int direction, StiKalmanT
-    double yg = leadNode->y_g();
-    double projAngle = atan2(yg, xg);
- 
--   if (debug() > 2)cout << "Projection Angle:" << projAngle * 180 / 3.1415 << endl;
-+   if (debug() > 2) cout << "Projection Angle:" << projAngle * 180 / 3.1415 << endl;
- 
-    vector<StiDetectorNode *>::const_iterator layer;
-    vector<StiDetectorNode *>::const_reverse_iterator rlayer;
- 
-    if ((!direction)) {
--      if (debug() > 2) cout << endl << "out-in" << endl;
-+      //if (debug() > 2) cout << endl << "out-in" << endl;
- 
-       rlayer = _detectorContainer->rbeginRadial(leadDet); rlayer++;
-    }
-    else {
--      if (debug() > 2) cout << endl << "in-out" << endl;
-+      //if (debug() > 2) cout << endl << "in-out" << endl;
- 
-       layer = _detectorContainer->beginRadial(leadDet);    layer++;
-    }
-@@ -653,7 +653,7 @@ void StiKalmanTrackFinder::find(StiKalmanTrack *track, int direction, StiKalmanT
-          vector<StiDetectorNode *>::const_iterator sector;
-          vector<StiDetector *> detectors;
- 
--         if (debug() > 2) cout << endl << "lead node:" << *leadNode << endl << " lead det:" << *leadDet;
-+         //if (debug() > 2) cout << endl << "lead node:" << *leadNode << endl << " lead det:" << *leadDet;
- 
-          //#define PEREV
- 
-@@ -717,7 +717,7 @@ void StiKalmanTrackFinder::find(StiKalmanTrack *track, int direction, StiKalmanT
-             StiDetector *tDet = *d;
- 
-             if (debug() > 2) {
--               cout << endl << "target det:" << *tDet;
-+               cout << endl << "target det shape:" << *tDet->getShape();
-                cout << endl << "lead angle:" << projAngle *radToDeg
-                     << " this angle:" << radToDeg*(*d)->getPlacement()->getNormalRefAngle() << endl;
-             }
-@@ -734,14 +734,16 @@ void StiKalmanTrackFinder::find(StiKalmanTrack *track, int direction, StiKalmanT
- 
-             if (position < 0 || position > kEdgeZplus) {
-                // not reaching this detector layer - stop track
--               if (debug() > 2) cout << "TRACK DOES NOT REACH CURRENT volume" << endl;
--
-+               if (debug() > 2) cout << "TRACK DOES NOT REACH CURRENT volume: " << tDet->getName() << endl;
-                if (debug() >= 1) StiKalmanTrackNode::PrintStep();
- 
-                continue; // will try the next available volume on this layer
-             }
- 
--            if (debug() > 2) cout << "position " << position << "<=kEdgeZplus";
-+            if (debug() > 2) {
-+               cout << "TRACK DID REACH CURRENT volume: " << tDet->getName() << endl;
-+               cout << "position " << position << "<=kEdgeZplus";
-+            }
- 
-             assert(testNode.isValid());
-             testNode.setDetector(tDet);
-@@ -832,14 +834,24 @@ void StiKalmanTrackFinder::find(StiKalmanTrack *track, int direction, StiKalmanT
-                nodeQA(node, position, active, qaTry);
-                leadNode->add(node, direction);
- 
-+               // Recursive call of find(StiKalmanTrack *track, int direction, StiKalmanTrackNode *leadNode, QAFind &qa)
-                if (qaTry.qa > -2) find(track, direction, node, qaTry);
- 
-                if (jHit == 0) { qaBest = qaTry; continue;}
- 
-                int igor = compQA(qaBest, qaTry, maxChi2);
- 
--               if (igor < 0) { leadNode->remove(0);}
--               else          { leadNode->remove(1); qaBest = qaTry;}
-+               Info("find", "XXX igor: %d", igor);
-+
-+               if (igor < 0) {
-+                  leadNode->print("XYZEPTC");
-+                  leadNode->remove(0);
-+
-+               }
-+               else {
-+                  leadNode->print("XYZEPTC");
-+                  leadNode->remove(1); qaBest = qaTry;
-+               }
-             }
- 
-             qa = qaBest; gLevelOfFind--; return;
-diff --git a/Sti/StiKalmanTrackNode.cxx b/Sti/StiKalmanTrackNode.cxx
-index 8e1d7cf..c6c5763 100644
---- a/Sti/StiKalmanTrackNode.cxx
-+++ b/Sti/StiKalmanTrackNode.cxx
-@@ -496,7 +496,7 @@ void StiKalmanTrackNode::Break(int kase)
-    2   => 4 - test matrix manipulation
-    3   => 8 - test locate
-  */
--int StiKalmanTrackNode::_debug = 0;
-+int StiKalmanTrackNode::_debug = 1;
- int StiKalmanTrackNode::_laser = 0;
- 
- //______________________________________________________________________________
-@@ -1576,6 +1576,9 @@ void StiKalmanTrackNode::propagateMCS(StiKalmanTrackNode *previousNode, const St
-    double eloss = calculator->calculate(1., m, beta2);
-    dE = sign * dxEloss * eloss;
- 
-+   printf("XXX:ds: dE = sign * dxEloss * eloss: %f = %f * %f * %f * 1e6\n", dE*1e6, sign, dxEloss, eloss);
-+   printf("XXX:ds: pL2/pL1/pL3: %.5f/%.5f/%.5f, d1/d2/d3: %.5f/%.5f/%.5f, x0/x0Gas/x0p: %.5f/%.5f/%.5f\n", pL2, pL1, pL3, d1, d2, d3, x0, x0Gas, x0p);
-+
-    if (TMath::Abs(dE) > 0) {
-       if (debug()) {
-          commentdEdx  = Form("%6.3g cm(%5.2f) %6.3g keV %6.3f GeV", mgP.dx, 100*relRadThickness, 1e6*dE, TMath::Sqrt(e2) - m);
-@@ -2330,7 +2333,10 @@ int   StiKalmanTrackNode::print(const char *opt) const
- 
-    StiHit *hit = getHit();
- 
--   if (strchr(opt, 'h') && !hit) 	return 0;
-+   if (strchr(opt, 'h') && !hit) {
-+      printf("\n");
-+      return 0;
-+   }
- 
-    TString ts;
- 
-@@ -2338,10 +2344,23 @@ int   StiKalmanTrackNode::print(const char *opt) const
- 
-    if (hit) {ts += (getChi2() > 1e3) ? "h" : "H";}
- 
--   printf("%p(%s)", (void *)this, ts.Data());
-+   printf("%p(%2s)", (void*) this, ts.Data());
-+
-+   if (strchr(opt, '2')) printf(" %s=%g", "ch2", getChi2());
-+
-+   std::string availOpts(txt);
-+   std::string userOpts(opt);
- 
--   if (strchr(opt, '2')) printf("\t%s=%g", "ch2", getChi2());
-+   // Print losses if requested
-+   printf(" eloss=%.3f", mEnergyLosses);
- 
-+   // Print volume/detector name
-+   if (getDetector()) 
-+      printf("%.30s", getDetector()->getName().c_str());
-+   else
-+      printf("%.30s");
-+
-+   // Print node coordinates and direction
-    for (int i = 0; txt[i]; i++) {
-       if (!strchr(opt, txt[i])) continue;
- 
-@@ -2367,9 +2386,10 @@ int   StiKalmanTrackNode::print(const char *opt) const
-          }
-       }
- 
--      printf("\t%c=%g", txt[i], val);
-+      printf("% 10.5g", val);
- 
--      if (err) printf("(%6.1g)", err);
-+      if (err) printf("(% 6.1g)", err);
-+      else     printf("        ");
-    }//end for i
- 
-    for (int i = 0; hit && hhh[i]; i++) {
-@@ -2396,7 +2416,6 @@ int   StiKalmanTrackNode::print(const char *opt) const
-       if (err) printf("(%6.1g)", err);
-    }
- 
--   printf("\n");
-    return 1;
- }
- //________________________________________________________________________________
-diff --git a/Sti/StiVMCToolKit.cxx b/Sti/StiVMCToolKit.cxx
-index b438c54..449aab3 100644
---- a/Sti/StiVMCToolKit.cxx
-+++ b/Sti/StiVMCToolKit.cxx
-@@ -816,6 +816,7 @@ TGeoPhysicalNode *StiVMCToolKit::Alignment(const TGeoNode *nodeT, const Char_t *
-     for (Int_t i = 0; i < N; i++) {
-       TGeoPhysicalNode *nod = dynamic_cast<TGeoPhysicalNode *> (listP->At(i));
-       if (nod && TString(nod->GetName()) == TString(pathT)) {
-+         cout << "nod name: " << nod->GetName() << endl;
- 	nodeP = nod; break;
-       }
-     }
--- 
-1.8.2.GIT
-
-
-From fd5e88df26e5b40c2553ed591a8594a90ddbaeaa Mon Sep 17 00:00:00 2001
+From 278289d843c9dcd9ddb96d3104ffbfae4c1a55e3 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 17:06:22 -0400
-Subject: [PATCH 09/10] Doxygen
+Subject: [PATCH 8/9] Doxygen
 
 ---
  Sti/StiKalmanTrackFinder.cxx | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/Sti/StiKalmanTrackFinder.cxx b/Sti/StiKalmanTrackFinder.cxx
-index 7c8876f..edb3a51 100644
+index f172e56..8799c11 100644
 --- a/Sti/StiKalmanTrackFinder.cxx
 +++ b/Sti/StiKalmanTrackFinder.cxx
 @@ -297,6 +297,7 @@ void StiKalmanTrackFinder::extendSeeds(double rMin)
@@ -7563,7 +7295,7 @@ index 7c8876f..edb3a51 100644
   */
  //______________________________________________________________________________
  void StiKalmanTrackFinder::extendTracksToVertex(StiHit *vertex)
-@@ -940,6 +944,7 @@ int StiKalmanTrackFinder::compQA(QAFind &qaBest, QAFind &qaTry, double maxChi2)
+@@ -928,6 +932,7 @@ int StiKalmanTrackFinder::compQA(QAFind &qaBest, QAFind &qaTry, double maxChi2)
  }
  
  //______________________________________________________________________________
@@ -7575,10 +7307,10 @@ index 7c8876f..edb3a51 100644
 1.8.2.GIT
 
 
-From f3ec40786b6f4f11f9e05e13881616f10e6b0cec Mon Sep 17 00:00:00 2001
+From ebaf6ecb99999938d055c7c6020e888f729c6bb1 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 17:09:24 -0400
-Subject: [PATCH 10/10] Class method is not defined anywhere
+Subject: [PATCH 9/9] Class method is not defined anywhere
 
 ---
  Sti/StiDetectorContainer.h | 2 --
