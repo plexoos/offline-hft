@@ -4,6 +4,7 @@
 
 #include "TChain.h"
 #include "TError.h"
+#include "TRandom.h"
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
@@ -50,10 +51,14 @@ void loop_hftree(PrgOptionProcessor &poProc)
    EventT *eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e", &eventT);
 
+   TRandom myRandom;
+
    for (int iEvent = 1; iEvent <= nTreeEvents; iEvent++, nProcEvents++)
    {
       if ( nTreeEvents >= 10 && iEvent % int(nTreeEvents*0.1) == 0 )
          Info("loop_hftree", "Analyzing event %d", iEvent);
+
+      if (myRandom.Rndm() > poProc.GetSparsity()) continue;
 
       myTreeFileChain->GetEntry(iEvent-1);
 
