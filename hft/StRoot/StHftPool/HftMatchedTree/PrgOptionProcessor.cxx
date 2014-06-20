@@ -67,12 +67,12 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::cout << "fHftreeFile: " << hftreeFile << std::endl;
       std::ifstream tmpFileCheck(hftreeFile.c_str());
       if (!tmpFileCheck.good()) {
-         Error("process_options", "File \"%s\" does not exist", hftreeFile.c_str());
+         Error("ProcessOptions", "File \"%s\" does not exist", hftreeFile.c_str());
          tmpFileCheck.close();
          exit(EXIT_FAILURE);
       }
    } else {
-      Error("process_options", "Input file not set");
+      Error("ProcessOptions", "Input file not set");
       exit(EXIT_FAILURE);
    }
 
@@ -84,7 +84,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::ifstream volListFile(fileName.c_str());
 
       if (!volListFile.good()) {
-         Error("process_options", "File \"%s\" does not exist", fileName.c_str());
+         Error("ProcessOptions", "File \"%s\" does not exist", fileName.c_str());
          volListFile.close();
          exit(EXIT_FAILURE);
       }
