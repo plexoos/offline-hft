@@ -10,7 +10,7 @@
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
-   fVolumeList(), fMaxEventsUser(0)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1)
 {
    InitOptions();
 }
@@ -18,7 +18,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
-   fVolumeList(), fMaxEventsUser(0)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1)
 {
    InitOptions();
    ProcessOptions(argc, argv);
@@ -34,6 +34,7 @@ void PrgOptionProcessor::InitOptions()
        "OR a text file with a list of such ROOT files")
       ("volume-pattern-flist,p",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
+      ("sparsity,s",          po::value<float>(&fSparsity)->default_value(1), "Approximate fraction of events to read and process")
    ;
 }
 
@@ -110,6 +111,15 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    if (fOptionsValues.count("max-events"))
    {
       std::cout << "max-events: " << fMaxEventsUser << std::endl;
+   }
+
+   if (fOptionsValues.count("sparsity"))
+   {
+      if (fSparsity > 1 || fSparsity <= 0) {
+         Warning("ProcessOptions", "Sparsity specified value outside allowed limits. Set to 1");
+         fSparsity = 1;
+      }
+      std::cout << "sparsity: " << fSparsity << std::endl;
    }
 }
 
