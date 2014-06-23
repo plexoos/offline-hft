@@ -32,7 +32,7 @@ void PrgOptionProcessor::InitOptions()
       ("help,h",              "Print help message")
       ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
        "OR a text file with a list of such ROOT files")
-      ("volume-pattern-flist,p",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
+      ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
       ("sparsity,s",          po::value<float>(&fSparsity)->default_value(1), "Approximate fraction of events to read and process")
    ;
@@ -78,13 +78,11 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
 
    if (fOptionsValues.count("volume-pattern-flist"))
    {
-      std::string fileName = boost::any_cast<std::string>(fOptionsValues["volume-pattern-flist"].value());
-
-      std::cout << "fVolumeListFile: " << fileName << std::endl;
-      std::ifstream volListFile(fileName.c_str());
+      std::cout << "fVolumeListFile: " << fVolumeListFile << std::endl;
+      std::ifstream volListFile(fVolumeListFile.c_str());
 
       if (!volListFile.good()) {
-         Error("ProcessOptions", "File \"%s\" does not exist", fileName.c_str());
+         Error("ProcessOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
          volListFile.close();
          exit(EXIT_FAILURE);
       }
@@ -99,7 +97,10 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
          fVolumeList.insert(pattern);
       }
 
-      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(cout, "\n"));
+      Info("ProcessOptions", "User patterns (fVolumeList) are:");
+      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
+   }
+
 
    } else // Default list of patterns
    {

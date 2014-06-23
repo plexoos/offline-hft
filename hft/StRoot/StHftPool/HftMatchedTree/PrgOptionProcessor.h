@@ -41,7 +41,7 @@ protected:
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
    std::string             fHftreeFile;
-   std::string             fVolumeListFile;
+   std::string             fVolumeListFile;  ///< Full path to a text file with Sti/TGeo volume names
    std::set<std::string>   fVolumeList;      ///< A list of volume names to consider
    unsigned int            fMaxEventsUser;
    float                   fSparsity;        ///< Approximate fraction of events to read and process
