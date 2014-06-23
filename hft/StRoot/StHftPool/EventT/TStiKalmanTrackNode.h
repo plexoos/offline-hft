@@ -20,6 +20,7 @@ public:
    const TVector3& GetTrackP() const { return fTrackP; }
    const TVector3& GetPosition() const { return fPosition; }
    double GetEnergyLosses() const { return fEnergyLosses; }
+   double GetNodeRadius() const { return fNodeRadius; }
    std::string GetVolumeName() const { return fVolumeName; }
    bool   MatchedVolName(const std::string & pattern) const;
    bool   MatchedVolName(const std::set<std::string> & patterns) const;

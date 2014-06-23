@@ -99,14 +99,14 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
 
       ((TProfile2D*) mHs["hVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
-      ((TProfile2D*) mHs["hVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Perp(), fabs(kalmNode.GetEnergyLosses()), 1);
+      ((TProfile2D*) mHs["hVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
 
       if (!volumeList || !kalmNode.MatchedVolName(*volumeList) ) continue;
 
       ((TProfile2D*) mHs["hSelectVolELossVsTrackEtaVsPhi"])->Fill(kalmNode.GetTrackP().Eta(), kalmNode.GetTrackP().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Eta(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
-      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Perp(), fabs(kalmNode.GetEnergyLosses()), 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
    }
 }
 
