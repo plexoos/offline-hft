@@ -49,7 +49,9 @@ void loop_hftree(PrgOptionProcessor &poProc)
    Info("loop_hftree", "Found tree/chain with nTreeEvents: %d", nTreeEvents);
 
    EventT *eventT = new EventT();
-   myTreeFileChain->SetBranchAddress("e", &eventT);
+   myTreeFileChain->SetBranchAddress("e.", &eventT);
+   myTreeFileChain->SetBranchStatus("e.*", false);
+   myTreeFileChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
 
    TRandom myRandom;
 

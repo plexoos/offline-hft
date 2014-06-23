@@ -115,7 +115,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B)
    std::cout << "Total number of events = " << NMAX << endl;
 
    eventT = new EventT();
-   myTreeFileChain->SetBranchAddress("e", &eventT);
+   myTreeFileChain->SetBranchAddress("e.", &eventT);
 
    // Create views and containers
    make_geometry(poProc);
@@ -142,7 +142,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumb
    gHftGuiEventCounter = 0;
 
    eventT = new EventT();
-   myTreeFileChain->SetBranchAddress("e", &eventT);
+   myTreeFileChain->SetBranchAddress("e.", &eventT);
 
    // Create views and containers
    make_geometry(poProc);

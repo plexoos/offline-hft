@@ -123,10 +123,10 @@ void HftMatchedTree::SetTree()
    fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 
    Int_t bufsize = 64000;
-   Int_t split   = 0;      // 0 means do not split event
+   Int_t split   = 99;      // 0 means do not split event
 
    fEvent = new EventT();
-   TBranch *branch = fTree->Branch("e", "EventT", &fEvent, bufsize, split);
+   TBranch *branch = fTree->Branch("e.", "EventT", &fEvent, bufsize, split);
    branch->SetAutoDelete(kFALSE);
 }
 
