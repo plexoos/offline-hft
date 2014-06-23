@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 
    PrgOptionProcessor poProc(argc, argv);
 
-   TApplication *myApp = new TApplication("myApp", &argc, argv);
+   TApplication *myApp = new TApplication("myApp", 0, 0);
 
    hft_display(poProc, -1);
 
