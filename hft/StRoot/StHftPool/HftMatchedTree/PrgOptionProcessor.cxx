@@ -101,6 +101,15 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       while ( volListFile.good() )
       {
          volListFile >> pattern;
+
+         try {
+            boost::regex re(pattern);
+         }
+         catch (boost::regex_error& e) {
+            Error("ProcessOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
+            exit(EXIT_FAILURE);
+         }
+
          if (volListFile.eof()) break;
 
          fVolumeList.insert(pattern);
