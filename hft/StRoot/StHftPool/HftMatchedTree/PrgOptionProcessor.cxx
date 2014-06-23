@@ -10,6 +10,7 @@
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1)
 {
    InitOptions();
@@ -18,6 +19,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1)
 {
    InitOptions();
@@ -32,6 +34,7 @@ void PrgOptionProcessor::InitOptions()
       ("help,h",              "Print help message")
       ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
        "OR a text file with a list of such ROOT files")
+      ("volume-pattern,p",    po::value<std::string>(&fVolumePattern)->implicit_value("process_all_volumes"), "A regex pattern Sti/TGeo volume names")
       ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
       ("sparsity,s",          po::value<float>(&fSparsity)->default_value(1), "Approximate fraction of events to read and process")
@@ -108,7 +111,28 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    }
 
 
+   if (fOptionsValues.count("volume-pattern"))
    {
+      // Process implicit value first
+      if (fVolumePattern.compare("process_all_volumes") == 0) {
+         fVolumeList.clear();
+      }
+      else {
+
+         try {
+            boost::regex re(fVolumePattern);
+         }
+         catch (boost::regex_error& e) {
+            Error("ProcessOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
+            exit(EXIT_FAILURE);
+         }
+
+         fVolumeList.clear();
+         fVolumeList.insert(fVolumePattern);
+      }
+
+      Info("ProcessOptions", "User patterns (fVolumeList) are:");
+      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
    }
 
 
