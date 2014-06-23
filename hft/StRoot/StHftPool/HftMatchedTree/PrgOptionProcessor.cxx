@@ -36,6 +36,11 @@ void PrgOptionProcessor::InitOptions()
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
       ("sparsity,s",          po::value<float>(&fSparsity)->default_value(1), "Approximate fraction of events to read and process")
    ;
+
+   // Set default values for Sti volume name patterns. These are used if the user does not use any
+   // of the options to modify them
+   fVolumeList.insert("^.*IDSM_1/IBMO_1/IBAM_[\\d]+/ILSB.*$");
+   fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_[\\d]+/LADR_\\d/PXSI_[\\d]+/PLAC.*$");
 }
 
 
@@ -87,6 +92,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
          exit(EXIT_FAILURE);
       }
 
+      fVolumeList.clear();
       std::string pattern;
 
       while ( volListFile.good() )
@@ -102,10 +108,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    }
 
 
-   } else // Default list of patterns
    {
-      fVolumeList.insert("^.*IDSM_1/IBMO_1/IBAM_[\\d]+/ILSB.*$");
-      fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_[\\d]+/LADR_\\d/PXSI_[\\d]+/PLAC.*$");
    }
 
 
