@@ -16,10 +16,8 @@ TStiKalmanTrack::TStiKalmanTrack() : TObject(),
 TStiKalmanTrack::TStiKalmanTrack(const StiKalmanTrack & stiKTrack) : TObject(),
    fNodes(), fEnergyLosses(0)
 {
-   StiKTNIterator it = stiKTrack.begin();
-
    // Loop over track nodes
-   for ( ; it != stiKTrack.end(); ++it)
+   for (StiKTNIterator it = stiKTrack.begin(); it != stiKTrack.end(); ++it)
    {
       StiKalmanTrackNode *stiNode = &(*it);
 

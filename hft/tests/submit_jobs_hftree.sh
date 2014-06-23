@@ -18,8 +18,8 @@ BFC_OPTIONS='tpcRS y2014a AgML MakeEvent ITTF pxlFastSim PxlIT pxlDb istDb istFa
 # Replace all spaces with underscores
 BFC_OPTIONS=`echo ${BFC_OPTIONS[*]} | sed 's/ /_/g'`
 
-INP_DIR=$OFFLINE_HFT_RESULTS_DIR/z_scan_3
-OUT_DIR=$OFFLINE_HFT_RESULTS_DIR/z_scan_hftree_3
+INP_DIR=$OFFLINE_HFT_RESULTS_DIR
+OUT_DIR=$OFFLINE_HFT_RESULTS_DIR
 
 echo
 echo RUN_FILE_LIST   = $RUN_FILE_LIST
@@ -35,7 +35,7 @@ for JOB_RUN_FILE_NAME in `cat $RUN_FILE_LIST`
 do
    echo
    echo "Submitting job for JOB_RUN_FILE_NAME =" $JOB_RUN_FILE_NAME
-   star-submit-template -template $OFFLINE_HFT_DIR/offline/hft/tests/job_template.xml \
+   star-submit-template -template $OFFLINE_HFT_DIR/offline/hft/tests/job_template_hftree.xml \
       -entities INP_DIR=$INP_DIR,OUT_DIR=$OUT_DIR,CODE_DIR=$OFFLINE_HFT_DIR,JOB_RUN_FILE_NAME=$JOB_RUN_FILE_NAME,STAR_VERSION=$STAR_VERSION,STAR_HOST_SYS=$STAR_HOST_SYS,BFC_OPTIONS=$BFC_OPTIONS,LOG_DIR=$OUT_DIR
    echo
 done

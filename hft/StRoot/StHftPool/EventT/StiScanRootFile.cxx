@@ -71,8 +71,8 @@ void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string
 {
    std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = eventT.fTStiKalmanTracks.begin();
 
-   for ( ; iTStiKTrack != eventT.fTStiKalmanTracks.end(); ++iTStiKTrack) {
-      //iTStiKTrack->Print();
+   for ( ; iTStiKTrack != eventT.fTStiKalmanTracks.end(); ++iTStiKTrack)
+   {
       const TStiKalmanTrack &kalmTrack = *iTStiKTrack;
 
       FillHists(kalmTrack, volumeList);

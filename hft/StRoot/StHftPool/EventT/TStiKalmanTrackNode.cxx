@@ -1,4 +1,3 @@
-
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 #include <boost/regex.hpp>
@@ -28,16 +27,10 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TOb
    fEnergyLosses = stiKTN.getEnergyLosses();
 
    if (stiKTN.getDetector()) {
-      Info("TStiKalmanTrackNode", "detector found: %s", stiKTN.getDetector()->getName().c_str());
       fVolumeName = stiKTN.getDetector()->getName();
-      Info("TStiKalmanTrackNode", "detector found: %s", fVolumeName.c_str());
-
       StiPlacement* stiPlacement = stiKTN.getDetector()->getPlacement();
       assert(stiPlacement);
       fNodeRadius = stiPlacement->getLayerRadius();
-
-   } else {
-      Info("TStiKalmanTrackNode", "detector not found:" );
    }
 }
 
