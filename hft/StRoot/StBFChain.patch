@@ -273,36 +273,10 @@ index 9fef44c..457f583 100644
 1.8.2.GIT
 
 
-From fbfb934daaae6b75dcafbf56e1c38b3f47bbc054 Mon Sep 17 00:00:00 2001
-From: Dmitri Smirnov <d.s@plexoos.com>
-Date: Tue, 27 May 2014 11:41:07 -0400
-Subject: [PATCH 08/10] Added an option to run StiLajaTester from
- offline/hft/StHftPool
-
----
- BigFullChain.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/BigFullChain.h b/BigFullChain.h
-index 457f583..9c4f769 100644
---- a/BigFullChain.h
-+++ b/BigFullChain.h
-@@ -1670,6 +1670,7 @@ Bfc_st BFC[] = {
-    ,                              "StSvtPoolEventT,StSvtPoolSvtMatchedTree","Create SvtMatchedTree",kFALSE},
-   {"HftMatTree", "", "", "pxlUtil", "HftMatchedTree",
- 	                      "libEve StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
-+  {"StiLajaTester", "", "", "", "StiLajaTester",  "StiLajaTester", "A maker to test track reconstruction with Sti", kFALSE},
-   {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
-    ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
-   {"SpinTag"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
--- 
-1.8.2.GIT
-
-
-From d5c82c21ffdb68309bb07969c188db835c2f6109 Mon Sep 17 00:00:00 2001
+From f2c74382aad715bab54866c9f06f6be5cf38655a Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 18:21:53 -0400
-Subject: [PATCH 09/10] Load a boost library since StHftPool/HftMatTree depends
+Subject: [PATCH 08/10] Load a boost library since StHftPool/HftMatTree depends
  on it
 
 ---
@@ -310,7 +284,7 @@ Subject: [PATCH 09/10] Load a boost library since StHftPool/HftMatTree depends
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 9c4f769..0bf892d 100644
+index 457f583..5f95fc3 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1669,7 +1669,7 @@ Bfc_st BFC[] = {
@@ -319,17 +293,17 @@ index 9c4f769..0bf892d 100644
    {"HftMatTree", "", "", "pxlUtil", "HftMatchedTree",
 -	                      "libEve StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
 +	                      "libEve boost_program_options StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
-   {"StiLajaTester", "", "", "", "StiLajaTester",  "StiLajaTester", "A maker to test track reconstruction with Sti", kFALSE},
    {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
     ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
+   {"SpinTag"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
 -- 
 1.8.2.GIT
 
 
-From 0ab2f0c8501ed6d892b2fad2cec3cfe3cbfeb532 Mon Sep 17 00:00:00 2001
+From 922f8283af18038d9391e504c916e5e61e7d05e1 Mon Sep 17 00:00:00 2001
 From: Dmitri Smirnov <d.s@plexoos.com>
 Date: Thu, 12 Jun 2014 18:23:06 -0400
-Subject: [PATCH 10/10] Add explicit dependence of PxlHit on PxlCluster on
+Subject: [PATCH 09/10] Add explicit dependence of PxlHit on PxlCluster on
  PxlRaw packages
 
 ---
@@ -337,7 +311,7 @@ Subject: [PATCH 10/10] Add explicit dependence of PxlHit on PxlCluster on
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/BigFullChain.h b/BigFullChain.h
-index 0bf892d..e02d440 100644
+index 5f95fc3..bec3982 100644
 --- a/BigFullChain.h
 +++ b/BigFullChain.h
 @@ -1364,8 +1364,8 @@ Bfc_st BFC[] = {
@@ -351,6 +325,33 @@ index 0bf892d..e02d440 100644
    //{"pxlMon"    ,"","","StEvent"              ,"StPxlMonMaker","StPxlMonMaker","Example of Pxl QA",kFALSE},
  
    {"istFastSim","","","StMcEvent,StEvent"
+-- 
+1.8.2.GIT
+
+
+From ce8cbc22ca746f1fc0a0aa7cd910200836f0e0de Mon Sep 17 00:00:00 2001
+From: Dmitri Smirnov <d.s@plexoos.com>
+Date: Tue, 24 Jun 2014 11:21:45 -0400
+Subject: [PATCH 10/10] Need to load boost_regex library for StHftPool because
+ StHftPool/EventT depends on it
+
+---
+ BigFullChain.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/BigFullChain.h b/BigFullChain.h
+index bec3982..b364a8f 100644
+--- a/BigFullChain.h
++++ b/BigFullChain.h
+@@ -1669,7 +1669,7 @@ Bfc_st BFC[] = {
+   {"SvtMatTree","","","","SvtMatchedTree"
+    ,                              "StSvtPoolEventT,StSvtPoolSvtMatchedTree","Create SvtMatchedTree",kFALSE},
+   {"HftMatTree", "", "", "pxlUtil", "HftMatchedTree",
+-	                      "libEve boost_program_options StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
++	                      "libEve boost_program_options boost_regex StHftPoolEventT StHftPoolHftMatchedTree", "Create HftMatchedTree", kFALSE},
+   {"LAna"        ,"","","in,detDb,StEvent,tpcDb","StLaserAnalysisMaker"
+    ,                                                   "StLaserAnalysisMaker","Laser data Analysis",kFALSE},
+   {"SpinTag"     ,"","","",                              "","","WARNING *** Option is OBSOLETE ***",kFALSE},
 -- 
 1.8.2.GIT
 
