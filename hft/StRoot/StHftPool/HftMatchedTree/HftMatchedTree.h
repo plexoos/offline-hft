@@ -1,5 +1,6 @@
-#ifndef __HftMatchedTree_H
-#define __HftMatchedTree_H
+#ifndef HftMatchedTree_h
+#define HftMatchedTree_h
+
 #include "StMaker.h"
 #include "TFile.h"
 #include "TArrayI.h"

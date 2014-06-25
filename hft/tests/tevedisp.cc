@@ -24,8 +24,6 @@
 
 #include "tutorials/eve/MultiView.C"
 
-#include "StarVMC/Geometry/Geometry.h"
-#include "StarVMC/StarAgmlLib/StarTGeoStacker.h"
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/EventT/GuiEventHandler.h"
 

@@ -253,7 +253,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
 
          if (!IstLadderHitCollection) continue;
 
-         for (UInt_t j = 0; j < kIstNumSensorsPerLadder; j++) {
+         for (int j = 0; j < kIstNumSensorsPerLadder; j++) {
             StIstSensorHitCollection *IstSensorHitCollection = IstLadderHitCollection->sensor(j);
 
             if (!IstSensorHitCollection) continue;
@@ -685,10 +685,6 @@ Int_t EventT::Fill(StiTrackContainer &stiTrackContainer)
          Info("Fill", "Invalid kalman kTrack. Skipping to next one...");
          continue;
       }
-
-      Info("Fill", "P: %f", kalmanTrack->getP());
-
-      kalmanTrack->print("XYZEPTC");
 
       fTStiKalmanTracks.push_back( TStiKalmanTrack(*kalmanTrack) );
    }
