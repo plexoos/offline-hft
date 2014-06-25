@@ -31,6 +31,7 @@ public:
    const std::set<std::string>&  GetVolumeList() const { return fVolumeList; }
    unsigned int GetMaxEventsUser() const;
    float GetSparsity() const { return fSparsity; }
+   bool  SaveGraphics() const { return fSaveGraphics; }
 
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
@@ -46,6 +47,7 @@ protected:
    std::set<std::string>   fVolumeList;      ///< A list of volume names to consider
    unsigned int            fMaxEventsUser;
    float                   fSparsity;        ///< Approximate fraction of events to read and process
+   bool                    fSaveGraphics;    ///< A flag to create images when set
 
 private:
    

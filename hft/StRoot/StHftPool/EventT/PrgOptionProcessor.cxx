@@ -11,7 +11,7 @@
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
-   fVolumeList(), fMaxEventsUser(0), fSparsity(1)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false)
 {
    InitOptions();
 }
@@ -20,7 +20,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
-   fVolumeList(), fMaxEventsUser(0), fSparsity(1)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false)
 {
    InitOptions();
    ProcessOptions(argc, argv);
@@ -38,6 +38,7 @@ void PrgOptionProcessor::InitOptions()
       ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
       ("sparsity,s",          po::value<float>(&fSparsity)->default_value(1), "Approximate fraction of events to read and process")
+      ("save-graph,g",        "Use this option to save plots in png format")
    ;
 
    // Set default values for Sti volume name patterns. These are used if the user does not use any
@@ -159,6 +160,9 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       }
       std::cout << "sparsity: " << fSparsity << std::endl;
    }
+
+   if (fOptionsValues.count("save-graph") )
+      fSaveGraphics = true;
 }
 
 
