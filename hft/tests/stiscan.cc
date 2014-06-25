@@ -5,6 +5,7 @@
 #include "TChain.h"
 #include "TError.h"
 #include "TRandom.h"
+#include "TROOT.h"
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
@@ -68,5 +69,10 @@ void loop_hftree(PrgOptionProcessor &poProc)
    }
 
    delete eventT;
+
+   if (poProc.SaveGraphics()) {
+      outRootFile.SaveAllAs();
+   }
+
    outRootFile.Close();
 }
