@@ -10,13 +10,13 @@ ClassImp(TStiKalmanTrackNode)
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
-   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fVolumeName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fNodeCenterRefAngle(0), fVolumeName()
 {
 }
 
 
 TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TObject(),
-   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fVolumeName()
+   fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fNodeCenterRefAngle(0), fVolumeName()
 {
    // Access node parameters
    fPosition.SetXYZ(stiKTN.x_g(), stiKTN.y_g(), stiKTN.z_g());
@@ -31,6 +31,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TOb
       StiPlacement* stiPlacement = stiKTN.getDetector()->getPlacement();
       assert(stiPlacement);
       fNodeRadius = stiPlacement->getLayerRadius();
+      fNodeCenterRefAngle = stiPlacement->getCenterRefAngle();
    }
 }
 
