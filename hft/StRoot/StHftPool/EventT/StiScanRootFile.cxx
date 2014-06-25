@@ -1,5 +1,6 @@
 #include "StiScanRootFile.h"
 
+#include "TCanvas.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TROOT.h"
@@ -124,4 +125,32 @@ void StiScanRootFile::Close(Option_t *option)
 
    Info("Close", "%s", GetName());
    TFile::Close(option);
+}
+
+
+void StiScanRootFile::SaveAllAs()
+{
+   TCanvas canvas("canvas", "canvas", 1400, 600);
+   canvas.UseCurrentStyle();
+   canvas.SetGridx(true);
+   canvas.SetGridy(true);
+   canvas.SetLogz(true);
+
+   HistMapIter iHist = mHs.begin();
+
+   for ( ; iHist!=mHs.end(); ++iHist) {
+      // For shorthand
+      string   objName = iHist->first;
+      TObject *obj      = iHist->second;
+
+      if (!obj) {
+         Error("SaveAllAs", "No object found for key %s. Skipping...", objName.c_str());
+         continue;
+      }
+
+      obj->Draw();
+
+      string sFileName =  "c_" + objName + ".png";
+      canvas.SaveAs(sFileName.c_str());
+   }
 }

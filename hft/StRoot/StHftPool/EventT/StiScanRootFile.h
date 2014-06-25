@@ -28,6 +28,7 @@ public:
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
    void Close(Option_t *option="");
+   void SaveAllAs();
 
  private:
 
