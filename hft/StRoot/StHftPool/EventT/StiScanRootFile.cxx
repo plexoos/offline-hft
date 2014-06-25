@@ -125,7 +125,7 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
       ((TProfile2D*) mHs["hVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
 
-      if (!volumeList || !kalmNode.MatchedVolName(*volumeList) ) continue;
+      if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
 
       ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi_trk"])->Fill(kalmNode.GetTrackP().Eta(), kalmNode.GetTrackP().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
 

@@ -48,7 +48,7 @@ TStiKalmanTrackNode & TStiKalmanTrackNode::operator=(const StiKalmanTrackNode &s
 
 bool TStiKalmanTrackNode::MatchedVolName(const std::string & pattern) const
 {
-   if (fVolumeName.empty()) return false;
+   if (fVolumeName.empty()) return true;
 
    boost::regex r(pattern);
    bool matched = boost::regex_match(fVolumeName, r);

@@ -169,7 +169,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
 bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 {
    if (volName.empty() || fVolumeList.empty())
-      return false;
+      return true;
 
    std::set<std::string>::const_iterator iPattern = fVolumeList.begin();
 
