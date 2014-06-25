@@ -35,6 +35,8 @@ public:
    void BookHists();
 
    HistMap mHs;
+   double  mNodeZMin;
+   double  mNodeZMax;
 
    ClassDef(StiScanRootFile, 1)
 };
