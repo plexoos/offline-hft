@@ -86,7 +86,6 @@ TEveTrackList *gTrackList = 0;
 TEvePointSet  *gVtxList = 0;
 TEvePointSet  *gHitList = 0;
 TEvePointSet  *gTrackHitList = 0;
-Int_t NMAX = 0;
 TGeoManager   *gGeoManager = 0;
 
 
@@ -111,8 +110,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B)
 {
    TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
 
-   NMAX = myTreeFileChain->GetEntries();
-   std::cout << "Total number of events = " << NMAX << endl;
+   std::cout << "Total number of events = " << myTreeFileChain->GetEntries() << endl;
 
    eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e.", &eventT);
@@ -137,8 +135,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumb
    char inname[100];
    sprintf(inname, "output/Event_%d.root", runnumber);
    myTreeFileChain->AddFile(inname);
-   NMAX = myTreeFileChain->GetEntries();
-   cout << " Total number of events = " << NMAX << endl;
+   cout << " Total number of events = " << myTreeFileChain->GetEntries() << endl;
    gHftGuiEventCounter = 0;
 
    eventT = new EventT();
@@ -251,7 +248,7 @@ void init(const double B)
 /** Process next event */
 void process_event(TChain &fhtree, Int_t iEvt)
 {
-   if (iEvt >= NMAX) {
+   if (iEvt >= fhtree.GetEntriesFast()) {
       cout << "End of the tree! Go backward! " << endl;
       return;
    }
