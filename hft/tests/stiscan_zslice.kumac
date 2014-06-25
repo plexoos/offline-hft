@@ -23,7 +23,7 @@ make sim/gstar
 gclose all
 debug off
 
-gfile o ./mytest_z_$env(STISCAN_Z).fz
+gfile o ./stiscan_zslice.fz
 user/vxyz 0.0 0.0 $env(STISCAN_Z).01
 user/vsig 0.0001 0.0001
 aguser/gkine 50 8 5.0 5.0 0 0 -3.14159 3.14159

@@ -32,6 +32,8 @@
       ls -al .
 
       starsim -w 0 -b ./stiscan_zslice.kumac
+      mv stiscan_zslice.kumac &JOB_RUN_FILE_NAME;.kumac
+      mv stiscan_zslice.fz &JOB_RUN_FILE_NAME;.fz
 
       ls -al .
 
@@ -39,7 +41,7 @@
 
    </command>
 
-   <output fromScratch="stiscan_zslice.kumac" toURL="file:&OUT_DIR;/"/>
+   <output fromScratch="*.kumac" toURL="file:&OUT_DIR;/"/>
    <output fromScratch="*.fz" toURL="file:&OUT_DIR;/"/>
 
    <stdout URL="file:&LOG_DIR;/&JOB_RUN_FILE_NAME;.log"/>

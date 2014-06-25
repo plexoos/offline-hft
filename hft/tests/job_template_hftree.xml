@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<job filesPerHour="1" maxFilesPerProcess="1" fileListSyntax="xrootd" inputOrder="runnumber" simulateSubmission="false" name="&JOB_RUN_FILE_NAME;">
+<job filesPerHour="1" maxFilesPerProcess="1" fileListSyntax="xrootd" inputOrder="runnumber" simulateSubmission="false" name="&JOB_RUN_BASE_NAME;">
    <ResourceUsage>
       <StorageSpace>
          <MinStorage>20</MinStorage>
@@ -12,18 +12,19 @@
 
    <command>
       echo
-      echo "OUT_DIR:        " &OUT_DIR;
-      echo "CODE_DIR:       " &CODE_DIR;
+      echo "OUT_DIR:             " &OUT_DIR;
+      echo "CODE_DIR:            " &CODE_DIR;
+      echo "JOB_RUN_BASE_NAME:   " &JOB_RUN_BASE_NAME;
       echo "JOB_RUN_FILE_NAME:   " &JOB_RUN_FILE_NAME;
-      echo "STAR_VERSION:   " &STAR_VERSION;
-      echo "STAR_HOST_SYS:  " &STAR_HOST_SYS;
-      echo "BFC_OPTIONS:    " &BFC_OPTIONS;
-      echo "LOG_DIR:        " &LOG_DIR;
+      echo "STAR_VERSION:        " &STAR_VERSION;
+      echo "STAR_HOST_SYS:       " &STAR_HOST_SYS;
+      echo "BFC_OPTIONS:         " &BFC_OPTIONS;
+      echo "LOG_DIR:             " &LOG_DIR;
       echo
 
       starver &STAR_VERSION;
 
-      setenv BFC_INPFILE  &INP_DIR;/&JOB_RUN_FILE_NAME;.fz
+      setenv BFC_INPFILE  &JOB_RUN_FILE_NAME;
       setenv BFC_OPTIONS  `echo &BFC_OPTIONS; | sed 's/_/,/g'`
 
       setenv COMMAND  "root4star -b -q -l bfc.C(1,1000,"\""${BFC_OPTIONS}"\"","\""${BFC_INPFILE}"\"")"
@@ -47,8 +48,8 @@
 
    <output fromScratch="*.hftree.root" toURL="file:&OUT_DIR;/"/>
 
-   <stdout URL="file:&LOG_DIR;/&JOB_RUN_FILE_NAME;.log"/>
-   <stderr URL="file:&LOG_DIR;/&JOB_RUN_FILE_NAME;.log"/>
+   <stdout URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;.log"/>
+   <stderr URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;.log"/>
 
    <SandBox installer="ZIP">
        <Package name="offline_hft">
