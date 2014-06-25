@@ -5,7 +5,7 @@
 #include "TGeoNode.h"
 #include "TChain.h"
 
-#include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
+#include "StHftPool/EventT/PrgOptionProcessor.h"
 
 
 void decodeId(int id, int *sector, int *ladder, int *sensor);

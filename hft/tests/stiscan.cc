@@ -8,7 +8,7 @@
 #include "TROOT.h"
 
 #include "StHftPool/EventT/EventT.h"
-#include "StHftPool/HftMatchedTree/PrgOptionProcessor.h"
+#include "StHftPool/EventT/PrgOptionProcessor.h"
 #include "StHftPool/EventT/StiScanRootFile.h"
 
 
