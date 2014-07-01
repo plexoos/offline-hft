@@ -62,6 +62,9 @@ void StiScanRootFile::BookHists()
    mHs["hVolELossVsZVsR"]     = h = new TProfile2D("hVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 100, 0, 30);
    h->SetOption("colz");
 
+   mHs["hVolELossVsPhiVsR"]     = h = new TProfile2D("hVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, 100, 0, 30);
+   h->SetOption("colz");
+
    // Histograms for selected track nodes/volumes only
    mHs["hSelectVolELossVsEtaVsPhi_trk"] = h = new TProfile2D("hSelectVolELossVsEtaVsPhi_trk", " ; Track #eta; Track #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
@@ -73,6 +76,9 @@ void StiScanRootFile::BookHists()
    h->SetOption("colz");
 
    mHs["hSelectVolELossVsZVsR"]     = h = new TProfile2D("hSelectVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in Select Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 100, 0, 30);
+   h->SetOption("colz");
+
+   mHs["hSelectVolELossVsPhiVsR"]     = h = new TProfile2D("hSelectVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in Select Volumes, keV", 120, -M_PI, M_PI, 100, 0, 30);
    h->SetOption("colz");
 }
 
@@ -124,6 +130,7 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
       ((TProfile2D*) mHs["hVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
+      ((TProfile2D*) mHs["hVolELossVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
 
       if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
 
@@ -132,6 +139,7 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
       ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Eta(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetPosition().Phi(), fabs(kalmNode.GetEnergyLosses()), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetNodeRadius(), fabs(kalmNode.GetEnergyLosses()), 1);
    }
 }
 
