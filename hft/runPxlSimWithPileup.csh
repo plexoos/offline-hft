@@ -4,7 +4,7 @@
 # Daniel Kikola to StMcPxlHitCollection before simulation.
 # 
 # Daniel generated 20 pileup "events" here:
-# /star/data01/pwg/kikola/HFT/PileupCodesData/CombinedPileupFiles/pileupSet*
+# /star/data01/pwg/kikola/HFT/PileupCodesData/July3_2014/CombinedPileupTrees
 # 
 # Currently, you need to give a pileup file to the simulation maker.
 # That file contains 1 event which will be used for all your events in
