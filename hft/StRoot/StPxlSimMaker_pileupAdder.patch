@@ -1,13 +1,25 @@
-diff -rupN StRoot/StPxlSimMaker/.consign ../code_dev_pileup/StRoot/StPxlSimMaker/.consign
+diff -rupN StRoot/StPxlSimMaker/.consign ../StRoot/StPxlSimMaker/.consign
 --- StRoot/StPxlSimMaker/.consign	1969-12-31 19:00:00.000000000 -0500
-+++ ../code_dev_pileup/StRoot/StPxlSimMaker/.consign	2014-06-02 16:17:20.026929000 -0400
++++ ../StRoot/StPxlSimMaker/.consign	2014-07-03 11:06:32.307009000 -0400
 @@ -0,0 +1 @@
-+StPxlSimMaker.h:1401739747 - 459795ea10089132faff566fc6a802c3
-Binary files StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf and ../code_dev_pileup/StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf differ
-diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.cxx ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.cxx
++StPxlSimMaker.h:1404263753 - 459795ea10089132faff566fc6a802c3
+Binary files StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf and ../StRoot/StPxlSimMaker/doc/PXL_ultimate_sensor_flemming.pdf differ
+diff -rupN StRoot/StPxlSimMaker/StPxlFastSim.cxx ../StRoot/StPxlSimMaker/StPxlFastSim.cxx
+--- StRoot/StPxlSimMaker/StPxlFastSim.cxx	2014-03-13 13:00:19.000000000 -0400
++++ ../StRoot/StPxlSimMaker/StPxlFastSim.cxx	2014-07-02 21:36:31.000000000 -0400
+@@ -172,7 +172,7 @@ Int_t StPxlFastSim::addPxlHits(const StM
+                tempHit->setSector(iSec + 1);
+                tempHit->setLadder(mcPix->ladder());
+                tempHit->setSensor(mcPix->sensor());
+-               tempHit->setIdTruth(mcPix->parentTrack()->key(), 100);
++               mcPix->parentTrack()? tempHit->setIdTruth(mcPix->parentTrack()->key(), 100): tempHit->setIdTruth(-999);
+                tempHit->setDetectorId(kPxlId);
+                tempHit->setId(mcPix->key());
+                tempHit->setLocalPosition(localPixHitPos[0], localPixHitPos[1], localPixHitPos[2]);
+diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.cxx ../StRoot/StPxlSimMaker/StPxlPileupAdder.cxx
 --- StRoot/StPxlSimMaker/StPxlPileupAdder.cxx	1969-12-31 19:00:00.000000000 -0500
-+++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.cxx	2014-06-02 16:17:12.000000000 -0400
-@@ -0,0 +1,76 @@
++++ ../StRoot/StPxlSimMaker/StPxlPileupAdder.cxx	2014-07-03 10:55:24.000000000 -0400
+@@ -0,0 +1,166 @@
 +/*
 + *
 + * Author: M. Mustafa
@@ -28,15 +40,37 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.cxx ../code_dev_pileup/StRoot/S
 +#include "TTree.h"
 +#include "TBranch.h"
 +
++#include "TObjectSet.h"
++#include "StPxlDbMaker/StPxlDb.h"
++
 +
 +StPxlPileupAdder::~StPxlPileupAdder()
 +{
++	if(mPxlDb) delete mPxlDb;
 +}
 +//____________________________________________________________
-+Int_t StPxlPileupAdder::init(TString pileupFileName)
++Int_t StPxlPileupAdder::init(TString pileupFileName,const TObjectSet* pxlDbDataSet)
 +{
 +   // run is not used in the current implementation, but might be necessary in the future.
 +   LOG_INFO << "StPxlPileupAdder::init()" << endm;
++
++   if(pxlDbDataSet != 0)
++   {
++	   mPxlDb = (StPxlDb *)pxlDbDataSet->GetObject();
++	   if (!mPxlDb)
++	   {
++		   LOG_ERROR << "StPxlFastSim - E - mPxlDb is not available" << endm;
++		   return kStErr;
++	   }
++	   else
++	   {
++		   LOG_INFO << "StPxlFastSim - Using geometry from pxlDB" <<endm;
++	   }
++   }
++   else
++   {
++	   LOG_INFO << "StPxlPileupAdder - PxlDb is not available this will potentially mess up your transformations for vid==0 hits" <<endm;
++   }
 +
 +   mPileupFile = new TFile(pileupFileName.Data());
 +   if(!mPileupFile)
@@ -74,20 +108,88 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.cxx ../code_dev_pileup/StRoot/S
 +
 +	LOG_INFO<<"StPxlPileupAdder: adding "<<nhits<<" pileup hits."<<endm;
 +
++	cout<<"Number of hits before adding..."<<mcPxlHitCol.numberOfHits()<<endl;
++
 +	for(int i=0;i<nhits;i++)
 +	{
 +		StThreeVectorF hit_x(xLoc[i],yLoc[i],zLoc[i]);
 +		StThreeVectorF hit_p(px[i],py[i],pz[i]);
 +
++		//Long64_t volume_id = vid[i] !=0 ? vid[i] : get_vid(i);
++		//Long64_t volume_id = get_vid(i);
++		//if(volume_id) mcPxlHitCol.addHit(new StMcPxlHit(hit_x,hit_p,de[i],ds[i],0,key[i],volume_id));
++	
 +		mcPxlHitCol.addHit(new StMcPxlHit(hit_x,hit_p,de[i],ds[i],0,key[i],vid[i]));
 +	}
 +
++	cout<<"Number of hits after adding..."<<mcPxlHitCol.numberOfHits()<<endl;
++
 +   return kStOK;
 +}
-diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.h
++//____________________________________________________________
++Long64_t StPxlPileupAdder::get_vid(Int_t i)
++{
++
++	const Double_t globalPos[3] = {x[i],y[i],z[i]};
++	bool found = false;
++	UInt_t sec,lad,sen;
++
++	Float_t min[3] = {0.1,0.1,0.1};
++
++	for(UInt_t iSec=0; iSec < 10; iSec++)
++	{
++		for(UInt_t iLad=0; iLad< 4; iLad++)
++		{
++			for(UInt_t iSen=0; iSen<10; iSen++)
++			{
++				Double_t localPos[3] = {0.,0.,0.};
++
++				TGeoHMatrix* combP = (TGeoHMatrix*)mPxlDb->geoHMatrixSensorOnGlobal(iSec+1,iLad+1,iSen+1);
++				combP->MasterToLocal(globalPos,localPos);
++
++				if(fabs(xLoc[i]-localPos[0])< min[0]
++				&& fabs(yLoc[i]-localPos[1])< min[1]
++				&& fabs(zLoc[i]-localPos[2])< min[2])
++				{
++					sec = iSec+1;
++					lad = iLad+1;
++					sen = iSen+1;
++					min[0] = fabs(xLoc[i]-localPos[0]);
++					min[1] = fabs(yLoc[i]-localPos[1]);
++					min[2] = fabs(zLoc[i]-localPos[2]);
++					
++					found = true;
++					//break;
++				}
++			}
++
++			//if(found) break;
++		}
++		
++		//if(found) break;
++	}
++
++	 //UChar_t sector() const {return mVolumeId/1000000;}
++	 //UChar_t ladder() const {return  (mVolumeId%1000000)/10000;} 
++	 //UChar_t sensor() const {return  (mVolumeId - sector()*1000000 - ladder()*10000)/100;} 
++
++	 Long64_t volume_id = 0;
++	 
++	 if(found)
++	 {
++		 volume_id = sec*1000000;
++		 volume_id += lad*10000;
++		 volume_id += sen*100;
++	 }
++
++	// cout<<globalPos[0]<<" "<<globalPos[1]<<" "<<globalPos[2]<<endl;
++	 cout<<found<<" "<<vid[i]<<" "<<volume_id<<" "<<sec<<" "<<lad<<" "<<sen<<" "<<min[0]<<" "<<min[1]<<" "<<min[2]<<endl;
++	 return volume_id;
++}
+diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../StRoot/StPxlSimMaker/StPxlPileupAdder.h
 --- StRoot/StPxlSimMaker/StPxlPileupAdder.h	1969-12-31 19:00:00.000000000 -0500
-+++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlPileupAdder.h	2014-06-02 15:01:29.000000000 -0400
-@@ -0,0 +1,82 @@
++++ ../StRoot/StPxlSimMaker/StPxlPileupAdder.h	2014-07-02 23:10:02.000000000 -0400
+@@ -0,0 +1,87 @@
 +/*
 + * $Id$
 + *
@@ -96,8 +198,8 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StP
 + * 
 + **********************************************************
 + * $Log$
-+ * Revision 1.1  2014/06/03 17:00:04  mstftsm
-+ * A patch to StPxlSimMaker to add pileup adder.
++ * Revision 1.2  2014/07/03 19:43:13  mstftsm
++ * Updated in accordance with the nee pileup trees stucture.
 + *
 + *
 + */
@@ -120,6 +222,8 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StP
 +class TFile;
 +class TTree;
 +class StMcPxlHitCollection;
++class TObjectSet;
++class StPxlDb;
 +
 +const int MAXHIT = 200000;
 +
@@ -135,7 +239,7 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StP
 +  ~StPxlPileupAdder();
 +
 +
-+  Int_t init(TString pileupFileName);
++  Int_t init(TString pileupFileName,const TObjectSet*);
 +  Int_t addPxlHits(StMcPxlHitCollection&);
 +
 +  /*! \brief Documentation method. GetCVS can be called from the chain, providing a list
@@ -146,14 +250,15 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StP
 +  {static const char cvs[]=""__DATE__" "__TIME__ ; return cvs;}
 +
 + private:
++ StPxlDb* mPxlDb;
 + TFile* mPileupFile;
 + TTree* mPileupTree;
 +
 + // pileup tree 
-+    float x[MAXHIT], y[MAXHIT], z[MAXHIT], xLoc[MAXHIT], yLoc[MAXHIT], zLoc[MAXHIT],
++   Float_t x[MAXHIT], y[MAXHIT], z[MAXHIT], xLoc[MAXHIT], yLoc[MAXHIT], zLoc[MAXHIT],
 +	 px[MAXHIT], py[MAXHIT], pz[MAXHIT], de[MAXHIT], ds[MAXHIT];
-+   long key[MAXHIT], vid[MAXHIT];
-+   int layer[MAXHIT], nhits;
++   Long64_t key[MAXHIT], vid[MAXHIT];
++   Int_t layer[MAXHIT], nhits;
 +
 +   TBranch  *b_nhits;   //! 
 +   TBranch  *b_x;   //! 
@@ -170,13 +275,15 @@ diff -rupN StRoot/StPxlSimMaker/StPxlPileupAdder.h ../code_dev_pileup/StRoot/StP
 +   TBranch  *b_key;   //! 
 +   TBranch  *b_vid;   //! 
 +   TBranch  *b_layer;   //! 
++
++   Long64_t get_vid(Int_t);
 + 
 +};
 +#endif
-diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.cxx
---- StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-03-13 13:00:19.000000000 -0400
-+++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-06-02 15:01:50.000000000 -0400
-@@ -17,6 +17,8 @@
+diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../StRoot/StPxlSimMaker/StPxlSimMaker.cxx
+--- StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-06-25 15:21:57.000000000 -0400
++++ ../StRoot/StPxlSimMaker/StPxlSimMaker.cxx	2014-07-02 21:13:57.000000000 -0400
+@@ -20,6 +20,8 @@
  #include "StMcEvent/StMcPxlHitCollection.hh"
  #include "StEvent/StPxlHitCollection.h"
  
@@ -185,7 +292,7 @@ diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPx
  #include "Stiostream.h"
  #include "StHit.h"
  #include "StEventTypes.h"
-@@ -28,12 +30,13 @@
+@@ -31,12 +33,13 @@
  #include "TGeoMatrix.h"
  
  #include "TObjectSet.h"
@@ -200,7 +307,7 @@ diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPx
  {
  }
  //____________________________________________________________
-@@ -56,6 +59,13 @@ Int_t StPxlSimMaker::Init()
+@@ -59,6 +62,12 @@ Int_t StPxlSimMaker::Init()
     //{
     // temporary till DIGMAPS algorithm is added and option added in StMaker
     mUseFastSim = kTRUE;
@@ -208,13 +315,24 @@ diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPx
 +   if(mAddPileup)
 +   {
 +	   mPileupAdder = new StPxlPileupAdder();
-+	   mPileupAdder->init(mPileupFile);
 +   }
 +
     mPxlSimulator = new StPxlFastSim("pxlFastSim",mUseRandomSeed);
  
     LOG_INFO << "StPxlSimMaker: using StPxlFastSim " << endm;
-@@ -118,6 +128,12 @@ Int_t StPxlSimMaker::Make()
+@@ -90,6 +99,11 @@ Int_t StPxlSimMaker::InitRun(Int_t RunNo
+ 	   }
+    }
+ 
++   if(mAddPileup)
++   {
++	   mPileupAdder->init(mPileupFile,pxlDbDataSet);
++   }
++
+    return mPxlSimulator->initRun(*hitErrSet, pxlDbDataSet, RunNo);
+ }
+ //____________________________________________________________
+@@ -121,6 +135,12 @@ Int_t StPxlSimMaker::Make()
        return kStOk;
     }
  
@@ -227,9 +345,9 @@ diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.cxx ../code_dev_pileup/StRoot/StPx
     if (mUseIdealGeom && !gGeoManager) GetDataBase("VmcGeometry");
     if (mUseIdealGeom && !gGeoManager)
     {
-diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.h ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.h
+diff -rupN StRoot/StPxlSimMaker/StPxlSimMaker.h ../StRoot/StPxlSimMaker/StPxlSimMaker.h
 --- StRoot/StPxlSimMaker/StPxlSimMaker.h	2014-03-13 13:00:19.000000000 -0400
-+++ ../code_dev_pileup/StRoot/StPxlSimMaker/StPxlSimMaker.h	2014-06-02 16:09:07.000000000 -0400
++++ ../StRoot/StPxlSimMaker/StPxlSimMaker.h	2014-07-01 21:15:53.000000000 -0400
 @@ -37,6 +37,8 @@
  #endif
  
