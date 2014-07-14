@@ -53,16 +53,16 @@ void StiScanRootFile::BookHists()
    h->SetOption("colz");
 
    // Histograms for all track nodes/volumes
-   mHs["hVolELossVsEtaVsPhi"] = h = new TProfile2D("hVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
+   mHs["hAllVolELossVsEtaVsPhi"] = h = new TProfile2D("hAllVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hVolELossVsZVsPhi"]   = h = new TProfile2D("hVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
+   mHs["hAllVolELossVsZVsPhi"]   = h = new TProfile2D("hAllVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hVolELossVsZVsR"]     = h = new TProfile2D("hVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 100, 0, 30);
+   mHs["hAllVolELossVsZVsR"]     = h = new TProfile2D("hAllVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 100, 0, 30);
    h->SetOption("colz");
 
-   mHs["hVolELossVsPhiVsR"]     = h = new TProfile2D("hVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, 100, 0, 30);
+   mHs["hAllVolELossVsPhiVsR"]   = h = new TProfile2D("hAllVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, 100, 0, 30);
    h->SetOption("colz");
 
    // Histograms for selected track nodes/volumes only
@@ -97,8 +97,8 @@ void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string
    mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
    ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
-   ((TProfile2D*) mHs["hVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
    ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
    ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
@@ -127,10 +127,10 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
       if (node_z < mNodeZMin) mNodeZMin = node_z;
       if (node_z > mNodeZMax) mNodeZMax = node_z;
 
-      ((TProfile2D*) mHs["hVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeCenterRefAngle(), kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeCenterRefAngle(), kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hVolELossVsPhiVsR"])->Fill(kalmNode.GetNodeCenterRefAngle(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeCenterRefAngle(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeCenterRefAngle(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(kalmNode.GetNodeCenterRefAngle(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
 
       if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
 
