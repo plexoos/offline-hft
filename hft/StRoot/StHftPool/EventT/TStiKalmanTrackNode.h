@@ -19,7 +19,7 @@ public:
    TStiKalmanTrackNode & operator=(const StiKalmanTrackNode &stiKTN);
    const TVector3& GetTrackP() const { return fTrackP; }
    const TVector3& GetPosition() const { return fPosition; }
-   float GetEnergyLosses() const { return fEnergyLosses; }
+   float GetEnergyLosses() const { return -fEnergyLosses; }
    float GetNodeRadius() const { return fNodeRadius; }
    float GetNodeCenterRefAngle() const { return fNodeCenterRefAngle; }
    std::string GetVolumeName() const { return fVolumeName; }
