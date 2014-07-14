@@ -63,7 +63,7 @@ bool TStiKalmanTrackNode::MatchedVolName(const std::string & pattern) const
 bool TStiKalmanTrackNode::MatchedVolName(const std::set<std::string> & patterns) const
 {
    if (fVolumeName.empty() || patterns.empty())
-      return false;
+      return true;
 
    std::set<std::string>::const_iterator iPattern = patterns.begin();
 
