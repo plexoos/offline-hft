@@ -12,9 +12,6 @@
 #include "StHftPool/EventT/EventT.h"
 
 
-typedef std::map<std::string, TH1*>                    HistMap;
-typedef std::map<std::string, TH1*>::iterator          HistMapIter;
-typedef std::map<std::string, TH1*>::const_iterator    HistMapConstIter;
 
 
 class StiScanRootFile : public TFile
@@ -23,7 +20,6 @@ public:
 
    StiScanRootFile();
    StiScanRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
-   ~StiScanRootFile();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
@@ -34,9 +30,6 @@ public:
 
    void BookHists();
 
-   HistMap mHs;
-   double  mNodeZMin;
-   double  mNodeZMax;
 
    ClassDef(StiScanRootFile, 1)
 };
