@@ -28,6 +28,7 @@ public:
    PrgOptionProcessor(int argc, char **argv);
 
    std::string  GetHftreeFile() const { return fHftreeFile; }
+   bool  DoGeantStepTree() const { return fDoGeantStepTree; }
    const std::set<std::string>&  GetVolumeList() const { return fVolumeList; }
    unsigned int GetMaxEventsUser() const;
    float GetSparsity() const { return fSparsity; }
@@ -44,6 +45,7 @@ protected:
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
    std::string             fHftreeFile;
+   bool                    fDoGeantStepTree; ///< A flag to process geant tree if set
    std::string             fVolumeListFile;  ///< Full path to a text file with Sti/TGeo volume names
    std::string             fVolumePattern;   ///< Regex pattern provided by the user in the command line
    std::set<std::string>   fVolumeList;      ///< A list of volume names to consider

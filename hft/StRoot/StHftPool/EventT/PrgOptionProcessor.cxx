@@ -4,12 +4,13 @@
 #include <boost/regex.hpp>
 
 #include "TFile.h"
+#include "TSystem.h"
 
 #include "PrgOptionProcessor.h"
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
    fHftChain(0), fGeantStepChain(0)
@@ -19,7 +20,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 
 
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
    fHftChain(0), fGeantStepChain(0)
@@ -36,6 +37,7 @@ void PrgOptionProcessor::InitOptions()
       ("help,h",              "Print help message")
       ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
                               "OR a text file with a list of such ROOT files")
+      ("geant-step-tree,t",   "In addition to 'hftree' process tree with info from geant steps")
       ("volume-pattern,p",    po::value<std::string>(&fVolumePattern)->implicit_value("process_all_volumes"), "A regex pattern Sti/TGeo volume names")
       ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
@@ -86,6 +88,10 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       Error("ProcessOptions", "Input file not set");
       exit(EXIT_FAILURE);
    }
+
+
+   if (fOptionsValues.count("geant-step-tree") )
+      fDoGeantStepTree = true;
 
 
    if (fOptionsValues.count("volume-pattern-flist"))
