@@ -11,7 +11,8 @@
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
-   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
+   fHftChain(0), fGeantStepChain(0)
 {
    InitOptions();
 }
@@ -20,7 +21,8 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
-   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false)
+   fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
+   fHftChain(0), fGeantStepChain(0)
 {
    InitOptions();
    ProcessOptions(argc, argv);

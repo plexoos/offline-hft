@@ -32,6 +32,8 @@ public:
    unsigned int GetMaxEventsUser() const;
    float GetSparsity() const { return fSparsity; }
    bool  SaveGraphics() const { return fSaveGraphics; }
+   TChain* GetHftChain() { return fHftChain; }
+   TChain* GetGeantStepChain() { return fGeantStepChain; }
 
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
@@ -52,6 +54,9 @@ protected:
 private:
    
    void InitOptions();
+
+   TChain *fHftChain;
+   TChain *fGeantStepChain;
 };
 
 #endif
