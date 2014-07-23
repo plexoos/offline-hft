@@ -38,7 +38,29 @@ HftMatchedTree::~HftMatchedTree()
 
 Int_t HftMatchedTree::Init()
 {
+   StBFChain *bfChain = (StBFChain *) StMaker::GetChain();
+
+   if (!bfChain) return kStErr;
+
+   // Authorize Trees up to 2 Terabytes (if the system can do it)
+   TTree::SetMaxTreeSize(1000 * Long64_t(2000000000));
+
+   TString fileName( gSystem->BaseName(bfChain->GetFileIn().Data()) );
+
+   fileName.ReplaceAll("st_physics", "");
+   fileName.ReplaceAll(".event", "");
+   fileName.ReplaceAll(".daq", "");
+   fileName.ReplaceAll(".fz", "");
+
+   if (fMinNoHits > 0) fileName += Form("_%i_%f2.1_", fMinNoHits, fpCut);
+
+   fileName += ".hftree.root";
+
+   fFile = new TFile(fileName, "RECREATE", "TTree with HFT hits and tracks");
+   fFile->SetCompressionLevel(1); // Set file compression level
+
    SetTree();
+
    return kStOK;
 }
 
@@ -98,26 +120,6 @@ Int_t HftMatchedTree::Finish()
 
 void HftMatchedTree::SetTree()
 {
-   StBFChain *bfChain = (StBFChain *) StMaker::GetChain();
-
-   if (!bfChain) return;
-
-   // Authorize Trees up to 2 Terabytes (if the system can do it)
-   TTree::SetMaxTreeSize(1000 * Long64_t(2000000000));
-   TString fileName( gSystem->BaseName(bfChain->GetFileIn().Data()) );
-
-   fileName.ReplaceAll("st_physics", "");
-   fileName.ReplaceAll(".event", "");
-   fileName.ReplaceAll(".daq", "");
-   fileName.ReplaceAll(".fz", "");
-
-   if (fMinNoHits > 0) fileName += Form("_%i_%f2.1_", fMinNoHits, fpCut);
-
-   fileName += ".hftree.root";
-
-   fFile = new TFile(fileName, "RECREATE", "TTree with HFT hits and tracks");
-   fFile->SetCompressionLevel(1); // Set file compression level
-
    // Create a ROOT Tree and one superbranch
    fTree = new TTree("t", "TTree with HFT hits and tracks");
    fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
