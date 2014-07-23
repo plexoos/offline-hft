@@ -80,13 +80,10 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::cout << "fHftreeFile: " << hftreeFile << std::endl;
       std::ifstream tmpFileCheck(hftreeFile.c_str());
       if (!tmpFileCheck.good()) {
-         Error("ProcessOptions", "File \"%s\" does not exist", hftreeFile.c_str());
-         tmpFileCheck.close();
-         exit(EXIT_FAILURE);
+         Fatal("ProcessOptions", "File \"%s\" does not exist", hftreeFile.c_str());
       }
    } else {
-      Error("ProcessOptions", "Input file not set");
-      exit(EXIT_FAILURE);
+      Fatal("ProcessOptions", "Input file not set");
    }
 
 
@@ -100,9 +97,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::ifstream volListFile(fVolumeListFile.c_str());
 
       if (!volListFile.good()) {
-         Error("ProcessOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
-         volListFile.close();
-         exit(EXIT_FAILURE);
+         Fatal("ProcessOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
       }
 
       fVolumeList.clear();
@@ -116,8 +111,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
             boost::regex re(pattern);
          }
          catch (boost::regex_error& e) {
-            Error("ProcessOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
-            exit(EXIT_FAILURE);
+            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
          }
 
          if (volListFile.eof()) break;
@@ -142,8 +136,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
             boost::regex re(fVolumePattern);
          }
          catch (boost::regex_error& e) {
-            Error("ProcessOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
-            exit(EXIT_FAILURE);
+            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
          }
 
          fVolumeList.clear();
