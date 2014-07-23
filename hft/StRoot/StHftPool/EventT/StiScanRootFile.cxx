@@ -9,6 +9,7 @@
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
 
+
 StiScanRootFile::StiScanRootFile() : TFile(), mDirs()
 {
    BookHists();
@@ -27,7 +28,7 @@ StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char
 void StiScanRootFile::BookHists()
 {
    mDirs["sti"] = new StiScanHistContainer("sti", "sti", "", this);
-   mDirs["geant"] = new StiScanHistContainer("geant", "geant", "", this);
+   mDirs["gea"] = new StiScanHistContainer("gea", "gea", "", this);
 }
 
 
@@ -43,7 +44,6 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
 
 void StiScanRootFile::Close(Option_t *option)
 {
-   Info("Close", "%s", GetName());
    TFile::Close(option);
 }
 
