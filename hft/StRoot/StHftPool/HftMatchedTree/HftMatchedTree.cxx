@@ -149,6 +149,8 @@ Int_t HftMatchedTree::Make()
    // Fill the rest of event with information from StEvent
    StEvent *stEvent = (StEvent*) GetInputDS("StEvent");
 
+   LOG_DEBUG << "stEvent id: " << stEvent->id() << endm;
+
    if (stEvent && !fEvent->Build(stEvent, fMinNoHits, fpCut, this, fPxlDb))
       fTree->Fill(); // fill the tree
 
