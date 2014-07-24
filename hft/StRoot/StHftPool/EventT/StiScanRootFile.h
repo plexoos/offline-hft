@@ -27,6 +27,8 @@ public:
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
+   virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0);
+   virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0) const;
    virtual void Close(Option_t *option="");
    void SaveAllAs();
 

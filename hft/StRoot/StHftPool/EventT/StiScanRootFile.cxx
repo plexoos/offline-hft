@@ -42,6 +42,32 @@ void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set
 }
 
 
+Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
+{
+   Info("Write", "%s", GetName());
+
+   StiScanHistContainer* sti = (StiScanHistContainer*) mDirs["sti"];
+   StiScanHistContainer* gea = (StiScanHistContainer*) mDirs["gea"];
+
+   gea->SetZRange(sti->GetZMin(), sti->GetZMax());
+
+   for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
+   {
+      StiScanHistContainer *container = static_cast<StiScanHistContainer*> (iDir->second);
+      if (!container) continue;
+      container->PrettifyHists();
+   }
+
+   TFile::Write(name, opt, bufsiz);
+}
+
+
+Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz) const
+{
+   TFile::Write(name, opt, bufsiz);
+}
+
+
 void StiScanRootFile::Close(Option_t *option)
 {
    TFile::Close(option);
