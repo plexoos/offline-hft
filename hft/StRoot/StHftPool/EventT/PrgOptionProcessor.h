@@ -25,23 +25,26 @@ class PrgOptionProcessor : public TObject
 public:
 
    PrgOptionProcessor();
-   PrgOptionProcessor(int argc, char **argv);
+   PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName="t", const std::string& geantStepTreeName="stepping");
 
    std::string  GetHftreeFile() const { return fHftreeFile; }
+   bool  DoGeantStepTree() const { return fDoGeantStepTree; }
    const std::set<std::string>&  GetVolumeList() const { return fVolumeList; }
    unsigned int GetMaxEventsUser() const;
    float GetSparsity() const { return fSparsity; }
    bool  SaveGraphics() const { return fSaveGraphics; }
+   TChain* GetHftChain() { return fHftChain; }
+   TChain* GetGeantStepChain() { return fGeantStepChain; }
 
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
-   TChain* BuildHftreeChain(std::string name);
 
 protected:
 
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
    std::string             fHftreeFile;
+   bool                    fDoGeantStepTree; ///< A flag to process geant tree if set
    std::string             fVolumeListFile;  ///< Full path to a text file with Sti/TGeo volume names
    std::string             fVolumePattern;   ///< Regex pattern provided by the user in the command line
    std::set<std::string>   fVolumeList;      ///< A list of volume names to consider
@@ -52,6 +55,11 @@ protected:
 private:
    
    void InitOptions();
+   void BuildInputChains(std::string hftTreeName, std::string geantStepTreeName);
+   void AddToInputChains(std::string hftTreeRootFileName);
+
+   TChain *fHftChain;
+   TChain *fGeantStepChain;
 };
 
 #endif
