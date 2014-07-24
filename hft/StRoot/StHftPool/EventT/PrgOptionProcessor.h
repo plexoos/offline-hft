@@ -56,6 +56,7 @@ protected:
 private:
    
    void InitOptions();
+   void AddToInputChains(std::string hftTreeRootFileName);
 
    TChain *fHftChain;
    TChain *fGeantStepChain;

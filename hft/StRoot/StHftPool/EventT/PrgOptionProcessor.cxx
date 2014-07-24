@@ -214,3 +214,35 @@ TChain* PrgOptionProcessor::BuildHftreeChain(std::string name)
 
    return chain;
 }
+
+
+/*!
+ * This private method takes a path to a valid ROOT file as input. No check is
+ * done to make sure the input chains exist.
+ *
+ * XXX: Need to add a check to validate the tree in the file.
+ */
+void PrgOptionProcessor::AddToInputChains(std::string hftTreeRootFileName)
+{
+   TFile file( hftTreeRootFileName.c_str() );
+
+   if ( file.IsZombie() )
+      Fatal("AddToInputChains", "Input file is not a valid root file: %s", hftTreeRootFileName.c_str());
+
+   fHftChain->AddFile( hftTreeRootFileName.c_str() );
+   Info("AddToInputChains", "Found valid hftree file: %s", hftTreeRootFileName.c_str());
+
+   if (fDoGeantStepTree)
+   {
+      TString geantStepRootFileName(hftTreeRootFileName.c_str());
+      geantStepRootFileName.ReplaceAll("hftree.root", "track_history.root");
+
+      TFile file( geantStepRootFileName.Data() );
+
+      if ( file.IsZombie() )
+         Fatal("AddToInputChains", "Input file is not a valid root file: %s", geantStepRootFileName.Data());
+
+      fGeantStepChain->AddFile( geantStepRootFileName.Data() );
+      Info("AddToInputChains", "Found valid hftree file: %s", geantStepRootFileName.Data());
+   }
+}
