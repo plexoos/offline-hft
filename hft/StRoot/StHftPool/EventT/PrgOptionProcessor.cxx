@@ -19,7 +19,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 }
 
 
-PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
+PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName, const std::string& geantStepTreeName) : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
@@ -27,6 +27,7 @@ PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv) : TObject(),
 {
    InitOptions();
    ProcessOptions(argc, argv);
+   BuildInputChains(hftTreeName, geantStepTreeName);
 }
 
 

@@ -25,7 +25,7 @@ class PrgOptionProcessor : public TObject
 public:
 
    PrgOptionProcessor();
-   PrgOptionProcessor(int argc, char **argv);
+   PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName="t", const std::string& geantStepTreeName="stepping");
 
    std::string  GetHftreeFile() const { return fHftreeFile; }
    bool  DoGeantStepTree() const { return fDoGeantStepTree; }
