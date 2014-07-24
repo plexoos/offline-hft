@@ -38,7 +38,6 @@ public:
 
    void ProcessOptions(int argc, char **argv);
    bool MatchedVolName(std::string & volName) const;
-   TChain* BuildHftreeChain(std::string name);
 
 protected:
 
@@ -56,6 +55,7 @@ protected:
 private:
    
    void InitOptions();
+   void BuildInputChains(std::string hftTreeName, std::string geantStepTreeName);
    void AddToInputChains(std::string hftTreeRootFileName);
 
    TChain *fHftChain;

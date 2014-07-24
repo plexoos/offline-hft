@@ -186,9 +186,12 @@ bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 }
 
 
-TChain* PrgOptionProcessor::BuildHftreeChain(std::string name)
+void PrgOptionProcessor::BuildInputChains(std::string hftTreeName, std::string geantStepTreeName)
 {
-   TChain *chain = new TChain(name.c_str(), "READ");
+   fHftChain = new TChain(hftTreeName.c_str(), "READ");
+
+   if (fDoGeantStepTree)
+      fGeantStepChain = new TChain(geantStepTreeName.c_str(), "READ");
 
    TFile file( fHftreeFile.c_str() );
 
@@ -204,15 +207,13 @@ TChain* PrgOptionProcessor::BuildHftreeChain(std::string name)
          hftreeListFile >> hftreeFile;
          if (hftreeListFile.eof()) break;
 
-         chain->AddFile( hftreeFile.c_str() );
+         AddToInputChains(hftreeFile);
       }
    } else
    {
       Info("BuildHftreeChain", "Good root file: %s", fHftreeFile.c_str());
-      chain->AddFile( fHftreeFile.c_str() );
+      AddToInputChains(fHftreeFile);
    }
-
-   return chain;
 }
 
 
