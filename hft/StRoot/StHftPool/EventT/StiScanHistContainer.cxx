@@ -90,14 +90,8 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
       FillHists(kalmTrack, volumeList);
    }
 
-   mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
-   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
-   ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 }
 
 
@@ -142,6 +136,8 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 
 void StiScanHistContainer::SaveAllAs()
 {
+   PrettifyHists();
+
    TCanvas canvas("canvas", "canvas", 1400, 600);
    canvas.UseCurrentStyle();
    canvas.SetGridx(true);
@@ -165,4 +161,17 @@ void StiScanHistContainer::SaveAllAs()
       string sFileName =  "c_" + objName + ".png";
       canvas.SaveAs(sFileName.c_str());
    }
+}
+
+
+void StiScanHistContainer::PrettifyHists()
+{
+   mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+
+   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+
+   ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 }

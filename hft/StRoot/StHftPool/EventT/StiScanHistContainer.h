@@ -30,6 +30,7 @@ public:
    void SetZRange(double minZ, double maxZ) { mNodeZMin = minZ; mNodeZMax = maxZ; }
    double GetZMin() { return mNodeZMin; }
    double GetZMax() { return mNodeZMax; }
+   void PrettifyHists();
 
  private:
 
