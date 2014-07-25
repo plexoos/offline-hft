@@ -34,11 +34,15 @@ void StiScanRootFile::BookHists()
 
 void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
 {
+   StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["sti"]);
+   container->FillHists(eventT, volumeList);
 }
 
 
-void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
+void StiScanRootFile::FillHists(const EventG &eventG)
 {
+   StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["gea"]);
+   container->FillHists(eventG);
 }
 
 

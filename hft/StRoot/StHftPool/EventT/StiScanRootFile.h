@@ -11,7 +11,9 @@
 #include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StarGenerator/STEP/AgUStep.h"
 
+typedef Event EventG;
 
 typedef std::map<std::string, TDirectoryFile*>                   TDirMap;
 typedef std::map<std::string, TDirectoryFile*>::iterator         TDirMapIter;
@@ -26,7 +28,7 @@ public:
    StiScanRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
-   void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
+   void FillHists(const EventG &eventG);
    virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0);
    virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0) const;
    virtual void Close(Option_t *option="");
