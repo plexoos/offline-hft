@@ -13,6 +13,12 @@
 
 typedef Event EventG;
 
+
+// These globals are not used but required since we link against TGiant3.o
+int    Margc=0;
+char** Margv=NULL;
+
+
 void loop_hftree(PrgOptionProcessor &poProc);
 
 

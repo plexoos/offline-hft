@@ -123,12 +123,23 @@ set( STAR_LIBRARIES
    StIstDbMaker
    Geometry
    StarAgmlLib
+   St_geant_Maker
+   St_g2t
+   StarGeneratorStep
 )
 
-add_executable( tevedisp tests/tevedisp.cc )
+add_executable( tevedisp tests/tevedisp.cc
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/TGeant3/TGiant3.o
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/root4star_Cint.o
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/TGeant3/StarMC.o
+      )
 target_link_libraries( tevedisp ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} ${MYSQL_LIBRARY} Table Geom Eve)
 
-add_executable( stiscan tests/stiscan.cc )
+add_executable( stiscan tests/stiscan.cc
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/TGeant3/TGiant3.o
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/root4star_Cint.o
+      /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/.$ENV{STAR_HOST_SYS}/obj/asps/rexe/TGeant3/StarMC.o
+      )
 target_link_libraries( stiscan ${HFT_LIBRARIES} ${Boost_LIBRARIES} ${STAR_LIBRARIES} ${ROOT_LIBRARIES} Table Geom Eve)
 
 if(FORCE_32BIT)

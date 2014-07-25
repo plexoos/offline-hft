@@ -86,6 +86,10 @@ TEvePointSet  *gHitList = 0;
 TEvePointSet  *gTrackHitList = 0;
 TGeoManager   *gGeoManager = 0;
 
+// These globals are not used but required since we link against TGiant3.o
+int    Margc=0;
+char** Margv=NULL;
+
 
 int main(int argc, char **argv)
 {
