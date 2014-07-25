@@ -89,9 +89,10 @@ TGeoManager   *gGeoManager = 0;
 
 int main(int argc, char **argv)
 {
-   std::string inputRootFile;
+   const std::string hftTreeName = "t";
+   const std::string geantStepTreeName = "stepping";
 
-   PrgOptionProcessor poProc(argc, argv);
+   PrgOptionProcessor poProc(argc, argv, hftTreeName, geantStepTreeName);
 
    TApplication *myApp = new TApplication("myApp", 0, 0);
 
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
 
 void hft_display(PrgOptionProcessor &poProc, const double B)
 {
-   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
+   TChain *myTreeFileChain = poProc.GetHftChain();
 
    std::cout << "Total number of events = " << myTreeFileChain->GetEntries() << endl;
 
@@ -129,7 +130,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumb
 {
    //loadStatus(runnumber);
 
-   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
+   TChain *myTreeFileChain = poProc.GetHftChain();
    char inname[100];
    sprintf(inname, "output/Event_%d.root", runnumber);
    myTreeFileChain->AddFile(inname);

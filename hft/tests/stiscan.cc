@@ -16,7 +16,10 @@ void loop_hftree(PrgOptionProcessor &poProc);
 
 int main(int argc, char **argv)
 {
-   PrgOptionProcessor poProc(argc, argv);
+   const std::string hftTreeName = "t";
+   const std::string geantStepTreeName = "stepping";
+
+   PrgOptionProcessor poProc(argc, argv, hftTreeName, geantStepTreeName);
 
    loop_hftree(poProc);
 
@@ -26,7 +29,8 @@ int main(int argc, char **argv)
 
 void loop_hftree(PrgOptionProcessor &poProc)
 {
-   TChain *myTreeFileChain = poProc.BuildHftreeChain("t");
+   TChain *hftChain       = poProc.GetHftChain();
+   TChain *geantStepChain = poProc.GetGeantStepChain();
 
    // Create a new output file
    std::string outFileName = poProc.GetHftreeFile();
@@ -43,15 +47,15 @@ void loop_hftree(PrgOptionProcessor &poProc)
 
    StiScanRootFile outRootFile( outFileName.c_str(), "recreate");
 
-   int nTreeEvents = myTreeFileChain->GetEntries();
+   int nTreeEvents = hftChain->GetEntries();
    int nProcEvents = 0;
 
    Info("loop_hftree", "Found tree/chain with nTreeEvents: %d", nTreeEvents);
 
    EventT *eventT = new EventT();
-   myTreeFileChain->SetBranchAddress("e.", &eventT);
-   myTreeFileChain->SetBranchStatus("e.*", false);
-   myTreeFileChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
+   hftChain->SetBranchAddress("e.", &eventT);
+   hftChain->SetBranchStatus("e.*", false);
+   hftChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
 
    TRandom myRandom;
 
@@ -62,7 +66,7 @@ void loop_hftree(PrgOptionProcessor &poProc)
 
       if (myRandom.Rndm() > poProc.GetSparsity()) continue;
 
-      myTreeFileChain->GetEntry(iEvent-1);
+      hftChain->GetEntry(iEvent-1);
 
       outRootFile.FillHists(*eventT, &poProc.GetVolumeList());
    }
