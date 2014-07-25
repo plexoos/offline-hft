@@ -6,6 +6,7 @@
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TROOT.h"
+#include "TVector3.h"
 
 
 StiScanHistContainer::StiScanHistContainer() : TDirectoryFile(), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5)
@@ -89,9 +90,26 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
 
       FillHists(kalmTrack, volumeList);
    }
+}
 
 
+void StiScanHistContainer::FillHists(const EventG &eventG)
+{
+   Int_t nTracks = eventG.tracks->GetEntriesFast();
+   Int_t nSteps  = eventG.steps->GetEntriesFast();
+   Info("FillHists", "nTracks: %d, nSteps: %d", nTracks, nSteps);
 
+   TIter iGeantStep(eventG.steps);
+
+   while (StepG* stepG = (StepG*) iGeantStep())
+   {
+      stepG->dEstep *= 1e6; // convert GeV to keV
+
+      TVector3 step_pos(stepG->x, stepG->y, stepG->z);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
+   }
 }
 
 
