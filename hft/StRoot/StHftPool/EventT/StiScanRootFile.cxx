@@ -9,6 +9,7 @@
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
 
+
 StiScanRootFile::StiScanRootFile() : TFile(), mDirs()
 {
    BookHists();
@@ -27,23 +28,52 @@ StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char
 void StiScanRootFile::BookHists()
 {
    mDirs["sti"] = new StiScanHistContainer("sti", "sti", "", this);
-   mDirs["geant"] = new StiScanHistContainer("geant", "geant", "", this);
+   mDirs["gea"] = new StiScanHistContainer("gea", "gea", "", this);
 }
 
 
 void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
 {
+   StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["sti"]);
+   container->FillHists(eventT, volumeList);
 }
 
 
-void StiScanRootFile::FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
+void StiScanRootFile::FillHists(const EventG &eventG)
 {
+   StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["gea"]);
+   container->FillHists(eventG);
+}
+
+
+Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
+{
+   Info("Write", "%s", GetName());
+
+   StiScanHistContainer* sti = (StiScanHistContainer*) mDirs["sti"];
+   StiScanHistContainer* gea = (StiScanHistContainer*) mDirs["gea"];
+
+   gea->SetZRange(sti->GetZMin(), sti->GetZMax());
+
+   for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
+   {
+      StiScanHistContainer *container = static_cast<StiScanHistContainer*> (iDir->second);
+      if (!container) continue;
+      container->PrettifyHists();
+   }
+
+   TFile::Write(name, opt, bufsiz);
+}
+
+
+Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz) const
+{
+   TFile::Write(name, opt, bufsiz);
 }
 
 
 void StiScanRootFile::Close(Option_t *option)
 {
-   Info("Close", "%s", GetName());
    TFile::Close(option);
 }
 

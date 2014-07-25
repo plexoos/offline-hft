@@ -43,6 +43,7 @@ protected:
 
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
+   /// Full path to either a root file with hft event tree or a text file with a list of such root files
    std::string             fHftreeFile;
    bool                    fDoGeantStepTree; ///< A flag to process geant tree if set
    std::string             fVolumeListFile;  ///< Full path to a text file with Sti/TGeo volume names

@@ -198,21 +198,21 @@ void PrgOptionProcessor::BuildInputChains(std::string hftTreeName, std::string g
 
    if ( file.IsZombie() )
    {
-      Warning("BuildHftreeChain", "Not a root file: %s", fHftreeFile.c_str());
+      Warning("BuildInputChains", "Input file is not a root file: %s\nWill treat it as a file list", fHftreeFile.c_str());
 
       std::ifstream hftreeListFile(fHftreeFile.c_str());
-      std::string hftreeFile;
 
       while ( hftreeListFile.good() )
       {
-         hftreeListFile >> hftreeFile;
+         std::string hftTreeFileName;
+         hftreeListFile >> hftTreeFileName;
          if (hftreeListFile.eof()) break;
 
-         AddToInputChains(hftreeFile);
+         AddToInputChains(hftTreeFileName);
       }
    } else
    {
-      Info("BuildHftreeChain", "Good root file: %s", fHftreeFile.c_str());
+      Info("BuildInputChains", "Found root file: %s", fHftreeFile.c_str());
       AddToInputChains(fHftreeFile);
    }
 }

@@ -6,6 +6,7 @@
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TROOT.h"
+#include "TVector3.h"
 
 
 StiScanHistContainer::StiScanHistContainer() : TDirectoryFile(), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5)
@@ -89,15 +90,26 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
 
       FillHists(kalmTrack, volumeList);
    }
+}
 
-   mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
-   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+void StiScanHistContainer::FillHists(const EventG &eventG)
+{
+   Int_t nTracks = eventG.tracks->GetEntriesFast();
+   Int_t nSteps  = eventG.steps->GetEntriesFast();
+   Info("FillHists", "nTracks: %d, nSteps: %d", nTracks, nSteps);
 
-   ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   TIter iGeantStep(eventG.steps);
+
+   while (StepG* stepG = (StepG*) iGeantStep())
+   {
+      stepG->dEstep *= 1e6; // convert GeV to keV
+
+      TVector3 step_pos(stepG->x, stepG->y, stepG->z);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
+   }
 }
 
 
@@ -140,8 +152,49 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 }
 
 
+void StiScanHistContainer::FillHists_trk(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
+{
+   // Take the first node with the smallest radius
+   const TStiKalmanTrackNode& dcaNode = kalmTrack.GetDcaNode();
+
+   mHs["hTrackCountVsEtaVsPhi"]->Fill(dcaNode.GetTrackP().Eta(), dcaNode.GetTrackP().Phi());
+   mHs["hTrackCountVsZVsPhi"]->Fill(dcaNode.GetPosition().Z(), dcaNode.GetTrackP().Phi());
+
+   ((TProfile2D*) mHs["hTotalELossVsEtaVsPhi"])->Fill(dcaNode.GetTrackP().Eta(), dcaNode.GetTrackP().Phi(), kalmTrack.GetEnergyLosses(), 1);
+   ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->Fill(dcaNode.GetPosition().Z(), dcaNode.GetTrackP().Phi(), kalmTrack.GetEnergyLosses(), 1);
+
+   std::set<TStiKalmanTrackNode>::const_iterator iTStiKTrackNode = kalmTrack.GetNodes().begin();
+
+   for ( ; iTStiKTrackNode != kalmTrack.GetNodes().end(); ++iTStiKTrackNode)
+   {
+      const TStiKalmanTrackNode &kalmNode = *iTStiKTrackNode;
+
+      double node_z = kalmNode.GetPosition().Z();
+
+      if (node_z < mNodeZMin) mNodeZMin = node_z;
+      if (node_z > mNodeZMax) mNodeZMax = node_z;
+
+      ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])  ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
+
+      if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
+
+      ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi_trk"])->Fill(kalmNode.GetTrackP().Eta(), kalmNode.GetTrackP().Phi(), kalmNode.GetEnergyLosses(), 1);
+
+      ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Eta(), kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])  ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
+   }
+}
+
+
 void StiScanHistContainer::SaveAllAs()
 {
+   PrettifyHists();
+
    TCanvas canvas("canvas", "canvas", 1400, 600);
    canvas.UseCurrentStyle();
    canvas.SetGridx(true);
@@ -165,4 +218,17 @@ void StiScanHistContainer::SaveAllAs()
       string sFileName =  "c_" + objName + ".png";
       canvas.SaveAs(sFileName.c_str());
    }
+}
+
+
+void StiScanHistContainer::PrettifyHists()
+{
+   mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+
+   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+
+   ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
+   ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 }

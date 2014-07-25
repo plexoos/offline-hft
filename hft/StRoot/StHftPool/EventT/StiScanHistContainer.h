@@ -10,7 +10,10 @@
 #include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StarGenerator/STEP/AgUStep.h"
 
+typedef Event EventG;
+typedef Step  StepG;
 
 typedef std::map<std::string, TH1*>                    HistMap;
 typedef std::map<std::string, TH1*>::iterator          HistMapIter;
@@ -26,12 +29,18 @@ public:
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
+   void FillHists(const EventG &eventG);
    void SaveAllAs();
+   void SetZRange(double minZ, double maxZ) { mNodeZMin = minZ; mNodeZMax = maxZ; }
+   double GetZMin() { return mNodeZMin; }
+   double GetZMax() { return mNodeZMax; }
+   void PrettifyHists();
 
  private:
 
    void BookHists();
    void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
+   void FillHists_trk(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
 
    HistMap mHs;
    double  mNodeZMin;
