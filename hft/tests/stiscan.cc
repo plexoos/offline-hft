@@ -7,9 +7,11 @@
 #include "TROOT.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StarGenerator/STEP/AgUStep.h"
 #include "StHftPool/EventT/PrgOptionProcessor.h"
 #include "StHftPool/EventT/StiScanRootFile.h"
 
+typedef Event EventG;
 
 void loop_hftree(PrgOptionProcessor &poProc);
 
@@ -57,6 +59,11 @@ void loop_hftree(PrgOptionProcessor &poProc)
    hftChain->SetBranchStatus("e.*", false);
    hftChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
 
+   EventG *eventG = new EventG();
+
+   if (poProc.DoGeantStepTree())
+      geantStepChain->SetBranchAddress("Event", &eventG);
+
    TRandom myRandom;
 
    for (int iEvent = 1; iEvent <= nTreeEvents; iEvent++, nProcEvents++)
@@ -69,6 +76,11 @@ void loop_hftree(PrgOptionProcessor &poProc)
       hftChain->GetEntry(iEvent-1);
 
       outRootFile.FillHists(*eventT, &poProc.GetVolumeList());
+
+      if (poProc.DoGeantStepTree()) {
+         geantStepChain->GetEntry(iEvent-1);
+         outRootFile.FillHists(*eventG);
+      }
    }
 
    delete eventT;
