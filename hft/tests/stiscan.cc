@@ -95,5 +95,6 @@ void loop_hftree(PrgOptionProcessor &poProc)
       outRootFile.SaveAllAs();
    }
 
+   outRootFile.Write();
    outRootFile.Close();
 }
