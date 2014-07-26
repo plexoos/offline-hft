@@ -40,7 +40,6 @@ chose to link them instead
     ln -s ../offline/hft/StRoot/StIstQAMaker
     ln -s ../offline/hft/StRoot/StIstRawHitMaker
     ln -s ../offline/hft/StRoot/StPxlMonMaker
-    ln -s ../offline/hft/StRoot/StiTest
     ln -s ../offline/hft/StRoot/StHftPool
     ln -s ../offline/hft/StRoot/StiSsd
     ln -s ../offline/hft/StRoot/StSsdDbMaker
