@@ -202,7 +202,8 @@ void StiSstDetectorBuilder::buildInactiveVolumes()
 {
    // Build average inactive volumes
    const VolumeMap_t volumes[] = {
-      {"SFMO1", "the mother of all Silicon Strip Detector volumes", "HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/SFMO_1", "", ""}          //  0.546171 [kg]
+      {"SFLM", "the mother of the ladder support volume", "HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/SFMO_1", "", ""},
+      {"SFDM", "the mother of the detector volume", "HALL_1/CAVE_1/TpcRefSys_1/IDSM_1/SFMO_1", "", ""}
    };
 
    // Build the volume map and loop over all found volumes
