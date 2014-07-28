@@ -49,6 +49,7 @@ void StiScanHistContainer::BookHists()
    mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; z, cm; #phi, rad; Total Energy Losses, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
+
    // Histograms for all track nodes/volumes
    mHs["hAllVolELossVsEtaVsPhi"] = h = new TProfile2D("hAllVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
@@ -61,6 +62,7 @@ void StiScanHistContainer::BookHists()
 
    mHs["hAllVolELossVsPhiVsR"]   = h = new TProfile2D("hAllVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, 100, 0, 30);
    h->SetOption("colz");
+
 
    // Histograms for selected track nodes/volumes only
    mHs["hSelectVolELossVsEtaVsPhi_trk"] = h = new TProfile2D("hSelectVolELossVsEtaVsPhi_trk", " ; Track #eta; Track #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
@@ -95,10 +97,6 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
 
 void StiScanHistContainer::FillHists(const EventG &eventG)
 {
-   Int_t nTracks = eventG.tracks->GetEntriesFast();
-   Int_t nSteps  = eventG.steps->GetEntriesFast();
-   Info("FillHists", "nTracks: %d, nSteps: %d", nTracks, nSteps);
-
    TIter iGeantStep(eventG.steps);
 
    while (StepG* stepG = (StepG*) iGeantStep())
