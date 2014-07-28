@@ -9,8 +9,6 @@ using namespace std;
 #include "tables/St_ssdConfiguration_Table.h"
 #include "tables/St_ssdWafersPosition_Table.h"
 
-#include "TFile.h"
-
 #include "Sti/Base/Factory.h"
 #include "Sti/StiPlanarShape.h"
 #include "Sti/StiCylindricalShape.h"
@@ -24,7 +22,7 @@ using namespace std;
 #include "StiSsd/StiSstDetectorBuilder.h"
 #include "StSsdUtil/StSsdBarrel.hh"
 #include "StDetectorDbMaker/StiSsdHitErrorCalculator.h"
-#include "StiMaker/StiDetectorVolume.h"
+
 
 StiSstDetectorBuilder::StiSstDetectorBuilder(bool active, const string &inputFile)
    : StiDetectorBuilder("Ssd", active, inputFile), _siMat(0), _hybridMat(0)
@@ -60,13 +58,6 @@ void StiSstDetectorBuilder::buildDetectors(StMaker &source)
       useVMCGeometry();
       buildInactiveVolumes();
    }
-
-   // XXX: Check sti geometry by converting it to drawable root objects
-   TFile fileTmp("sti2rootgeo_sst.root", "RECREATE");
-   StiDetectorVolume *stiDetVol = new StiDetectorVolume(*this);
-   stiDetVol->Write();
-   fileTmp.Close();
-   delete stiDetVol;
 }
 
 

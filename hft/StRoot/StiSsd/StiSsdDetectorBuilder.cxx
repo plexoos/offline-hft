@@ -1,6 +1,9 @@
 // $Id$
 // 
 // $Log$
+// Revision 1.2  2014/07/28 22:40:33  smirnovd
+// StiSsXDetectorBuilder: Removed old debugging sti2root from the main branch
+//
 // Revision 1.1  2014/07/25 15:21:09  bouchet
 // update for y2014
 //
@@ -72,8 +75,6 @@ using namespace std;
 #include "tables/St_ssdConfiguration_Table.h"
 #include "tables/St_ssdWafersPosition_Table.h"
 
-#include "TFile.h"
-
 #include "Sti/Base/Factory.h"
 #include "Sti/StiPlanarShape.h"
 #include "Sti/StiCylindricalShape.h"
@@ -89,7 +90,7 @@ using namespace std;
 #include "StiSsd/StiSsdDetectorBuilder.h" 
 #include "StSsdUtil/StSsdBarrel.hh"
 #include "StDetectorDbMaker/StiSsdHitErrorCalculator.h"
-#include "StiMaker/StiDetectorVolume.h"
+
 
 StiSsdDetectorBuilder::StiSsdDetectorBuilder(bool active, const string & inputFile)
     : StiDetectorBuilder("Ssd",active,inputFile), _siMat(0), _hybridMat(0)
@@ -189,13 +190,6 @@ void StiSsdDetectorBuilder::buildDetectors(StMaker & source)
       add(layer,ladder,pLadder); 
     }
     useVMCGeometry();
-
-   // XXX: Check sti geometry by converting it to drawable root objects
-   TFile fileTmp("sti2rootgeo_ssd.root", "RECREATE");
-   StiDetectorVolume *stiDetVol = new StiDetectorVolume(*this);
-   stiDetVol->Write();
-   fileTmp.Close();
-   delete stiDetVol;
 }
 //________________________________________________________________________________
 void StiSsdDetectorBuilder::useVMCGeometry() {
