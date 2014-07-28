@@ -232,6 +232,12 @@ void StiScanHistContainer::SaveAllAs(std::string prefix)
          continue;
       }
 
+      char* opts = (char*) obj->GetOption();
+      char* l = strstr(opts, "XY");
+
+      if (l) canvas.SetLogy(true);
+      else   canvas.SetLogy(false);
+
       obj->Draw();
 
       string sFileName = prefix + "/c_" + objName + ".png";
