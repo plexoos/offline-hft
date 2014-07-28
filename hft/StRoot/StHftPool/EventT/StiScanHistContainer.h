@@ -30,6 +30,7 @@ public:
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const EventG &eventG);
+   void FillDerivedHists();
    void SaveAllAs(std::string prefix="./");
    void SetZRange(double minZ, double maxZ) { mNodeZMin = minZ; mNodeZMax = maxZ; }
    double GetZMin() { return mNodeZMin; }

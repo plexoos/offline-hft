@@ -113,6 +113,25 @@ void StiScanHistContainer::FillHists(const EventG &eventG)
 }
 
 
+void StiScanHistContainer::FillDerivedHists()
+{
+   this->cd();
+
+   TH1* h;
+
+   TProfile2D* prof2D = (TProfile2D*) mHs["hAllVolELossVsPhiVsR"];
+
+   mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
+   h->SetOption("XY");
+
+   mHs["hAllVolELossVsPhiVsR_pfx"] = h = prof2D->ProfileX("_pfx", 1, -1, "g");
+   h->SetOption("XY");
+
+   mHs["hAllVolELossVsPhiVsR_pfy"] = h = prof2D->ProfileY("_pfy", 1, -1, "g");
+   h->SetOption("XY");
+}
+
+
 void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList)
 {
    // Take the first node with the smallest radius

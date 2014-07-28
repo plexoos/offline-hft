@@ -47,6 +47,23 @@ void StiScanRootFile::FillHists(const EventG &eventG)
 }
 
 
+void StiScanRootFile::FillDerivedHists()
+{
+   for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
+   {
+      std::string  dirName = iDir->first;
+      StiScanHistContainer *container = (StiScanHistContainer*) iDir->second;
+
+      if (!container) {
+         Error("FillDerivedHists", "No container/directory found for key %s. Skipping...", dirName.c_str());
+         continue;
+      }
+
+      container->FillDerivedHists();
+   }
+}
+
+
 Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
 {
    Info("Write", "%s", GetName());

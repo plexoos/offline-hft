@@ -91,6 +91,8 @@ void loop_hftree(PrgOptionProcessor &poProc)
 
    delete eventT;
 
+   outRootFile.FillDerivedHists();
+
    if (poProc.SaveGraphics()) {
       gROOT->Macro(poProc.GetStyleMacro().c_str());
       outRootFile.SaveAllAs("./images");
