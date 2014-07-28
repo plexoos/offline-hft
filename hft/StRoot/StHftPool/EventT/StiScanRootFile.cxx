@@ -80,13 +80,13 @@ Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
       container->PrettifyHists();
    }
 
-   TFile::Write(name, opt, bufsiz);
+   return TFile::Write(name, opt, bufsiz);
 }
 
 
 Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz) const
 {
-   TFile::Write(name, opt, bufsiz);
+   return TFile::Write(name, opt, bufsiz);
 }
 
 
