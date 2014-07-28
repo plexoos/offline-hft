@@ -6,6 +6,7 @@
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TROOT.h"
+#include "TSystem.h"
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
 
@@ -78,8 +79,13 @@ void StiScanRootFile::Close(Option_t *option)
 }
 
 
-void StiScanRootFile::SaveAllAs()
+void StiScanRootFile::SaveAllAs(std::string prefix)
 {
+   if (gSystem->mkdir(prefix.c_str()) < 0)
+      Warning("SaveAllAs", "Perhaps dir already exists: %s", prefix.c_str());
+   else
+      Info("SaveAllAs", "Created dir: %s", prefix.c_str());
+
    for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
    {
       std::string  dirName = iDir->first;
@@ -90,6 +96,13 @@ void StiScanRootFile::SaveAllAs()
          continue;
       }
 
-      container->SaveAllAs();
+      std::string path = prefix + "/" + dirName;
+
+      if (gSystem->mkdir(path.c_str()) < 0)
+         Warning("SaveAllAs", "Perhaps dir already exists: %s", path.c_str());
+      else
+         Info("SaveAllAs", "Created dir: %s", path.c_str());
+
+      container->SaveAllAs(path);
    }
 }

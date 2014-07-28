@@ -191,7 +191,7 @@ void StiScanHistContainer::FillHists_trk(const TStiKalmanTrack &kalmTrack, const
 }
 
 
-void StiScanHistContainer::SaveAllAs()
+void StiScanHistContainer::SaveAllAs(std::string prefix)
 {
    PrettifyHists();
 
@@ -215,7 +215,7 @@ void StiScanHistContainer::SaveAllAs()
 
       obj->Draw();
 
-      string sFileName =  "c_" + objName + ".png";
+      string sFileName = prefix + "/c_" + objName + ".png";
       canvas.SaveAs(sFileName.c_str());
    }
 }

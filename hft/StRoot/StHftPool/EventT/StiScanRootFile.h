@@ -32,7 +32,7 @@ public:
    virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0);
    virtual Int_t Write(const char* name = 0, Int_t opt = 0, Int_t bufsiz = 0) const;
    virtual void Close(Option_t *option="");
-   void SaveAllAs();
+   void SaveAllAs(std::string prefix="./");
 
 private:
 
