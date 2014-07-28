@@ -13,9 +13,10 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(0), fGeantStepChain(0)
 {
    InitOptions();
+   InitEnvVars();
 }
 
 
@@ -23,9 +24,10 @@ PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string&
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(0), fGeantStepChain(0)
 {
    InitOptions();
+   InitEnvVars();
    ProcessOptions(argc, argv);
    BuildInputChains(hftTreeName, geantStepTreeName);
 }
@@ -50,6 +52,15 @@ void PrgOptionProcessor::InitOptions()
    // of the options to modify them
    fVolumeList.insert("^.*IDSM_1/IBMO_1/IBAM_[\\d]+/ILSB.*$");
    fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_[\\d]+/LADR_\\d/PXSI_[\\d]+/PLAC.*$");
+}
+
+
+void PrgOptionProcessor::InitEnvVars()
+{
+   const char* tmpEnv = getenv("OFFLINE_HFT_DIR");
+
+   if (tmpEnv) fEnvVars["OFFLINE_HFT_DIR"] = tmpEnv;
+   else        fEnvVars["OFFLINE_HFT_DIR"] = ".";
 }
 
 

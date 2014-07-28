@@ -56,9 +56,11 @@ protected:
 private:
    
    void InitOptions();
+   void InitEnvVars();
    void BuildInputChains(std::string hftTreeName, std::string geantStepTreeName);
    void AddToInputChains(std::string hftTreeRootFileName);
 
+   std::map<std::string, std::string> fEnvVars;
    TChain *fHftChain;
    TChain *fGeantStepChain;
 };
