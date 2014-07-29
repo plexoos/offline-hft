@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/07/29 20:13:31  ypwang
+* update the IST DB obtain method
+*
 * Revision 1.5  2014/02/15 20:02:37  ypwang
 * Clear() member function added, and mIstCollectionPtr data member defined
 *
@@ -29,8 +32,7 @@
 #include "StIstIClusterAlgo.h"
 
 class StIstCollection;
-class StIstDbMaker;
-class St_istControl;
+class StIstDb;
 
 class StIstClusterMaker : public StMaker
 {
@@ -51,7 +53,7 @@ class StIstClusterMaker : public StMaker
  protected:
   StIstCollection *mIstCollectionPtr;
   StIstIClusterAlgo *mClusterAlgoPtr;
-  StIstDbMaker *mIstDbMaker;
+  StIstDb *mIstDb;
 
   UChar_t mTimeBin;
   Bool_t mSplitCluster;

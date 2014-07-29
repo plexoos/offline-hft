@@ -10,6 +10,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.8  2014/07/29 20:13:30  ypwang
+* update the IST DB obtain method
+*
 * Revision 1.7  2014/03/17 21:27:03  ypwang
 * add 2D histogram set for StIstCalibrationMaker
 *
@@ -37,8 +40,7 @@
 #include "StRoot/StIstUtil/StIstConsts.h"
 #include "TH2S.h"
 
-class StIstDbMaker;
-class St_istMapping;
+class StIstDb;
 
 class StIstCalibrationMaker : public StMaker {
 public:
@@ -109,7 +111,7 @@ protected:
     Bool_t mHasFinished;
 
     // Db
-    StIstDbMaker *mIstDbMaker;
+    StIstDb *mIstDb;
     // mapping
     typedef std::vector< int > MappingVec_t;//Channel elec. index, geometry ID
     MappingVec_t mMappingVec;

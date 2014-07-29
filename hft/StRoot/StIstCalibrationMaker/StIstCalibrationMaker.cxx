@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.17  2014/07/29 20:13:30  ypwang
+* update the IST DB obtain method
+*
 * Revision 1.16  2014/04/16 16:13:57  ypwang
 * add rdo/arm/apv/channnel electronics information for produced data files
 *
@@ -45,7 +48,7 @@
 #include "StRoot/StIstUtil/StIstCollection.h"
 #include "StRoot/StIstUtil/StIstRawHitCollection.h"
 #include "StRoot/StIstUtil/StIstRawHit.h"
-#include "StRoot/StIstDbMaker/StIstDbMaker.h"
+#include "StRoot/StIstDbMaker/StIstDb.h"
 #include "StRoot/StIstUtil/StIstConsts.h"
 
 #include "tables/St_istMapping_Table.h"
@@ -61,7 +64,7 @@ const string StIstCalibrationMaker::sectionLabel[72]={  "1C","1B","1A","2C","2B"
                                           		"21C","21B","21A","22C","22B","22A","23C","23B","23A","24C","24B","24A"};
 
 // constructor
-StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name ), mTimeBinMask(0xFF), mRunHist(true), mDoPedCut(true), evtIdx(0), mHasFinished(0), mIstDbMaker(0) {
+StIstCalibrationMaker::StIstCalibrationMaker( const char* name ) : StMaker( name ), mTimeBinMask(0xFF), mRunHist(true), mDoPedCut(true), evtIdx(0), mHasFinished(0), mIstDb(0) {
     for(unsigned char iTb=0; iTb<kIstNumTimeBins; iTb++) {
 	hist_meanPed[iTb] = NULL;
 	hist_rmsPed[iTb]  = NULL;
@@ -189,12 +192,6 @@ Int_t StIstCalibrationMaker::Init()
 	in.close();
     }
 
-    mIstDbMaker = (StIstDbMaker*)GetMaker("istDb");
-    if(ierr || !mIstDbMaker) {
-        LOG_WARN << "Error getting IST Db maker handler" << endm;
-        ierr = kStWarn;
-    }
-
     return ierr;
 };
 
@@ -202,44 +199,36 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
 {
    Int_t ierr = kStOk;
 
-   //control parameter
-   const TDataSet *dbControl = mIstDbMaker->GetControl();
-   St_istControl *istControl = 0;
-   istControl = (St_istControl *)dbControl->Find("istControl");
-   if(!istControl) {
-	LOG_ERROR << "Dataset does not contain IST control table!" << endm;
-	ierr = kStErr;
+   TObjectSet *istDbDataSet = (TObjectSet *)GetDataSet("ist_db");
+   if (istDbDataSet) {
+       mIstDb = (StIstDb *)istDbDataSet->GetObject();
+       assert(mIstDb);
    }
    else {
-   	istControl_st *istControlTable = istControl->GetTable() ;
-   	if (!istControlTable)  {
-	    LOG_ERROR << "Pointer to IST control table is null" << endm;
-	    ierr = kStErr;
-	}
-	else
-   	    mPedCut = istControlTable[0].kIstPedCutDefault;
+       LOG_ERROR << "InitRun : no istDb" << endm;
+       return kStErr;
    }
 
+   //control parameter
+   const istControl_st *istControlTable = mIstDb->GetControl();
+   if (!istControlTable)  {
+	LOG_ERROR << "Pointer to IST control table is null" << endm;
+	ierr = kStErr;
+   }
+   else
+   	mPedCut = istControlTable[0].kIstPedCutDefault;
+
    //channel mapping
-   const TDataSet *dbMapping = mIstDbMaker->GetMapping();
-   St_istMapping *istMapping = 0;
-   istMapping = (St_istMapping *)dbMapping->Find("istMapping");
-   if(!istMapping) {
-	LOG_ERROR << "Dataset does not contain IST mapping table!" << endm;
-        ierr = kStErr;
+   const istMapping_st *gM = mIstDb->GetMapping();
+   if( !gM ) {
+       	LOG_ERROR << "Pointer to IST mapping table is null" << endm;
+       	ierr = kStErr;
    }
    else {
-   	istMapping_st *gM = istMapping->GetTable();
-   	if( !gM ) {
-       	    LOG_ERROR << "Pointer to IST mapping table is null" << endm;
-       	    ierr = kStErr;
+   	for(int i=0; i<kIstNumElecIds; i++) {
+       	    LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
+       	    mMappingVec[i] = gM[0].mapping[i];
    	}
-	else {
-   	    for(int i=0; i<kIstNumElecIds; i++) {
-       		LOG_DEBUG<<Form(" Print entry %d : geoId=%d ",i,gM[0].mapping[i])<<endm;
-       		mMappingVec[i] = gM[0].mapping[i];
-   	    }
-	}
    }
 
    return ierr;

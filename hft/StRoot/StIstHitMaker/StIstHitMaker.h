@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/07/29 20:13:31  ypwang
+* update the IST DB obtain method
+*
 * Revision 1.5  2014/06/27 21:31:40  ypwang
 * remove data member istHitCollection and related Clear() function
 *
@@ -27,9 +30,8 @@
 
 #include "StMaker.h"
 
-class StIstDbMaker;
+class StIstDb;
 class THashList;
-class St_istControl;
 
 class StIstHitMaker : public StMaker
 {
@@ -44,7 +46,7 @@ class StIstHitMaker : public StMaker
 
  protected:
   THashList *listGeoMSensorOnGlobal;
-  StIstDbMaker *mIstDbMaker;
+  StIstDb *mIstDb;
 
   UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 

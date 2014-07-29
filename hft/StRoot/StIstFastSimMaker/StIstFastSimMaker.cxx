@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.4  2014/07/29 20:13:31  ypwang
+* update the IST DB obtain method
+*
 * Revision 1.3  2014/02/08 03:34:16  ypwang
 * updating scripts
 *
@@ -30,7 +33,7 @@
 #include "StRoot/StIstUtil/StIstConsts.h"
 #include "StIstHit.h"
 #include "StIstHitCollection.h"
-#include "StIstDbMaker/StIstDbMaker.h"
+#include "StIstDbMaker/StIstDb.h"
 #include "StMcEvent/StMcIstHit.hh"
 #include "StMcEvent/StMcIstHitCollection.hh"
 #include "StMcEventTypes.hh"
@@ -113,8 +116,17 @@ Int_t StIstFastSimMaker::Make()
   const StMcIstHitCollection* istMcHitCol = mcEvent->istHitCollection();
  
   THashList *istRot = new THashList(144,0);
-  StIstDbMaker *istDb = (StIstDbMaker*)GetMaker("istDb");
-  istRot = istDb->GetRotations(); 
+  StIstDb *mIstDb = 0;
+  TObjectSet *istDbDataSet = (TObjectSet *)GetDataSet("ist_db");
+  if (istDbDataSet) {
+       mIstDb = (StIstDb *)istDbDataSet->GetObject();
+       assert(mIstDb);
+  }
+  else {
+       LOG_ERROR << "InitRun : no istDb" << endm;
+       return kStErr;
+  }
+  istRot = mIstDb->GetRotations(); 
 
   //new simulator for new 1-layer design
   float smearedX = 0., smearedZ = 0.;
