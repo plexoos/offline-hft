@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <stdint.h>
+#include <string>
 #include <iomanip>
 #include <iostream>
 
@@ -10,9 +11,11 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TMath.h"
+#include "TError.h"
 #include "TEveTrack.h"
 #include "TEveTrackPropagator.h"
 #include "TGeoManager.h"
+#include "TGeoNavigator.h"
 #include "TEveBrowser.h"
 #include "TEveManager.h"
 #include "TRootBrowser.h"
