@@ -71,9 +71,10 @@ EventT::~EventT()
 
 Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
 {
-   Int_t iok = 1;
-
-   if (!stEvent) return iok;
+   if (!stEvent || !maker) {
+      Error("Build", "Cannot build EventT: Missing StEvent or HftMatchTree maker");
+      return kStErr;
+   }
 
    fIsValid = kFALSE;
 
@@ -668,8 +669,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
 
    LOG_INFO << " Number of predicted hits on PXL1/PXL2/IST/SSD = " << onPXL1 << "/" << onPXL2 << "/" << onIST << "/" << 0 << endm;
 
-   iok = 0;
-   return iok;
+   return kStOk;
 }
 
 
