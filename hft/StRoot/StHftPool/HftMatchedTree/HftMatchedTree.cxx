@@ -74,22 +74,23 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
       assert(fPxlDb);
    }
    else {
-      LOG_ERROR << "InitRun : not pxlDb" << endm;
+      LOG_ERROR << "InitRun : Dataset \"pxl_db\" not found" << endm;
       return kStErr;
    }
 
-   // Dump Geometry matrix into root file
    TObjectSet *istDbDataSet = (TObjectSet*) GetDataSet("ist_db");
 
-   TFile *file = new TFile("GeometryTables.root", "Recreate");
    if (istDbDataSet) {
       fIstDb = (StIstDb*) istDbDataSet->GetObject();
       assert(fIstDb);
    }
    else {
-      LOG_ERROR << "InitRun : Dataset ist_db not found" << endm;
+      LOG_ERROR << "InitRun : Dataset \"ist_db\" not found" << endm;
       return kStErr;
    }
+
+   // Dump geometry matrix into root file
+   TFile *file = new TFile("GeometryTables.root", "recreate");
 
    for (int i = 0; i < 24; i++) {
       for (int j = 0; j < 6; j++) {
@@ -111,6 +112,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    }
 
    file->Close();
+   delete file;
 
    return kStOK;
 }
