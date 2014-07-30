@@ -16,7 +16,7 @@
 #include "StiMaker/StiMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
-#include "StIstDbMaker/StIstDbMaker.h"
+#include "StIstDbMaker/StIstDb.h"
 #include "StPxlDbMaker/StPxlDb.h"
 
 
@@ -79,15 +79,22 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    }
 
    // Dump Geometry matrix into root file
-   StIstDbMaker *istDbMaker = (StIstDbMaker *)GetMaker("istDb");
-   THashList *istRot = istDbMaker->GetRotations();
+   TObjectSet *istDbDataSet = (TObjectSet*) GetDataSet("ist_db");
 
    TFile *file = new TFile("GeometryTables.root", "Recreate");
+   if (istDbDataSet) {
+      fIstDb = (StIstDb*) istDbDataSet->GetObject();
+      assert(fIstDb);
+   }
+   else {
+      LOG_ERROR << "InitRun : Dataset ist_db not found" << endm;
+      return kStErr;
+   }
 
    for (int i = 0; i < 24; i++) {
       for (int j = 0; j < 6; j++) {
          int id = 1000 + i * 6 + j + 1;
-         TGeoHMatrix *comb = (TGeoHMatrix *)istRot->FindObject(Form("R%04i", id));
+         TGeoHMatrix *comb = (TGeoHMatrix *) fIstDb->FindObject(Form("R%04i", id));
          comb->Write();
       }
    }

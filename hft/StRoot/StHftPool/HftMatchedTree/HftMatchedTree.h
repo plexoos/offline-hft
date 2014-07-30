@@ -7,6 +7,7 @@
 #include "TTree.h"
 
 class StPxlDb;
+class StIstDb;
 class EventT;
 
 
@@ -34,6 +35,7 @@ private:
    Int_t     fMinNoHits;
    Double_t  fpCut;
    StPxlDb  *fPxlDb;
+   StIstDb  *fIstDb;
 
    ClassDef(HftMatchedTree, 1)
 };
