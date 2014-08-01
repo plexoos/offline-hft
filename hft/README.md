@@ -69,7 +69,7 @@ hits along with selected detector volumes or study Sti track losses in these
 volumes. The following is a sample chain of BFC options to reconstruct an .fz
 file:
 
-    tpcRS y2014a AgML MakeEvent ITTF pxlFastSim PxlIT pxlDb istDb istFastSim IstIT Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree
+    tpcRS y2014a AgML MakeEvent ITTF StiHftC pxlFastSim istFastSim Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree
 
 For reference, we include a simple starsim kumac to produce events with tracks
 in transverse planes. It can be found in `offline/hft/tests/singlepion.kumac`

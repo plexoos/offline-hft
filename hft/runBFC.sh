@@ -36,7 +36,7 @@
 #
 # 2011 production chain     "tpcRS  y2011         MakeEvent ITTF                    NoSsdIt NoSvtIT Idst BAna l0 ftpc pmd Tree logger Sti genvtx tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem"
 # 
-#export BFC_OPTIONS='"       tpcRS ry2014a AgML MakeEvent ITTF StiLibsHft -SvtIT -SsdIT pxlFastSim PxlIT pxlDb istDb  istFastSim IstIT Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree"'
+#export BFC_OPTIONS='"tpcRS y2014a AgML MakeEvent ITTF StiHftC pxlFastSim istFastSim Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree"'
 #
 #export BFC_INPFILE='"mytest.fz"'
 

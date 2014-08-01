@@ -13,7 +13,7 @@
 
 RUN_FILE_LIST=$1
 
-BFC_OPTIONS='tpcRS y2014a AgML MakeEvent ITTF pxlFastSim PxlIT pxlDb istDb istFastSim IstIT Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree'
+BFC_OPTIONS='tpcRS y2014a AgML MakeEvent ITTF StiHftC pxlFastSim istFastSim Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree'
 
 # Replace all spaces with underscores
 BFC_OPTIONS=`echo ${BFC_OPTIONS[*]} | sed 's/ /_/g'`
