@@ -1,13 +1,33 @@
 
-This directory (offline/hft in STAR CVS) contains development version of HFT
-related software. The subdirectories (StRoot, ...) include new
-submodules along with modified sources of the respective HEAD versions. Once
-tested the new classes and changes to the existing ones will be moved to the
-official StRoot area.
 
 
-How to compile development HFT libraries
-========================================
+
+This project contains the software developed to support the offline
+reconstruction and analysis of the data collected by the STAR experiment at RHIC
+and by the Heavy Flavor Tracker (HFT) in particular. In the STAR CVS repository
+the corresponding code can be found in 'offline/hft'. The subdirectories
+(StRoot, ...) include new submodules along with modified sources of the
+respective HEAD versions. Once tested the new classes and changes to the
+existing ones are moved to the official StRoot area.
+
+
+Prerequisites: Setting up the environment
+=========================================
+
+In the following we assume the standard STAR environment available on the
+interactive RCAS nodes.
+
+Some pieces of the package rely on a couple of environment variables:
+
+`OFFLINE_HFT_DIR` should contain the path to the local working directory with
+an StRoot subdirectory in it. And
+
+`OFFLINE_HFT_RESULTS_DIR` can contain any path to where the output results will
+be saved
+
+
+How to compile development HFT libraries from STAR CVS repository
+=================================================================
 
 Setup the environment and prepare directories
 
@@ -78,10 +98,6 @@ in transverse planes. It can be found in `offline/hft/tests/singlepion.kumac`
 How to produce and reconstruct massive simulation for HFT 
 =========================================================
 
-
-    OFFLINE_HFT_DIR
-    OFFLINE_HFT_RESULTS_DIR
-
     offline/hft/tests/submit_jobs_stiscan_zslice.sh
 
     offline/hft/tests/submit_jobs_hftree.sh /path/to/filelist_fz
@@ -90,14 +106,11 @@ How to produce and reconstruct massive simulation for HFT
 How to build and run standalone HFT tools
 =========================================
 
-To help with Sti geometry debugging and implementation we are developing a
-number of tools. This section explains how to build them as standalone
-executables. First, one need to set environment variable OFFLINE_HFT_DIR to
-contain the path to the local working directory with StRoot. Assuming the
-commands from the "How to build development hft libraries" section above have
-been executed one can do:
+To help with Sti geometry debugging and implementation we developed a number of
+tools. This section explains how to build them as standalone executables.
+Assuming the commands from the "How to build development hft libraries" section
+above have been executed one can do:
 
-    setenv OFFLINE_HFT_DIR ~/my_hft_test_dir
     cd ~/my_hft_test_dir
     mkdir build
     cd build
