@@ -40,8 +40,8 @@
 #include "StBTofPidTraits.h"
 #include "PhysicalConstants.h"
 #include "StPxlDbMaker/StPxlDb.h"
-#include "StPxlDbMaker/StPxlDbMaker.h"
-#include "StIstDbMaker/StIstDbMaker.h"
+#include "StIstDbMaker/StIstDb.h"
+#include "StHftPool/HftMatchedTree/HftMatchedTree.h"
 #include "StEvent/StEnumerations.h"
 
 
@@ -69,7 +69,7 @@ EventT::~EventT()
 }
 
 
-Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *maker, StPxlDb *pxlDb)
+Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const HftMatchedTree *maker)
 {
    if (!stEvent || !maker) {
       Error("Build", "Cannot build EventT: Missing StEvent or HftMatchTree maker");
@@ -78,9 +78,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
 
    fIsValid = kFALSE;
 
-   // the way to access the db makers are not so consistent, need to be fixed later
-   StIstDbMaker *istDbMaker = (StIstDbMaker *)maker->GetMaker("istDb");
-   THashList *istRot = istDbMaker->GetRotations();
+   const THashList *istRot = maker->GetIstDb()->GetRotations();
 
    UInt_t NprimVtx = stEvent->numberOfPrimaryVertices();
    StPrimaryVertex *pVertex = 0;
@@ -596,7 +594,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, StMaker *
             for (int i_sensor = 0; i_sensor < 10; i_sensor++)
             {
                UInt_t id = i_sector * 40 + i_ladder * 10 + i_sensor + 1;
-               TGeoHMatrix *comb = (TGeoHMatrix*) pxlDb->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
+               TGeoHMatrix *comb = (TGeoHMatrix*) maker->GetPxlDb()->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
 
                Double_t *rot = comb->GetRotationMatrix();
                Double_t *tra = comb->GetTranslation();

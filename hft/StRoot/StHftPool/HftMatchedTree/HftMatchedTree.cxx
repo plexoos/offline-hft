@@ -159,7 +159,7 @@ Int_t HftMatchedTree::Make()
 
    LOG_DEBUG << "stEvent id: " << stEvent->id() << endm;
 
-   if (stEvent && !fEvent->Build(stEvent, fMinNoHits, fpCut, this, fPxlDb))
+   if (stEvent && fEvent->Build(stEvent, fMinNoHits, fpCut, this) == kStOk)
       fTree->Fill(); // fill the tree
 
    return kStOK;

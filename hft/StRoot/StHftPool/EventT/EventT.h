@@ -13,8 +13,7 @@
 #include "StHftPool/EventT/TStiKalmanTrack.h"
 #include "Sti/StiTrackContainer.h"
 
-class StMaker;
-class StPxlDb;
+class HftMatchedTree;
 class StEvent;
 
 
@@ -64,7 +63,7 @@ public:
 
    EventT();
    virtual ~EventT();
-   Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2, StMaker *maker = 0, StPxlDb *pxlDb = 0);
+   Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2, const HftMatchedTree *maker = 0);
    Int_t             Fill(StiTrackContainer &stiTrackContainer);
    void              Clear(Option_t *option = "");
    Bool_t            IsValid() const { return fIsValid; }
