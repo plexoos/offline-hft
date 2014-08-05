@@ -1,23 +1,33 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
+- [How to compile development HFT libraries from STAR CVS repository](#how-to-compile-development-hft-libraries-from-star-cvs-repository)
+- [How to run tests](#how-to-run-tests)
+- [How to produce and reconstruct massive simulation for HFT ](#how-to-produce-and-reconstruct-massive-simulation-for-hft)
+- [How to build and run standalone HFT tools](#how-to-build-and-run-standalone-hft-tools)
+- [How to add PXL pileup events](#how-to-add-pxl-pileup-events)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-
-
-This project contains the software developed to support the offline
-reconstruction and analysis of the data collected by the STAR experiment at RHIC
-and by the Heavy Flavor Tracker (HFT) in particular. In the STAR CVS repository
-the corresponding code can be found in 'offline/hft'. The subdirectories
-(StRoot, ...) include new submodules along with modified sources of the
-respective HEAD versions. Once tested the new classes and changes to the
-existing ones are moved to the official StRoot area.
+This project contains the code developed to support the offline reconstruction
+and analysis of the data collected by the STAR experiment at RHIC and by the
+Heavy Flavor Tracker (HFT) in particular. In the STAR CVS repository the
+corresponding code can be found in 'offline/hft'. The subdirectories (StRoot,
+...) include new submodules along with modified sources of the respective HEAD
+versions. Once tested the new classes and changes to the existing ones are moved
+to the official StRoot area.
 
 
 Prerequisites: Setting up the environment
 =========================================
 
-In the following we assume the standard STAR environment available on the
-interactive RCAS nodes.
+In the following we assume the work is being done in the standard STAR
+environment available on the interactive RCAS nodes.
 
-Some pieces of the package rely on a couple of environment variables:
+Some pieces of the package rely on a couple of additional environment variables:
 
 `OFFLINE_HFT_DIR` should contain the path to the local working directory with
 an StRoot subdirectory in it. And
@@ -98,7 +108,12 @@ in transverse planes. It can be found in `offline/hft/tests/singlepion.kumac`
 How to produce and reconstruct massive simulation for HFT 
 =========================================================
 
-    offline/hft/tests/submit_jobs_stiscan_zslice.sh
+
+
+    offline/hft/tests/submit_jobs_stiscan_zslice.sh offline/hft/tests/job_template_stiscan_zslice.xml
+
+    offline/hft/tests/submit_jobs_stiscan_zslice.sh offline/hft/tests/job_template_stiscan_zslice_macro.xml
+
 
     offline/hft/tests/submit_jobs_hftree.sh /path/to/filelist_fz
 
