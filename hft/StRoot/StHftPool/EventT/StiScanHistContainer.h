@@ -6,10 +6,9 @@
 #include <string>
 
 #include "TDirectoryFile.h"
-#include "TH2S.h"
-#include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StHftPool/EventT/TStiKalmanTrack.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
 typedef Event EventG;

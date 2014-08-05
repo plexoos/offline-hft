@@ -5,7 +5,6 @@
 #include "TCanvas.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
-#include "TROOT.h"
 #include "TSystem.h"
 
 #include "StHftPool/EventT/StiScanHistContainer.h"

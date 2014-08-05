@@ -5,8 +5,9 @@
 #include "TCanvas.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
-#include "TROOT.h"
 #include "TVector3.h"
+
+#include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 
 StiScanHistContainer::StiScanHistContainer() : TDirectoryFile(), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5)
