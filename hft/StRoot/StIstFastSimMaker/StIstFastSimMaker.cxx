@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.5  2014/08/05 03:28:42  ypwang
+* buildIdealGeom() added to switch between ideal VMC geometry or DB geometry, Db geometry was built by default
+*
 * Revision 1.4  2014/07/29 20:13:31  ypwang
 * update the IST DB obtain method
 *
@@ -52,6 +55,11 @@ using namespace std;
 
 ClassImp(StIstFastSimMaker)
 
+StIstFastSimMaker::StIstFastSimMaker( const char* name ) : StMaker(name), istRot(NULL), mIstDb(NULL), mBuildIdealGeom(kFALSE)
+{
+   /* no op */
+}
+
 Int_t StIstFastSimMaker::Init()
 {
   LOG_INFO<<"StIstFastSimMaker::Init()"<<endm;
@@ -75,6 +83,19 @@ Int_t StIstFastSimMaker::InitRun(int RunNo)
   resXIst1 = sqrt(istHitError->coeff[0]);
   resZIst1 = sqrt(istHitError->coeff[3]);
 
+  TObjectSet *istDbDataSet = (TObjectSet *)GetDataSet("ist_db");
+  if (istDbDataSet) {
+       mIstDb = (StIstDb *)istDbDataSet->GetObject();
+       assert(mIstDb);
+  }
+  else {
+       LOG_ERROR << "InitRun : no istDb" << endm;
+       return kStErr;
+  }
+
+  // geometry Db tables
+  istRot = mIstDb->GetRotations();
+
   return kStOk;
 }
 
@@ -91,7 +112,9 @@ Int_t StIstFastSimMaker::Make()
   if (! mcEvent) {LOG_INFO << "No StMcEvent on input" << endl; return kStWarn;}
 
   TDataSetIter geant(GetInputDS("geant"));
-  if (! gGeoManager) GetDataBase("VmcGeometry");
+  if ( mBuildIdealGeom && !gGeoManager ) {
+	GetDataBase("VmcGeometry");
+  }
 
   g2t_ist_hit_st* g2tIst=0;
   St_g2t_ist_hit *g2t_ist_hit=(St_g2t_ist_hit *)geant("g2t_ist_hit");
@@ -114,24 +137,10 @@ Int_t StIstFastSimMaker::Make()
 
   //Get MC Ist hit collection. This contains all ist hits.
   const StMcIstHitCollection* istMcHitCol = mcEvent->istHitCollection();
- 
-  THashList *istRot = new THashList(144,0);
-  StIstDb *mIstDb = 0;
-  TObjectSet *istDbDataSet = (TObjectSet *)GetDataSet("ist_db");
-  if (istDbDataSet) {
-       mIstDb = (StIstDb *)istDbDataSet->GetObject();
-       assert(mIstDb);
-  }
-  else {
-       LOG_ERROR << "InitRun : no istDb" << endm;
-       return kStErr;
-  }
-  istRot = mIstDb->GetRotations(); 
 
   //new simulator for new 1-layer design
   float smearedX = 0., smearedZ = 0.;
     
-  TString Path("");
   if(istMcHitCol){
     LOG_INFO<<"ist MC hit collection found"<<endm;
     int nIsthits=istMcHitCol->numberOfHits();
