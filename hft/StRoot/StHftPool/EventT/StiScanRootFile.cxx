@@ -8,6 +8,7 @@
 #include "TSystem.h"
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
+#include "StHftPool/EventT/StiScanHistsByVolume.h"
 
 
 StiScanRootFile::StiScanRootFile() : TFile(), mDirs()
@@ -27,14 +28,20 @@ StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char
 
 void StiScanRootFile::BookHists()
 {
-   mDirs["sti"] = new StiScanHistContainer("sti", "sti", "", this);
+   mDirs["sti_vol"] = new StiScanHistsByVolume("sti_vol", "sti_vol", "", this);
+   mDirs["sti_trk"] = new StiScanHistContainer("sti_trk", "sti_trk", "", this);
    mDirs["gea"] = new StiScanHistContainer("gea", "gea", "", this);
 }
 
 
 void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
 {
-   StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["sti"]);
+   StiScanHistContainer* container;
+
+   container = static_cast<StiScanHistContainer*> (mDirs["sti_vol"]);
+   container->FillHists(eventT, volumeList);
+
+   container = static_cast<StiScanHistContainer*> (mDirs["sti_trk"]);
    container->FillHists(eventT, volumeList);
 }
 
@@ -67,10 +74,13 @@ Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
 {
    Info("Write", "%s", GetName());
 
-   StiScanHistContainer* sti = (StiScanHistContainer*) mDirs["sti"];
+   // Set histogram axis limits to the same value calculated in sti_trk container
+   StiScanHistContainer* sti_trk = (StiScanHistContainer*) mDirs["sti_trk"];
+   StiScanHistContainer* sti_vol = (StiScanHistContainer*) mDirs["sti_vol"];
    StiScanHistContainer* gea = (StiScanHistContainer*) mDirs["gea"];
 
-   gea->SetZRange(sti->GetZMin(), sti->GetZMax());
+   sti_vol->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
+   gea->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
 
    for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
    {
