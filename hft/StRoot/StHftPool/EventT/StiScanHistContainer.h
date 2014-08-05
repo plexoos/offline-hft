@@ -37,11 +37,10 @@ public:
    double GetZMax() { return mNodeZMax; }
    void PrettifyHists();
 
- private:
+protected:
 
    void BookHists();
-   void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
-   void FillHists_trk(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
+   virtual void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
 
    HistMap mHs;
    double  mNodeZMin;
