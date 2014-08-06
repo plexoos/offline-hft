@@ -78,7 +78,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const Hft
 
    fIsValid = kFALSE;
 
-   const THashList *istRot = maker->GetIstDb()->GetRotations();
+   const THashList *istRot = maker->GetIstDb()->getRotations();
 
    UInt_t NprimVtx = stEvent->numberOfPrimaryVertices();
    StPrimaryVertex *pVertex = 0;

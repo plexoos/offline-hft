@@ -95,7 +95,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    for (int i = 0; i < 24; i++) {
       for (int j = 0; j < 6; j++) {
          int id = 1000 + i * 6 + j + 1;
-         TGeoHMatrix *comb = (TGeoHMatrix *) fIstDb->FindObject(Form("R%04i", id));
+         TGeoHMatrix *comb = (TGeoHMatrix *) fIstDb->getRotations()->FindObject(Form("R%04i", id));
          comb->Write();
       }
    }
