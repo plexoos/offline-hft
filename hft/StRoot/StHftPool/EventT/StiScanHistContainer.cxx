@@ -89,6 +89,9 @@ void StiScanHistContainer::BookHists()
 
    mHs["hSelectVolELossVsPhiVsR"]   = h = new TProfile2D("hSelectVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in Select Volumes, keV", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
+
+   // Swap the max/min values so we can find new limits automatically when filling with events
+   mNodeRMax = mNodeRMin;
 }
 
 
@@ -162,6 +165,11 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 
       if (node_z < mNodeZMin) mNodeZMin = node_z;
       if (node_z > mNodeZMax) mNodeZMax = node_z;
+
+      // Find maximum radius
+      double node_r = (float) kalmNode.GetPosition().Perp();
+
+      if (node_r > mNodeRMax) mNodeRMax = node_r;
 
       ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
