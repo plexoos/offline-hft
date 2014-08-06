@@ -34,6 +34,9 @@ public:
    void SetZRange(double minZ, double maxZ) { mNodeZMin = minZ; mNodeZMax = maxZ; }
    double GetZMin() { return mNodeZMin; }
    double GetZMax() { return mNodeZMax; }
+   void SetRRange(float minR, float maxR) { mNodeRMin = minR; mNodeRMax = maxR; }
+   float GetRMin() const { return mNodeRMin; }
+   float GetRMax() const { return mNodeRMax; }
    void PrettifyHists();
 
 protected:
@@ -44,6 +47,8 @@ protected:
    HistMap mHs;
    double  mNodeZMin;
    double  mNodeZMax;
+   float   mNodeRMin;
+   float   mNodeRMax;
 
    ClassDef(StiScanHistContainer, 1)
 };
