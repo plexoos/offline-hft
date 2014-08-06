@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.18  2014/08/06 18:56:52  ypwang
+* minor update due to coding style update of the StIstDb method
+*
 * Revision 1.17  2014/07/29 20:13:30  ypwang
 * update the IST DB obtain method
 *
@@ -210,7 +213,7 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
    }
 
    //control parameter
-   const istControl_st *istControlTable = mIstDb->GetControl();
+   const istControl_st *istControlTable = mIstDb->getControl();
    if (!istControlTable)  {
 	LOG_ERROR << "Pointer to IST control table is null" << endm;
 	ierr = kStErr;
@@ -219,7 +222,7 @@ Int_t StIstCalibrationMaker::InitRun(Int_t runnumber)
    	mPedCut = istControlTable[0].kIstPedCutDefault;
 
    //channel mapping
-   const istMapping_st *gM = mIstDb->GetMapping();
+   const istMapping_st *gM = mIstDb->getMapping();
    if( !gM ) {
        	LOG_ERROR << "Pointer to IST mapping table is null" << endm;
        	ierr = kStErr;

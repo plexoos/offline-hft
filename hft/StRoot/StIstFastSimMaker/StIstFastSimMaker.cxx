@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/08/06 18:56:52  ypwang
+* minor update due to coding style update of the StIstDb method
+*
 * Revision 1.5  2014/08/05 03:28:42  ypwang
 * buildIdealGeom() added to switch between ideal VMC geometry or DB geometry, Db geometry was built by default
 *
@@ -94,7 +97,7 @@ Int_t StIstFastSimMaker::InitRun(int RunNo)
   }
 
   // geometry Db tables
-  istRot = mIstDb->GetRotations();
+  istRot = mIstDb->getRotations();
 
   return kStOk;
 }
