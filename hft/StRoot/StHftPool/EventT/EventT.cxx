@@ -188,25 +188,25 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const Hft
       UInt_t numberOfSectors = stPxlHitCollection->numberOfSectors();
 
       for (UInt_t i = 0; i < numberOfSectors; i++) {
-         StPxlSectorHitCollection *PxlSectorHitCollection = stPxlHitCollection->sector(i);
+         StPxlSectorHitCollection *pxlSectorHitCollection = stPxlHitCollection->sector(i);
 
-         if (!PxlSectorHitCollection) continue;
+         if (!pxlSectorHitCollection) continue;
 
-         UInt_t numberOfLadders = PxlSectorHitCollection->numberOfLadders();
+         UInt_t numberOfLadders = pxlSectorHitCollection->numberOfLadders();
 
          for (UInt_t j = 0; j < numberOfLadders; j++) {
-            StPxlLadderHitCollection *PxlLadderHitCollection = PxlSectorHitCollection->ladder(j);
+            StPxlLadderHitCollection *pxlLadderHitCollection = pxlSectorHitCollection->ladder(j);
 
-            if (!PxlLadderHitCollection) continue;
+            if (!pxlLadderHitCollection) continue;
 
-            UInt_t numberOfSensors = PxlLadderHitCollection->numberOfSensors();
+            UInt_t numberOfSensors = pxlLadderHitCollection->numberOfSensors();
 
             for (UInt_t l = 0; l < numberOfSensors; l++) {
-               StPxlSensorHitCollection *PxlSensorHitCollection = PxlLadderHitCollection->sensor(l);
+               StPxlSensorHitCollection *pxlSensorHitCollection = pxlLadderHitCollection->sensor(l);
 
-               if (!PxlSectorHitCollection) continue;
+               if (!pxlSectorHitCollection) continue;
 
-               StSPtrVecPxlHit &vec = PxlSensorHitCollection->hits();
+               StSPtrVecPxlHit &vec = pxlSensorHitCollection->hits();
 
                if (vec.size() <= 0) continue;
 
@@ -248,16 +248,16 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const Hft
       UInt_t numberOfLadders = kIstNumLadders;
 
       for (UInt_t i = 0; i < numberOfLadders; i++) {
-         StIstLadderHitCollection *IstLadderHitCollection = stIstHitCollection->ladder(i);
+         StIstLadderHitCollection *istLadderHitCollection = stIstHitCollection->ladder(i);
 
-         if (!IstLadderHitCollection) continue;
+         if (!istLadderHitCollection) continue;
 
          for (int j = 0; j < kIstNumSensorsPerLadder; j++) {
-            StIstSensorHitCollection *IstSensorHitCollection = IstLadderHitCollection->sensor(j);
+            StIstSensorHitCollection *istSensorHitCollection = istLadderHitCollection->sensor(j);
 
-            if (!IstSensorHitCollection) continue;
+            if (!istSensorHitCollection) continue;
 
-            StSPtrVecIstHit &vec = IstSensorHitCollection->hits();
+            StSPtrVecIstHit &vec = istSensorHitCollection->hits();
 
             for (UInt_t l = 0; l < vec.size(); l++) {
                StIstHit *hit = vec[l];
@@ -290,18 +290,18 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const Hft
       UInt_t numberOfLadders = stSsdHitCollection->numberOfLadders();
 
       for (UInt_t i = 0; i < numberOfLadders; i++) {
-         StSsdLadderHitCollection *SsdLadderHitCollection = stSsdHitCollection->ladder(i);
+         StSsdLadderHitCollection *ssdLadderHitCollection = stSsdHitCollection->ladder(i);
 
-         if (!SsdLadderHitCollection) continue;
+         if (!ssdLadderHitCollection) continue;
 
-         UInt_t numberOfSensors = SsdLadderHitCollection->numberOfWafers();
+         UInt_t numberOfSensors = ssdLadderHitCollection->numberOfWafers();
 
          for (UInt_t j = 0; j < numberOfSensors; j++) {
-            StSsdWaferHitCollection *SsdWaferHitCollection = SsdLadderHitCollection->wafer(j);
+            StSsdWaferHitCollection *ssdWaferHitCollection = ssdLadderHitCollection->wafer(j);
 
-            if (!SsdWaferHitCollection) continue;
+            if (!ssdWaferHitCollection) continue;
 
-            StSPtrVecSsdHit &vec = SsdWaferHitCollection->hits();
+            StSPtrVecSsdHit &vec = ssdWaferHitCollection->hits();
 
             for (UInt_t l = 0; l < vec.size(); l++) {
                StSsdHit *hit = vec[l];
