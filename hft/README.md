@@ -3,7 +3,8 @@
 **Table of Contents**
 
 - [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
-- [How to compile development HFT libraries from STAR CVS repository](#how-to-compile-development-hft-libraries-from-star-cvs-repository)
+- [How to compile HFT libraries from STAR CVS repository](#how-to-compile-hft-libraries-from-star-cvs-repository)
+- [How to compile HFT libraries from git repository](#how-to-compile-hft-libraries-from-git-repository)
 - [How to run tests](#how-to-run-tests)
 - [How to produce and reconstruct massive simulation for HFT ](#how-to-produce-and-reconstruct-massive-simulation-for-hft)
 - [How to build and run standalone HFT tools](#how-to-build-and-run-standalone-hft-tools)
@@ -36,8 +37,8 @@ an StRoot subdirectory in it. And
 be saved
 
 
-How to compile development HFT libraries from STAR CVS repository
-=================================================================
+How to compile HFT libraries from STAR CVS repository
+=====================================================
 
 Setup the environment and prepare directories
 
@@ -80,6 +81,19 @@ chose to link them instead
 
 The 'cons' builder places the libraries in the local
 `~/my_hft_test_dir/.slXX_gccXXX` directory.
+
+
+How to compile HFT libraries from git repository
+================================================
+
+    git clone https://github.com/plexoos/star-soft.git
+    cd star-soft
+    git checkout hft-dev
+    git submodule init
+    git submodule update --remote
+    git submodule foreach -q --recursive 'branch="$(git config -f $toplevel/.gitmodules submodule.$name.branch)"; git checkout $branch'
+    ./instal.sh ./
+    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 
 How to run tests
