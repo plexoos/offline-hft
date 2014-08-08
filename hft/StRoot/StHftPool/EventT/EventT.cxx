@@ -46,8 +46,6 @@
 
 ClassImp(EventT);
 
-static Int_t _debug = 2;
-
 
 EventT::EventT() : TObject(),
    fNPTracks(0),
@@ -210,8 +208,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
                if (vec.size() <= 0) continue;
 
-               if (_debug >= 2)
-                  LOG_DEBUG << "curr i/j/l (starting from 0) : " << i << "/" << j << "/" << l << " ==> StiPixelHitLoader - collection size: " << vec.size() << endl;
+               LOG_DEBUG << "curr i/j/l (starting from 0) : " << i << "/" << j << "/" << l << " ==> StiPixelHitLoader - collection size: " << vec.size() << endl;
 
                UInt_t NoHits = vec.size();
 
@@ -334,7 +331,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
    for (size_t trkIndx = 0; trkIndx < nodes.size(); trkIndx++)
    {
-      if (_debug >= 1) LOG_DEBUG << " current track # :" << trkIndx+1 << "/" << nodes.size() << endl;
+      LOG_DEBUG << " current track # :" << trkIndx+1 << "/" << nodes.size() << endl;
 
       StGlobalTrack *stGlobalTrack = dynamic_cast<StGlobalTrack *>(nodes[trkIndx]->track(global));
 
