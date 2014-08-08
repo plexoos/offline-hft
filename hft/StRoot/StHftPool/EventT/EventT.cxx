@@ -179,7 +179,10 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
    // Load hits - PXL
    StPxlHitCollection *stPxlHitCollection = stEvent->pxlHitCollection();
-   //if(! stPxlHitCollection){LOG_DEBUG <<" no PXL hit collection !!!" << endl;}
+
+   if(!stPxlHitCollection) {
+      LOG_WARN << "No valid PXL hit collection found in StEvent" << endl;
+   }
 
    if (stPxlHitCollection) {
       LOG_DEBUG << "Number of PXL hits: " << stPxlHitCollection->numberOfHits() << endl;
@@ -311,8 +314,8 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
                Double_t globalSsdHitPos[3] = {hit->position().x(), hit->position().y(), hit->position().z()};
                Double_t localSsdHitPos[3]  = {hit->localPosition(0), 0, hit->localPosition(1)};
 
-               //          LOG_DEBUG << "globalSsdHitPos = " << globalSsdHitPos[0] << " " << globalSsdHitPos[1] << " " << globalSsdHitPos[2] << endl;
-               //          LOG_DEBUG<< "localSsdHitPos = " << localSsdHitPos[0] << " " << localSsdHitPos[1] << " " << localSsdHitPos[2] << endl;
+               //LOG_DEBUG << "globalSsdHitPos = " << globalSsdHitPos[0] << " " << globalSsdHitPos[1] << " " << globalSsdHitPos[2] << endl;
+               //LOG_DEBUG << "localSsdHitPos = " << localSsdHitPos[0] << " " << localSsdHitPos[1] << " " << localSsdHitPos[2] << endl;
 
                HitT *h = AddHitT();
                h->SetId(matId);
@@ -341,7 +344,10 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
       StDcaGeometry *dcaGeometry = stGlobalTrack->dcaGeometry();
 
-      if (!dcaGeometry) { LOG_DEBUG << " No dcaGeometry " << endl; continue; }
+      if (!dcaGeometry) {
+         LOG_WARN << "No valid StDcaGeometry object found in this global track. Skipping to next track... " << endl;
+         continue;
+      }
 
       StPrimaryTrack *pTrackT = dynamic_cast<StPrimaryTrack *>(nodes[trkIndx]->track(primary));
 
@@ -416,7 +422,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
          if (!aHit) continue;
 
-         //LOG_DEBUG << (*aHit) << endl;
          Double_t xyz[] = {aHit->position().x(), aHit->position().y(), aHit->position().z()};
          track->SetPxlHit(ih, xyz);
 
@@ -441,7 +446,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
                        dInfo->numberOfPoints(kIstId) * 1000 +
                        npts_pxl2 * 10000 +
                        npts_pxl1 * 100000;
-      //    if(npoints>100)
+
       LOG_DEBUG << " NPoints = " << npoints << endl;
 
       LOG_DEBUG << " Number of Possible Points: tpc/ssd/ist/PXL = " << stGlobalTrack->numberOfPossiblePoints(kTpcId)
@@ -462,23 +467,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
       StPhysicalHelixD gHelix = stGlobalTrack->geometry()->helix();
       StThreeVectorD origin = gHelix.origin();
       StThreeVectorD gmom = gHelix.momentum(field * kilogauss);
-      //int q = gHelix.charge(field * kilogauss);
 
-      //    LOG_DEBUG << " global momentum = " << gmom << " charge = " << q << endl;
-      //    LOG_DEBUG << " global momentum direct = " << stGlobalTrack->geometry()->momentum() << " charge = " << stGlobalTrack->geometry()->charge () << endl;
-
-
-      /*
-          StSPtrVecTrackPidTraits &traits = stGlobalTrack->pidTraits();
-          UInt_t size = traits.size();
-          StDedxPidTraits *pid;
-          for (UInt_t i = 0; i < size; i++) {
-            if (! traits[i]) continue;
-            if ( traits[i]->IsZombie()) continue;
-            pid = dynamic_cast<StDedxPidTraits*>(traits[i]);
-            if (! pid || pid->method() != kTruncatedMeanId) continue;
-          }
-      */
       static StTpcDedxPidAlgorithm PidAlgorithm;
       static StPionPlus *Pion = StPionPlus::instance();
       const StParticleDefinition *pd = stGlobalTrack->pidTraits(PidAlgorithm);
@@ -488,10 +477,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
          nsigmaPi = PidAlgorithm.numberOfSigma(Pion);
       }
 
-      //    LOG_DEBUG << " nsigma pion = " << nsigmaPi << endl;
-
-      //    double dca2d = gHelix.curvatureSignedDistance(xyzP.x(), xyzP.y());
-      //    double dca3d = gHelix.curvatureSignedDistance(xyzP);
       double dca2d = dcaG_helix.curvatureSignedDistance(xyzP.x(), xyzP.y());
       double dca3d = dcaG_helix.curvatureSignedDistance(xyzP);
 
@@ -508,7 +493,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 
       track->SetOxOyOz(origin.x(), origin.y(), origin.z());
       track->SetDcaOxOyOz(dcaG_origin.x(), dcaG_origin.y(), dcaG_origin.z());
-      //    track->SetNpoint(npoints, q);
       track->SetNpoint(npoints, dcaG_q);
       track->SetNsigmaPi(nsigmaPi);
       track->SetDca2D(dca2d);
@@ -662,7 +646,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
    UInt_t val[4] = {onPXL1, onPXL2, onIST, 0};
    SetNPredHFT(val);
 
-   LOG_INFO << " Number of predicted hits on PXL1/PXL2/IST/SSD = " << onPXL1 << "/" << onPXL2 << "/" << onIST << "/" << 0 << endm;
+   LOG_INFO << "Number of predicted hits on PXL1/PXL2/IST/SSD = " << onPXL1 << "/" << onPXL2 << "/" << onIST << "/" << 0 << endm;
 
    return kStOk;
 }
@@ -772,20 +756,20 @@ void EventT::SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field)
 
 void EventT::Print(Option_t *opt) const
 {
-   cout << "Run/EventT\t" << fEvtHdr.GetRun() << "/" << fEvtHdr.GetEvtNum() << "\tDate " << fEvtHdr.GetDate()
+   LOG_INFO << "Run/EventT\t" << fEvtHdr.GetRun() << "/" << fEvtHdr.GetEvtNum() << "\tDate " << fEvtHdr.GetDate()
         << "\tField " << fEvtHdr.GetField() << endl;
-   cout << "Total no. tracks " << GetTotalNoTracks() << "\tRecorded tracks " << GetNtrack()
+   LOG_INFO << "Total no. tracks " << GetTotalNoTracks() << "\tRecorded tracks " << GetNtrack()
         << "\tRecorded hits " << GetNhit() << endl;
    TRVector vertex(3, GetVertex());
    TRSymMatrix cov(3, GetCovMatrix());
-   cout << "Primary vertex " << vertex << endl;
-   cout << "Its cov. matrix " << cov << endl;
+   LOG_INFO << "Primary vertex " << vertex << endl;
+   LOG_INFO << "Its cov. matrix " << cov << endl;
 
-   for (UInt_t i = 0; i < GetNtrack(); i++) {cout << i << "\t"; GetTrackT(i)->Print();}
+   for (UInt_t i = 0; i < GetNtrack(); i++) {LOG_INFO << i << "\t"; GetTrackT(i)->Print();}
 
-   for (UInt_t i = 0; i < GetNhit(); i++) {cout << i << "\t"; GetHitT(i)->Print();}
+   for (UInt_t i = 0; i < GetNhit(); i++) {LOG_INFO << i << "\t"; GetHitT(i)->Print();}
 
-   //for (UInt_t i = 0; i < GetNvertex(); i++) {cout << i << "\t"; GetVertexT(i)->Print();}
+   //for (UInt_t i = 0; i < GetNvertex(); i++) {LOG_INFO << i << "\t"; GetVertexT(i)->Print();}
 
    std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = fTStiKalmanTracks.begin();
 

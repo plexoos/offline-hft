@@ -127,7 +127,10 @@ Int_t HftMatchedTree::Finish()
 {
    fFile = fTree->GetCurrentFile(); //just in case we switched to a new file
    fFile->Write();
-   fTree->Print();
+
+   if (GetDebug() >= 1)
+      fTree->Print();
+
    return kStOK;
 }
 
@@ -164,8 +167,9 @@ Int_t HftMatchedTree::Make()
 
    LOG_DEBUG << "stEvent id: " << stEvent->id() << endm;
 
-   if (stEvent && fEvent->Build(stEvent, fMinNoHits, fpCut) == kStOk)
-      fTree->Fill(); // fill the tree
+   if (stEvent && fEvent->Build(stEvent, fMinNoHits, fpCut) == kStOk) {
+      fTree->Fill();
+   }
 
    return kStOK;
 }
