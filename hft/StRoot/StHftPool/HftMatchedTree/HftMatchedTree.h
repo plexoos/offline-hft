@@ -24,8 +24,6 @@ public:
 
    void SetMinNoHits(Int_t minNoHits = 0) { fMinNoHits = minNoHits; }
    void SetpCut(Double_t pCut = 0.0) { fpCut = pCut; }
-   const StPxlDb* GetPxlDb() const { return fPxlDb; }
-   const StIstDb* GetIstDb() const { return fIstDb; }
 
 private:
 
@@ -36,8 +34,6 @@ private:
    EventT   *fEvent;
    Int_t     fMinNoHits;
    Double_t  fpCut;
-   StPxlDb  *fPxlDb;
-   StIstDb  *fIstDb;
 
    ClassDef(HftMatchedTree, 1)
 };

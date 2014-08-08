@@ -21,7 +21,7 @@
 
 
 HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name), fFile(0), fTree(0), fEvent(0), fMinNoHits(0),
-   fpCut(0), fPxlDb(0)
+   fpCut(0)
 {
 }
 
@@ -68,10 +68,11 @@ Int_t HftMatchedTree::Init()
 Int_t HftMatchedTree::InitRun(Int_t runnumber)
 {
    TObjectSet *pxlDbDataSet = (TObjectSet *)GetDataSet("pxl_db");
+   StPxlDb* stPxlDb = nullptr;
 
    if (pxlDbDataSet) {
-      fPxlDb = (StPxlDb*) pxlDbDataSet->GetObject();
-      assert(fPxlDb);
+      stPxlDb = (StPxlDb*) pxlDbDataSet->GetObject();
+      assert(stPxlDb);
    }
    else {
       LOG_ERROR << "InitRun : Dataset \"pxl_db\" not found" << endm;
@@ -79,15 +80,19 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    }
 
    TObjectSet *istDbDataSet = (TObjectSet*) GetDataSet("ist_db");
+   StIstDb* stIstDb = nullptr;
 
    if (istDbDataSet) {
-      fIstDb = (StIstDb*) istDbDataSet->GetObject();
-      assert(fIstDb);
+      stIstDb = (StIstDb*) istDbDataSet->GetObject();
+      assert(stIstDb);
    }
    else {
       LOG_ERROR << "InitRun : Dataset \"ist_db\" not found" << endm;
       return kStErr;
    }
+
+   // Update pointers to the detector spatial transformations at new run transition
+   fEvent->SetDbDatasets(stPxlDb, stIstDb);
 
    // Dump geometry matrix into root file
    TFile *file = new TFile("GeometryTables.root", "recreate");
@@ -95,7 +100,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
    for (int i = 0; i < 24; i++) {
       for (int j = 0; j < 6; j++) {
          int id = 1000 + i * 6 + j + 1;
-         TGeoHMatrix *comb = (TGeoHMatrix *) fIstDb->getRotations()->FindObject(Form("R%04i", id));
+         TGeoHMatrix *comb = (TGeoHMatrix *) stIstDb->getRotations()->FindObject(Form("R%04i", id));
          comb->Write();
       }
    }
@@ -104,7 +109,7 @@ Int_t HftMatchedTree::InitRun(Int_t runnumber)
       for (int j = 0; j < 4; j++) {
          for (int k = 0; k < 10; k++) {
             int id = i * 40 + j * 10 + k + 1;
-            TGeoHMatrix *comb = (TGeoHMatrix *) fPxlDb->geoHMatrixSensorOnGlobal(i + 1, j + 1, k + 1);
+            TGeoHMatrix *comb = (TGeoHMatrix *) stPxlDb->geoHMatrixSensorOnGlobal(i + 1, j + 1, k + 1);
             comb->SetName(Form("R%03i", id));
             comb->Write();
          }
@@ -159,7 +164,7 @@ Int_t HftMatchedTree::Make()
 
    LOG_DEBUG << "stEvent id: " << stEvent->id() << endm;
 
-   if (stEvent && fEvent->Build(stEvent, fMinNoHits, fpCut, this) == kStOk)
+   if (stEvent && fEvent->Build(stEvent, fMinNoHits, fpCut) == kStOk)
       fTree->Fill(); // fill the tree
 
    return kStOK;
