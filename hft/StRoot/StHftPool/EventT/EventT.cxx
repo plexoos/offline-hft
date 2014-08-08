@@ -41,7 +41,6 @@
 #include "PhysicalConstants.h"
 #include "StPxlDbMaker/StPxlDb.h"
 #include "StIstDbMaker/StIstDb.h"
-#include "StHftPool/HftMatchedTree/HftMatchedTree.h"
 #include "StEvent/StEnumerations.h"
 
 
@@ -70,16 +69,16 @@ EventT::~EventT()
 }
 
 
-Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const HftMatchedTree *maker)
+Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 {
-   if (!stEvent || !maker) {
-      Error("Build", "Cannot build EventT: Missing StEvent or HftMatchTree maker");
+   if (!stEvent) {
+      Error("Build", "Cannot build EventT: Missing StEvent object");
       return kStErr;
    }
 
    fIsValid = kFALSE;
 
-   const THashList *istRot = maker->GetIstDb()->getRotations();
+   const THashList *istRot = fIstDb->getRotations();
 
    UInt_t NprimVtx = stEvent->numberOfPrimaryVertices();
    StPrimaryVertex *pVertex = 0;
@@ -595,7 +594,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut, const Hft
             for (int i_sensor = 0; i_sensor < 10; i_sensor++)
             {
                UInt_t id = i_sector * 40 + i_ladder * 10 + i_sensor + 1;
-               TGeoHMatrix *comb = (TGeoHMatrix*) maker->GetPxlDb()->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
+               TGeoHMatrix *comb = (TGeoHMatrix*) fPxlDb->geoHMatrixSensorOnGlobal(i_sector + 1, i_ladder + 1, i_sensor + 1);
 
                Double_t *rot = comb->GetRotationMatrix();
                Double_t *tra = comb->GetTranslation();
