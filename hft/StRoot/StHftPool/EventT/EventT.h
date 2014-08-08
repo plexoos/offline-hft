@@ -15,6 +15,8 @@
 
 class HftMatchedTree;
 class StEvent;
+class StPxlDb;
+class StIstDb;
 
 
 class EventTHeader
@@ -73,6 +75,7 @@ public:
    void              SetNmatchhit(UInt_t n) { fNmatchhit = n; }
    void              SetFlag(UInt_t f) { fFlag = f; }
    void              SetNPredHFT(UInt_t *val) { for (int i = 0; i < 4; i++) fNPredHFT[i] = val[i]; }
+   void              SetDbDatasets(const StPxlDb *pxlDb, const StIstDb *istDb) { fPxlDb = pxlDb; fIstDb = istDb; }
    void              SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field);
    TrackT           *AddTrackT();
    HitT             *AddHitT();
@@ -100,7 +103,14 @@ public:
    Int_t             GetIndexOfHitT(const HitT *obj) const {return fHits->IndexOf(obj);}
    Int_t             GetIndexOfVertexT(const VertexT *obj) const {return fVertices->IndexOf(obj);}
    Int_t             GetIndexOfHitMatchT(const HitMatchT *obj) const {return fMatchHits->IndexOf(obj);}
+   const StPxlDb*    GetPxlDb() const { return fPxlDb; }
+   const StIstDb*    GetIstDb() const { return fIstDb; }
    virtual void      Print(Option_t *opt = "") const;
+
+private:
+
+   const StPxlDb*   fPxlDb;   //!< Pointer to data with spatial transformations for PXL
+   const StIstDb*   fIstDb;   //!< Pointer to data with spatial transformations for IST
 
    ClassDef(EventT, 1)
 };

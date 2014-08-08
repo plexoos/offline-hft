@@ -58,7 +58,8 @@ EventT::EventT() : TObject(),
    fHits(new TClonesArray("HitT", 1000)),
    fMatchHits(new TClonesArray("HitMatchT", 1000)),
    fIsValid(kFALSE),
-   fTStiKalmanTracks()
+   fTStiKalmanTracks(),
+   fPxlDb(nullptr), fIstDb(nullptr)
 {
 }
 
