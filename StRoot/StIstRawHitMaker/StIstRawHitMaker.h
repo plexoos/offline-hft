@@ -14,6 +14,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.6  2014/08/12 23:00:02  ypwang
+* chip occupancy cut added to skip the chip with more than 20% channels fired; change the raw hit decision cut position in the code.
+*
 * Revision 1.5  2014/07/29 20:13:31  ypwang
 * update the IST DB obtain method
 *
@@ -68,6 +71,7 @@ class StIstRawHitMaker : public StRTSBaseMaker {
    //control paramters
    Float_t mHitCut, mCmnCut, mChanMinRmsNoiseLevel, mChanMaxRmsNoiseLevel, mApvMaxCmNoiseLevel;
    UChar_t mALLdata, mADCdata, mZSdata, mDefaultTimeBin, mCurrentTimeBinNum;
+   UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 
    StIstCollection *mIstCollectionPtr;
    StIstDb *mIstDb;
