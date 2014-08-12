@@ -7,9 +7,10 @@ int elecIdToGeomId(int chipElecId) {
     else                ladderGeomId = 46 - ladderElecId;
     int apvGeomIdxOnLadder = 36 - chipElecId%36; //1, 2, ..., 36
     chipGeomId = (ladderGeomId-1)*36 + apvGeomIdxOnLadder; //geometry ID: 1, 2, ..., 864
+    int chipGeomIdTemp = chipGeomId;
 
-    if(chipGeomId>=433 && chipGeomId<=444)  chipGeomId += 12; //section B&C swapping on ladder 13
-    if(chipGeomId>=445 && chipGeomId<=456)  chipGeomId -= 12;
+    if(chipGeomIdTemp>=433 && chipGeomIdTemp<=444)  chipGeomId += 12;  //section B&C swapping on ladder 13
+    if(chipGeomIdTemp>=445 && chipGeomIdTemp<=456)  chipGeomId -= 12;
 
     return chipGeomId;
 }
