@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/08/12 23:08:09  ypwang
+* remove the cluster number cut per ladder, due to chip occupancy cut was added in raw hit maker which can do the bad column rejection
+*
 * Revision 1.6  2014/07/29 20:13:31  ypwang
 * update the IST DB obtain method
 *
@@ -47,8 +50,6 @@ class StIstHitMaker : public StMaker
  protected:
   THashList *listGeoMSensorOnGlobal;
   StIstDb *mIstDb;
-
-  UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 
  private:
   ClassDef(StIstHitMaker,1);
