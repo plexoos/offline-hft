@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log$
+* Revision 1.7  2014/08/12 23:04:53  ypwang
+* remove the raw hit number cut per ladder before doing clustering, due to chip occupancy cut was added in raw hit maker which can do the bad column rejection; simplfy the code by removing the InitRun() function
+*
 * Revision 1.6  2014/07/29 20:13:31  ypwang
 * update the IST DB obtain method
 *
@@ -32,14 +35,12 @@
 #include "StIstIClusterAlgo.h"
 
 class StIstCollection;
-class StIstDb;
 
 class StIstClusterMaker : public StMaker
 {
  public:
   StIstClusterMaker( const char* name="ist_cluster");
   Int_t Init();
-  Int_t InitRun(Int_t runumber);
   Int_t Make();
   void Clear( Option_t *opts = "" );
 
@@ -53,11 +54,9 @@ class StIstClusterMaker : public StMaker
  protected:
   StIstCollection *mIstCollectionPtr;
   StIstIClusterAlgo *mClusterAlgoPtr;
-  StIstDb *mIstDb;
 
   UChar_t mTimeBin;
   Bool_t mSplitCluster;
-  UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 
  private:
   ClassDef(StIstClusterMaker,1);
