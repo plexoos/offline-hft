@@ -10,26 +10,26 @@
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fEnvVars(), fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(0)
 {
    InitOptions();
    InitEnvVars();
 }
 
 
-PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName, const std::string& geantStepTreeName) : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
+PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName) : TObject(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fEnvVars(), fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(0)
 {
    InitOptions();
    InitEnvVars();
    ProcessOptions(argc, argv);
-   BuildInputChains(hftTreeName, geantStepTreeName);
+   BuildInputChains(hftTreeName);
 }
 
 
@@ -40,7 +40,6 @@ void PrgOptionProcessor::InitOptions()
       ("help,h",              "Print help message")
       ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
                               "OR a text file with a list of such ROOT files")
-      ("geant-step-tree,t",   "In addition to 'hftree' process tree with info from geant steps")
       ("volume-pattern,p",    po::value<std::string>(&fVolumePattern)->implicit_value("process_all_volumes"), "A regex pattern Sti/TGeo volume names")
       ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
@@ -97,10 +96,6 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    } else {
       Fatal("ProcessOptions", "Input file not set");
    }
-
-
-   if (fOptionsValues.count("geant-step-tree") )
-      fDoGeantStepTree = true;
 
 
    if (fOptionsValues.count("volume-pattern-flist"))
@@ -198,12 +193,9 @@ bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 }
 
 
-void PrgOptionProcessor::BuildInputChains(std::string hftTreeName, std::string geantStepTreeName)
+void PrgOptionProcessor::BuildInputChains(std::string hftTreeName)
 {
    fHftChain = new TChain(hftTreeName.c_str(), "READ");
-
-   if (fDoGeantStepTree)
-      fGeantStepChain = new TChain(geantStepTreeName.c_str(), "READ");
 
    TFile file( fHftreeFile.c_str() );
 
@@ -244,18 +236,4 @@ void PrgOptionProcessor::AddToInputChains(std::string hftTreeRootFileName)
 
    fHftChain->AddFile( hftTreeRootFileName.c_str() );
    Info("AddToInputChains", "Found valid hftree file: %s", hftTreeRootFileName.c_str());
-
-   if (fDoGeantStepTree)
-   {
-      TString geantStepRootFileName(hftTreeRootFileName.c_str());
-      geantStepRootFileName.ReplaceAll("hftree.root", "track_history.root");
-
-      TFile file( geantStepRootFileName.Data() );
-
-      if ( file.IsZombie() )
-         Fatal("AddToInputChains", "Input file is not a valid root file: %s", geantStepRootFileName.Data());
-
-      fGeantStepChain->AddFile( geantStepRootFileName.Data() );
-      Info("AddToInputChains", "Found valid hftree file: %s", geantStepRootFileName.Data());
-   }
 }
