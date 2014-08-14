@@ -40,6 +40,7 @@ public:
 
 protected:
 
+   void BuildInputChains();
    virtual void AddToInputChains(std::string hftTreeRootFileName);
 
    int                     fArgc;
@@ -61,7 +62,6 @@ private:
    
    void InitOptions();
    void InitEnvVars();
-   void BuildInputChains(std::string hftTreeName);
 };
 
 #endif

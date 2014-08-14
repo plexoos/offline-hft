@@ -26,11 +26,10 @@ PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string&
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fEnvVars(), fHftChain(0)
+   fEnvVars(), fHftChain(new TChain(hftTreeName.c_str(), "READ"))
 {
    InitOptions();
    InitEnvVars();
-   BuildInputChains(hftTreeName);
 }
 
 
@@ -72,6 +71,9 @@ void PrgOptionProcessor::InitEnvVars()
 void PrgOptionProcessor::ProcessOptions()
 {
    using namespace std;
+
+   // Create chains based on the user input
+   BuildInputChains();
 
    po::store(po::parse_command_line(fArgc, fArgv, fOptions), fOptionsValues);
    po::notify(fOptionsValues);
@@ -194,10 +196,8 @@ bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 }
 
 
-void PrgOptionProcessor::BuildInputChains(std::string hftTreeName)
+void PrgOptionProcessor::BuildInputChains()
 {
-   fHftChain = new TChain(hftTreeName.c_str(), "READ");
-
    TFile file( fHftreeFile.c_str() );
 
    if ( file.IsZombie() )
