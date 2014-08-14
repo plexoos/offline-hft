@@ -36,6 +36,12 @@ an StRoot subdirectory in it. And
 `OFFLINE_HFT_RESULTS_DIR` can contain any path to where the output results will
 be saved
 
+For consistency between the two installation methods discussed below we will
+assume that after the code has been checked out from either CVS or git
+repositories a soft link `offline-hft` was created in the `OFFLINE_HFT_DIR`
+directory to point to `offline/hft` or `star-offline-hft` subdirectories
+respectively.
+
 
 How to compile HFT libraries from STAR CVS repository
 =====================================================
@@ -104,7 +110,7 @@ simulated or raw STAR data:
 
     root4star -b -q -l 'bfc.C(1, <n_events>, "<bfc_options>", "<input_file>")'
 
-A number of typical BFC option chains can be found in `offline/hft/runBFC.sh`
+A number of typical BFC option chains can be found in `offline-hft/runBFC.sh`
 
 The reconstruction chains can be extended by running a maker from StHftPool
 libary with the 'HftMatTree' option. The chain will create a root file
@@ -116,7 +122,7 @@ file:
     tpcRS y2014a AgML MakeEvent ITTF StiHftC pxlFastSim istFastSim Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree
 
 For reference, we include a simple starsim kumac to produce events with tracks
-in transverse planes. It can be found in `offline/hft/tests/singlepion.kumac`
+in transverse planes. It can be found in `offline-hft/tests/singlepion.kumac`
 
 
 How to produce and reconstruct massive simulation for HFT 
@@ -124,12 +130,13 @@ How to produce and reconstruct massive simulation for HFT
 
 
 
-    offline/hft/tests/submit_jobs_stiscan_zslice.sh offline/hft/tests/job_template_stiscan_zslice.xml
 
-    offline/hft/tests/submit_jobs_stiscan_zslice.sh offline/hft/tests/job_template_stiscan_zslice_macro.xml
+    offline-hft/tests/submit_jobs_stiscan_zslice.sh offline-hft/tests/job_template_stiscan_zslice.xml
+
+    offline-hft/tests/submit_jobs_stiscan_zslice.sh offline-hft/tests/job_template_stiscan_zslice_macro.xml
 
 
-    offline/hft/tests/submit_jobs_hftree.sh /path/to/filelist_fz
+    offline-hft/tests/submit_jobs_hftree.sh /path/to/filelist_fz
 
 
 How to build and run standalone HFT tools
@@ -143,7 +150,7 @@ above have been executed one can do:
     cd ~/my_hft_test_dir
     mkdir build
     cd build
-    cmake ../offline/hft
+    cmake ../offline-hft
     make
 
 When make is done one should see two programs 'stiscan' and 'tevedisp' build
