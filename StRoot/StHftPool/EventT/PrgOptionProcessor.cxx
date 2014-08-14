@@ -82,8 +82,6 @@ void PrgOptionProcessor::ProcessOptions()
 
 void PrgOptionProcessor::VerifyOptions()
 {
-   using namespace std;
-
    if (fOptionsValues.count("help"))
    {
       std::cout << fOptions << std::endl;
@@ -136,7 +134,7 @@ void PrgOptionProcessor::VerifyOptions()
       }
 
       Info("VerifyOptions", "User patterns (fVolumeList) are:");
-      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
+      std::copy(fVolumeList.begin(), fVolumeList.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
    }
 
 
@@ -160,7 +158,7 @@ void PrgOptionProcessor::VerifyOptions()
       }
 
       Info("VerifyOptions", "User patterns (fVolumeList) are:");
-      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
+      std::copy(fVolumeList.begin(), fVolumeList.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
    }
 
 
