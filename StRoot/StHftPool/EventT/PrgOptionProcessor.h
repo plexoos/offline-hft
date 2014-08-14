@@ -35,7 +35,7 @@ public:
    TChain* GetHftChain() { return fHftChain; }
    std::string GetStyleMacro() const { return fEnvVars.find("OFFLINE_HFT_DIR")->second + "/offline/hft/tests/style_hists.C"; }
 
-   void ProcessOptions(int argc, char **argv);
+   void ProcessOptions();
    bool MatchedVolName(std::string & volName) const;
 
 protected:

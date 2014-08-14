@@ -30,7 +30,6 @@ PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string&
 {
    InitOptions();
    InitEnvVars();
-   ProcessOptions(argc, argv);
    BuildInputChains(hftTreeName);
 }
 
@@ -70,11 +69,11 @@ void PrgOptionProcessor::InitEnvVars()
  * program_options utility. Additional checks are implemented to verify the
  * validity of the supplied arguments.
  */
-void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
+void PrgOptionProcessor::ProcessOptions()
 {
    using namespace std;
 
-   po::store(po::parse_command_line(argc, argv, fOptions), fOptionsValues);
+   po::store(po::parse_command_line(fArgc, fArgv, fOptions), fOptionsValues);
    po::notify(fOptionsValues);
 
    if (fOptionsValues.count("help"))
