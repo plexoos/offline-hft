@@ -40,6 +40,8 @@ public:
 
 protected:
 
+   virtual void AddToInputChains(std::string hftTreeRootFileName);
+
    int                     fArgc;
    char**                  fArgv;
    po::options_description fOptions;
@@ -52,15 +54,14 @@ protected:
    unsigned int            fMaxEventsUser;
    float                   fSparsity;        ///< Approximate fraction of events to read and process
    bool                    fSaveGraphics;    ///< A flag to create images when set
+   std::map<std::string, std::string> fEnvVars;
+   TChain *fHftChain;
 
 private:
    
    void InitOptions();
    void InitEnvVars();
    void BuildInputChains(std::string hftTreeName);
-   void AddToInputChains(std::string hftTreeRootFileName);
-   std::map<std::string, std::string> fEnvVars;
-   TChain *fHftChain;
 };
 
 #endif
