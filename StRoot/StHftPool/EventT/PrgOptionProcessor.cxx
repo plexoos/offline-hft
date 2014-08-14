@@ -6,30 +6,30 @@
 #include "TFile.h"
 #include "TSystem.h"
 
-#include "PrgOptionProcessor.h"
+#include "StHftPool/EventT/PrgOptionProcessor.h"
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
+   fArgc(0), fArgv(),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fEnvVars(), fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(0)
 {
    InitOptions();
    InitEnvVars();
 }
 
 
-PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName, const std::string& geantStepTreeName) : TObject(),
-   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fDoGeantStepTree(false), fVolumeListFile(),
+PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName) : TObject(),
+   fArgc(argc), fArgv(argv),
+   fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
-   fEnvVars(), fHftChain(0), fGeantStepChain(0)
+   fEnvVars(), fHftChain(new TChain(hftTreeName.c_str(), "READ"))
 {
    InitOptions();
    InitEnvVars();
-   ProcessOptions(argc, argv);
-   BuildInputChains(hftTreeName, geantStepTreeName);
 }
 
 
@@ -40,7 +40,6 @@ void PrgOptionProcessor::InitOptions()
       ("help,h",              "Print help message")
       ("hftree-file,f",       po::value<std::string>(&fHftreeFile), "Full path to a ROOT file containing a 'hftree' TTree " \
                               "OR a text file with a list of such ROOT files")
-      ("geant-step-tree,t",   "In addition to 'hftree' process tree with info from geant steps")
       ("volume-pattern,p",    po::value<std::string>(&fVolumePattern)->implicit_value("process_all_volumes"), "A regex pattern Sti/TGeo volume names")
       ("volume-pattern-flist,l",   po::value<std::string>(&fVolumeListFile), "Full path to a text file with Sti/TGeo volume names")
       ("max-events,n",        po::value<unsigned int>(&fMaxEventsUser)->default_value(0), "Maximum number of events to process")
@@ -69,20 +68,27 @@ void PrgOptionProcessor::InitEnvVars()
  * program_options utility. Additional checks are implemented to verify the
  * validity of the supplied arguments.
  */
-void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
+void PrgOptionProcessor::ProcessOptions()
 {
-   using namespace std;
-
-   po::store(po::parse_command_line(argc, argv, fOptions), fOptionsValues);
+   po::store(po::parse_command_line(fArgc, fArgv, fOptions), fOptionsValues);
    po::notify(fOptionsValues);
 
+   VerifyOptions();
+
+   // Create chains based on the user input
+   BuildInputChains();
+}
+
+
+void PrgOptionProcessor::VerifyOptions()
+{
    if (fOptionsValues.count("help"))
    {
       std::cout << fOptions << std::endl;
       exit(EXIT_FAILURE);
    }
 
-   Info("ProcessOptions", "User provided options:");
+   Info("VerifyOptions", "User provided options:");
 
 
    if (fOptionsValues.count("hftree-file"))
@@ -92,15 +98,11 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::cout << "fHftreeFile: " << hftreeFile << std::endl;
       std::ifstream tmpFileCheck(hftreeFile.c_str());
       if (!tmpFileCheck.good()) {
-         Fatal("ProcessOptions", "File \"%s\" does not exist", hftreeFile.c_str());
+         Fatal("VerifyOptions", "File \"%s\" does not exist", hftreeFile.c_str());
       }
    } else {
-      Fatal("ProcessOptions", "Input file not set");
+      Fatal("VerifyOptions", "Input file not set");
    }
-
-
-   if (fOptionsValues.count("geant-step-tree") )
-      fDoGeantStepTree = true;
 
 
    if (fOptionsValues.count("volume-pattern-flist"))
@@ -109,7 +111,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
       std::ifstream volListFile(fVolumeListFile.c_str());
 
       if (!volListFile.good()) {
-         Fatal("ProcessOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
+         Fatal("VerifyOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
       }
 
       fVolumeList.clear();
@@ -123,7 +125,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
             boost::regex re(pattern);
          }
          catch (boost::regex_error& e) {
-            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
+            Fatal("VerifyOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
          }
 
          if (volListFile.eof()) break;
@@ -131,8 +133,8 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
          fVolumeList.insert(pattern);
       }
 
-      Info("ProcessOptions", "User patterns (fVolumeList) are:");
-      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
+      Info("VerifyOptions", "User patterns (fVolumeList) are:");
+      std::copy(fVolumeList.begin(), fVolumeList.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
    }
 
 
@@ -148,15 +150,15 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
             boost::regex re(fVolumePattern);
          }
          catch (boost::regex_error& e) {
-            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
+            Fatal("VerifyOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
          }
 
          fVolumeList.clear();
          fVolumeList.insert(fVolumePattern);
       }
 
-      Info("ProcessOptions", "User patterns (fVolumeList) are:");
-      copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
+      Info("VerifyOptions", "User patterns (fVolumeList) are:");
+      std::copy(fVolumeList.begin(), fVolumeList.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
    }
 
 
@@ -168,7 +170,7 @@ void PrgOptionProcessor::ProcessOptions(int argc, char **argv)
    if (fOptionsValues.count("sparsity"))
    {
       if (fSparsity > 1 || fSparsity <= 0) {
-         Warning("ProcessOptions", "Sparsity specified value outside allowed limits. Set to 1");
+         Warning("VerifyOptions", "Sparsity specified value outside allowed limits. Set to 1");
          fSparsity = 1;
       }
       std::cout << "sparsity: " << fSparsity << std::endl;
@@ -198,13 +200,8 @@ bool PrgOptionProcessor::MatchedVolName(std::string & volName) const
 }
 
 
-void PrgOptionProcessor::BuildInputChains(std::string hftTreeName, std::string geantStepTreeName)
+void PrgOptionProcessor::BuildInputChains()
 {
-   fHftChain = new TChain(hftTreeName.c_str(), "READ");
-
-   if (fDoGeantStepTree)
-      fGeantStepChain = new TChain(geantStepTreeName.c_str(), "READ");
-
    TFile file( fHftreeFile.c_str() );
 
    if ( file.IsZombie() )
@@ -243,19 +240,5 @@ void PrgOptionProcessor::AddToInputChains(std::string hftTreeRootFileName)
       Fatal("AddToInputChains", "Input file is not a valid root file: %s", hftTreeRootFileName.c_str());
 
    fHftChain->AddFile( hftTreeRootFileName.c_str() );
-   Info("AddToInputChains", "Found valid hftree file: %s", hftTreeRootFileName.c_str());
-
-   if (fDoGeantStepTree)
-   {
-      TString geantStepRootFileName(hftTreeRootFileName.c_str());
-      geantStepRootFileName.ReplaceAll("hftree.root", "track_history.root");
-
-      TFile file( geantStepRootFileName.Data() );
-
-      if ( file.IsZombie() )
-         Fatal("AddToInputChains", "Input file is not a valid root file: %s", geantStepRootFileName.Data());
-
-      fGeantStepChain->AddFile( geantStepRootFileName.Data() );
-      Info("AddToInputChains", "Found valid hftree file: %s", geantStepRootFileName.Data());
-   }
+   Info("AddToInputChains", "Found valid ROOT file with HFT tree: %s", hftTreeRootFileName.c_str());
 }
