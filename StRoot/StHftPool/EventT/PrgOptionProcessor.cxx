@@ -6,7 +6,7 @@
 #include "TFile.h"
 #include "TSystem.h"
 
-#include "PrgOptionProcessor.h"
+#include "StHftPool/EventT/PrgOptionProcessor.h"
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
@@ -237,5 +237,5 @@ void PrgOptionProcessor::AddToInputChains(std::string hftTreeRootFileName)
       Fatal("AddToInputChains", "Input file is not a valid root file: %s", hftTreeRootFileName.c_str());
 
    fHftChain->AddFile( hftTreeRootFileName.c_str() );
-   Info("AddToInputChains", "Found valid hftree file: %s", hftTreeRootFileName.c_str());
+   Info("AddToInputChains", "Found valid ROOT file with HFT tree: %s", hftTreeRootFileName.c_str());
 }
