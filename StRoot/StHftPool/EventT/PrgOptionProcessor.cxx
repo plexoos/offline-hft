@@ -10,6 +10,7 @@
 
 
 PrgOptionProcessor::PrgOptionProcessor() : TObject(),
+   fArgc(0), fArgv(),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),
@@ -21,6 +22,7 @@ PrgOptionProcessor::PrgOptionProcessor() : TObject(),
 
 
 PrgOptionProcessor::PrgOptionProcessor(int argc, char **argv, const std::string& hftTreeName) : TObject(),
+   fArgc(argc), fArgv(argv),
    fOptions("Program options", 120), fOptionsValues(), fHftreeFile(), fVolumeListFile(),
    fVolumePattern(),
    fVolumeList(), fMaxEventsUser(0), fSparsity(1), fSaveGraphics(false),

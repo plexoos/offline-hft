@@ -40,6 +40,8 @@ public:
 
 protected:
 
+   int                     fArgc;
+   char**                  fArgv;
    po::options_description fOptions;
    po::variables_map       fOptionsValues;
    /// Full path to either a root file with hft event tree or a text file with a list of such root files
