@@ -70,13 +70,19 @@ void PrgOptionProcessor::InitEnvVars()
  */
 void PrgOptionProcessor::ProcessOptions()
 {
-   using namespace std;
+   po::store(po::parse_command_line(fArgc, fArgv, fOptions), fOptionsValues);
+   po::notify(fOptionsValues);
+
+   VerifyOptions();
 
    // Create chains based on the user input
    BuildInputChains();
+}
 
-   po::store(po::parse_command_line(fArgc, fArgv, fOptions), fOptionsValues);
-   po::notify(fOptionsValues);
+
+void PrgOptionProcessor::VerifyOptions()
+{
+   using namespace std;
 
    if (fOptionsValues.count("help"))
    {
@@ -84,7 +90,7 @@ void PrgOptionProcessor::ProcessOptions()
       exit(EXIT_FAILURE);
    }
 
-   Info("ProcessOptions", "User provided options:");
+   Info("VerifyOptions", "User provided options:");
 
 
    if (fOptionsValues.count("hftree-file"))
@@ -94,10 +100,10 @@ void PrgOptionProcessor::ProcessOptions()
       std::cout << "fHftreeFile: " << hftreeFile << std::endl;
       std::ifstream tmpFileCheck(hftreeFile.c_str());
       if (!tmpFileCheck.good()) {
-         Fatal("ProcessOptions", "File \"%s\" does not exist", hftreeFile.c_str());
+         Fatal("VerifyOptions", "File \"%s\" does not exist", hftreeFile.c_str());
       }
    } else {
-      Fatal("ProcessOptions", "Input file not set");
+      Fatal("VerifyOptions", "Input file not set");
    }
 
 
@@ -107,7 +113,7 @@ void PrgOptionProcessor::ProcessOptions()
       std::ifstream volListFile(fVolumeListFile.c_str());
 
       if (!volListFile.good()) {
-         Fatal("ProcessOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
+         Fatal("VerifyOptions", "File \"%s\" does not exist", fVolumeListFile.c_str());
       }
 
       fVolumeList.clear();
@@ -121,7 +127,7 @@ void PrgOptionProcessor::ProcessOptions()
             boost::regex re(pattern);
          }
          catch (boost::regex_error& e) {
-            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
+            Fatal("VerifyOptions", "Provided regex \"%s\" is not valid", pattern.c_str());
          }
 
          if (volListFile.eof()) break;
@@ -129,7 +135,7 @@ void PrgOptionProcessor::ProcessOptions()
          fVolumeList.insert(pattern);
       }
 
-      Info("ProcessOptions", "User patterns (fVolumeList) are:");
+      Info("VerifyOptions", "User patterns (fVolumeList) are:");
       copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
    }
 
@@ -146,14 +152,14 @@ void PrgOptionProcessor::ProcessOptions()
             boost::regex re(fVolumePattern);
          }
          catch (boost::regex_error& e) {
-            Fatal("ProcessOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
+            Fatal("VerifyOptions", "Provided regex \"%s\" is not valid", fVolumePattern.c_str());
          }
 
          fVolumeList.clear();
          fVolumeList.insert(fVolumePattern);
       }
 
-      Info("ProcessOptions", "User patterns (fVolumeList) are:");
+      Info("VerifyOptions", "User patterns (fVolumeList) are:");
       copy(fVolumeList.begin(), fVolumeList.end(), ostream_iterator<string>(std::cout, "\n"));
    }
 
@@ -166,7 +172,7 @@ void PrgOptionProcessor::ProcessOptions()
    if (fOptionsValues.count("sparsity"))
    {
       if (fSparsity > 1 || fSparsity <= 0) {
-         Warning("ProcessOptions", "Sparsity specified value outside allowed limits. Set to 1");
+         Warning("VerifyOptions", "Sparsity specified value outside allowed limits. Set to 1");
          fSparsity = 1;
       }
       std::cout << "sparsity: " << fSparsity << std::endl;

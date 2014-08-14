@@ -41,6 +41,7 @@ public:
 protected:
 
    void BuildInputChains();
+   virtual void VerifyOptions();
    virtual void AddToInputChains(std::string hftTreeRootFileName);
 
    int                     fArgc;
