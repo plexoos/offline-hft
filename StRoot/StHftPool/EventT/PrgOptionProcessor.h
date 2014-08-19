@@ -33,7 +33,7 @@ public:
    float GetSparsity() const { return fSparsity; }
    bool  SaveGraphics() const { return fSaveGraphics; }
    TChain* GetHftChain() { return fHftChain; }
-   std::string GetStyleMacro() const { return fEnvVars.find("OFFLINE_HFT_DIR")->second + "/offline/hft/tests/style_hists.C"; }
+   std::string GetStyleMacro() const { return fEnvVars.find("OFFLINE_HFT_DIR")->second + "/offline-hft/tests/style_hists.C"; }
 
    void ProcessOptions();
    bool MatchedVolName(std::string & volName) const;
