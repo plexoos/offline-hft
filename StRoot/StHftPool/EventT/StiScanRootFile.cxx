@@ -77,7 +77,7 @@ Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
    // Set histogram axis limits to the same value calculated in sti_trk container
    StiScanHistContainer* sti_trk = (StiScanHistContainer*) mDirs["sti_trk"];
    StiScanHistContainer* sti_vol = (StiScanHistContainer*) mDirs["sti_vol"];
-   StiScanHistContainer* gea = (StiScanHistContainer*) mDirs["gea"];
+   StiScanHistContainer* gea     = (StiScanHistContainer*) mDirs["gea"];
 
    sti_vol->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
    gea->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
