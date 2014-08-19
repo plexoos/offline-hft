@@ -8,7 +8,7 @@
 
 #include "StHftPool/EventT/EventT.h"
 #include "StarGenerator/STEP/AgUStep.h"
-#include "StHftPool/EventT/PrgOptionProcessor.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StHftPool/EventT/StiScanRootFile.h"
 
 typedef Event EventG;
@@ -19,7 +19,7 @@ int    Margc=0;
 char** Margv=NULL;
 
 
-void loop_hftree(PrgOptionProcessor &poProc);
+void loop_hftree(StiScanPrgOptions &poProc);
 
 
 int main(int argc, char **argv)
@@ -27,7 +27,8 @@ int main(int argc, char **argv)
    const std::string hftTreeName = "t";
    const std::string geantStepTreeName = "stepping";
 
-   PrgOptionProcessor poProc(argc, argv, hftTreeName, geantStepTreeName);
+   StiScanPrgOptions poProc(argc, argv, hftTreeName, geantStepTreeName);
+   poProc.ProcessOptions();
 
    loop_hftree(poProc);
 
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
 }
 
 
-void loop_hftree(PrgOptionProcessor &poProc)
+void loop_hftree(StiScanPrgOptions &poProc)
 {
    TChain *hftChain       = poProc.GetHftChain();
    TChain *geantStepChain = poProc.GetGeantStepChain();

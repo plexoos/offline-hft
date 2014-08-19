@@ -97,9 +97,9 @@ char** Margv=NULL;
 int main(int argc, char **argv)
 {
    const std::string hftTreeName = "t";
-   const std::string geantStepTreeName = "stepping";
 
-   PrgOptionProcessor poProc(argc, argv, hftTreeName, geantStepTreeName);
+   PrgOptionProcessor poProc(argc, argv, hftTreeName);
+   poProc.ProcessOptions();
 
    TApplication *myApp = new TApplication("myApp", 0, 0);
 
