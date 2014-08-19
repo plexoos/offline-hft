@@ -111,6 +111,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
    }
 
    delete eventT;
+   delete eventG;
 
    outRootFile.FillDerivedHists();
 
