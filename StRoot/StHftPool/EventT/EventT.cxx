@@ -150,7 +150,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
    }
 
 
-   StEventInfo      *info = stEvent->info();
+   StEventInfo *info = stEvent->info();
    Int_t ev = 0, run = 0, time = 0;
 
    if (info) {

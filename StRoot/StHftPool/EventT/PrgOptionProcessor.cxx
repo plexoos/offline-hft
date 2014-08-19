@@ -47,8 +47,7 @@ void PrgOptionProcessor::InitOptions()
       ("save-graph,g",        "Use this option to save plots in png format")
    ;
 
-   // Set default values for Sti volume name patterns. These are used if the user does not use any
-   // of the options to modify them
+   // Set default values for Sti volume name patterns. These are used if the user does not specify any
    fVolumeList.insert("^.*IDSM_1/IBMO_1/IBAM_[\\d]+/ILSB.*$");
    fVolumeList.insert("^.*IDSM_1/PXMO_1/PXLA_[\\d]+/LADR_\\d/PXSI_[\\d]+/PLAC.*$");
 }
