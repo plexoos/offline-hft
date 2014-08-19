@@ -106,7 +106,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
       if (poProc.DoGeantStepTree()) {
          geantStepChain->GetEntry(iEvent-1);
-         outRootFile.FillHists(*eventG);
+         outRootFile.FillHists(*eventG, &poProc.GetVolumeList());
       }
    }
 
