@@ -38,6 +38,9 @@ HftMatchedTree::~HftMatchedTree()
 
 Int_t HftMatchedTree::Init()
 {
+   if (Debug() >= 2)
+      SetDebug(StMessMgr::kDebug);
+
    StBFChain *bfChain = (StBFChain *) StMaker::GetChain();
 
    if (!bfChain) return kStErr;
