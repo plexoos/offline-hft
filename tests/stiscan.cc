@@ -5,6 +5,7 @@
 #include "TChain.h"
 #include "TError.h"
 #include "TGeoNavigator.h"
+#include "TGeoManager.h"
 #include "TRandom.h"
 #include "TROOT.h"
 
@@ -21,8 +22,11 @@ typedef std::unordered_map<size_t, std::string> Hash2StringMap;
 int    Margc=0;
 char** Margv=NULL;
 
+TGeoManager *gGeoManager = 0;
+
 
 void loop_hftree(StiScanPrgOptions &poProc);
+void make_geometry(std::string geoTag="y2014a");
 void create_volume_hash_map(TGeoNavigator &geoNav, Hash2StringMap &hash2PathMap);
 
 
@@ -33,6 +37,9 @@ int main(int argc, char **argv)
 
    StiScanPrgOptions poProc(argc, argv, hftTreeName, geantStepTreeName);
    poProc.ProcessOptions();
+
+   // Initialize gGeoManager with geometry from a ROOT file
+   make_geometry("y2014a");
 
    loop_hftree(poProc);
 
@@ -105,6 +112,19 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
    outRootFile.Write();
    outRootFile.Close();
+}
+
+
+void make_geometry(std::string geoTag)
+{
+   std::string myGeomTag("y2014a");
+
+   TGeoManager::Import( Form("%s.root", myGeomTag.c_str()) );
+
+   if (!gGeoManager) {
+      Error("make_geometry", "No gGeoManager found");
+      exit(EXIT_FAILURE);
+   }
 }
 
 
