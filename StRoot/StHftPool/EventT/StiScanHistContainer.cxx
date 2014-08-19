@@ -108,7 +108,7 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
 }
 
 
-void StiScanHistContainer::FillHists(const EventG &eventG)
+void StiScanHistContainer::FillHists(const EventG &eventG, const std::set<std::string> *volumeList)
 {
    TIter iGeantStep(eventG.steps);
 
@@ -120,6 +120,12 @@ void StiScanHistContainer::FillHists(const EventG &eventG)
       ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
       ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
+
+      if (volumeList && volumeList->size() && !stepG->MatchedVolName(*volumeList) ) continue;
+
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
    }
 }
 

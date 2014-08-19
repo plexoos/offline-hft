@@ -28,7 +28,7 @@ public:
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
-   void FillHists(const EventG &eventG);
+   void FillHists(const EventG &eventG, const std::set<std::string> *volumeList=0);
    void FillDerivedHists();
    void SaveAllAs(std::string prefix="./");
    void SetZRange(double minZ, double maxZ) { mNodeZMin = minZ; mNodeZMax = maxZ; }

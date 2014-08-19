@@ -46,10 +46,10 @@ void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string
 }
 
 
-void StiScanRootFile::FillHists(const EventG &eventG)
+void StiScanRootFile::FillHists(const EventG &eventG, const std::set<std::string> *volumeList)
 {
    StiScanHistContainer* container = static_cast<StiScanHistContainer*> (mDirs["gea"]);
-   container->FillHists(eventG);
+   container->FillHists(eventG, volumeList);
 }
 
 
