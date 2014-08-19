@@ -29,12 +29,12 @@ gStyle->SetPalette(1);
 gStyle->SetOptFit(1111);
 gStyle->SetOptStat("emroui");
 gStyle->SetStatX(0.99);
-gStyle->SetStatY(0.90);
-gStyle->SetStatW(0.18);
+gStyle->SetStatY(0.99);
+gStyle->SetStatW(0.15);
 gStyle->SetStatH(0.15);
 gStyle->SetPadLeftMargin(0.10);
 gStyle->SetPadRightMargin(0.30);
 gStyle->SetPadBottomMargin(0.15);
-gStyle->SetTitleOffset(0.8, "Y");
+gStyle->SetTitleOffset(0.2, "Y");
 gStyle->SetStatBorderSize(1); // removes shadow
 }
