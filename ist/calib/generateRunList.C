@@ -10,6 +10,7 @@ void generateRunList() {
 	std::ofstream fRunList_physics("runList2014_ist_physics.txt", std::ios_base::out & std::ios_base::trunc);
         std::ofstream fRunList_pedestal("runList2014_ist_pedestal.txt", std::ios_base::out & std::ios_base::trunc);
         std::ofstream fRunList_pedAsPhys("runList2014_ist_pedAsPhys.txt", std::ios_base::out & std::ios_base::trunc);
+	std::ofstream fRunList_physicsPlusPedAsPhysGood("runList2014_ist_physicsPlusPedAsPhysGood.txt", std::ios_base::out & std::ios_base::trunc);
 
         Int_t runNumber = 0, detId = -1, rtsStatusCode = -2, shiftStatusCode = -2;
 	char glbSetup[128];
@@ -37,21 +38,32 @@ void generateRunList() {
                 if(found >= 0)
                         daqSetupS.Replace(found, daqSetupS.Length(), "");
 
-		if( glbSetupS.Contains("pedestal_tcd_only") && daqSetupS.Contains("pedestal") )
+		if( glbSetupS.Contains("pedestal") && daqSetupS.Contains("pedestal") )
 			fRunList_pedestal << runNumber << endl;
 
-		if( glbSetupS.Contains("pedAsPhys") && daqSetupS.Contains("physics") )
+		if( glbSetupS.Contains("pedAsPhys") && daqSetupS.Contains("physics") && rtsStatusCode==0 )
 			fRunList_pedAsPhys << runNumber << endl;
 
-		if( (glbSetupS.Contains("CosmicLocalClock") && daqSetupS.Contains("CosmicLocalClock")) || 
+		if( ((glbSetupS.Contains("CosmicLocalClock") && daqSetupS.Contains("CosmicLocalClock")) || 
 		    (glbSetupS.Contains("CosmicLocalClock") && daqSetupS.Contains("physics")) ||
 		    (glbSetupS.Contains("production_15GeV_2014") && daqSetupS.Contains("physics")) || 
 		    (glbSetupS.Contains("AuAu_200") && daqSetupS.Contains("physics")) || 
-		    (glbSetupS.Contains("AuHe3") && daqSetupS.Contains("physics"))  )
+		    (glbSetupS.Contains("AuHe3") && daqSetupS.Contains("physics"))) && rtsStatusCode==0 )
                         fRunList_physics << runNumber << endl;
+
+		/*if( (	(glbSetupS.Contains("pedAsPhys") && daqSetupS.Contains("physics")) ||
+		    	(glbSetupS.Contains("CosmicLocalClock") && daqSetupS.Contains("CosmicLocalClock")) ||
+                    	(glbSetupS.Contains("CosmicLocalClock") && daqSetupS.Contains("physics")) ||
+                    	(glbSetupS.Contains("production_15GeV_2014") && daqSetupS.Contains("physics")) ||
+                    	(glbSetupS.Contains("AuAu_200") && daqSetupS.Contains("physics")) ||
+                    	(glbSetupS.Contains("AuHe3") && daqSetupS.Contains("physics")) ) && 
+		    	rtsStatusCode==0 ) */
+		if( (daqSetupS.Contains("physics") || daqSetupS.Contains("CosmicLocalClock")) && rtsStatusCode==0 )
+                        fRunList_physicsPlusPedAsPhysGood << runNumber << endl;
             }
         fclose(inR);
 	fRunList_physics.close();
 	fRunList_pedAsPhys.close();
 	fRunList_pedestal.close();
+	fRunList_physicsPlusPedAsPhysGood.close();
 }
