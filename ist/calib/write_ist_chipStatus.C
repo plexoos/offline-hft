@@ -22,12 +22,12 @@ void write_ist_chipStatus() {
     	gSystem->Load("libStDb_Tables.so");
     	gSystem->Load("StDbLib.so");
 
-	int maxRunNumber = 3151; //number of runs in 2014 with IST included
+	int maxRunNumber = 3153; //number of runs in 2014 with IST included
         int deadChipsInRun14 = 31; //initialize chip status
         UChar_t chipStatus[864];
 
 	//counting number of runs in this entry
-	if(isSimFavor!)
+	if(!isSimFavor)
 	    std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_full.lis");
 	else {
 	    std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_sim.lis");
@@ -62,13 +62,21 @@ void write_ist_chipStatus() {
 	
 	    int found = 19;
             mTimeStamp.Replace(found, mTimeStamp.Length(), "");
-	    if(isSimFavor)  mTimeStamp = "2013-12-15 00:00:00";
-	    cout << runCounter << ": \t" << runNumber << "\t" << mTimeStamp << endl;
+	    if(isSimFavor)  {
+		TString storeTime = "2013-12-15 00:00:00";
+		cout << runCounter << ": \t" << runNumber << "\t" << storeTime << endl;
+	    }
+	    else {
+	    	cout << runCounter << ": \t" << runNumber << "\t" << mTimeStamp << endl;
+	    }
 
 	    StDbManager* mgr = StDbManager::Instance();
             StDbConfigNode* node = mgr->initConfig("Calibrations_ist");
             StDbTable* dbtable = node->addDbTable("istChipConfig");
-            mgr->setStoreTime(mTimeStamp.Data());
+	    if(!isSimFavor)
+            	mgr->setStoreTime(mTimeStamp.Data());
+	    else
+		mgr->setStoreTime(storeTime.Data());
 
 	    istChipConfig_st table;
 
@@ -76,27 +84,30 @@ void write_ist_chipStatus() {
                 chipStatus[i] = 1; //1: active and good
 
             //mask out dead chips
-	    if(runNumber<15174075)
-	        std::ifstream deadChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_dead.txt");
-	    else {
-		std::ifstream deadChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_dead_AuHe3.txt");
-		deadChipsInRun14 = 29; //since run 15174075 (June 23, 2014), two chips (566/567) were taken out of online mask-out chip list
+	    if(!isSimFavor) {
+	    	if(runNumber<15174075) {
+	            std::ifstream deadChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_dead.txt");
+	    	}
+	    	else {
+		    std::ifstream deadChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_dead_AuHe3.txt");
+		    deadChipsInRun14 = 29; //since run 15174075 (June 23, 2014), two chips (566/567) were taken out of online mask-out chip list
+	    	}
+
+            	int rdoT, armT, apvT, deadChipId;
+            	int deadCounter = 0;
+            	while(!deadChipList.eof() && deadCounter<deadChipsInRun14) {
+                    deadChipList >> rdoT >> armT >> apvT;
+                    deadChipId = (rdoT-1)*6*24 + armT*24 + apvT; //electronics ID
+                    if(deadChipId<0 || deadChipId>=864) continue;
+                    //translate to geometry ID
+                    int deadChipGeomIdx = elecIdToGeomId(deadChipId);
+                    cout << "Dead chip geometry index: " << deadChipGeomIdx << endl;
+
+		    chipStatus[deadChipGeomIdx-1] = 0; //0: dead
+                    deadCounter++;
+            	}
+            	deadChipList.close();
 	    }
-
-            int rdoT, armT, apvT, deadChipId;
-            int deadCounter = 0;
-            while(!deadChipList.eof() && deadCounter<deadChipsInRun14) {
-                deadChipList >> rdoT >> armT >> apvT;
-                deadChipId = (rdoT-1)*6*24 + armT*24 + apvT; //electronics ID
-                if(deadChipId<0 || deadChipId>=864) continue;
-                //translate to geometry ID
-                int deadChipGeomIdx = elecIdToGeomId(deadChipId);
-                //cout << "Dead chip geometry index: " << deadChipGeomIdx << endl;
-
-		chipStatus[deadChipGeomIdx-1] = 0; //0: dead
-                deadCounter++;
-            }
-            deadChipList.close();
 
 	    //mask out bad chips (eg. mis-configured)
 	    std::ifstream badChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_bad.txt");
@@ -113,18 +124,18 @@ void write_ist_chipStatus() {
                 if(badChipId<0 || badChipId>=864) continue;
                 //translate to geometry ID
                 int badChipGeomIdx = elecIdToGeomId(badChipId);
-                //cout << "Bad chip geometry index: " << badChipGeomIdx << endl; 
+                cout << "Bad chip geometry index: " << badChipGeomIdx << endl; 
 
 		chipStatus[badChipGeomIdx-1] = 10; //10: mis-configured
             }
             badChipList.close();
 
 	    table.run = runNumber;
-	    //cout << "table.run = " << runNumber << ";" << endl;
+	    cout << "table.run = " << runNumber << ";" << endl;
 
 	    for(int iChip=0; iChip<864; iChip++) {
 		table.s[iChip] = (unsigned)chipStatus[iChip];
-		//cout << "table.s["<<iChip<<"]="<<(int)chipStatus[iChip]<<"; ";
+		cout << "table.s["<<iChip<<"]="<<(int)chipStatus[iChip]<<"; ";
 	    }
 
 	    // Store data to the StDbTable
