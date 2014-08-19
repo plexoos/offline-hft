@@ -41,6 +41,15 @@ int main(int argc, char **argv)
    // Initialize gGeoManager with geometry from a ROOT file
    make_geometry("y2014a");
 
+   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1");
+   TGeoNavigator* geoNav = gGeoManager->GetCurrentNavigator();
+   assert(geoNav);
+
+   Hash2StringMap hash2PathMap;
+   create_volume_hash_map(*geoNav, hash2PathMap);
+
+   AgUStep::fgHash2PathMap = &hash2PathMap;
+
    loop_hftree(poProc);
 
    return EXIT_SUCCESS;
