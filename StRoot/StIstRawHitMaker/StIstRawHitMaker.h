@@ -11,27 +11,7 @@
 * 1) calibration mode: save raw ADC value only 
 * 2) non-calibration (physics) mode: access calibration datasets, signal-like
 *    raw hit decision, full raw hit info., ...
-****************************************************************************
-*
-* $Log$
-* Revision 1.6  2014/08/12 23:00:02  ypwang
-* chip occupancy cut added to skip the chip with more than 20% channels fired; change the raw hit decision cut position in the code.
-*
-* Revision 1.5  2014/07/29 20:13:31  ypwang
-* update the IST DB obtain method
-*
-* Revision 1.4  2014/02/15 19:55:25  ypwang
-* remove virtual type declaration from member function
-*
-* Revision 1.3  2014/02/08 03:34:17  ypwang
-* updating scripts
-*
-*
-****************************************************************************
-* StIstRawHitMaker.h,v 1.0
-* Revision 1.0 2013/11/04 15:55:30 Yaping
-* Initial version
-****************************************************************************/
+***************************************************************************/
 
 #ifndef StIstRawHitMaker_hh
 #define StIstRawHitMaker_hh
@@ -113,3 +93,29 @@ inline const char *StIstRawHitMaker::GetCVS() const {
    return cvs;
 };
 #endif
+
+
+/***************************************************************************
+*
+* $Log$
+* Revision 1.7  2014/08/21 17:51:08  smirnovd
+* Moved CVS history to the end of file
+*
+* Revision 1.6  2014/08/12 23:00:02  ypwang
+* chip occupancy cut added to skip the chip with more than 20% channels fired; change the raw hit decision cut position in the code.
+*
+* Revision 1.5  2014/07/29 20:13:31  ypwang
+* update the IST DB obtain method
+*
+* Revision 1.4  2014/02/15 19:55:25  ypwang
+* remove virtual type declaration from member function
+*
+* Revision 1.3  2014/02/08 03:34:17  ypwang
+* updating scripts
+*
+*
+****************************************************************************
+* StIstRawHitMaker.h,v 1.0
+* Revision 1.0 2013/11/04 15:55:30 Yaping
+* Initial version
+****************************************************************************/
