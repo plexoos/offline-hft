@@ -36,9 +36,10 @@ protected:
    float       fEnergyLosses;      ///< Energy lost in the volume
    float       fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
    float       fNodeCenterRefAngle;   ///< Angle to the center of the Sti volume associated with this node
+   float       fNodeMaterialDensity;  ///< Density of the material of this node/volume
    std::string fVolumeName;           ///< Name of Sti volume
 
-   ClassDef(TStiKalmanTrackNode, 1)
+   ClassDef(TStiKalmanTrackNode, 2)
 };
 
 
