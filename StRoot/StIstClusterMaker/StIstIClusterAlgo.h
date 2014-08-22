@@ -1,10 +1,10 @@
 /***************************************************************************
-* $Id$
+* $Id: StIstIClusterAlgo.h,v 1.3 2014/02/08 03:34:16 ypwang Exp $
 * Author: Yaping Wang, March 2013
 ****************************************************************************
 * Description: Virtual class for clustering algorithm implementation.
 ****************************************************************************
-* $Log$
+* $Log: StIstIClusterAlgo.h,v $
 * Revision 1.3  2014/02/08 03:34:16  ypwang
 * updating scripts
 *

@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstSimpleClusterAlgo.cxx,v 1.6 2014/02/16 21:42:54 ypwang Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstSimpleClusterAlgo.cxx,v $
 * Revision 1.6  2014/02/16 21:42:54  ypwang
 * getting number of time bins used in current event by StIstCollection::getNumTimeBins() function
 *

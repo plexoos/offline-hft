@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstSimpleClusterAlgo.h,v 1.5 2014/02/16 21:42:54 ypwang Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -13,7 +13,7 @@
 * found clusters (here only works for cases with cluster size <= 4).
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstSimpleClusterAlgo.h,v $
 * Revision 1.5  2014/02/16 21:42:54  ypwang
 * getting number of time bins used in current event by StIstCollection::getNumTimeBins() function
 *

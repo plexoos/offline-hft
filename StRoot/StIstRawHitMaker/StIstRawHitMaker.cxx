@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstRawHitMaker.cxx,v 1.20 2014/08/21 17:51:08 smirnovd Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -416,7 +416,7 @@ ClassImp(StIstRawHitMaker);
 
 /***************************************************************************
 *
-* $Log$
+* $Log: StIstRawHitMaker.cxx,v $
 * Revision 1.20  2014/08/21 17:51:08  smirnovd
 * Moved CVS history to the end of file
 *

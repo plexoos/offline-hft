@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstClusterMaker.cxx,v 1.15 2014/08/21 17:51:08 smirnovd Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -134,7 +134,7 @@ ClassImp(StIstClusterMaker);
 
 /***************************************************************************
 *
-* $Log$
+* $Log: StIstClusterMaker.cxx,v $
 * Revision 1.15  2014/08/21 17:51:08  smirnovd
 * Moved CVS history to the end of file
 *

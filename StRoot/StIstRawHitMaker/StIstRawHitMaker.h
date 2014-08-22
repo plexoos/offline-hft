@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstRawHitMaker.h,v 1.7 2014/08/21 17:51:08 smirnovd Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -89,7 +89,7 @@ inline void StIstRawHitMaker::setCmnCut(float cmnCut)			{ mCmnCut = cmnCut;     
 inline void StIstRawHitMaker::setDataType(int nDataType)		{ mDataType = nDataType;   };
 
 inline const char *StIstRawHitMaker::GetCVS() const {
-   static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
+   static const char cvs[] = "Tag $Name:  $ $Id: StIstRawHitMaker.h,v 1.7 2014/08/21 17:51:08 smirnovd Exp $ built "__DATE__" "__TIME__ ;
    return cvs;
 };
 #endif
@@ -97,7 +97,7 @@ inline const char *StIstRawHitMaker::GetCVS() const {
 
 /***************************************************************************
 *
-* $Log$
+* $Log: StIstRawHitMaker.h,v $
 * Revision 1.7  2014/08/21 17:51:08  smirnovd
 * Moved CVS history to the end of file
 *

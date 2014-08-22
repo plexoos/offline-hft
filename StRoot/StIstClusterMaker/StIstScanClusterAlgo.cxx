@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstScanClusterAlgo.cxx,v 1.5 2014/03/17 21:51:56 ypwang Exp $
 *
 * Author: Yaping Wang, October 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstScanClusterAlgo.cxx,v $
 * Revision 1.5  2014/03/17 21:51:56  ypwang
 * minor update due to some IST constants moved to StEnumurations.h
 *
