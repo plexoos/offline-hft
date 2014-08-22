@@ -17,9 +17,8 @@
 #include "StRoot/StIstUtil/StIstCluster.h"
 #include "StRoot/StIstUtil/StIstClusterCollection.h"
 #include "StRoot/StIstUtil/StIstConsts.h"
-#include "StIstIClusterAlgo.h"
-#include "StIstSimpleClusterAlgo.h"
-#include "StIstScanClusterAlgo.h"
+#include "StRoot/StIstClusterMaker/StIstIClusterAlgo.h"
+#include "StRoot/StIstClusterMaker/StIstScanClusterAlgo.h"
 
 StIstClusterMaker::StIstClusterMaker( const char *name ) : StMaker(name), mIstCollectionPtr(0), mClusterAlgoPtr(0), mTimeBin(-1), mSplitCluster(1)
 {

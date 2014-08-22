@@ -8,7 +8,7 @@
 #ifndef StIstSimpleClusterAlgo_hh
 #define StIstSimpleClusterAlgo_hh
 
-#include "StIstIClusterAlgo.h"
+#include "StRoot/StIstClusterMaker/StIstIClusterAlgo.h"
 
 class StIstRawHit;
 class StIstCluster;

@@ -8,9 +8,9 @@
 * See header file.
 ***************************************************************************/
 
-#include "StEvent.h"
+#include "StRoot/StEvent/StEvent.h"
 #include "StMessMgr.h"
-#include "StIstSimpleClusterAlgo.h"
+#include "StRoot/StIstClusterMaker/StIstSimpleClusterAlgo.h"
 #include "StRoot/StIstUtil/StIstCollection.h"
 #include "StRoot/StIstUtil/StIstRawHitCollection.h"
 #include "StRoot/StIstUtil/StIstRawHit.h"
