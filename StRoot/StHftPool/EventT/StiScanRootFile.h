@@ -11,6 +11,7 @@
 #include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
 typedef Event EventG;
@@ -24,8 +25,8 @@ class StiScanRootFile : public TFile
 {
 public:
 
-   StiScanRootFile();
-   StiScanRootFile(const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
+   StiScanRootFile(StiScanPrgOptions& prgOpts);
+   StiScanRootFile(StiScanPrgOptions& prgOpts, const char* fname, Option_t* option="", const char* ftitle="", Int_t compress=1);
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
    void FillHists(const EventG &eventG, const std::set<std::string> *volumeList=0);
@@ -42,6 +43,7 @@ private:
    TDirMap mDirs;   ///< A string-to-TDirectoryFile map for convenient access to enclosed directories
 
    ClassDef(StiScanRootFile, 1)
+   StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
 };
 
 #endif

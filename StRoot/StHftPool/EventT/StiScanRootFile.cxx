@@ -11,14 +11,16 @@
 #include "StHftPool/EventT/StiScanHistsByVolume.h"
 
 
-StiScanRootFile::StiScanRootFile() : TFile(), mDirs()
+StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts) : TFile(), mDirs(),
+   fPrgOptions(prgOpts)
 {
    BookHists();
 }
 
 
-StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
-   TFile(fname, option, ftitle, compress), mDirs()
+StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
+   TFile(fname, option, ftitle, compress), mDirs(),
+   fPrgOptions(prgOpts)
 {
    printf("Created ROOT file: %s\n", GetName());
 

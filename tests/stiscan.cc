@@ -74,7 +74,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
       outFileName += "_stiscan.root";
    }
 
-   StiScanRootFile outRootFile( outFileName.c_str(), "recreate");
+   StiScanRootFile outRootFile(poProc, outFileName.c_str(), "recreate");
 
    int nTreeEvents = hftChain->GetEntries();
    int nProcEvents = 0;
