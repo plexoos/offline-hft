@@ -55,8 +55,6 @@ protected:
 private:
 
    void InitRange();
-
-   ClassDef(StiScanHistContainer, 1)
 };
 
 #endif

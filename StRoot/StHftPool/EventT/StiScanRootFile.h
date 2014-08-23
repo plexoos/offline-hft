@@ -41,8 +41,6 @@ private:
    void BookHists();
 
    TDirMap mDirs;   ///< A string-to-TDirectoryFile map for convenient access to enclosed directories
-
-   ClassDef(StiScanRootFile, 1)
    StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
 };
 

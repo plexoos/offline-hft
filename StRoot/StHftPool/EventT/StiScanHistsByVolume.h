@@ -20,8 +20,6 @@ public:
 protected:
 
    virtual void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
-
-   ClassDef(StiScanHistsByVolume, 1)
 };
 
 #endif
