@@ -8,13 +8,13 @@
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 
-StiScanHistsByVolume::StiScanHistsByVolume() : StiScanHistContainer()
+StiScanHistsByVolume::StiScanHistsByVolume(StiScanPrgOptions& prgOpts) : StiScanHistContainer(prgOpts)
 {
 }
 
 
-StiScanHistsByVolume::StiScanHistsByVolume(const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
-   StiScanHistContainer(name, title, option, motherDir)
+StiScanHistsByVolume::StiScanHistsByVolume(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
+   StiScanHistContainer(prgOpts, name, title, option, motherDir)
 {
 }
 

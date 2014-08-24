@@ -10,15 +10,18 @@
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 
-StiScanHistContainer::StiScanHistContainer() : TDirectoryFile(), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirectoryFile(),
+   fPrgOptions(prgOpts), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
    mNodeRMin(0), mNodeRMax(30)
 {
    BookHists();
 }
 
 
-StiScanHistContainer::StiScanHistContainer(const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
-   TDirectoryFile(name, title, option, motherDir), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
+   TDirectoryFile(name, title, option, motherDir),
+   fPrgOptions(prgOpts),
+   mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
    mNodeRMin(0), mNodeRMax(30)
 {
    BookHists();

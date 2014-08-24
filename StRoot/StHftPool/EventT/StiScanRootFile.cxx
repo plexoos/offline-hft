@@ -30,9 +30,9 @@ StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, 
 
 void StiScanRootFile::BookHists()
 {
-   mDirs["sti_vol"] = new StiScanHistsByVolume("sti_vol", "sti_vol", "", this);
-   mDirs["sti_trk"] = new StiScanHistContainer("sti_trk", "sti_trk", "", this);
-   mDirs["gea"] = new StiScanHistContainer("gea", "gea", "", this);
+   mDirs["sti_vol"] = new StiScanHistsByVolume(fPrgOptions, "sti_vol", "sti_vol", "", this);
+   mDirs["sti_trk"] = new StiScanHistContainer(fPrgOptions, "sti_trk", "sti_trk", "", this);
+   mDirs["gea"]     = new StiScanHistContainer(fPrgOptions, "gea", "gea", "", this);
 }
 
 

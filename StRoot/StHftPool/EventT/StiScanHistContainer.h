@@ -8,6 +8,7 @@
 #include "TDirectoryFile.h"
 
 #include "StHftPool/EventT/EventT.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StHftPool/EventT/TStiKalmanTrack.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
@@ -23,8 +24,8 @@ class StiScanHistContainer : public TDirectoryFile
 {
 public:
 
-   StiScanHistContainer();
-   StiScanHistContainer(const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
+   StiScanHistContainer(StiScanPrgOptions& prgOpts);
+   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
@@ -44,6 +45,7 @@ protected:
    void BookHists();
    virtual void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
 
+   StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
    HistMap mHs;
    double  mNodeZMin;
    double  mNodeZMax;

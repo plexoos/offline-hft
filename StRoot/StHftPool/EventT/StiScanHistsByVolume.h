@@ -13,8 +13,8 @@ class StiScanHistsByVolume : public StiScanHistContainer
 {
 public:
 
-   StiScanHistsByVolume();
-   StiScanHistsByVolume(const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
+   StiScanHistsByVolume(StiScanPrgOptions& prgOpts);
+   StiScanHistsByVolume(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
 
 protected:
 
