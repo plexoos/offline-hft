@@ -6,6 +6,7 @@
 #include <string>
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
 
 
 

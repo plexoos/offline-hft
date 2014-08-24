@@ -42,7 +42,7 @@ protected:
    virtual void VerifyOptions();
    virtual void AddToInputChains(std::string hftTreeRootFileName);
 
-   bool  fDoGeantStepTree; ///< A flag to process geant tree if set
+   bool    fDoGeantStepTree; ///< A flag to process geant tree if set
    TChain *fGeantStepChain;
    double  fHistZMin;
    double  fHistZMax;

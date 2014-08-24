@@ -1,12 +1,11 @@
 #include <cmath>
 
-#include "StiScanHistContainer.h"
-
 #include "TCanvas.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TVector3.h"
 
+#include "StHftPool/EventT/StiScanHistContainer.h"
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 
@@ -164,10 +163,10 @@ void StiScanHistContainer::FillDerivedHists()
    TProfile2D* prof2D = (TProfile2D*) mHs["hAllVolELossVsPhiVsR"];
 
    mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
-   h->SetOption("XY");
    h->SetTitle(" ; #phi, rad; Total Energy Losses in All Volumes, keV");
 
    prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
+
    mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Energy Losses in Select Volumes, keV");
 }
