@@ -41,7 +41,7 @@ int main(int argc, char **argv)
    // Initialize gGeoManager with geometry from a ROOT file
    make_geometry("y2014a");
 
-   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1");
+   gGeoManager->cd("HALL_1/CAVE_1");
    TGeoNavigator* geoNav = gGeoManager->GetCurrentNavigator();
    assert(geoNav);
 
