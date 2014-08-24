@@ -172,9 +172,11 @@ void create_volume_hash_map(TGeoNavigator &geoNav, Hash2StringMap &hash2PathMap)
       // Add this volume to the hash map
       std::string hashedPath(currentPath);
 
-      // Remove TpcRefSys_1/ substring as it not relevant for geometry trees used in simulation 
+      // Remove a "TpcRefSys_1/" substring as it not relevant for geometry trees used in simulation
       size_t first_pos = hashedPath.find("TpcRefSys_1/");
-      hashedPath.replace(first_pos, std::string("TpcRefSys_1/").length(), "");
+      if (first_pos != std::string::npos) {
+         hashedPath.replace(first_pos, std::string("TpcRefSys_1/").length(), "");
+      }
 
       std::hash<std::string> hash_fn;
       std::size_t hash_value = hash_fn(hashedPath);
