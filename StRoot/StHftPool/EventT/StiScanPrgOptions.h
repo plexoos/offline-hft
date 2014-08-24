@@ -32,6 +32,10 @@ public:
 
    bool  DoGeantStepTree() const { return fDoGeantStepTree; }
    TChain* GetGeantStepChain() { return fGeantStepChain; }
+   double GetHistZMin() const { return fHistZMin; }
+   double GetHistZMax() const { return fHistZMax; }
+   double GetHistRMin() const { return fHistRMin; }
+   double GetHistRMax() const { return fHistRMax; }
 
 protected:
 
@@ -40,6 +44,10 @@ protected:
 
    bool  fDoGeantStepTree; ///< A flag to process geant tree if set
    TChain *fGeantStepChain;
+   double  fHistZMin;
+   double  fHistZMax;
+   double  fHistRMin;
+   double  fHistRMax;
 
 private:
 
