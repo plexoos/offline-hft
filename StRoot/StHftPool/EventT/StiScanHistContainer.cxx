@@ -167,16 +167,6 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
    {
       const TStiKalmanTrackNode &kalmNode = *iTStiKTrackNode;
 
-      double node_z = kalmNode.GetPosition().Z();
-
-      if (node_z < mNodeZMin) mNodeZMin = node_z;
-      if (node_z > mNodeZMax) mNodeZMax = node_z;
-
-      // Find maximum radius
-      double node_r = (float) kalmNode.GetPosition().Perp();
-
-      if (node_r > mNodeRMax) mNodeRMax = node_r;
-
       ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
@@ -196,8 +186,6 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 
 void StiScanHistContainer::SaveAllAs(std::string prefix)
 {
-   PrettifyHists();
-
    TCanvas canvas("canvas", "canvas", 1400, 600);
    canvas.UseCurrentStyle();
    canvas.SetGridx(true);

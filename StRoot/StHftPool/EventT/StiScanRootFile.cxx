@@ -76,21 +76,6 @@ Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
 {
    Info("Write", "%s", GetName());
 
-   // Set histogram axis limits to the same value calculated in sti_trk container
-   StiScanHistContainer* sti_trk = (StiScanHistContainer*) mDirs["sti_trk"];
-   StiScanHistContainer* sti_vol = (StiScanHistContainer*) mDirs["sti_vol"];
-   StiScanHistContainer* gea     = (StiScanHistContainer*) mDirs["gea"];
-
-   sti_vol->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
-   gea->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
-
-   for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
-   {
-      StiScanHistContainer *container = static_cast<StiScanHistContainer*> (iDir->second);
-      if (!container) continue;
-      container->PrettifyHists();
-   }
-
    return TFile::Write(name, opt, bufsiz);
 }
 
