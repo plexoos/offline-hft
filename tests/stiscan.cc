@@ -41,7 +41,7 @@ int main(int argc, char **argv)
    // Initialize gGeoManager with geometry from a ROOT file
    make_geometry("y2014a");
 
-   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1");
+   gGeoManager->cd("HALL_1/CAVE_1");
    TGeoNavigator* geoNav = gGeoManager->GetCurrentNavigator();
    assert(geoNav);
 
@@ -74,7 +74,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
       outFileName += "_stiscan.root";
    }
 
-   StiScanRootFile outRootFile( outFileName.c_str(), "recreate");
+   StiScanRootFile outRootFile(poProc, outFileName.c_str(), "recreate");
 
    int nTreeEvents = hftChain->GetEntries();
    int nProcEvents = 0;
@@ -172,9 +172,11 @@ void create_volume_hash_map(TGeoNavigator &geoNav, Hash2StringMap &hash2PathMap)
       // Add this volume to the hash map
       std::string hashedPath(currentPath);
 
-      // Remove TpcRefSys_1/ substring as it not relevant for geometry trees used in simulation 
+      // Remove a "TpcRefSys_1/" substring as it not relevant for geometry trees used in simulation
       size_t first_pos = hashedPath.find("TpcRefSys_1/");
-      hashedPath.replace(first_pos, std::string("TpcRefSys_1/").length(), "");
+      if (first_pos != std::string::npos) {
+         hashedPath.replace(first_pos, std::string("TpcRefSys_1/").length(), "");
+      }
 
       std::hash<std::string> hash_fn;
       std::size_t hash_value = hash_fn(hashedPath);

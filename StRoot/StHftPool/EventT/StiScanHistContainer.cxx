@@ -1,26 +1,30 @@
 #include <cmath>
 
-#include "StiScanHistContainer.h"
-
 #include "TCanvas.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TVector3.h"
 
+#include "StHftPool/EventT/StiScanHistContainer.h"
 #include "StHftPool/EventT/TStiKalmanTrackNode.h"
 
 
-StiScanHistContainer::StiScanHistContainer() : TDirectoryFile(), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirectoryFile(),
+   fPrgOptions(prgOpts), mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30)
 {
+   InitRange();
    BookHists();
 }
 
 
-StiScanHistContainer::StiScanHistContainer(const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
-   TDirectoryFile(name, title, option, motherDir), mHs(), mNodeZMin(249.5), mNodeZMax(-250.5),
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
+   TDirectoryFile(name, title, option, motherDir),
+   fPrgOptions(prgOpts),
+   mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30)
 {
+   InitRange();
    BookHists();
 }
 
@@ -34,14 +38,34 @@ StiScanHistContainer::~StiScanHistContainer()
 }
 
 
+/** The default limits will be used if user provided values for min >= max. */
+void StiScanHistContainer::InitRange()
+{
+   if (fPrgOptions.GetHistZMin() < fPrgOptions.GetHistZMax() ) {
+      mNodeZMin = fPrgOptions.GetHistZMin();
+      mNodeZMax = fPrgOptions.GetHistZMax();
+   }
+
+   if (fPrgOptions.GetHistRMin() < fPrgOptions.GetHistRMax() ) {
+      mNodeRMin = fPrgOptions.GetHistRMin();
+      mNodeRMax = fPrgOptions.GetHistRMax();
+   }
+}
+
+
 void StiScanHistContainer::BookHists()
 {
-   float minBinWidth = 0.2; // desired bin width in cm
+   const double minZBinWidth = 1;   // desired bin width in cm
+   const double minRBinWidth = 0.2; // desired bin width in cm
 
-   int nRBins = ceil( (ceil(mNodeRMax) - floor(mNodeRMin)) / minBinWidth );
+   int nZBins = ceil( (mNodeZMax - mNodeZMin) / minZBinWidth );
+   int nRBins = ceil( (mNodeRMax - mNodeRMin) / minRBinWidth );
 
    nRBins = nRBins > 150 ? 150 : nRBins;
    nRBins = nRBins <  50 ?  50 : nRBins;
+
+   nZBins = nZBins > 500 ? 500 : nZBins;
+   nZBins = nZBins <  50 ?  50 : nZBins;
 
    this->cd();
 
@@ -50,13 +74,13 @@ void StiScanHistContainer::BookHists()
    mHs["hTrackCountVsEtaVsPhi"] = h = new TH2S("hTrackCountVsEtaVsPhi", " ; #eta; #phi, rad; Num. of Tracks", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hTrackCountVsZVsPhi"]   = h = new TH2S("hTrackCountVsZVsPhi", " ; z, cm; #phi, rad; Num. of Tracks", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
+   mHs["hTrackCountVsZVsPhi"]   = h = new TH2S("hTrackCountVsZVsPhi", " ; z, cm; #phi, rad; Num. of Tracks", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
    mHs["hTotalELossVsEtaVsPhi"] = h = new TProfile2D("hTotalELossVsEtaVsPhi", " ; #eta; #phi, rad; Total Energy Losses, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; z, cm; #phi, rad; Total Energy Losses, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
+   mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; z, cm; #phi, rad; Total Energy Losses, keV", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
 
@@ -64,10 +88,10 @@ void StiScanHistContainer::BookHists()
    mHs["hAllVolELossVsEtaVsPhi"] = h = new TProfile2D("hAllVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hAllVolELossVsZVsPhi"]   = h = new TProfile2D("hAllVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
+   mHs["hAllVolELossVsZVsPhi"]   = h = new TProfile2D("hAllVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in All Volumes, keV", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hAllVolELossVsZVsR"]     = h = new TProfile2D("hAllVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", 500, -mNodeZMin, -mNodeZMax, nRBins, mNodeRMin, mNodeRMax);
+   mHs["hAllVolELossVsZVsR"]     = h = new TProfile2D("hAllVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", nZBins, mNodeZMin, mNodeZMax, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
 
    mHs["hAllVolELossVsPhiVsR"]   = h = new TProfile2D("hAllVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
@@ -81,17 +105,17 @@ void StiScanHistContainer::BookHists()
    mHs["hSelectVolELossVsEtaVsPhi"] = h = new TProfile2D("hSelectVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hSelectVolELossVsZVsPhi"]   = h = new TProfile2D("hSelectVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in Select Volumes, keV", 500, -mNodeZMin, -mNodeZMax, 120, -M_PI, M_PI);
+   mHs["hSelectVolELossVsZVsPhi"]   = h = new TProfile2D("hSelectVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in Select Volumes, keV", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-   mHs["hSelectVolELossVsZVsR"]     = h = new TProfile2D("hSelectVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in Select Volumes, keV", 500, -mNodeZMin, -mNodeZMax, nRBins, mNodeRMin, mNodeRMax);
+   mHs["hSelectVolELossVsZVsR"]     = h = new TProfile2D("hSelectVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in Select Volumes, keV", nZBins, mNodeZMin, mNodeZMax, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
 
    mHs["hSelectVolELossVsPhiVsR"]   = h = new TProfile2D("hSelectVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in Select Volumes, keV", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
 
-   // Swap the max/min values so we can find new limits automatically when filling with events
-   mNodeRMax = mNodeRMin;
+   mHs["hSelectVolDensityVsPhiVsR"] = h = new TProfile2D("hSelectVolDensityVsPhiVsR", " ; #phi, rad; r, cm; Material Density, g/cm^3 - ?", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
+   h->SetOption("colz");
 }
 
 
@@ -139,14 +163,12 @@ void StiScanHistContainer::FillDerivedHists()
    TProfile2D* prof2D = (TProfile2D*) mHs["hAllVolELossVsPhiVsR"];
 
    mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
-   h->SetOption("XY");
    h->SetTitle(" ; #phi, rad; Total Energy Losses in All Volumes, keV");
 
-   mHs["hAllVolELossVsPhiVsR_pfx"] = h = prof2D->ProfileX("_pfx", 1, -1, "g");
-   h->SetOption("XY");
+   prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
 
-   mHs["hAllVolELossVsPhiVsR_pfy"] = h = prof2D->ProfileY("_pfy", 1, -1, "g");
-   h->SetOption("XY");
+   mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
+   h->SetTitle(" ; #phi, rad; Energy Losses in Select Volumes, keV");
 }
 
 
@@ -167,16 +189,6 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
    {
       const TStiKalmanTrackNode &kalmNode = *iTStiKTrackNode;
 
-      double node_z = kalmNode.GetPosition().Z();
-
-      if (node_z < mNodeZMin) mNodeZMin = node_z;
-      if (node_z > mNodeZMax) mNodeZMax = node_z;
-
-      // Find maximum radius
-      double node_r = (float) kalmNode.GetPosition().Perp();
-
-      if (node_r > mNodeRMax) mNodeRMax = node_r;
-
       ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hAllVolELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
@@ -196,8 +208,6 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 
 void StiScanHistContainer::SaveAllAs(std::string prefix)
 {
-   PrettifyHists();
-
    TCanvas canvas("canvas", "canvas", 1400, 600);
    canvas.UseCurrentStyle();
    canvas.SetGridx(true);

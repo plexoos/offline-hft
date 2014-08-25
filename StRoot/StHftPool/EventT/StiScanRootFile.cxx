@@ -11,14 +11,16 @@
 #include "StHftPool/EventT/StiScanHistsByVolume.h"
 
 
-StiScanRootFile::StiScanRootFile() : TFile(), mDirs()
+StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts) : TFile(), mDirs(),
+   fPrgOptions(prgOpts)
 {
    BookHists();
 }
 
 
-StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
-   TFile(fname, option, ftitle, compress), mDirs()
+StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, Option_t *option, const char *ftitle, Int_t compress) :
+   TFile(fname, option, ftitle, compress), mDirs(),
+   fPrgOptions(prgOpts)
 {
    printf("Created ROOT file: %s\n", GetName());
 
@@ -28,9 +30,9 @@ StiScanRootFile::StiScanRootFile(const char *fname, Option_t *option, const char
 
 void StiScanRootFile::BookHists()
 {
-   mDirs["sti_vol"] = new StiScanHistsByVolume("sti_vol", "sti_vol", "", this);
-   mDirs["sti_trk"] = new StiScanHistContainer("sti_trk", "sti_trk", "", this);
-   mDirs["gea"] = new StiScanHistContainer("gea", "gea", "", this);
+   mDirs["sti_vol"] = new StiScanHistsByVolume(fPrgOptions, "sti_vol", "sti_vol", "", this);
+   mDirs["sti_trk"] = new StiScanHistContainer(fPrgOptions, "sti_trk", "sti_trk", "", this);
+   mDirs["gea"]     = new StiScanHistContainer(fPrgOptions, "gea", "gea", "", this);
 }
 
 
@@ -73,21 +75,6 @@ void StiScanRootFile::FillDerivedHists()
 Int_t StiScanRootFile::Write(const char* name, Int_t opt, Int_t bufsiz)
 {
    Info("Write", "%s", GetName());
-
-   // Set histogram axis limits to the same value calculated in sti_trk container
-   StiScanHistContainer* sti_trk = (StiScanHistContainer*) mDirs["sti_trk"];
-   StiScanHistContainer* sti_vol = (StiScanHistContainer*) mDirs["sti_vol"];
-   StiScanHistContainer* gea     = (StiScanHistContainer*) mDirs["gea"];
-
-   sti_vol->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
-   gea->SetZRange(sti_trk->GetZMin(), sti_trk->GetZMax());
-
-   for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
-   {
-      StiScanHistContainer *container = static_cast<StiScanHistContainer*> (iDir->second);
-      if (!container) continue;
-      container->PrettifyHists();
-   }
 
    return TFile::Write(name, opt, bufsiz);
 }

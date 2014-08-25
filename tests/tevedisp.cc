@@ -486,7 +486,7 @@ void make_geometry(PrgOptionProcessor &poProc)
 
    TEveElementList *STAR = new TEveElementList("Geometry");
 
-   gGeoManager->cd("HALL_1/CAVE_1/TpcRefSys_1/IDSM_1");
+   gGeoManager->cd("HALL_1/CAVE_1");
 
    TGeoNode *myGeoNode = gGeoManager->GetCurrentNode();
 
