@@ -52,6 +52,10 @@ protected:
    float   mNodeRMin;
    float   mNodeRMax;
 
+private:
+
+   void InitRange();
+
    ClassDef(StiScanHistContainer, 1)
 };
 

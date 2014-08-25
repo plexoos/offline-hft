@@ -14,6 +14,7 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirect
    fPrgOptions(prgOpts), mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30)
 {
+   InitRange();
    BookHists();
 }
 
@@ -24,6 +25,7 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const cha
    mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30)
 {
+   InitRange();
    BookHists();
 }
 
@@ -33,6 +35,21 @@ StiScanHistContainer::~StiScanHistContainer()
    while (!mHs.empty()) {
       delete mHs.begin()->second;
       mHs.erase(mHs.begin());
+   }
+}
+
+
+/** The default limits will be used if user provided values for min >= max. */
+void StiScanHistContainer::InitRange()
+{
+   if (fPrgOptions.GetHistZMin() < fPrgOptions.GetHistZMax() ) {
+      mNodeZMin = fPrgOptions.GetHistZMin();
+      mNodeZMax = fPrgOptions.GetHistZMax();
+   }
+
+   if (fPrgOptions.GetHistRMin() < fPrgOptions.GetHistRMax() ) {
+      mNodeRMin = fPrgOptions.GetHistRMin();
+      mNodeRMax = fPrgOptions.GetHistRMax();
    }
 }
 
