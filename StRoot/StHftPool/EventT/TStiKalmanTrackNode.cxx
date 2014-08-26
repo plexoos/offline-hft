@@ -24,7 +24,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(const StiKalmanTrackNode &stiKTN) : TOb
    StThreeVector<double> p3 = stiKTN.getGlobalMomentum();
    fTrackP.SetXYZ( p3.x(), p3.y(),  p3.z() );
 
-   fEnergyLosses = stiKTN.getEnergyLosses();
+   fEnergyLosses = stiKTN.getEnergyLosses() * 1e6; // Get losses in volume material and convert GeV to keV
    fNodeRelRadLength = stiKTN.getRelRadLength();
 
    if (stiKTN.getDetector()) {
