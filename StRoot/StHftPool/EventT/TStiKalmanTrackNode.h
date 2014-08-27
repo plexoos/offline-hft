@@ -22,6 +22,7 @@ public:
    float GetEnergyLosses() const { return fabs(fEnergyLosses); }
    float GetNodeRadius() const { return fNodeRadius; }
    float GetNodeCenterRefAngle() const { return fNodeCenterRefAngle; }
+   float GetNodeMaterialDensity() const { return fNodeMaterialDensity; }
    float GetNodeRelRadLength() const { return fNodeRelRadLength; }
    std::string GetVolumeName() const { return fVolumeName; }
    bool   MatchedVolName(const std::string & pattern) const;
