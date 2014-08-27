@@ -48,5 +48,6 @@ void StiScanHistsByVolume::FillHists(const TStiKalmanTrack &kalmTrack, const std
       ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeCenterRefAngle(), kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])->Fill(kalmNode.GetPosition().Z(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])->Fill(kalmNode.GetNodeCenterRefAngle(), kalmNode.GetNodeRadius(), kalmNode.GetEnergyLosses(), 1);
+      ((TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"])->Fill(kalmNode.GetNodeCenterRefAngle(), kalmNode.GetNodeRadius(), kalmNode.GetNodeRelRadLength(), 1);
    }
 }
