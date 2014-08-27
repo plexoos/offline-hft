@@ -28,7 +28,7 @@ set(Boost_USE_MULTITHREADED OFF)
 set(BOOST_INCLUDEDIR $ENV{OPTSTAR}/include)
 set(BOOST_LIBRARYDIR $ENV{OPTSTAR}/lib)
 
-find_package( Boost 1.54.0 COMPONENTS program_options regex)
+find_package( Boost 1.54.0 COMPONENTS program_options regex filesystem)
 if(NOT Boost_FOUND)
    message(FATAL_ERROR "Fatal error: Boost (version >= 1.54.0) not found in standard location")
 endif()
