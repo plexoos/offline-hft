@@ -10,6 +10,7 @@
 
 
 StiScanPrgOptions::StiScanPrgOptions() : PrgOptionProcessor(), fDoGeantStepTree(false), fGeantStepChain(nullptr),
+   fOutPrefix("./"),
    fHistZMin(0), fHistZMax(0),
    fHistRMin(0), fHistRMax(0)
 {
@@ -19,6 +20,7 @@ StiScanPrgOptions::StiScanPrgOptions() : PrgOptionProcessor(), fDoGeantStepTree(
 
 StiScanPrgOptions::StiScanPrgOptions(int argc, char **argv, const std::string& hftTreeName, const std::string& geantStepTreeName) :
    PrgOptionProcessor(argc, argv, hftTreeName), fDoGeantStepTree(false), fGeantStepChain(new TChain(geantStepTreeName.c_str(), "READ")),
+   fOutPrefix("./"),
    fHistZMin(0), fHistZMax(0),
    fHistRMin(0), fHistRMax(0)
 {
@@ -39,6 +41,7 @@ void StiScanPrgOptions::InitOptions()
 {
    fOptions.add_options()
       ("geant-step-tree,t",   "In addition to 'hftree' process tree with info from geant steps")
+      ("out-prefix,o", po::value<std::string>(&fOutPrefix), "Absolute or relative path prefix for the output files")
       ("z-min", po::value<double>(&fHistZMin)->default_value(fHistZMin), "If provided the minimum limit along z will be overwritten by this value in the output histograms")
       ("z-max", po::value<double>(&fHistZMax)->default_value(fHistZMax), "If provided the maximum limit along z will be overwritten by this value in the output histograms")
       ("r-min", po::value<double>(&fHistRMin)->default_value(fHistRMin), "If provided the minimum limit in radial direction will be overwritten by this value in the output histograms")
