@@ -1,4 +1,5 @@
 #include <cmath>
+#include <boost/filesystem.hpp>
 
 #include "StiScanRootFile.h"
 
@@ -94,10 +95,12 @@ void StiScanRootFile::Close(Option_t *option)
 
 void StiScanRootFile::SaveAllAs(std::string prefix)
 {
-   if (gSystem->mkdir(prefix.c_str()) < 0)
-      Warning("SaveAllAs", "Perhaps dir already exists: %s", prefix.c_str());
-   else
+   namespace fs = boost::filesystem;
+
+   if (fs::create_directories(prefix))
       Info("SaveAllAs", "Created dir: %s", prefix.c_str());
+   else
+      Warning("SaveAllAs", "Perhaps dir already exists: %s", prefix.c_str());
 
    for (TDirMapConstIter iDir=mDirs.begin() ; iDir!=mDirs.end(); ++iDir)
    {
