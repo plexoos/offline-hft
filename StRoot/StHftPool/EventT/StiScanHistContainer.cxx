@@ -169,16 +169,19 @@ void StiScanHistContainer::FillDerivedHists()
 
    mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Total Energy Losses in All Volumes, keV");
+   h->SetOption("XY");
 
    prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
 
    mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Energy Losses in Select Volumes, keV");
+   h->SetOption("XY");
 
    prof2D = (TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"];
 
    mHs["hSelectVolRelRadLengthVsPhiVsR_px"] = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Rel. Radiation Length, %");
+   h->SetOption("XY");
 }
 
 
