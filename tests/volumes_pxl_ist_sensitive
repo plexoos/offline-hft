@@ -1,0 +1,2 @@
+^.*IDSM_1/IBMO_1/IBAM_[\d]+/ILSB.*$
+^.*IDSM_1/PXMO_1/PXLA_[\d]+/LADR_\d/PXSI_[\d]+/PLAC.*$
