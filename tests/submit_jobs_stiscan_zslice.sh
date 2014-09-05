@@ -13,7 +13,7 @@ echo
 
 for STISCAN_Z in {-30..30}
 do
-   JOB_RUN_FILE_NAME=$(printf "stiscan_zslice_%+04d" $STISCAN_Z)
+   JOB_RUN_FILE_NAME=$(printf "stiscan_zslice_%04d" $STISCAN_Z)
    echo
    echo "Submitting job for JOB_RUN_FILE_NAME: " $JOB_RUN_FILE_NAME
    echo "Submitting job for STISCAN_Z: " $STISCAN_Z
