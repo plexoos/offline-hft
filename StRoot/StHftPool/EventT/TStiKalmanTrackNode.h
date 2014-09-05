@@ -24,6 +24,7 @@ public:
    float GetNodeCenterRefAngle() const { return fNodeCenterRefAngle; }
    float GetNodeMaterialDensity() const { return fNodeMaterialDensity; }
    float GetNodeRelRadLength() const { return fNodeRelRadLength; }
+   float GetNodeTrackLength() const { return fNodeTrackLength; }
    std::string GetVolumeName() const { return fVolumeName; }
    bool   MatchedVolName(const std::string & pattern) const;
    bool   MatchedVolName(const std::set<std::string> & patterns) const;
@@ -40,9 +41,10 @@ protected:
    float       fNodeCenterRefAngle;   ///< Angle to the center of the Sti volume associated with this node
    float       fNodeMaterialDensity;  ///< Density of the material of this node/volume
    float       fNodeRelRadLength;     ///< Relative radiation length
+   float       fNodeTrackLength;     ///< Relative radiation length
    std::string fVolumeName;           ///< Name of Sti volume
 
-   ClassDef(TStiKalmanTrackNode, 2)
+   ClassDef(TStiKalmanTrackNode, 3)
 };
 
 
