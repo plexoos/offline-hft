@@ -3,7 +3,6 @@
 **Table of Contents**
 
 - [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
-- [How to compile HFT libraries from STAR CVS repository](#how-to-compile-hft-libraries-from-star-cvs-repository)
 - [How to compile HFT libraries from git repository](#how-to-compile-hft-libraries-from-git-repository)
 - [How to run tests](#how-to-run-tests)
 - [How to produce and reconstruct massive simulation for HFT ](#how-to-produce-and-reconstruct-massive-simulation-for-hft)
@@ -43,52 +42,6 @@ directory to point to `offline/hft` or `star-offline-hft` subdirectories
 respectively.
 
 
-How to compile HFT libraries from STAR CVS repository
-=====================================================
-
-Setup the environment and prepare directories
-
-    starver dev
-    mkdir ~/my_hft_test_dir
-    cd ~/my_hft_test_dir
-
-    cvs checkout -ko -r HEAD offline/hft
-
-Checkout the modules which need to be patched
-
-    cvs checkout -r HEAD StRoot/StBFChain
-    cvs checkout -r HEAD StRoot/StiMaker
-    cvs checkout -r HEAD StRoot/Sti
-    cvs checkout -r HEAD StRoot/StEvent
-
-    patch -p1 -d StRoot/StBFChain < offline/hft/StRoot/StBFChain.patch
-    patch -p1 -d StRoot < offline/hft/StRoot/Sti.patch
-    patch -p1 -d StRoot < offline/hft/StRoot/StiMaker.patch
-    patch -p1 -d StRoot < offline/hft/StRoot/StEvent.patch
-
-The following new submodules can also be copied to your local StRoot but you may
-chose to link them instead
-
-    cd StRoot
-    ln -s ../offline/hft/StRoot/StIstCalibrationMaker
-    ln -s ../offline/hft/StRoot/StIstClusterMaker
-    ln -s ../offline/hft/StRoot/StIstFastSimMaker
-    ln -s ../offline/hft/StRoot/StIstHitMaker
-    ln -s ../offline/hft/StRoot/StIstQAMaker
-    ln -s ../offline/hft/StRoot/StIstRawHitMaker
-    ln -s ../offline/hft/StRoot/StPxlMonMaker
-    ln -s ../offline/hft/StRoot/StHftPool
-    ln -s ../offline/hft/StRoot/StiSsd
-    ln -s ../offline/hft/StRoot/StSsdDbMaker
-
-    cd ..
-
-    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
-
-The 'cons' builder places the libraries in the local
-`~/my_hft_test_dir/.slXX_gccXXX` directory.
-
-
 How to compile HFT libraries from git repository
 ================================================
 
@@ -100,6 +53,8 @@ How to compile HFT libraries from git repository
     git submodule foreach -q --recursive 'branch="$(git config -f $toplevel/.gitmodules submodule.$name.branch)"; git checkout $branch'
     ./instal.sh ./
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
+
+The `cons` builder will place the libraries in the local `./.slXX_gccXXX` directory.
 
 
 How to run tests
