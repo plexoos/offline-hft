@@ -117,7 +117,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
    if (poProc.SaveGraphics()) {
       gROOT->Macro(poProc.GetStyleMacro().c_str());
-      outRootFile.SaveAllAs("./images");
+      outRootFile.SaveAllAs(poProc.GetOutPrefix());
    }
 
    outRootFile.Write();
