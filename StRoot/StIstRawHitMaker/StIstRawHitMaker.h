@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id: StIstRawHitMaker.h,v 1.9 2014/08/22 21:27:20 smirnovd Exp $
+* $Id: StIstRawHitMaker.h,v 1.12 2014/09/07 07:40:51 ypwang Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -26,7 +26,6 @@
 #include <assert.h>
 
 class StIstCollection;
-class StIstDb;
 
 class StIstRawHitMaker : public StRTSBaseMaker
 {
@@ -38,17 +37,16 @@ public:
    Int_t Make();
    void Clear( Option_t *opts = "" );
 
-   void setIsCalibrationMode( bool isCaliMode=false )   { mIsCaliMode = isCaliMode;};
-   void setHitCut(float hitCut=5.)			{ mHitCut = hitCut;        };
-   void setCmnCorrection( bool doCmnCorrection=false )	{ mDoCmnCorrection = doCmnCorrection; };
-   void setCmnCut(float cmnCut=3.)			{ mCmnCut = cmnCut;        };
+   void setIsCalibrationMode( bool isCaliMode = false )   { mIsCaliMode = isCaliMode;};
+   void setHitCut(float hitCut = 5.)			{ mHitCut = hitCut;        };
+   void setCmnCorrection( bool doCmnCorrection = false )	{ mDoCmnCorrection = doCmnCorrection; };
+   void setCmnCut(float cmnCut = 3.)			{ mCmnCut = cmnCut;        };
    /// 0 - All data; 1 - non-ZS data; 2 - ZS data; 3 - ZS first data
-   void setDataType(int nDataType=0)		{ mDataType = nDataType;   };
+   void setDataType(int nDataType = 0)		{ mDataType = nDataType;   };
 
    // Get CVS
-   virtual const char *GetCVS() const
-   {
-      static const char cvs[] = "Tag $Name:  $ $Id: StIstRawHitMaker.h,v 1.9 2014/08/22 21:27:20 smirnovd Exp $ built "__DATE__" "__TIME__ ;
+   virtual const char *GetCVS() const {
+      static const char cvs[] = "Tag $Name:  $ $Id: StIstRawHitMaker.h,v 1.12 2014/09/07 07:40:51 ypwang Exp $ built "__DATE__" "__TIME__ ;
       return cvs;
    }
 
@@ -60,31 +58,24 @@ protected:
    UShort_t mMinNumOfRawHits, mMaxNumOfRawHits;
 
    StIstCollection *mIstCollectionPtr;
-   StIstDb *mIstDb;
 
    // common mode noise
-   typedef std::vector< float > CmnVec_t; //APV chip geom. index, CM noise
-   CmnVec_t mCmnVec;
+   std::vector< float > mCmnVec; //APV chip geom. index, CM noise
    // pedestal
-   typedef std::vector< float > PedVec_t; //Channel elec. index, pedestal
-   PedVec_t mPedVec;
+   std::vector< float > mPedVec; //Channel elec. index, pedestal
    // RMS noise
-   typedef std::vector< float > RmsVec_t; //Channel elec. index, RMS noise
-   RmsVec_t mRmsVec;
+   std::vector< float > mRmsVec; //Channel elec. index, RMS noise
    // gain
-   typedef std::vector< float > GainVec_t;//Channel elec. index, gain
-   GainVec_t mGainVec;
+   std::vector< float > mGainVec; //Channel elec. index, gain
    // mapping
-   typedef std::vector< int > MappingVec_t;//Channel elec. index, geometry ID
-   MappingVec_t mMappingVec;
+   std::vector< int > mMappingVec; //Channel elec. index, geometry ID
    // chip configuration status
-   typedef std::vector< unsigned char > ConfigVec_t; //APV chip geom. index, configuration status
-   ConfigVec_t mConfigVec;
+   std::vector< unsigned char > mConfigVec; //APV chip geom. index, configuration status
 
 private:
    Int_t mDataType; //!  0=all, 1=adc only, 2=zs only
 
-   ClassDef(StIstRawHitMaker, 1);
+   ClassDef(StIstRawHitMaker, 0);
 };
 
 #endif
@@ -93,6 +84,15 @@ private:
 /***************************************************************************
 *
 * $Log: StIstRawHitMaker.h,v $
+* Revision 1.12  2014/09/07 07:40:51  ypwang
+* the mIstDb was declared as a local variable in InitRun() in stead of as a data member
+*
+* Revision 1.11  2014/09/07 07:14:48  ypwang
+* update definition method for the calibration vectors (remove the multiple typedefs)
+*
+* Revision 1.10  2014/09/07 06:55:51  ypwang
+* remove an unnecessary ierr cut in Make() function, and formatted with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.9  2014/08/22 21:27:20  smirnovd
 * Remove inline keyword and move the methods inside the definition. Let the compiler optimize the code as it should not be a problem with these one-liners
 *

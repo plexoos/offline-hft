@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id: StIstClusterMaker.cxx,v 1.16 2014/08/22 15:55:15 smirnovd Exp $
+* $Id: StIstClusterMaker.cxx,v 1.20 2014/09/07 11:44:52 ypwang Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -24,6 +24,17 @@
 StIstClusterMaker::StIstClusterMaker( const char *name ) : StMaker(name), mIstCollectionPtr(0), mClusterAlgoPtr(0), mTimeBin(-1), mSplitCluster(1)
 {
    /* nothing to do */
+};
+
+StIstClusterMaker::~StIstClusterMaker()
+{
+   if (mIstCollectionPtr) {
+      delete mIstCollectionPtr;
+   }
+
+   if (mClusterAlgoPtr) {
+      delete mClusterAlgoPtr;
+   }
 };
 
 void StIstClusterMaker::Clear( Option_t *opts )
@@ -117,10 +128,9 @@ Int_t StIstClusterMaker::Make()
 
 };
 
-Int_t StIstClusterMaker::setClusterAlgo(StIstIClusterAlgo *algo)
+void StIstClusterMaker::setClusterAlgo(StIstIClusterAlgo *algo)
 {
    mClusterAlgoPtr = algo;
-   return kStOk;
 }
 
 Int_t StIstClusterMaker::Init()
@@ -132,9 +142,6 @@ Int_t StIstClusterMaker::Init()
       mClusterAlgoPtr = new StIstScanClusterAlgo();
    }
 
-   if ( !ierr )
-      ierr = mClusterAlgoPtr->Init();
-
    return ierr;
 };
 
@@ -144,6 +151,18 @@ ClassImp(StIstClusterMaker);
 /***************************************************************************
 *
 * $Log: StIstClusterMaker.cxx,v $
+* Revision 1.20  2014/09/07 11:44:52  ypwang
+* remove Init() function for clustering algorithms
+*
+* Revision 1.19  2014/09/07 11:34:42  ypwang
+* update the setClusterAlgo() returning void instead of Int_t type
+*
+* Revision 1.18  2014/09/07 11:31:29  ypwang
+* update the setClusterAlgo() returning void instead of Int_t type
+*
+* Revision 1.17  2014/09/07 08:15:18  ypwang
+* destructor was added for the mIstCollectionPtr and mClusterAlgoPtr objects killing
+*
 * Revision 1.16  2014/08/22 15:55:15  smirnovd
 * Fixed style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
 *
