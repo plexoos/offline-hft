@@ -52,7 +52,6 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
    std::vector<StIstRawHit *>  rawHitsVec[kIstNumSensorsPerLadder][kIstNumColumnsPerSensor];
    std::vector<StIstCluster *> clustersVec[kIstNumSensorsPerLadder][kIstNumColumnsPerSensor];
    std::vector<StIstRawHit *>  rawHitsToMerge;
-   std::vector<StIstRawHit *>::iterator rawHitIt;
 
    for (int sensorIdx = 0; sensorIdx < kIstNumSensorsPerLadder; sensorIdx++) {
       for (int columnIdx = 0; columnIdx < kIstNumColumnsPerSensor; columnIdx++) {
