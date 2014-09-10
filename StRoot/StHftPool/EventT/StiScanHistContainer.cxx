@@ -140,25 +140,11 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
 
 void StiScanHistContainer::FillHists(const EventG &eventG, const std::set<std::string> *volumeList)
 {
-   TIter iGeantStep(eventG.steps);
+   TIter iGeantTrack(eventG.tracks);
 
-   while (StepG* stepG = (StepG*) iGeantStep())
+   while (TrackG* trackG = (TrackG*) iGeantTrack())
    {
-      stepG->dEstep *= 1e6; // convert GeV to keV
-
-      TVector3 step_pos(stepG->x, stepG->y, stepG->z);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
-      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
-
-      if (volumeList && volumeList->size() && !stepG->MatchedVolName(*volumeList) ) continue;
-
-      ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  stepG->dEstep, 1);
-      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), stepG->dEstep, 1);
-      ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dEstep, 1);
-      ((TProfile2D*) mHs["hSelectVolDensityVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dens, 1);
-      ((TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->relRadLength, 1);
-      ((TProfile2D*) mHs["hSelectVolTrackLengthVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->step, 1);
+      FillHists(*trackG, volumeList);
    }
 }
 
@@ -227,6 +213,31 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
       ((TProfile2D*) mHs["hSelectVolDensityVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetNodeMaterialDensity(), 1);
       ((TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetNodeRelRadLength(), 1);
       ((TProfile2D*) mHs["hSelectVolTrackLengthVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetNodeRelRadLength(), 1);
+   }
+}
+
+
+void StiScanHistContainer::FillHists(const TrackG &trackG, const std::set<std::string> *volumeList)
+{
+   TIter iGeantStep(&trackG.steps);
+
+   while (StepG* stepG = (StepG*) iGeantStep())
+   {
+      double dEStep = stepG->dEstep * 1e6; // convert GeV to keV
+
+      TVector3 step_pos(stepG->x, stepG->y, stepG->z);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  dEStep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), dEStep, 1);
+      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), dEStep, 1);
+
+      if (volumeList && volumeList->size() && !stepG->MatchedVolName(*volumeList) ) continue;
+
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  dEStep, 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), dEStep, 1);
+      ((TProfile2D*) mHs["hSelectVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), dEStep, 1);
+      ((TProfile2D*) mHs["hSelectVolDensityVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dens, 1);
+      ((TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->relRadLength, 1);
+      ((TProfile2D*) mHs["hSelectVolTrackLengthVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->step, 1);
    }
 }
 

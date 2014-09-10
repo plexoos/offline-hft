@@ -13,6 +13,7 @@
 #include "StarGenerator/STEP/AgUStep.h"
 
 typedef Event EventG;
+typedef Track TrackG;
 typedef Step  StepG;
 
 typedef std::map<std::string, TH1*>                    HistMap;
@@ -44,6 +45,7 @@ protected:
 
    void BookHists();
    virtual void FillHists(const TStiKalmanTrack &kalmTrack, const std::set<std::string> *volumeList=0);
+   void FillHists(const TrackG &trackG, const std::set<std::string> *volumeList=0);
 
    StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
    HistMap mHs;
