@@ -221,6 +221,8 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
 
       if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
 
+      if (kalmNode.GetNodeMaterialDensity() <= 0) continue;
+
       hSelectVolNStepsVsPhiVsR_buf->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), 1, 1);
       ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi_trk"])->Fill(kalmNode.GetTrackP().Eta(), kalmNode.GetTrackP().Phi(), kalmNode.GetEnergyLosses(), 1);
 
