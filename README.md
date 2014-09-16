@@ -47,14 +47,19 @@ How to compile HFT libraries from git repository
 
     git clone https://github.com/plexoos/star-soft.git
     cd star-soft
-    git checkout hft-dev
     git submodule init
-    git submodule update --remote
-    git submodule foreach -q --recursive 'branch="$(git config -f $toplevel/.gitmodules submodule.$name.branch)"; git checkout $branch'
-    ./instal.sh ./
+    git submodule update
+    ./install.sh ./
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 The `cons` builder will place the libraries in the local `./.slXX_gccXXX` directory.
+
+If desired one can switch to an experimental branch and recompile:
+
+    cd star-soft
+    git checkout hft-dev
+    git submodule update --remote
+    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 
 How to run tests
@@ -71,7 +76,7 @@ The reconstruction chains can be extended by running a maker from StHftPool
 libary with the 'HftMatTree' option. The chain will create a root file
 (\*.hftree.root) with a tree that can be later used to visualize tracks and
 hits along with selected detector volumes or study Sti track losses in these
-volumes. The following is a sample chain of BFC options to reconstruct an .fz
+volumes. The following is a sample chain of BFC options to reconstruct a \*.fz
 file:
 
     tpcRS y2014a AgML MakeEvent ITTF StiHftC pxlFastSim istFastSim Idst BAna l0 Tree logger Sti tpcDB TpcHitMover TpxClu bbcSim btofsim tags emcY2 EEfs evout -dstout IdTruth geantout big fzin MiniMcMk clearmem HftMatTree
@@ -83,15 +88,23 @@ in transverse planes. It can be found in `offline-hft/tests/singlepion.kumac`
 How to produce and reconstruct massive simulation for HFT 
 =========================================================
 
-
-
+A couple of shell scripts are provided to simplify the submission of condor jobs
+to the farm. The following commands can be used as examples:
 
     offline-hft/tests/submit_jobs_stiscan_zslice.sh offline-hft/tests/job_template_stiscan_zslice.xml
-
     offline-hft/tests/submit_jobs_stiscan_zslice.sh offline-hft/tests/job_template_stiscan_zslice_macro.xml
 
-
     offline-hft/tests/submit_jobs_hftree.sh /path/to/filelist_fz
+
+`submit_jobs_stiscan_zslice.sh` takes an xml template as the only parameter. In
+our case the `starsim` command is executed to produce \*.fz files with simulated
+events.
+
+`submit_jobs_hftree.sh` utilizes the `offline/hft/tests/job_template_hftree.xml`
+template to run over the \*.fz files specified in the input list. The jobs run
+the standard reconstruction and in addition creates a ROOT file with an HFT
+tree. The latter can be controlled by changing the BFC options hard-coded in the
+script.
 
 
 How to build and run standalone HFT tools
@@ -99,10 +112,10 @@ How to build and run standalone HFT tools
 
 To help with Sti geometry debugging and implementation we developed a number of
 tools. This section explains how to build them as standalone executables.
-Assuming the commands from the "How to build development hft libraries" section
-above have been executed one can do:
+Assuming the commands from the "How to compile HFT libraries..." section above
+have been executed one can do:
 
-    cd ~/my_hft_test_dir
+    cd ~/star-soft
     mkdir build
     cd build
     cmake ../offline-hft

@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+# Requires at least one argument:
+#
+# submit_jobs_stiscan_zslice.sh JOB_TEMPLATE_XML
+#
+# JOB_TEMPLATE_XML is the full path to a job template xml file
+#
+# Usage example:
+#
+# submit_jobs_stiscan_zslice.sh ../path/to/job_template.xml
+#
 
 JOB_TEMPLATE_XML=$1
 

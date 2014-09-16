@@ -21,6 +21,9 @@
    gSystem->Load("$ROOTSYS/lib/libTable");
 
    // temp
+   gSystem->Load("$OPTSTAR/lib/libboost_system");
+   gSystem->Load("$OPTSTAR/lib/libboost_program_options");
+   gSystem->Load("$OPTSTAR/lib/libboost_regex");
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStIstDbMaker");
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStHftPoolEventT");
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStHftPoolHftMatchedTree");

@@ -177,6 +177,9 @@ void StiScanHistContainer::FillDerivedHists()
    mHs["hSelectVolNStepsVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Num. of Steps (from ProjectionX)");
 
+   Profile2D* hProf = (Profile2D*) mHs["hSelectVolELossVsPhiVsR"];
+   hProf->Multiply(*hSelectVolNStepsVsPhiVsR);
+
    prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
 
    mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
@@ -220,6 +223,8 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
       ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])  ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
 
       if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
+
+      if (kalmNode.GetNodeMaterialDensity() <= 0) continue;
 
       hSelectVolNStepsVsPhiVsR_buf->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), 1, 1);
       ((TProfile2D*) mHs["hSelectVolELossVsEtaVsPhi_trk"])->Fill(kalmNode.GetTrackP().Eta(), kalmNode.GetTrackP().Phi(), kalmNode.GetEnergyLosses(), 1);
