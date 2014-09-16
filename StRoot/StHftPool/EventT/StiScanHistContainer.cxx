@@ -177,6 +177,9 @@ void StiScanHistContainer::FillDerivedHists()
    mHs["hSelectVolNStepsVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Num. of Steps (from ProjectionX)");
 
+   Profile2D* hProf = (Profile2D*) mHs["hSelectVolELossVsPhiVsR"];
+   hProf->Multiply(*hSelectVolNStepsVsPhiVsR);
+
    prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
 
    mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
