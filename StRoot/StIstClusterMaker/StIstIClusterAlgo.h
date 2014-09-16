@@ -1,7 +1,4 @@
-/***************************************************************************
-* $Id: StIstIClusterAlgo.h,v 1.9 2014/09/08 19:29:40 smirnovd Exp $
-* Author: Yaping Wang, March 2013
-***************************************************************************/
+/* $Id: StIstIClusterAlgo.h,v 1.9 2014/09/08 19:29:40 smirnovd Exp $ */
 
 #ifndef StIstIClusterAlgo_hh
 #define StIstIClusterAlgo_hh
@@ -13,8 +10,11 @@ class StIstCollection;
 
 
 /**
-* Abstract interface class for clustering algorithm implementation.
-*/
+ * Abstract interface class for clustering algorithm implementation.
+ *
+ * \author Yaping Wang
+ * \date March 2013
+ */
 class StIstIClusterAlgo
 {
 public:

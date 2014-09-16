@@ -1,12 +1,4 @@
-/***************************************************************************
-*
-* $Id: StIstClusterMaker.h,v 1.12 2014/09/07 11:31:29 ypwang Exp $
-*
-* Author: Yaping Wang, March 2013
-****************************************************************************
-* Description:
-* IST cluster maker by calling implemented algorithms.
-***************************************************************************/
+/* $Id: StIstClusterMaker.h,v 1.12 2014/09/07 11:31:29 ypwang Exp $ */
 
 #ifndef StIstClusterMaker_hh
 #define StIstClusterMaker_hh
@@ -16,6 +8,14 @@
 
 class StIstCollection;
 
+
+/**
+ * Maker to build IST clusters by calling user provided cluster splitting
+ * algorithms.
+ *
+ * \author Yaping Wang
+ * \date March 2013
+ */
 class StIstClusterMaker : public StMaker
 {
 public:
@@ -26,9 +26,7 @@ public:
    void Clear( Option_t *opts = "" );
 
    void setClusterAlgo(StIstIClusterAlgo *);
-   /// time bin to be used
    void setUsedTimeBin(unsigned char tb=-1) { mTimeBin = tb; }
-   /// cluster splitting switch
    void setClusterSplitFlag(bool splitFlag=true) { mSplitCluster = splitFlag; }
 
    virtual const char *GetCVS() const
@@ -38,8 +36,8 @@ protected:
    StIstCollection *mIstCollectionPtr;
    StIstIClusterAlgo *mClusterAlgoPtr;
 
-   UChar_t mTimeBin;
-   Bool_t mSplitCluster;
+   UChar_t mTimeBin;     ///< Time bin to be used
+   Bool_t mSplitCluster; ///< Flag to split clusters
 
 private:
    ClassDef(StIstClusterMaker, 0);
