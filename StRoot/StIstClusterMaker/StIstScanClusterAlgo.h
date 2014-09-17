@@ -20,19 +20,16 @@ class StIstClusterCollection;
  * 3) Does clustering in neighboring columns.
  * 4) Fill hit collections.
  *
- * \author Yaping Wang
- * \date March 2013
+ * \author Yaping Wang \date March 2013
+ * \author Dmitri Smirnov
  */
 class StIstScanClusterAlgo : public StIstIClusterAlgo
 {
 
-public:
-   virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHits, StIstClusterCollection &clusters );
-
 protected:
    enum {kIstScanClusterAlgo = 2};
 
-   ClassDef(StIstScanClusterAlgo, 0);
+   virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHits, StIstClusterCollection &clusters );
 };
 
 #endif
@@ -41,6 +38,9 @@ protected:
 /***************************************************************************
 *
 * $Log: StIstScanClusterAlgo.h,v $
+* Revision 1.11  2014/09/17 20:36:20  smirnovd
+* Simplified public interface by reducing the number of unnecessarily required parameters
+*
 * Revision 1.10  2014/09/17 20:33:32  smirnovd
 * Squashed commit of the following:
 *

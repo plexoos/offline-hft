@@ -220,19 +220,18 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
 
    for (int sensorIdx = 0; sensorIdx < kIstNumSensorsPerLadder; sensorIdx++) {
       for (int columnIdx = 0; columnIdx < kIstNumColumnsPerSensor; columnIdx++) {
-         if (clustersVec[sensorIdx][columnIdx].size() > 0) {
-            for (clusterIt = clustersVec[sensorIdx][columnIdx].begin(); clusterIt != clustersVec[sensorIdx][columnIdx].end(); ++clusterIt)
-               clusters.getClusterVec().push_back(*clusterIt);
+         if (clustersVec[sensorIdx][columnIdx].size() <= 0) continue;
 
-            rawHitsVec[sensorIdx][columnIdx].clear();
-            clustersVec[sensorIdx][columnIdx].clear();
-         }
+         for (clusterIt = clustersVec[sensorIdx][columnIdx].begin(); clusterIt != clustersVec[sensorIdx][columnIdx].end(); ++clusterIt)
+            clusters.getClusterVec().push_back(*clusterIt);
+
+         rawHitsVec[sensorIdx][columnIdx].clear();
+         clustersVec[sensorIdx][columnIdx].clear();
       }
    }
 
    return kStOk;
 };
-ClassImp(StIstScanClusterAlgo);
 
 
 /***************************************************************************
