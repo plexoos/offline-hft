@@ -11,7 +11,7 @@ class StIstCollection;
 
 
 /**
- * Abstract interface class for clustering algorithm implementation.
+ * Abstract interface for concrete implementations of clustering algorithms.
  *
  * \author Yaping Wang
  * \date March 2013

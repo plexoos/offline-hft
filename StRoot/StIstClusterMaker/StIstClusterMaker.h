@@ -10,8 +10,9 @@ class StIstCollection;
 
 
 /**
- * Maker to build IST clusters by calling user provided cluster splitting
- * algorithms.
+ * Maker to build clusters from raw IST hits. By default we use clustering
+ * algorithm implemented in StIstClusterMaker/StIstScanClusterAlgo. Other
+ * concrete implementations of can be provided by the user.
  *
  * \author Yaping Wang
  * \date March 2013

@@ -16,13 +16,20 @@ class StIstClusterCollection;
 
 
 /**
-* Description:
-* 1) Reads all raw hits per ladder (six sensors) and groups into vectors
-* (each vector is corresponding to a sensor column).
-* 2) Does clustering in individual column.
-* 3) Does clustering in neighboring columns.
-* 4) Fill hit collections.
-*/
+ * Concrete implementation of a simple algorithm for clustering of the raw hits
+ * registered by the 2D IST sensors. The clustering is done sequentially--first
+ * in columns and then the column-wise proto-clusters are grouped in neighboring
+ * columns.
+ *
+ * 1) Reads all raw hits per ladder (six sensors) and groups into vectors
+ * (each vector corresponds to a sensor column).
+ * 2) Does clustering in individual column.
+ * 3) Does clustering in neighboring columns.
+ * 4) Fill hit collections.
+ *
+ * \author Yaping Wang
+ * \date March 2013
+ */
 class StIstScanClusterAlgo : public StIstIClusterAlgo
 {
 

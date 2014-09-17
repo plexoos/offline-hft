@@ -18,14 +18,20 @@ class StIstClusterCollection;
 
 
 /**
-* Description:
-* 1) Reads all raw hits per ladder (six sensors) and writes into a vector.
-* 2) Starts from the 1st raw hit, and loops the vector to look for
-* neighboring raw hits (in a sensor area) and do clustering. The found
-* cluster will be filled into a ladder cluster collection.
-* 3) A case-by-case splitting algorithm can be enabled/disabled for the
-* found clusters (here only works for cases with cluster size <= 4).
-*/
+ * Concrete implementation of a simple algorithm for clustering of the raw hits
+ * registered by the 2D IST sensors. The clustering is done by searching in the
+ * 2D sensor plane indexed by row and column id's.
+ *
+ * 1) Reads all raw hits per ladder (six sensors) and writes into a vector.
+ * 2) Starts from the 1st raw hit, and loops over the vector looking for
+ * neighboring raw hits (in a sensor area) and do clustering. The found
+ * cluster will be filled into a ladder cluster collection.
+ * 3) A case-by-case splitting algorithm can be enabled/disabled for the
+ * found clusters (here only works for cases with cluster size <= 4).
+ *
+ * \author Yaping Wang
+ * \date March 2013
+ */
 class StIstSimpleClusterAlgo : public StIstIClusterAlgo
 {
 
