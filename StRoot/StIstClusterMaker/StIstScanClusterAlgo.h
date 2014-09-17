@@ -30,7 +30,6 @@ protected:
    enum {kIstScanClusterAlgo = 2};
 
    virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHits, StIstClusterCollection &clusters );
-   ClassDef(StIstScanClusterAlgo, 0);
 };
 
 #endif

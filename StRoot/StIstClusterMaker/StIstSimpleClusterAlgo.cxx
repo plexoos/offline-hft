@@ -823,7 +823,6 @@ Int_t StIstSimpleClusterAlgo::doClustering(const StIstCollection &istCollection,
 
    return kStOk;
 };
-ClassImp(StIstSimpleClusterAlgo);
 
 
 /***************************************************************************

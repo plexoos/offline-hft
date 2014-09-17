@@ -30,8 +30,6 @@ protected:
 
    Bool_t mSplitCluster;
    UChar_t mTimeBin;
-
-   ClassDef( StIstIClusterAlgo, 0 );
 };
 
 #endif

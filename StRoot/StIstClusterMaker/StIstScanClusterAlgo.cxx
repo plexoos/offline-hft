@@ -232,7 +232,6 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
 
    return kStOk;
 };
-ClassImp(StIstScanClusterAlgo);
 
 
 /***************************************************************************
