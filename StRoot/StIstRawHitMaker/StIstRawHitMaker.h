@@ -51,7 +51,8 @@ public:
    }
 
 protected:
-   Bool_t mIsCaliMode, mDoCmnCorrection;
+   Bool_t mIsCaliMode;
+   Bool_t mDoCmnCorrection;
    //control paramters
    Float_t mHitCut, mCmnCut, mChanMinRmsNoiseLevel, mChanMaxRmsNoiseLevel, mApvMaxCmNoiseLevel;
    UChar_t mALLdata, mADCdata, mZSdata, mDefaultTimeBin, mCurrentTimeBinNum;

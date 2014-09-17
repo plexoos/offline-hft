@@ -89,12 +89,17 @@ Int_t StIstClusterMaker::Make()
       }
    }
 
-   LOG_DEBUG << "End of ist-clust-maker, print all raw hits & clusters: " << endm;
-   LOG_DEBUG << "Total raw hits=" << mIstCollectionPtr->getNumRawHits() << ", total Clusters=" <<  mIstCollectionPtr->getNumClusters() << endm;
+   LOG_DEBUG << "End of StIstClusterMaker, print all raw hits & clusters: " << endm
+             << "Total raw hits=" << mIstCollectionPtr->getNumRawHits()
+             << ", total Clusters=" <<  mIstCollectionPtr->getNumClusters() << endm;
 
    if (Debug() > 2) {
-      for (unsigned char iLadder = 0; iLadder < kIstNumLadders; iLadder++) {
-         LOG_DEBUG << "Content: iLadder=" << (short) iLadder + 1 << " # of : raw hits=" << mIstCollectionPtr->getNumRawHits(iLadder) << "  clusters=" << mIstCollectionPtr->getNumClusters( iLadder) << endm;
+      for (unsigned char iLadder = 0; iLadder < kIstNumLadders; iLadder++)
+      {
+         LOG_DEBUG << "Content: iLadder=" << (short) iLadder + 1
+                   << " # of : raw hits=" << mIstCollectionPtr->getNumRawHits(iLadder)
+                   << "  clusters=" << mIstCollectionPtr->getNumClusters( iLadder) << endm;
+
          // ..... print all raw hits ....
          StIstRawHitCollection *rawHitPtr = mIstCollectionPtr->getRawHitCollection(iLadder);
          size_t nTimeBins = mIstCollectionPtr->getNumTimeBins();
@@ -107,8 +112,7 @@ Int_t StIstClusterMaker::Make()
    }
 
    return ierr;
-
-};
+}
 
 void StIstClusterMaker::setClusterAlgo(StIstIClusterAlgo *algo)
 {

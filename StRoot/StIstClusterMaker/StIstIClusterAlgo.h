@@ -4,6 +4,7 @@
 #define StIstIClusterAlgo_hh
 
 #include "Stypes.h"
+
 class StIstRawHitCollection;
 class StIstClusterCollection;
 class StIstCollection;
@@ -18,7 +19,7 @@ class StIstCollection;
 class StIstIClusterAlgo
 {
 public:
-   virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &, StIstClusterCollection & ) = 0;
+   virtual Int_t doClustering(const StIstCollection &, StIstRawHitCollection &, StIstClusterCollection &) = 0;
 
    virtual ~StIstIClusterAlgo() = 0;
 
@@ -36,6 +37,7 @@ private:
 
 inline void StIstIClusterAlgo::setSplitFlag( bool splitFlag )      { mSplitCluster = splitFlag; };
 inline void StIstIClusterAlgo::setUsedTimeBin(unsigned char tb)    { mTimeBin = tb; };
+
 #endif
 
 

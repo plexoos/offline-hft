@@ -41,8 +41,7 @@ Int_t StIstSimpleClusterAlgo::splitCluster(int cSize, int clusterSizeList[], StI
    unsigned char ladder = 0, sensor = 0;
    float meanRow = 0, meanColumn = 0;
    float totCharge = 0., totChargeErr = 0.;
-   unsigned char clusterSize = 0;
-   unsigned char clusterSizeRPhi = 0;
+   unsigned char clusterSize = 0; unsigned char clusterSizeRPhi = 0;
    unsigned char clusterSizeZ = 0;
    unsigned char clusterType = kIstSimpleClusterAlgo;
 

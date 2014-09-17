@@ -80,10 +80,13 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
    //do clustering
    int clusterLabel = 0;
 
-   for (int sensorIdx = 0; sensorIdx < kIstNumSensorsPerLadder; sensorIdx++) {
+   for (int sensorIdx = 0; sensorIdx < kIstNumSensorsPerLadder; sensorIdx++)
+   {
       //step 1: do clustering for each column
-      for (int columnIdx = 0; columnIdx < kIstNumColumnsPerSensor; columnIdx++) {
-         while ( !rawHitsVec[sensorIdx][columnIdx].empty() ) {
+      for (int columnIdx = 0; columnIdx < kIstNumColumnsPerSensor; columnIdx++)
+      {
+         while ( !rawHitsVec[sensorIdx][columnIdx].empty() )
+         {
             rawHitTemp 	     = rawHitsVec[sensorIdx][columnIdx].back();
             rawHitsVec[sensorIdx][columnIdx].pop_back();
             rawHitsToMerge.push_back(rawHitTemp);
@@ -108,7 +111,8 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
 
                      if ( (rawHitTemp->getRow() == rawHitNext->getRow() + 1) &&
                            (rawHitTemp->getCharge(rawHitTemp->getMaxTimeBin()) < (*rawHitsToMergePtr)->getCharge((*rawHitsToMergePtr)->getMaxTimeBin())) &&
-                           (rawHitTemp->getCharge(rawHitTemp->getMaxTimeBin()) < rawHitNext->getCharge(rawHitNext->getMaxTimeBin())) ) {
+                           (rawHitTemp->getCharge(rawHitTemp->getMaxTimeBin()) < rawHitNext->getCharge(rawHitNext->getMaxTimeBin())) )
+                     {
                         float weightBack = rawHitNext->getCharge(rawHitNext->getMaxTimeBin()) / ((*rawHitsToMergePtr)->getCharge((*rawHitsToMergePtr)->getMaxTimeBin()) + rawHitNext->getCharge(rawHitNext->getMaxTimeBin()));
 
                         for (int iTB = 0; iTB < nTimeBins; iTB++) {
@@ -133,10 +137,10 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
             //used time bin index (raw hits with maximum ADC holds the time-bin priority)
             maxTb       = rawHitMaxAdcTemp->getMaxTimeBin();
 
-            if (maxTb < 0 || maxTb >= nTimeBins)               	maxTb   = rawHitMaxAdcTemp->getDefaultTimeBin();
+            if (maxTb < 0 || maxTb >= nTimeBins)         maxTb  = rawHitMaxAdcTemp->getDefaultTimeBin();
 
-            if (mTimeBin >= 0 && mTimeBin < nTimeBins)       		usedTb  = mTimeBin;
-            else                                                usedTb  = maxTb;
+            if (mTimeBin >= 0 && mTimeBin < nTimeBins)   usedTb = mTimeBin;
+            else                                         usedTb = maxTb;
 
             ladder      	= rawHitMaxAdcTemp->getLadder();
             sensor      	= rawHitMaxAdcTemp->getSensor(); // = sensorIdx + 1
@@ -196,13 +200,13 @@ Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, S
                   float rowDistance = (*clusterIt1)->getMeanRow() - (*clusterIt2)->getMeanRow();
 
                   if (TMath::Abs(rowDistance) < 0.5) { //here 0.5 means the distance between two clusters' weighted centers in row direction smaller than 0.5
-                     totCharge = (*clusterIt1)->getTotCharge() + (*clusterIt2)->getTotCharge();
-                     totChargeErr = sqrt(((*clusterIt1)->getTotChargeErr() * (*clusterIt1)->getTotChargeErr() * (*clusterIt1)->getNRawHits() + (*clusterIt2)->getTotChargeErr() * (*clusterIt2)->getTotChargeErr() * (*clusterIt2)->getNRawHits()) / ((*clusterIt1)->getNRawHits() + (*clusterIt2)->getNRawHits()));
-                     clusterSize = (*clusterIt1)->getNRawHits() + (*clusterIt2)->getNRawHits();
+                     totCharge       = (*clusterIt1)->getTotCharge() + (*clusterIt2)->getTotCharge();
+                     totChargeErr    = sqrt(((*clusterIt1)->getTotChargeErr() * (*clusterIt1)->getTotChargeErr() * (*clusterIt1)->getNRawHits() + (*clusterIt2)->getTotChargeErr() * (*clusterIt2)->getTotChargeErr() * (*clusterIt2)->getNRawHits()) / ((*clusterIt1)->getNRawHits() + (*clusterIt2)->getNRawHits()));
+                     clusterSize     = (*clusterIt1)->getNRawHits() + (*clusterIt2)->getNRawHits();
                      clusterSizeRPhi = (*clusterIt1)->getNRawHitsRPhi() + (*clusterIt2)->getNRawHitsRPhi() - 1;
-                     clusterSizeZ = (*clusterIt1)->getNRawHitsZ() + (*clusterIt2)->getNRawHitsZ();
-                     meanRow = (*clusterIt1)->getMeanRow() * (*clusterIt1)->getTotCharge() / totCharge + (*clusterIt2)->getMeanRow() * (*clusterIt2)->getTotCharge() / totCharge;
-                     meanColumn = (*clusterIt1)->getMeanColumn() * (*clusterIt1)->getTotCharge() / totCharge + (*clusterIt2)->getMeanColumn() * (*clusterIt2)->getTotCharge() / totCharge;
+                     clusterSizeZ    = (*clusterIt1)->getNRawHitsZ() + (*clusterIt2)->getNRawHitsZ();
+                     meanRow         = (*clusterIt1)->getMeanRow() * (*clusterIt1)->getTotCharge() / totCharge + (*clusterIt2)->getMeanRow() * (*clusterIt2)->getTotCharge() / totCharge;
+                     meanColumn      = (*clusterIt1)->getMeanColumn() * (*clusterIt1)->getTotCharge() / totCharge + (*clusterIt2)->getMeanColumn() * (*clusterIt2)->getTotCharge() / totCharge;
 
                      (*clusterIt2)->setMeanRow(meanRow);
                      (*clusterIt2)->setMeanColumn(meanColumn);
