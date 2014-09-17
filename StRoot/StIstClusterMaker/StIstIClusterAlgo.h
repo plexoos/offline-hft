@@ -1,5 +1,3 @@
-/* $Id: StIstIClusterAlgo.h,v 1.9 2014/09/08 19:29:40 smirnovd Exp $ */
-
 #ifndef StIstIClusterAlgo_hh
 #define StIstIClusterAlgo_hh
 

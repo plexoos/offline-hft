@@ -1,10 +1,3 @@
-/***************************************************************************
-*
-* $Id: StIstScanClusterAlgo.h,v 1.9 2014/09/07 13:54:45 ypwang Exp $
-*
-* Author: Yaping Wang, October 2013
-***************************************************************************/
-
 #ifndef StIstScanClusterAlgo_hh
 #define StIstScanClusterAlgo_hh
 

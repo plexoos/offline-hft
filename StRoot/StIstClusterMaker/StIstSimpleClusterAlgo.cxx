@@ -1,13 +1,3 @@
-/***************************************************************************
-*
-* $Id: StIstSimpleClusterAlgo.cxx,v 1.10 2014/09/07 13:54:45 ypwang Exp $
-*
-* Author: Yaping Wang, March 2013
-****************************************************************************
-* Description:
-* See header file.
-***************************************************************************/
-
 #include "StRoot/StEvent/StEvent.h"
 #include "StMessMgr.h"
 #include "StRoot/StIstClusterMaker/StIstSimpleClusterAlgo.h"

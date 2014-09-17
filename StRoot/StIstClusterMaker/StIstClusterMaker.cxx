@@ -1,13 +1,3 @@
-/***************************************************************************
-*
-* $Id: StIstClusterMaker.cxx,v 1.24 2014/09/09 15:50:09 smirnovd Exp $
-*
-* Author: Yaping Wang, March 2013
-****************************************************************************
-* Description:
-* See header file.
-***************************************************************************/
-
 #include "StIstClusterMaker.h"
 #include "StEvent.h"
 #include "StEvent/StEnumerations.h"

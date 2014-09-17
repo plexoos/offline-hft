@@ -1,5 +1,3 @@
-/* $Id: StIstClusterMaker.h,v 1.12 2014/09/07 11:31:29 ypwang Exp $ */
-
 #ifndef StIstClusterMaker_hh
 #define StIstClusterMaker_hh
 

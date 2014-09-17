@@ -1,13 +1,3 @@
-/***************************************************************************
-*
-* $Id: StIstScanClusterAlgo.cxx,v 1.10 2014/09/09 07:34:07 ypwang Exp $
-*
-* Author: Yaping Wang, October 2013
-****************************************************************************
-* Description:
-* See header file.
-***************************************************************************/
-
 #include "StEvent.h"
 #include "StEvent/StEnumerations.h"
 #include "StMessMgr.h"

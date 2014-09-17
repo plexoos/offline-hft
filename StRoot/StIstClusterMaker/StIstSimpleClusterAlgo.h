@@ -1,10 +1,3 @@
-/***************************************************************************
-*
-* $Id: StIstSimpleClusterAlgo.h,v 1.12 2014/09/07 13:54:45 ypwang Exp $
-*
-* Author: Yaping Wang, March 2013
-***************************************************************************/
-
 #ifndef StIstSimpleClusterAlgo_hh
 #define StIstSimpleClusterAlgo_hh
 
