@@ -10,7 +10,7 @@
 #include "StRoot/StIstClusterMaker/StIstIClusterAlgo.h"
 #include "StRoot/StIstClusterMaker/StIstScanClusterAlgo.h"
 
-StIstClusterMaker::StIstClusterMaker( const char *name ) : StMaker(name), mIstCollectionPtr(0), mClusterAlgoPtr(0), mTimeBin(-1), mSplitCluster(1)
+StIstClusterMaker::StIstClusterMaker( const char *name ) : StMaker(name), mIstCollectionPtr(0), mClusterAlgoPtr(0), mTimeBin(-1), mSplitCluster(true)
 {
    /* nothing to do */
 };

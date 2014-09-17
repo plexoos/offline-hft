@@ -38,7 +38,6 @@ protected:
    UChar_t mTimeBin;     ///< Time bin to be used
    Bool_t mSplitCluster; ///< Flag to split clusters
 
-private:
    ClassDef(StIstClusterMaker, 0);
 };
 

@@ -29,7 +29,6 @@ class StIstSimpleClusterAlgo : public StIstIClusterAlgo
 {
 
 public:
-   StIstSimpleClusterAlgo();
    virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHits, StIstClusterCollection &clusters );
 
 protected:
@@ -38,7 +37,6 @@ protected:
    Int_t doSplitting(StIstClusterCollection &clusters, unsigned char numTimeBins);
    Int_t splitCluster(int cSize, int clusterSizeList[], StIstRawHit *rawHitPtr[], StIstCluster *clusterIt, StIstClusterCollection &clusters, unsigned char numTimeBins);
 
-private:
    ClassDef(StIstSimpleClusterAlgo, 0);
 };
 

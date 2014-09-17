@@ -27,13 +27,11 @@ class StIstScanClusterAlgo : public StIstIClusterAlgo
 {
 
 public:
-   StIstScanClusterAlgo();
    virtual Int_t doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHits, StIstClusterCollection &clusters );
 
 protected:
    enum {kIstScanClusterAlgo = 2};
 
-private:
    ClassDef(StIstScanClusterAlgo, 0);
 };
 

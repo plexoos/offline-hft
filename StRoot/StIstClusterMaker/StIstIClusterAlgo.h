@@ -21,20 +21,15 @@ public:
 
    virtual ~StIstIClusterAlgo() = 0;
 
-   void setUsedTimeBin(unsigned char tb = -1);
-   void setSplitFlag( bool splitFlag = 1);
+   void setUsedTimeBin(unsigned char tb = -1) { mTimeBin = tb; }
+   void setSplitFlag( bool splitFlag = true)  { mSplitCluster = splitFlag; }
 
 protected:
    Bool_t mSplitCluster;
    UChar_t mTimeBin;
 
-private:
-
    ClassDef( StIstIClusterAlgo, 0 );
 };
-
-inline void StIstIClusterAlgo::setSplitFlag( bool splitFlag )      { mSplitCluster = splitFlag; };
-inline void StIstIClusterAlgo::setUsedTimeBin(unsigned char tb)    { mTimeBin = tb; };
 
 #endif
 

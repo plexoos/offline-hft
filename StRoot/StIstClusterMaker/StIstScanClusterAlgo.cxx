@@ -15,10 +15,6 @@
 #include <vector>
 #include <algorithm>
 
-StIstScanClusterAlgo::StIstScanClusterAlgo()
-{
-   //nothing to do....
-};
 
 Int_t StIstScanClusterAlgo::doClustering(const StIstCollection &istCollection, StIstRawHitCollection &rawHitsOriginal, StIstClusterCollection &clusters )
 {

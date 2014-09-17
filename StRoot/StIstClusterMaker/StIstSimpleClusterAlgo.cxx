@@ -13,10 +13,6 @@
 #include <iterator>
 #include <vector>
 
-StIstSimpleClusterAlgo::StIstSimpleClusterAlgo()
-{
-   //nothing else to do....
-};
 
 Int_t StIstSimpleClusterAlgo::splitCluster(int cSize, int clusterSizeList[], StIstRawHit *rawHitPtr[], StIstCluster *clusterIt, StIstClusterCollection &clusters, unsigned char numTimeBins)
 {
