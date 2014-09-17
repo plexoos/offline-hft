@@ -11,8 +11,8 @@ class StIstClusterCollection;
 /**
  * Abstract interface for concrete implementations of clustering algorithms.
  *
- * \author Yaping Wang
- * \date March 2013
+ * \author Yaping Wang \date March 2013
+ * \author Dmitri Smirnov
  */
 class StIstIClusterAlgo
 {

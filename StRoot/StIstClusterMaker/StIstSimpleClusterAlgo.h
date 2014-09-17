@@ -22,8 +22,8 @@ class StIstClusterCollection;
  * 3) A case-by-case splitting algorithm can be enabled/disabled for the
  * found clusters (here only works for cases with cluster size <= 4).
  *
- * \author Yaping Wang
- * \date March 2013
+ * \author Yaping Wang \date March 2013
+ * \author Dmitri Smirnov
  */
 class StIstSimpleClusterAlgo : public StIstIClusterAlgo
 {

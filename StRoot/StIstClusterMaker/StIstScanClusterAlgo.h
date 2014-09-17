@@ -20,8 +20,8 @@ class StIstClusterCollection;
  * 3) Does clustering in neighboring columns.
  * 4) Fill hit collections.
  *
- * \author Yaping Wang
- * \date March 2013
+ * \author Yaping Wang \date March 2013
+ * \author Dmitri Smirnov
  */
 class StIstScanClusterAlgo : public StIstIClusterAlgo
 {
