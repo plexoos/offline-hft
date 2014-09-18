@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstFastSimMaker.cxx,v 1.6 2014/08/06 18:56:52 ypwang Exp $
 *
 * Author: Yaping Wang, August 2012
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstFastSimMaker.cxx,v $
 * Revision 1.6  2014/08/06 18:56:52  ypwang
 * minor update due to coding style update of the StIstDb method
 *

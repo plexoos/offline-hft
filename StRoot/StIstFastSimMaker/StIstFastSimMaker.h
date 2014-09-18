@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstFastSimMaker.h,v 1.4 2014/08/05 03:28:42 ypwang Exp $
 *
 * Author: Yaping Wang, August 2012
 ****************************************************************************
@@ -8,7 +8,7 @@
 * Fast simulation maker for IST.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstFastSimMaker.h,v $
 * Revision 1.4  2014/08/05 03:28:42  ypwang
 * buildIdealGeom() added to switch between ideal VMC geometry or DB geometry, Db geometry was built by default
 *
@@ -58,7 +58,7 @@ class StIstFastSimMaker : public StMaker {
 
   virtual const char *GetCVS() const
   {
-    static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; 
+    static const char cvs[]="Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.4 2014/08/05 03:28:42 ypwang Exp $ built "__DATE__" "__TIME__ ; 
     return cvs;
   }
 

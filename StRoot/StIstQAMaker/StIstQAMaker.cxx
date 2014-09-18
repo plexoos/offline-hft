@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstQAMaker.cxx,v 1.14 2014/04/15 06:46:59 ypwang Exp $
 *
 * Author: Yaping Wang, October 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstQAMaker.cxx,v $
 * Revision 1.14  2014/04/15 06:46:59  ypwang
 * updates for collections clear due to Clear() function removed from StIstCollection
 *

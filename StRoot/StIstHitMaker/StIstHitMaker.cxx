@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstHitMaker.cxx,v 1.16 2014/08/14 00:49:10 smirnovd Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstHitMaker.cxx,v $
 * Revision 1.16  2014/08/14 00:49:10  smirnovd
 * StIstHitMaker: Changed the logic in Make(). Don't create a new StEvent if it is not found in the chain, issue an error instead
 *

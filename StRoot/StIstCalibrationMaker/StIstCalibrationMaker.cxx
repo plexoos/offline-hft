@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstCalibrationMaker.cxx,v 1.18 2014/08/06 18:56:52 ypwang Exp $
 *
 * Author: Yaping Wang, August 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * See header file.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstCalibrationMaker.cxx,v $
 * Revision 1.18  2014/08/06 18:56:52  ypwang
 * minor update due to coding style update of the StIstDb method
 *

@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstCalibrationMaker.h,v 1.8 2014/07/29 20:13:30 ypwang Exp $
 *
 * Author: Yaping Wang, August 2013
 ****************************************************************************
@@ -9,7 +9,7 @@
 * and produce two data files and several QA plots.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstCalibrationMaker.h,v $
 * Revision 1.8  2014/07/29 20:13:30  ypwang
 * update the IST DB obtain method
 *
@@ -138,7 +138,7 @@ inline void StIstCalibrationMaker::setRunHist(bool flag)                       {
 inline void StIstCalibrationMaker::setPedCutFlag(bool flag)			{ mDoPedCut = flag; };
 inline void StIstCalibrationMaker::setPedCut(float pedCut)			{ mPedCut = pedCut; };
 inline const char *StIstCalibrationMaker::GetCVS() const {
-   static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
+   static const char cvs[] = "Tag $Name:  $ $Id: StIstCalibrationMaker.h,v 1.8 2014/07/29 20:13:30 ypwang Exp $ built "__DATE__" "__TIME__ ;
    return cvs;
 }
 #endif

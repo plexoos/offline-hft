@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id$
+ * $Id: StSstConstant.h,v 1.3 2014/06/05 14:55:23 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -14,7 +14,7 @@
  *
  ***************************************************************************
  *
- * $Log$
+ * $Log: StSstConstant.h,v $
  * Revision 1.3  2014/06/05 14:55:23  zhoulong
  * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *

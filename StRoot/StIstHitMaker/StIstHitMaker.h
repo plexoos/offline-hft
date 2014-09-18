@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstHitMaker.h,v 1.7 2014/08/12 23:08:09 ypwang Exp $
 *
 * Author: Yaping Wang, March 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * Calculates hit global position, and writes IST hits to StIstHitCollection.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstHitMaker.h,v $
 * Revision 1.7  2014/08/12 23:08:09  ypwang
 * remove the cluster number cut per ladder, due to chip occupancy cut was added in raw hit maker which can do the bad column rejection
 *
@@ -45,7 +45,7 @@ class StIstHitMaker : public StMaker
   Int_t Make();
 
   virtual const char *GetCVS() const
-  {static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; return cvs;}
+  {static const char cvs[]="Tag $Name:  $ $Id: StIstHitMaker.h,v 1.7 2014/08/12 23:08:09 ypwang Exp $ built "__DATE__" "__TIME__ ; return cvs;}
 
  protected:
   THashList *listGeoMSensorOnGlobal;

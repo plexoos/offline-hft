@@ -6,7 +6,7 @@
  */
 /***************************************************************************
  *
- * $Id$
+ * $Id: StPxlMonMaker.h,v 1.18 2014/02/25 04:44:52 sss Exp $
  *
  * Author: Shusu Shi, May 2013
  ***************************************************************************
@@ -18,7 +18,7 @@
  *
  ***************************************************************************
  *
- * $Log$
+ * $Log: StPxlMonMaker.h,v $
  * Revision 1.18  2014/02/25 04:44:52  sss
  * *** empty log message ***
  *
@@ -70,7 +70,7 @@ public:
    Int_t  Make();                      // invoked for every event
    Int_t  Finish();                    // called once at the end
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name$ $Id$ built "__DATE__" "__TIME__ ;
+      static const char cvs[] = "Tag $Name:  $ $Id: StPxlMonMaker.h,v 1.18 2014/02/25 04:44:52 sss Exp $ built "__DATE__" "__TIME__ ;
       return cvs;
    }
 

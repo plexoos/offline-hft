@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id$
+ * $Id: StSstDaqMaker.cxx,v 1.4 2014/06/05 14:55:23 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -16,7 +16,7 @@
  *
  ***************************************************************************
  *
- * $Log$
+ * $Log: StSstDaqMaker.cxx,v $
  * Revision 1.4  2014/06/05 14:55:23  zhoulong
  * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *

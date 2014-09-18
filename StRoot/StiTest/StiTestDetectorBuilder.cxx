@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: StiTestDetectorBuilder.cxx,v 1.7 2014/04/23 21:25:13 smirnovd Exp $ */
 
 #include <stdio.h>
 #include <stdexcept>

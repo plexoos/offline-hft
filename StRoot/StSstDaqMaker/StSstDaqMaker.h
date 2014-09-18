@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id$
+ * $Id: StSstDaqMaker.h,v 1.4 2014/06/05 14:55:24 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -15,7 +15,7 @@
  *
  ***************************************************************************
  *
- * $Log$
+ * $Log: StSstDaqMaker.h,v $
  * Revision 1.4  2014/06/05 14:55:24  zhoulong
  * Added some code to compatible Thorsten's LC FPGA and correct readout channel shift in old LC FPGA
  *
@@ -60,7 +60,7 @@ class StSstDaqMaker : public StRTSBaseMaker {
   void FindLadderSide(int RDO,int channel,int &ladder,int &side);//use RDO no and channel no to grab ladder info and p-side or n-side info
   void FindStripNumber(int &strip);
   virtual const char *GetCVS() const {
-	  static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__; 
+	  static const char cvs[]="Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.4 2014/06/05 14:55:24 zhoulong Exp $ built "__DATE__" "__TIME__; 
 	  return cvs;
 	}
   

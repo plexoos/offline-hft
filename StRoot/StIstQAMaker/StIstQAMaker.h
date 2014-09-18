@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id$
+* $Id: StIstQAMaker.h,v 1.8 2014/03/18 02:19:37 ypwang Exp $
 *
 * Author: Yaping Wang, October 2013
 ****************************************************************************
@@ -8,7 +8,7 @@
 * Generate several histograms and trees for IST raw hits and hits.
 ****************************************************************************
 *
-* $Log$
+* $Log: StIstQAMaker.h,v $
 * Revision 1.8  2014/03/18 02:19:37  ypwang
 * add two 2D histogram sets for max ADC time bin vs APV/Group electronics ID
 *
@@ -58,7 +58,7 @@ public:
   Int_t  Make();                      		// invoked for every event
   Int_t  Finish();                    		// called once at the end
   virtual const char *GetCVS() const {
-    static const char cvs[]="Tag $Name$ $Id$ built "__DATE__" "__TIME__ ; 
+    static const char cvs[]="Tag $Name:  $ $Id: StIstQAMaker.h,v 1.8 2014/03/18 02:19:37 ypwang Exp $ built "__DATE__" "__TIME__ ; 
     return cvs;
   };
 
