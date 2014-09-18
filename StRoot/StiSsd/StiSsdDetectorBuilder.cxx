@@ -1,6 +1,6 @@
-// $Id$
+// $Id: StiSsdDetectorBuilder.cxx,v 1.2 2014/07/28 22:40:33 smirnovd Exp $
 // 
-// $Log$
+// $Log: StiSsdDetectorBuilder.cxx,v $
 // Revision 1.2  2014/07/28 22:40:33  smirnovd
 // StiSsXDetectorBuilder: Removed old debugging sti2root from the main branch
 //

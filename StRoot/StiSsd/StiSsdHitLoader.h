@@ -1,6 +1,6 @@
-// $Id$
+// $Id: StiSsdHitLoader.h,v 1.1 2014/07/25 15:21:10 bouchet Exp $
 // 
-// $Log$
+// $Log: StiSsdHitLoader.h,v $
 // Revision 1.1  2014/07/25 15:21:10  bouchet
 // update for y2014
 //

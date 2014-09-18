@@ -1,6 +1,6 @@
-// $Id$
+// $Id: StiSsdDetectorGroup.h,v 1.1 2014/07/25 15:21:09 bouchet Exp $
 // 
-// $Log$
+// $Log: StiSsdDetectorGroup.h,v $
 // Revision 1.1  2014/07/25 15:21:09  bouchet
 // update for y2014
 //
