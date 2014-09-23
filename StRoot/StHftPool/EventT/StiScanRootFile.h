@@ -11,9 +11,9 @@
 #include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
-#include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
+class StiScanPrgOptions;
 typedef Event EventG;
 
 typedef std::map<std::string, TDirectoryFile*>                   TDirMap;
@@ -38,10 +38,13 @@ public:
 
 private:
 
+   void FindAutoRange() const;
    void BookHists();
 
    TDirMap mDirs;   ///< A string-to-TDirectoryFile map for convenient access to enclosed directories
    StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
+
+   ClassDef(StiScanRootFile, 0)
 };
 
 #endif

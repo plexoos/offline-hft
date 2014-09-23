@@ -10,6 +10,10 @@
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
 #include "StHftPool/EventT/StiScanHistsByVolume.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
+
+
+ClassImp(StiScanRootFile)
 
 
 StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts) : TFile(), mDirs(),
@@ -23,7 +27,11 @@ StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, 
    TFile(fname, option, ftitle, compress), mDirs(),
    fPrgOptions(prgOpts)
 {
-   printf("Created ROOT file: %s\n", GetName());
+   Info("StiScanRootFile", "Created ROOT file: %s", GetName());
+
+   // Find ranges (\todo if requested by the user)
+   Info("StiScanRootFile", "Find auto range. First pass...");
+   FindAutoRange();
 
    BookHists();
 }
@@ -34,6 +42,74 @@ void StiScanRootFile::BookHists()
    mDirs["sti_vol"] = new StiScanHistsByVolume(fPrgOptions, "sti_vol", "sti_vol", "", this);
    mDirs["sti_trk"] = new StiScanHistContainer(fPrgOptions, "sti_trk", "sti_trk", "", this);
    mDirs["gea"]     = new StiScanHistContainer(fPrgOptions, "gea", "gea", "", this);
+}
+
+
+void StiScanRootFile::FindAutoRange() const
+{
+   const std::set<std::string> *volumeList = &fPrgOptions.GetVolumeList();
+
+   TChain *hftChain = fPrgOptions.GetHftChain();
+   EventT *eventT = new EventT();
+
+   hftChain->SetBranchAddress("e.", &eventT);
+   hftChain->SetBranchStatus("e.*", false);
+   hftChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
+
+   double nodeRMax = 0;
+   double nodeZMin = DBL_MAX;
+   double nodeZMax = -DBL_MAX;
+
+   TRandom myRandom;
+
+   int nTreeEvents = hftChain->GetEntries();
+
+   Info("FindAutoRange", "Found tree/chain with N entries: %d", nTreeEvents);
+
+   for (int iEvent = 1; iEvent <= nTreeEvents; iEvent++)
+   {
+      if ( nTreeEvents >= 10 && iEvent % int(nTreeEvents*0.1) == 0 )
+         Info("FindAutoRange", "Analyzing event %d", iEvent);
+
+      if (myRandom.Rndm() > fPrgOptions.GetSparsity()) continue;
+
+      hftChain->GetEntry(iEvent-1);
+
+      auto iTStiKTrack = eventT->fTStiKalmanTracks.begin();
+
+      for ( ; iTStiKTrack != eventT->fTStiKalmanTracks.end(); ++iTStiKTrack)
+      {
+         const TStiKalmanTrack &kalmTrack = *iTStiKTrack;
+
+         auto iTStiKTrackNode = kalmTrack.GetNodes().begin();
+
+         for ( ; iTStiKTrackNode != kalmTrack.GetNodes().end(); ++iTStiKTrackNode)
+         {
+            const TStiKalmanTrackNode &kalmNode = *iTStiKTrackNode;
+
+            if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
+
+            if (kalmNode.GetNodeMaterialDensity() <= 0) continue;
+
+            double node_z = kalmNode.GetPosition().Z();
+
+            if (node_z < nodeZMin) nodeZMin = node_z;
+            if (node_z > nodeZMax) nodeZMax = node_z;
+
+            // Find maximum radius
+            double node_r = (float) kalmNode.GetPosition().Perp();
+
+            if (node_r > nodeRMax) nodeRMax = node_r;
+         }
+      }
+   }
+
+   Info("FindAutoRange", "Updated nodeZMin, nodeZMax, nodeRMax: %f, %f, %f", nodeZMin, nodeZMax, nodeRMax);
+
+   fPrgOptions.SetHistZRange(nodeZMin, nodeZMax);
+   fPrgOptions.SetHistRMax(nodeRMax);
+
+   delete eventT;
 }
 
 

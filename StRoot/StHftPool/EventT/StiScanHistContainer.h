@@ -6,6 +6,7 @@
 #include <string>
 
 #include "TDirectoryFile.h"
+#include "TProfile2D.h"
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/EventT/StiScanPrgOptions.h"

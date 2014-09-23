@@ -142,7 +142,6 @@ void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::s
    for ( ; iTStiKTrack != eventT.fTStiKalmanTracks.end(); ++iTStiKTrack)
    {
       const TStiKalmanTrack &kalmTrack = *iTStiKTrack;
-
       FillHists(kalmTrack, volumeList);
    }
 }
@@ -165,6 +164,7 @@ void StiScanHistContainer::FillDerivedHists()
 
    TH1* h;
 
+   // Create a projection from hAllVolELossVsPhiVsR
    TProfile2D* prof2D = (TProfile2D*) mHs["hAllVolELossVsPhiVsR"];
 
    mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
@@ -180,12 +180,14 @@ void StiScanHistContainer::FillDerivedHists()
    Profile2D* hProf = (Profile2D*) mHs["hSelectVolELossVsPhiVsR"];
    hProf->Multiply(*hSelectVolNStepsVsPhiVsR);
 
+   // Create a projection from hSelectVolELossVsPhiVsR
    prof2D = (TProfile2D*) mHs["hSelectVolELossVsPhiVsR"];
 
    mHs["hSelectVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
    h->SetTitle(" ; #phi, rad; Energy Losses in Select Volumes, keV");
    h->SetOption("XY");
 
+   // Create a projection from hSelectVolRelRadLengthVsPhiVsR
    prof2D = (TProfile2D*) mHs["hSelectVolRelRadLengthVsPhiVsR"];
 
    mHs["hSelectVolRelRadLengthVsPhiVsR_px"] = h = prof2D->ProjectionX();
