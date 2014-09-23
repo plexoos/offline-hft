@@ -42,6 +42,8 @@ private:
 
    TDirMap mDirs;   ///< A string-to-TDirectoryFile map for convenient access to enclosed directories
    StiScanPrgOptions& fPrgOptions; ///< Command line arguments and options requested by the user
+
+   ClassDef(StiScanRootFile, 0)
 };
 
 #endif

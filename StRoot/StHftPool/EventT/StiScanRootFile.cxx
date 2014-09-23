@@ -12,6 +12,9 @@
 #include "StHftPool/EventT/StiScanHistsByVolume.h"
 
 
+ClassImp(StiScanRootFile)
+
+
 StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts) : TFile(), mDirs(),
    fPrgOptions(prgOpts)
 {
