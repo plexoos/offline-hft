@@ -37,6 +37,8 @@ public:
    double GetHistZMax() const { return fHistZMax; }
    double GetHistRMin() const { return fHistRMin; }
    double GetHistRMax() const { return fHistRMax; }
+   void SetHistZRange(double minZ, double maxZ) { fHistZMin = minZ; fHistZMax = maxZ; }
+   void SetHistRMax(double maxR) { fHistRMax = maxR; }
 
 protected:
 
