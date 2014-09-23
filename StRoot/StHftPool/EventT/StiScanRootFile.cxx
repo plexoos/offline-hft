@@ -27,7 +27,7 @@ StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, 
    TFile(fname, option, ftitle, compress), mDirs(),
    fPrgOptions(prgOpts)
 {
-   printf("Created ROOT file: %s\n", GetName());
+   Info("StiScanRootFile", "Created ROOT file: %s", GetName());
 
    // Find ranges (\todo if requested by the user)
    Info("StiScanRootFile", "Find auto range. First pass...");

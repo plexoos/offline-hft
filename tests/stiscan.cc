@@ -79,19 +79,22 @@ void loop_hftree(StiScanPrgOptions &poProc)
    int nTreeEvents = hftChain->GetEntries();
    int nProcEvents = 0;
 
-   Info("loop_hftree", "Found tree/chain with nTreeEvents: %d", nTreeEvents);
+   Info("loop_hftree", "Found tree/chain with N entries: %d", nTreeEvents);
 
    EventT *eventT = new EventT();
    hftChain->SetBranchAddress("e.", &eventT);
    hftChain->SetBranchStatus("e.*", false);
    hftChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
 
+   // Prepare resources for geant event
    EventG *eventG = new EventG();
 
    if (poProc.DoGeantStepTree())
       geantStepChain->SetBranchAddress("Event", &eventG);
 
    TRandom myRandom;
+
+   Info("loop_hftree", "Second pass...");
 
    for (int iEvent = 1; iEvent <= nTreeEvents; iEvent++, nProcEvents++)
    {
