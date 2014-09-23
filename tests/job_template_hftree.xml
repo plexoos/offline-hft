@@ -48,14 +48,13 @@
 
    <output fromScratch="*.hftree.root" toURL="file:&OUT_DIR;/"/>
 
-   <stdout URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;.log"/>
-   <stderr URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;.log"/>
+   <stdout URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;_hft_tree.log"/>
+   <stderr URL="file:&LOG_DIR;/&JOB_RUN_BASE_NAME;_hft_tree.log"/>
 
    <SandBox installer="ZIP">
-       <Package name="offline_hft">
-          <File>file:./.sl64_gcc447</File>
-          <File>file:./offline</File>
+       <Package name="hft-tree">
           <File>file:./StRoot</File>
+          <File>file:./.&STAR_HOST_SYS;</File>
        </Package>
    </SandBox>
 

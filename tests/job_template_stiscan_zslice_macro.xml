@@ -49,8 +49,8 @@
 
    <SandBox installer="ZIP">
        <Package name="stiscan_zslice">
-          <File>file:./offline</File>
           <File>file:./StRoot/StarGenerator</File>
+          <File>file:./.&STAR_HOST_SYS;</File>
        </Package>
    </SandBox>
 
