@@ -38,6 +38,7 @@ public:
 
 private:
 
+   void FindAutoRange() const;
    void BookHists();
 
    TDirMap mDirs;   ///< A string-to-TDirectoryFile map for convenient access to enclosed directories
