@@ -69,7 +69,6 @@ void StiScanHistContainer::BookHists()
    nRBins = nRBins <  50 ?  50 : nRBins;
 
    nZBins = nZBins > 500 ? 500 : nZBins;
-   nZBins = nZBins <  50 ?  50 : nZBins;
 
    this->cd();
 
