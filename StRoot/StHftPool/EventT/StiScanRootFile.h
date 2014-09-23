@@ -11,9 +11,9 @@
 #include "StMaker.h"
 
 #include "StHftPool/EventT/EventT.h"
-#include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
+class StiScanPrgOptions;
 typedef Event EventG;
 
 typedef std::map<std::string, TDirectoryFile*>                   TDirMap;

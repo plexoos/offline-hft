@@ -10,6 +10,7 @@
 
 #include "StHftPool/EventT/StiScanHistContainer.h"
 #include "StHftPool/EventT/StiScanHistsByVolume.h"
+#include "StHftPool/EventT/StiScanPrgOptions.h"
 
 
 ClassImp(StiScanRootFile)
