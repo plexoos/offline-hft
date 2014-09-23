@@ -40,11 +40,11 @@ protected:
    float       fNodeRadius;        ///< The nominal radius of the Sti volume associated with this node
    float       fNodeCenterRefAngle;   ///< Angle to the center of the Sti volume associated with this node
    float       fNodeMaterialDensity;  ///< Density of the material of this node/volume
-   float       fNodeRelRadLength;     ///< Relative radiation length
    float       fNodeTrackLength;     ///< Relative radiation length
+   float       fNodeRelRadLength;     ///< Relative radiation length
    std::string fVolumeName;           ///< Name of Sti volume
 
-   ClassDef(TStiKalmanTrackNode, 3)
+   ClassDef(TStiKalmanTrackNode, 4)
 };
 
 
