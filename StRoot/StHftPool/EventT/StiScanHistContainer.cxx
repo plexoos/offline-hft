@@ -86,21 +86,6 @@ void StiScanHistContainer::BookHists()
    mHs["hTotalELossVsZVsPhi"]   = h = new TProfile2D("hTotalELossVsZVsPhi", " ; z, cm; #phi, rad; Total Energy Losses, keV", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
    h->SetOption("colz");
 
-
-   // Histograms for all track nodes/volumes
-   mHs["hAllVolELossVsEtaVsPhi"] = h = new TProfile2D("hAllVolELossVsEtaVsPhi", " ; #eta; #phi, rad; Energy Losses in Select Volumes, keV", 50, -2, 2, 120, -M_PI, M_PI);
-   h->SetOption("colz");
-
-   mHs["hAllVolELossVsZVsPhi"]   = h = new TProfile2D("hAllVolELossVsZVsPhi", " ; z, cm; #phi, rad; Energy Losses in All Volumes, keV", nZBins, mNodeZMin, mNodeZMax, 120, -M_PI, M_PI);
-   h->SetOption("colz");
-
-   mHs["hAllVolELossVsZVsR"]     = h = new TProfile2D("hAllVolELossVsZVsR", " ; z, cm; r, cm; Energy Losses in All Volumes, keV", nZBins, mNodeZMin, mNodeZMax, nRBins, mNodeRMin, mNodeRMax);
-   h->SetOption("colz");
-
-   mHs["hAllVolELossVsPhiVsR"]   = h = new TProfile2D("hAllVolELossVsPhiVsR", " ; #phi, rad; r, cm; Energy Losses in All Volumes, keV", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
-   h->SetOption("colz");
-
-
    // Histograms for selected track nodes/volumes only
    hSelectVolNStepsVsPhiVsR_buf = new Profile2D("hSelectVolNStepsVsPhiVsR_buf", " ; #phi, rad; r, cm; Num. of Steps", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
 
@@ -161,13 +146,7 @@ void StiScanHistContainer::FillDerivedHists()
    this->cd();
 
    TH1* h;
-
-   // Create a projection from hAllVolELossVsPhiVsR
-   TProfile2D* prof2D = (TProfile2D*) mHs["hAllVolELossVsPhiVsR"];
-
-   mHs["hAllVolELossVsPhiVsR_px"]  = h = prof2D->ProjectionX();
-   h->SetTitle(" ; #phi, rad; Total Energy Losses in All Volumes, keV");
-   h->SetOption("XY");
+   TProfile2D* prof2D;
 
    // Create a projection from hSelectVolNStepsVsPhiVsR
    prof2D = (TProfile2D*) mHs["hSelectVolNStepsVsPhiVsR"];
@@ -217,11 +196,6 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
    {
       const TStiKalmanTrackNode &kalmNode = *iTStiKTrackNode;
 
-      ((TProfile2D*) mHs["hAllVolELossVsEtaVsPhi"])->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
-      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])  ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
-
       if (volumeList && volumeList->size() && !kalmNode.MatchedVolName(*volumeList) ) continue;
 
       if (kalmNode.GetNodeMaterialDensity() <= 0) continue;
@@ -253,9 +227,6 @@ void StiScanHistContainer::FillHists(const TrackG &trackG, const std::set<std::s
       double dEStep = stepG->dEstep * 1e6; // convert GeV to keV
 
       TVector3 step_pos(stepG->x, stepG->y, stepG->z);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  dEStep, 1);
-      ((TProfile2D*) mHs["hAllVolELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), dEStep, 1);
-      ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), dEStep, 1);
 
       if (volumeList && volumeList->size() && !stepG->MatchedVolName(*volumeList) ) continue;
 
@@ -311,13 +282,6 @@ void StiScanHistContainer::PrettifyHists()
 {
    mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
    ((TProfile2D*) mHs["hTotalELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-
-   ((TProfile2D*) mHs["hAllVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-
-   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hAllVolELossVsZVsR"])->GetYaxis()->SetRangeUser(floor(mNodeRMin)-0.5, ceil(mNodeRMax)-0.5);
-
-   ((TProfile2D*) mHs["hAllVolELossVsPhiVsR"])->GetYaxis()->SetRangeUser(floor(mNodeRMin)-0.5, ceil(mNodeRMax)-0.5);
 
    ((TProfile2D*) mHs["hSelectVolELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
 
