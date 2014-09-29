@@ -7,6 +7,7 @@
 
 #include "TDirectoryFile.h"
 #include "TProfile2D.h"
+#include "TProfile3D.h"
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/EventT/StiScanPrgOptions.h"
@@ -55,6 +56,8 @@ protected:
    double  mNodeZMax;
    float   mNodeRMin;
    float   mNodeRMax;
+
+   TProfile3D* hELossVsPhiVsRVsZ;
 
 private:
 

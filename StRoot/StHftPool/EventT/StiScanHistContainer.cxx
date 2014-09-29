@@ -13,7 +13,8 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirect
    fPrgOptions(prgOpts), mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30),
    hNStepsVsPhiVsR_buf(nullptr),
-   hNStepsVsPhiVsR(nullptr)
+   hNStepsVsPhiVsR(nullptr),
+   hELossVsPhiVsRVsZ(nullptr)
 {
    InitRange();
    BookHists();
@@ -26,7 +27,8 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const cha
    mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30),
    hNStepsVsPhiVsR_buf(nullptr),
-   hNStepsVsPhiVsR(nullptr)
+   hNStepsVsPhiVsR(nullptr),
+   hELossVsPhiVsRVsZ(nullptr)
 {
    InitRange();
    BookHists();
@@ -104,6 +106,8 @@ void StiScanHistContainer::BookHists()
 
    mHs["hDensityVsPhiVsR"] = h = new TProfile2D("hDensityVsPhiVsR", " ; #phi, rad; r, cm; Material Density, g/cm^{3}", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
+   hELossVsPhiVsRVsZ = new TProfile3D("hELossVsPhiVsRVsZ", " ; #phi, rad; r, cm; z, cm; Energy Losses in Select Volumes, keV", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax, nZBins, mNodeZMin, mNodeZMax);
+   mHs["hELossVsPhiVsRVsZ"] = hELossVsPhiVsRVsZ;
 
    mHs["hRelRadLengthVsPhiVsR"] = h = new TProfile2D("hRelRadLengthVsPhiVsR", " ; #phi, rad; r, cm; Rel. Radiation Length, %", 120, -M_PI, M_PI, nRBins, mNodeRMin, mNodeRMax);
    h->SetOption("colz");
@@ -199,6 +203,7 @@ void StiScanHistContainer::FillHists(const TStiKalmanTrack &kalmTrack, const std
       ((TProfile2D*) mHs["hELossVsZVsPhi"])  ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Phi(),  kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hELossVsZVsR"])    ->Fill(kalmNode.GetPosition().Z(),   kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
       ((TProfile2D*) mHs["hELossVsPhiVsR"])  ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetEnergyLosses(), 1);
+      hELossVsPhiVsRVsZ->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetPosition().Z(), kalmNode.GetEnergyLosses());
       ((TProfile2D*) mHs["hDensityVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetNodeMaterialDensity(), 1);
       ((TProfile2D*) mHs["hRelRadLengthVsPhiVsR"])->Fill(kalmNode.GetPosition().Phi(), kalmNode.GetPosition().Perp(), kalmNode.GetNodeRelRadLength(), 1);
    }
@@ -227,6 +232,7 @@ void StiScanHistContainer::FillHists(const TrackG &trackG, const std::set<std::s
       ((TProfile2D*) mHs["hELossVsZVsPhi"])->Fill(step_pos.Z(),   step_pos.Phi(),  dEStep, 1);
       ((TProfile2D*) mHs["hELossVsZVsR"])  ->Fill(step_pos.Z(),   step_pos.Perp(), dEStep, 1);
       ((TProfile2D*) mHs["hELossVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), dEStep, 1);
+      hELossVsPhiVsRVsZ->Fill(step_pos.Phi(), step_pos.Perp(), step_pos.Z(), dEStep);
       ((TProfile2D*) mHs["hDensityVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->dens, 1);
       ((TProfile2D*) mHs["hRelRadLengthVsPhiVsR"])->Fill(step_pos.Phi(), step_pos.Perp(), stepG->relRadLength, 1);
    }
