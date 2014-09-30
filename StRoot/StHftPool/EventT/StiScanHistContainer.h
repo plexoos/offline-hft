@@ -60,8 +60,8 @@ private:
 
    void InitRange();
 
-   Profile2D* hSelectVolNStepsVsPhiVsR_buf;
-   Profile2D* hSelectVolNStepsVsPhiVsR;
+   Profile2D* hNStepsVsPhiVsR_buf;
+   Profile2D* hNStepsVsPhiVsR;
 };
 
 #endif
