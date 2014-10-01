@@ -30,8 +30,10 @@ StiScanRootFile::StiScanRootFile(StiScanPrgOptions& prgOpts, const char *fname, 
    Info("StiScanRootFile", "Created ROOT file: %s", GetName());
 
    // Find ranges (\todo if requested by the user)
-   Info("StiScanRootFile", "Find auto range. First pass...");
-   FindAutoRange();
+   if (fPrgOptions.DoAutoHistRange()) {
+      Info("StiScanRootFile", "Find auto range. Loop over tree/chain...");
+      FindAutoRange();
+   }
 
    BookHists();
 }
