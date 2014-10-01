@@ -9,7 +9,8 @@
 #include "StHftPool/EventT/StiScanPrgOptions.h"
 
 
-StiScanPrgOptions::StiScanPrgOptions() : PrgOptionProcessor(), fDoGeantStepTree(false), fGeantStepChain(nullptr),
+StiScanPrgOptions::StiScanPrgOptions() : PrgOptionProcessor(), fDoGeantStepTree(false), fDoAutoHistRange(true),
+   fGeantStepChain(nullptr),
    fOutPrefix("./"),
    fHistZMin(0), fHistZMax(0),
    fHistRMin(0), fHistRMax(0)
@@ -19,7 +20,8 @@ StiScanPrgOptions::StiScanPrgOptions() : PrgOptionProcessor(), fDoGeantStepTree(
 
 
 StiScanPrgOptions::StiScanPrgOptions(int argc, char **argv, const std::string& hftTreeName, const std::string& geantStepTreeName) :
-   PrgOptionProcessor(argc, argv, hftTreeName), fDoGeantStepTree(false), fGeantStepChain(new TChain(geantStepTreeName.c_str(), "READ")),
+   PrgOptionProcessor(argc, argv, hftTreeName), fDoGeantStepTree(false), fDoAutoHistRange(true),
+   fGeantStepChain(new TChain(geantStepTreeName.c_str(), "READ")),
    fOutPrefix("./"),
    fHistZMin(0), fHistZMax(0),
    fHistRMin(0), fHistRMax(0)
@@ -56,6 +58,9 @@ void StiScanPrgOptions::VerifyOptions()
 
    if (fOptionsValues.count("geant-step-tree") )
       fDoGeantStepTree = true;
+
+   if (fHistZMin != fHistZMax || fHistRMin != fHistRMax)
+      fDoAutoHistRange = false;
 }
 
 
