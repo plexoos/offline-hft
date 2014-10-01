@@ -21,6 +21,7 @@ Profile2D::Profile2D(std::string name, std::string title, Int_t nbinsx, Double_t
    Int_t nbinsy, Double_t ylow, Double_t yup, std::string options) :
    TProfile2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup, options.c_str())
 {
+   SetOption(options.c_str());
 }
 
 

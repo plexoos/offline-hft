@@ -31,6 +31,7 @@ public:
    ~StiScanPrgOptions();
 
    bool  DoGeantStepTree() const { return fDoGeantStepTree; }
+   bool  DoAutoHistRange() const { return fDoAutoHistRange; }
    TChain* GetGeantStepChain() { return fGeantStepChain; }
    std::string GetOutPrefix() const { return fOutPrefix; }
    double GetHistZMin() const { return fHistZMin; }
@@ -46,6 +47,7 @@ protected:
    virtual void AddToInputChains(std::string hftTreeRootFileName);
 
    bool    fDoGeantStepTree; ///< A flag to process geant tree if set
+   bool    fDoAutoHistRange; ///< A flag to find optimal range for histogram axises automatically
    TChain *fGeantStepChain;
    std::string fOutPrefix;
    double  fHistZMin;
