@@ -37,7 +37,7 @@ do
    JOB_RUN_BASE_NAME=`basename $JOB_RUN_FILE_NAME .fz`
    echo
    echo "Submitting job for JOB_RUN_FILE_NAME =" $JOB_RUN_FILE_NAME \($JOB_RUN_BASE_NAME\)
-   star-submit-template -template $OFFLINE_HFT_DIR/offline-hft/tests/job_template_hftree.xml \
+   star-submit-template -template $OFFLINE_HFT_DIR/star-offline-hft/tests/job_template_hftree.xml \
       -entities INP_DIR=$INP_DIR,OUT_DIR=$OUT_DIR,CODE_DIR=$OFFLINE_HFT_DIR,JOB_RUN_FILE_NAME=$JOB_RUN_FILE_NAME,JOB_RUN_BASE_NAME=$JOB_RUN_BASE_NAME,STAR_VERSION=$STAR_VERSION,STAR_HOST_SYS=$STAR_HOST_SYS,BFC_OPTIONS=$BFC_OPTIONS,LOG_DIR=$OUT_DIR
    echo
 done
