@@ -42,17 +42,21 @@ How to compile HFT libraries from git repository
     git clone https://github.com/plexoos/star-soft.git
     cd star-soft
     git submodule init
-    git submodule update
+    git submodule update --remote
     ./install.sh ./
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 The `cons` builder will place the libraries in the local `./.slXX_gccXXX` directory.
 
-If desired one can switch to an experimental branch and recompile:
+If desired one can switch to an experimental branch and recompile. The commands
+are identical to the above except one need to checkout the `hft-dev` branch:
 
+    git clone https://github.com/plexoos/star-soft.git
     cd star-soft
+    git submodule init
     git checkout hft-dev
     git submodule update --remote
+    ./install.sh ./
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
 
 
