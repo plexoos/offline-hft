@@ -13,6 +13,7 @@
 #include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StHftPool/EventT/TStiKalmanTrack.h"
 #include "StHftPool/EventT/Profile2D.h"
+#include "StHftPool/EventT/Profile3D.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
 typedef Event EventG;
@@ -57,7 +58,8 @@ protected:
    float   mNodeRMin;
    float   mNodeRMax;
 
-   TProfile3D* hELossVsPhiVsRVsZ;
+   Profile3D* hELossVsPhiVsRVsZ;
+   Profile3D* hRelRadLengthVsPhiVsRVsZ;
 
 private:
 
