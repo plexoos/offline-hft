@@ -13,6 +13,7 @@
 #include "StHftPool/EventT/StiScanPrgOptions.h"
 #include "StHftPool/EventT/TStiKalmanTrack.h"
 #include "StHftPool/EventT/Profile2D.h"
+#include "StHftPool/EventT/Profile3D.h"
 #include "StarGenerator/STEP/AgUStep.h"
 
 typedef Event EventG;
@@ -29,7 +30,7 @@ class StiScanHistContainer : public TDirectoryFile
 public:
 
    StiScanHistContainer(StiScanPrgOptions& prgOpts);
-   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
+   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir = 0, bool doProjection=false, Option_t* option = "");
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
@@ -42,7 +43,6 @@ public:
    void SetRRange(float minR, float maxR) { mNodeRMin = minR; mNodeRMax = maxR; }
    float GetRMin() const { return mNodeRMin; }
    float GetRMax() const { return mNodeRMax; }
-   void PrettifyHists();
 
 protected:
 
@@ -56,8 +56,11 @@ protected:
    double  mNodeZMax;
    float   mNodeRMin;
    float   mNodeRMax;
+   /** If true will create integral projections of 2D profiles instead of creating 1D profiles with bin averages. */
+   bool    mDoProjection;
 
-   TProfile3D* hELossVsPhiVsRVsZ;
+   Profile3D* hELossVsPhiVsRVsZ;
+   Profile3D* hRelRadLengthVsPhiVsRVsZ;
 
 private:
 
