@@ -267,31 +267,43 @@ TProfile2D *Profile3D::Project3DProfile(Option_t *option) const
       case 4:
          // "xy"
          p2 = DoProjectProfile2D(name, title, GetXaxis(), GetYaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetXaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetYaxis()->GetTitle());
          break;
 
       case 5:
          // "yx"
          p2 = DoProjectProfile2D(name, title, GetYaxis(), GetXaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetYaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetXaxis()->GetTitle());
          break;
 
       case 6:
          // "xz"
          p2 = DoProjectProfile2D(name, title, GetXaxis(), GetZaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetXaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetZaxis()->GetTitle());
          break;
 
       case 7:
          // "zx"
          p2 = DoProjectProfile2D(name, title, GetZaxis(), GetXaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetZaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetXaxis()->GetTitle());
          break;
 
       case 8:
          // "yz"
          p2 = DoProjectProfile2D(name, title, GetYaxis(), GetZaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetYaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetZaxis()->GetTitle());
          break;
 
       case 9:
          // "zy"
          p2 = DoProjectProfile2D(name, title, GetZaxis(), GetYaxis(), originalRange, useUF, useOF);
+         p2->GetYaxis()->SetTitle(GetZaxis()->GetTitle());
+         p2->GetXaxis()->SetTitle(GetYaxis()->GetTitle());
          break;
 
    }
