@@ -30,7 +30,7 @@ class StiScanHistContainer : public TDirectoryFile
 public:
 
    StiScanHistContainer(StiScanPrgOptions& prgOpts);
-   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir = 0, Option_t* option = "");
+   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir = 0, bool doProjection=false, Option_t* option = "");
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);
@@ -57,6 +57,8 @@ protected:
    double  mNodeZMax;
    float   mNodeRMin;
    float   mNodeRMax;
+   /** If true will create integral projections of 2D profiles instead of creating 1D profiles with bin averages. */
+   bool    mDoProjection;
 
    Profile3D* hELossVsPhiVsRVsZ;
    Profile3D* hRelRadLengthVsPhiVsRVsZ;

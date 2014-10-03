@@ -12,6 +12,7 @@
 StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirectoryFile(),
    fPrgOptions(prgOpts), mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30),
+   mDoProjection(false),
    hELossVsPhiVsRVsZ(nullptr),
    hRelRadLengthVsPhiVsRVsZ(nullptr),
    hNStepsVsPhiVsR_buf(nullptr),
@@ -22,11 +23,12 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirect
 }
 
 
-StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir, Option_t* option) :
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir, bool doProjection, Option_t* option) :
    TDirectoryFile(name, name, option, motherDir),
    fPrgOptions(prgOpts),
    mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30),
+   mDoProjection(doProjection),
    hELossVsPhiVsRVsZ(nullptr),
    hRelRadLengthVsPhiVsRVsZ(nullptr),
    hNStepsVsPhiVsR_buf(nullptr),
@@ -159,27 +161,27 @@ void StiScanHistContainer::FillDerivedHists()
 
    mHs["hELossVsPhiVsRVsZ_pyx"] = profile2D = hELossVsPhiVsRVsZ->Project3DProfile("yx");
    profile2D->SetOption("colz");
-   mHs["hELossVsPhiVsRVsZ_pyx_px"] = profile2D->ProfileX();
+   mHs["hELossVsPhiVsRVsZ_pyx_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    mHs["hELossVsPhiVsRVsZ_pyz"] = profile2D = hELossVsPhiVsRVsZ->Project3DProfile("yz");
    profile2D->SetOption("colz");
-   mHs["hELossVsPhiVsRVsZ_pyz_px"] = profile2D->ProfileX();
+   mHs["hELossVsPhiVsRVsZ_pyz_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    mHs["hELossVsPhiVsRVsZ_pxz"] = profile2D = hELossVsPhiVsRVsZ->Project3DProfile("xz");
    profile2D->SetOption("colz");
-   mHs["hELossVsPhiVsRVsZ_pxz_px"] = profile2D->ProfileX();
+   mHs["hELossVsPhiVsRVsZ_pxz_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    mHs["hRelRadLengthVsPhiVsRVsZ_pyx"] = profile2D = hRelRadLengthVsPhiVsRVsZ->Project3DProfile("yx");
    profile2D->SetOption("colz");
-   mHs["hRelRadLengthVsPhiVsRVsZ_pyx_px"] = profile2D->ProfileX();
+   mHs["hRelRadLengthVsPhiVsRVsZ_pyx_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    mHs["hRelRadLengthVsPhiVsRVsZ_pyz"] = profile2D = hRelRadLengthVsPhiVsRVsZ->Project3DProfile("yz");
    profile2D->SetOption("colz");
-   mHs["hRelRadLengthVsPhiVsRVsZ_pyz_px"] = profile2D->ProfileX();
+   mHs["hRelRadLengthVsPhiVsRVsZ_pyz_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    mHs["hRelRadLengthVsPhiVsRVsZ_pxz"] = profile2D = hRelRadLengthVsPhiVsRVsZ->Project3DProfile("xz");
    profile2D->SetOption("colz");
-   mHs["hRelRadLengthVsPhiVsRVsZ_pxz_px"] = profile2D->ProfileX();
+   mHs["hRelRadLengthVsPhiVsRVsZ_pxz_px"] = mDoProjection ? profile2D->ProjectionX() : profile2D->ProfileX();
 
    Profile2D* hProf = (Profile2D*) mHs["hELossVsPhiVsR"];
    hProf->Multiply(*hNStepsVsPhiVsR);
