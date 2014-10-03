@@ -25,8 +25,6 @@
 #include "TSystem.h"
 #include "TApplication.h"
 
-#include "tutorials/eve/MultiView.C"
-
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/EventT/GuiEventHandler.h"
 
@@ -82,7 +80,6 @@ Int_t Status_IST[N_IST];
 
 // Global variables
 EventT        *eventT = 0;
-MultiView     *gMultiView = 0;
 TEveTrackList *gTrackList = 0;
 TEvePointSet  *gVtxList = 0;
 TEvePointSet  *gHitList = 0;
@@ -374,12 +371,6 @@ void process_event(TChain &fhtree, Int_t iEvt)
 
    //TEveElement *top = (TEveElement *) gEve->GetCurrentEvent();
 
-   //gMultiView->DestroyEventRPhi();
-   //gMultiView->ImportEventRPhi(top);
-
-   //gMultiView->DestroyEventRhoZ();
-   //gMultiView->ImportEventRhoZ(top);
-
    gEve->Redraw3D();
 }
 
@@ -501,10 +492,6 @@ void make_geometry(PrgOptionProcessor &poProc)
    STAR->AddElement(myTopNode);
 
    gEve->AddGlobalElement(STAR);
-
-   //gMultiView = new MultiView();
-   //gMultiView->ImportGeomRPhi(STAR);
-   //gMultiView->ImportGeomRhoZ(STAR);
 }
 
 
