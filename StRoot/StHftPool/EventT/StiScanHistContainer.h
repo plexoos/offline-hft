@@ -30,7 +30,7 @@ class StiScanHistContainer : public TDirectoryFile
 public:
 
    StiScanHistContainer(StiScanPrgOptions& prgOpts);
-   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option = "", TDirectory* motherDir = 0);
+   StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir = 0, Option_t* option = "");
    ~StiScanHistContainer();
 
    void FillHists(const EventT &eventT, const std::set<std::string> *volumeList=0);

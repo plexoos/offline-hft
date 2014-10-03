@@ -22,8 +22,8 @@ StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirect
 }
 
 
-StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
-   TDirectoryFile(name, title, option, motherDir),
+StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir, Option_t* option) :
+   TDirectoryFile(name, name, option, motherDir),
    fPrgOptions(prgOpts),
    mHs(), mNodeZMin(-250), mNodeZMax(250),
    mNodeRMin(0), mNodeRMax(30),

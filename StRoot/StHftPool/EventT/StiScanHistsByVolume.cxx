@@ -12,8 +12,8 @@ StiScanHistsByVolume::StiScanHistsByVolume(StiScanPrgOptions& prgOpts) : StiScan
 }
 
 
-StiScanHistsByVolume::StiScanHistsByVolume(StiScanPrgOptions& prgOpts, const char* name, const char* title, Option_t* option, TDirectory* motherDir) :
-   StiScanHistContainer(prgOpts, name, title, option, motherDir)
+StiScanHistsByVolume::StiScanHistsByVolume(StiScanPrgOptions& prgOpts, const char* name, TDirectory* motherDir, Option_t* option) :
+   StiScanHistContainer(prgOpts, name, motherDir, option)
 {
 }
 
