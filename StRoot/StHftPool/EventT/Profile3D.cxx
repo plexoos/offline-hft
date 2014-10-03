@@ -93,7 +93,7 @@ Int_t Profile3D::FillAsCumulative(Double_t x, Double_t y, Double_t z, Double_t t
 }
 
 
-TProfile2D *Profile3D::DoProjectProfile2D(const char* name, const char * title, TAxis* projX, TAxis* projY,
+Profile2D *Profile3D::DoProjectProfile2D(const char* name, const char * title, TAxis* projX, TAxis* projY,
                                            bool originalRange, bool useUF, bool useOF) const
 {
    // internal method to project to a 2D Profile
@@ -110,7 +110,7 @@ TProfile2D *Profile3D::DoProjectProfile2D(const char* name, const char * title, 
    Int_t ny = iymax-iymin+1;
 
    // Create the projected profiles
-   TProfile2D *p2 = 0;
+   Profile2D *p2 = 0;
    // Create always a new TProfile2D (not as in the case of TH3 projection)
 
    const TArrayD *xbins = projX->GetXbins();
@@ -118,17 +118,17 @@ TProfile2D *Profile3D::DoProjectProfile2D(const char* name, const char * title, 
    // assume all axis have variable bins or have fixed bins
    if ( originalRange ) {
       if (xbins->fN == 0 && ybins->fN == 0) {
-         p2 = new TProfile2D(name,title,projY->GetNbins(),projY->GetXmin(),projY->GetXmax()
+         p2 = new Profile2D(name,title,projY->GetNbins(),projY->GetXmin(),projY->GetXmax()
                              ,projX->GetNbins(),projX->GetXmin(),projX->GetXmax());
       } else {
-         p2 = new TProfile2D(name,title,projY->GetNbins(),&ybins->fArray[iymin-1],projX->GetNbins(),&xbins->fArray[ixmin-1]);
+         p2 = new Profile2D(name,title,projY->GetNbins(),&ybins->fArray[iymin-1],projX->GetNbins(),&xbins->fArray[ixmin-1]);
       }
    } else {
       if (xbins->fN == 0 && ybins->fN == 0) {
-         p2 = new TProfile2D(name,title,ny,projY->GetBinLowEdge(iymin),projY->GetBinUpEdge(iymax)
+         p2 = new Profile2D(name,title,ny,projY->GetBinLowEdge(iymin),projY->GetBinUpEdge(iymax)
                              ,nx,projX->GetBinLowEdge(ixmin),projX->GetBinUpEdge(ixmax));
       } else {
-         p2 = new TProfile2D(name,title,ny,&ybins->fArray[iymin-1],nx,&xbins->fArray[ixmin-1]);
+         p2 = new Profile2D(name,title,ny,&ybins->fArray[iymin-1],nx,&xbins->fArray[ixmin-1]);
       }
    }
 
@@ -182,7 +182,7 @@ TProfile2D *Profile3D::DoProjectProfile2D(const char* name, const char * title, 
 }
 
 
-TProfile2D *Profile3D::Project3DProfile(Option_t *option) const
+Profile2D *Profile3D::Project3DProfile(Option_t *option) const
 {
    // Project a 3-d histogram into a 2-d profile histograms depending
    // on the option parameter
@@ -256,7 +256,7 @@ TProfile2D *Profile3D::Project3DProfile(Option_t *option) const
    }
 
    // Create the projected profile
-   TProfile2D *p2 = 0;
+   Profile2D *p2 = 0;
    TString name = GetName();
    TString title = GetTitle();
    name  += "_p";   name  += opt;  // opt may include a user defined name

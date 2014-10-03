@@ -4,9 +4,9 @@
 #include <string>
 
 #include "TProfile3D.h"
-#include "TProfile2D.h"
 #include "TAxis.h"
 #include "StRoot/StHftPool/EventT/H3D.h"
+#include "StRoot/StHftPool/EventT/Profile2D.h"
 
 
 class Profile3D : public TProfile3D
@@ -20,9 +20,9 @@ public:
 
    void  ResetBinCumulMode();
    Int_t FillAsCumulative(Double_t x, Double_t y, Double_t z, Double_t t);
-   virtual TProfile2D *DoProjectProfile2D(const char* name, const char * title, TAxis* projX, TAxis* projY,
+   virtual Profile2D *DoProjectProfile2D(const char* name, const char * title, TAxis* projX, TAxis* projY,
                                            bool originalRange, bool useUF, bool useOF) const;
-   TProfile2D *Project3DProfile(Option_t *option) const;
+   Profile2D *Project3DProfile(Option_t *option) const;
    virtual Double_t RetrieveBinContent(Int_t bin) const { return (fBinEntries.fArray[bin] > 0) ? fArray[bin]/fBinEntries.fArray[bin] : 0; }
    virtual void Print(Option_t *option) const;
    TH3D *ProjectionXYZ(const char *name, Option_t *option) const;
