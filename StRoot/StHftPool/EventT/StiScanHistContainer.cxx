@@ -313,16 +313,3 @@ void StiScanHistContainer::SaveAllAs(std::string prefix)
       canvas.SaveAs(sFileName.c_str());
    }
 }
-
-
-void StiScanHistContainer::PrettifyHists()
-{
-   mHs["hTrackCountVsZVsPhi"]->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-
-   ((TProfile2D*) mHs["hELossVsZVsPhi"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-
-   ((TProfile2D*) mHs["hELossVsZVsR"])->GetXaxis()->SetRangeUser(floor(mNodeZMin)-0.5, ceil(mNodeZMax)-0.5);
-   ((TProfile2D*) mHs["hELossVsZVsR"])->GetYaxis()->SetRangeUser(floor(mNodeRMin)-0.5, ceil(mNodeRMax)-0.5);
-
-   ((TProfile2D*) mHs["hELossVsPhiVsR"])->GetYaxis()->SetRangeUser(floor(mNodeRMin)-0.5, ceil(mNodeRMax)-0.5);
-}

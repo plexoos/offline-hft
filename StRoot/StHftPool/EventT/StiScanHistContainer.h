@@ -43,7 +43,6 @@ public:
    void SetRRange(float minR, float maxR) { mNodeRMin = minR; mNodeRMax = maxR; }
    float GetRMin() const { return mNodeRMin; }
    float GetRMax() const { return mNodeRMax; }
-   void PrettifyHists();
 
 protected:
 
