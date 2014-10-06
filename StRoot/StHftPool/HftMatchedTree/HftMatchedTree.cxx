@@ -155,16 +155,6 @@ void HftMatchedTree::SetTree()
 
 Int_t HftMatchedTree::Make()
 {
-   // Fill event with information from Sti tracks
-   StiMaker* stiMaker = (StiMaker*) GetMaker("Sti");
-   assert(stiMaker);
-
-   StiToolkit *stiToolkit = stiMaker->getToolkit();
-   StiTrackContainer *stiTrackContainer = stiToolkit->getTrackContainer();
-
-   fEvent->Clear();
-   fEvent->Fill(*stiTrackContainer);
-
    // Fill the rest of event with information from StEvent
    StEvent *stEvent = (StEvent*) GetInputDS("StEvent");
 

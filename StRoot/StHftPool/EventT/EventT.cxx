@@ -55,7 +55,6 @@ EventT::EventT() : TObject(),
    fHits(new TClonesArray("HitT", 1000)),
    fMatchHits(new TClonesArray("HitMatchT", 1000)),
    fIsValid(kFALSE),
-   fTStiKalmanTracks(),
    fPxlDb(nullptr), fIstDb(nullptr)
 {
 }
@@ -652,26 +651,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 }
 
 
-Int_t EventT::Fill(StiTrackContainer &stiTrackContainer)
-{
-   vector<StiTrack*>::iterator trackIt = stiTrackContainer.begin();
-
-   for ( ; trackIt != stiTrackContainer.end(); ++trackIt)
-   {
-      StiKalmanTrack* kalmanTrack = static_cast<StiKalmanTrack*>(*trackIt);
-
-      if ( !kalmanTrack ) {
-         Info("Fill", "Invalid kalman kTrack. Skipping to next one...");
-         continue;
-      }
-
-      fTStiKalmanTracks.push_back( TStiKalmanTrack(*kalmanTrack) );
-   }
-
-   return kStOK;
-}
-
-
 TrackT *EventT::AddTrackT()
 {
    // Add a new track to the list of tracks for this event.
@@ -739,8 +718,6 @@ void EventT::Clear(Option_t * /*option*/)
    fHits->Clear("C"); //will also call HitT::Clear
    fVertices->Clear("C");
    fMatchHits->Clear("C");
-
-   fTStiKalmanTracks.clear();
 }
 
 
@@ -770,10 +747,4 @@ void EventT::Print(Option_t *opt) const
    for (UInt_t i = 0; i < GetNhit(); i++) {LOG_INFO << i << "\t"; GetHitT(i)->Print();}
 
    //for (UInt_t i = 0; i < GetNvertex(); i++) {LOG_INFO << i << "\t"; GetVertexT(i)->Print();}
-
-   std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = fTStiKalmanTracks.begin();
-
-   for ( ; iTStiKTrack != fTStiKalmanTracks.end(); ++iTStiKTrack) {
-      iTStiKTrack->Print();
-   }
 }

@@ -10,8 +10,6 @@
 #include "TClonesArray.h"
 #include "TRefArray.h"
 #include "TRef.h"
-#include "StHftPool/EventT/TStiKalmanTrack.h"
-#include "Sti/StiTrackContainer.h"
 
 class HftMatchedTree;
 class StEvent;
@@ -61,12 +59,10 @@ public:
    TClonesArray  *fHits;              //->array with all hits
    TClonesArray  *fMatchHits;         //->array with hit-track match
    Bool_t         fIsValid;           //
-   std::vector<TStiKalmanTrack> fTStiKalmanTracks;
 
    EventT();
    virtual ~EventT();
    Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2);
-   Int_t             Fill(StiTrackContainer &stiTrackContainer);
    void              Clear(Option_t *option = "");
    Bool_t            IsValid() const { return fIsValid; }
    void              SetNtrack(UInt_t n) { fNtrack = n; }
