@@ -32,7 +32,7 @@ private:
    Int_t     fMinNoHits;
    Double_t  fpCut;
 
-   ClassDef(HftMatchedTree, 1)
+   ClassDef(HftMatchedTree, 0)
 };
 
 #endif
