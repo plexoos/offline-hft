@@ -1,5 +1,5 @@
-* $Id$
-* $Log$
+* $Id: g2t_ist.F,v 1.1 2014/01/23 16:52:13 ypwang Exp $
+* $Log: g2t_ist.F,v $
 * Revision 1.1  2014/01/23 16:52:13  ypwang
 * adding scripts
 *
