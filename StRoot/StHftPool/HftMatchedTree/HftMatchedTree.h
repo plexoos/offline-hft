@@ -3,11 +3,8 @@
 
 #include "StMaker.h"
 #include "TFile.h"
-#include "TArrayI.h"
 #include "TTree.h"
 
-class StPxlDb;
-class StIstDb;
 class EventT;
 
 
@@ -25,17 +22,20 @@ public:
    void SetMinNoHits(Int_t minNoHits = 0) { fMinNoHits = minNoHits; }
    void SetpCut(Double_t pCut = 0.0) { fpCut = pCut; }
 
+protected:
+
+   TTree    *fTree;
+   EventT   *fEvent;
+
 private:
 
    void SetTree();
 
    TFile    *fFile;
-   TTree    *fTree;
-   EventT   *fEvent;
    Int_t     fMinNoHits;
    Double_t  fpCut;
 
-   ClassDef(HftMatchedTree, 1)
+   ClassDef(HftMatchedTree, 0)
 };
 
 #endif

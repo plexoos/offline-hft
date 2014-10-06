@@ -2,27 +2,26 @@
 
 #include "StHftPool/HftMatchedTree/HftMatchedTree.h"
 
-#include "TROOT.h"
 #include "TSystem.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TBranch.h"
-#include "StEvent.h"
-#include "StBFChain.h"
 
-#include "Sti/StiToolkit.h"
-#include "Sti/StiTrackContainer.h"
-#include "Sti/StiKalmanTrack.h"
-#include "StiMaker/StiMaker.h"
-
+#include "StEvent/StEvent.h"
+#include "StBFChain/StBFChain.h"
 #include "StHftPool/EventT/EventT.h"
 #include "StIstDbMaker/StIstDb.h"
 #include "StPxlDbMaker/StPxlDb.h"
 
 
-HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name), fFile(0), fTree(0), fEvent(0), fMinNoHits(0),
+HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name),
+   fTree(new TTree("t", "TTree with HFT hits and tracks")),
+   fEvent(0),
+   fFile(0),
+   fMinNoHits(0),
    fpCut(0)
 {
+   fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 }
 
 
@@ -140,9 +139,6 @@ Int_t HftMatchedTree::Finish()
 
 void HftMatchedTree::SetTree()
 {
-   // Create a ROOT Tree and one superbranch
-   fTree = new TTree("t", "TTree with HFT hits and tracks");
-   fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 
    Int_t bufsize = 64000;
    Int_t split   = 99;      // 0 means do not split event
@@ -155,16 +151,6 @@ void HftMatchedTree::SetTree()
 
 Int_t HftMatchedTree::Make()
 {
-   // Fill event with information from Sti tracks
-   StiMaker* stiMaker = (StiMaker*) GetMaker("Sti");
-   assert(stiMaker);
-
-   StiToolkit *stiToolkit = stiMaker->getToolkit();
-   StiTrackContainer *stiTrackContainer = stiToolkit->getTrackContainer();
-
-   fEvent->Clear();
-   fEvent->Fill(*stiTrackContainer);
-
    // Fill the rest of event with information from StEvent
    StEvent *stEvent = (StEvent*) GetInputDS("StEvent");
 

@@ -1,47 +1,39 @@
-#include "StMaker.h"
-#include "StEvent.h"
+#include "St_base/Stypes.h"
+#include "St_base/StMessMgr.h"
+#include "StEvent/StEvent.h"
+#include "StEvent/StTrack.h"
+#include "StEvent/StTrackNode.h"
+#include "StEvent/StTrackGeometry.h"
+#include "StarClassLibrary/SystemOfUnits.h"
 #include "StPrimaryVertex.h"
 #include "StEventInfo.h"
 #include "StEventSummary.h"
-#include "StTrack.h"
-#include "StTrackNode.h"
 #include "StPrimaryTrack.h"
 #include "StEvent/StGlobalTrack.h"
 #include "StEvent/StTrackDetectorInfo.h"
-#include "StTrackGeometry.h"
 #include "StTpcDedxPidAlgorithm.h"
 #include "StPionPlus.hh"
 #include "StTpcHit.h"
 #include "StPxlHit.h"
 #include "StIstHit.h"
 #include "StSsdHit.h"
+#include "StEvent/StEnumerations.h"
+#include "StEvent/StPxlHitCollection.h"
 #include "StEvent/StIstHitCollection.h"
 #include "StEvent/StIstLadderHitCollection.h"
 #include "StEvent/StIstSensorHitCollection.h"
 #include "StEvent/StSsdHitCollection.h"
 #include "StEvent/StSsdLadderHitCollection.h"
 #include "StEvent/StSsdWaferHitCollection.h"
-#include "StBTofCollection.h"
-#include "StBTofHeader.h"
-#include "StarRoot/THelixTrack.h"
-#include "EventT.h"
-#include "TrackT.h"
-#include "HitT.h"
-#include "HitMatchT.h"
-#include "VertexT.h"
-#include "TKey.h"
-#include "TDirectory.h"
-#include "TClass.h"
-#include "TRVector.h"
-#include "TRSymMatrix.h"
-#include "TGeoMatrix.h"
-#include "StEvent/StPxlHitCollection.h"
-#include "StDedxPidTraits.h"
-#include "StBTofPidTraits.h"
-#include "PhysicalConstants.h"
 #include "StPxlDbMaker/StPxlDb.h"
 #include "StIstDbMaker/StIstDb.h"
-#include "StEvent/StEnumerations.h"
+#include "StBTofCollection.h"
+#include "StBTofHeader.h"
+
+#include "StHftPool/EventT/EventT.h"
+
+#include "TRVector.h"
+#include "TRSymMatrix.h"
 
 
 ClassImp(EventT);
@@ -55,7 +47,6 @@ EventT::EventT() : TObject(),
    fHits(new TClonesArray("HitT", 1000)),
    fMatchHits(new TClonesArray("HitMatchT", 1000)),
    fIsValid(kFALSE),
-   fTStiKalmanTracks(),
    fPxlDb(nullptr), fIstDb(nullptr)
 {
 }
@@ -652,26 +643,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 }
 
 
-Int_t EventT::Fill(StiTrackContainer &stiTrackContainer)
-{
-   vector<StiTrack*>::iterator trackIt = stiTrackContainer.begin();
-
-   for ( ; trackIt != stiTrackContainer.end(); ++trackIt)
-   {
-      StiKalmanTrack* kalmanTrack = static_cast<StiKalmanTrack*>(*trackIt);
-
-      if ( !kalmanTrack ) {
-         Info("Fill", "Invalid kalman kTrack. Skipping to next one...");
-         continue;
-      }
-
-      fTStiKalmanTracks.push_back( TStiKalmanTrack(*kalmanTrack) );
-   }
-
-   return kStOK;
-}
-
-
 TrackT *EventT::AddTrackT()
 {
    // Add a new track to the list of tracks for this event.
@@ -739,8 +710,6 @@ void EventT::Clear(Option_t * /*option*/)
    fHits->Clear("C"); //will also call HitT::Clear
    fVertices->Clear("C");
    fMatchHits->Clear("C");
-
-   fTStiKalmanTracks.clear();
 }
 
 
@@ -770,10 +739,4 @@ void EventT::Print(Option_t *opt) const
    for (UInt_t i = 0; i < GetNhit(); i++) {LOG_INFO << i << "\t"; GetHitT(i)->Print();}
 
    //for (UInt_t i = 0; i < GetNvertex(); i++) {LOG_INFO << i << "\t"; GetVertexT(i)->Print();}
-
-   std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = fTStiKalmanTracks.begin();
-
-   for ( ; iTStiKTrack != fTStiKalmanTracks.end(); ++iTStiKTrack) {
-      iTStiKTrack->Print();
-   }
 }
