@@ -2,16 +2,17 @@
 #define EventT_h
 
 #include <string.h>
+
 #include "TObject.h"
-#include "HitT.h"
-#include "TrackT.h"
-#include "VertexT.h"
-#include "HitMatchT.h"
 #include "TClonesArray.h"
 #include "TRefArray.h"
 #include "TRef.h"
 
-class HftMatchedTree;
+#include "StHftPool/EventT/HitT.h"
+#include "StHftPool/EventT/TrackT.h"
+#include "StHftPool/EventT/VertexT.h"
+#include "StHftPool/EventT/HitMatchT.h"
+
 class StEvent;
 class StPxlDb;
 class StIstDb;

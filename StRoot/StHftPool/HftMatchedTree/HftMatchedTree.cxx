@@ -2,19 +2,13 @@
 
 #include "StHftPool/HftMatchedTree/HftMatchedTree.h"
 
-#include "TROOT.h"
 #include "TSystem.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TBranch.h"
-#include "StEvent.h"
-#include "StBFChain.h"
 
-#include "Sti/StiToolkit.h"
-#include "Sti/StiTrackContainer.h"
-#include "Sti/StiKalmanTrack.h"
-#include "StiMaker/StiMaker.h"
-
+#include "StEvent/StEvent.h"
+#include "StBFChain/StBFChain.h"
 #include "StHftPool/EventT/EventT.h"
 #include "StIstDbMaker/StIstDb.h"
 #include "StPxlDbMaker/StPxlDb.h"

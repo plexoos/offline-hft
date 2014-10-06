@@ -3,11 +3,8 @@
 
 #include "StMaker.h"
 #include "TFile.h"
-#include "TArrayI.h"
 #include "TTree.h"
 
-class StPxlDb;
-class StIstDb;
 class EventT;
 
 
