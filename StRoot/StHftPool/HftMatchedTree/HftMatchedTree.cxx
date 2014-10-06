@@ -14,9 +14,14 @@
 #include "StPxlDbMaker/StPxlDb.h"
 
 
-HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name), fFile(0), fTree(0), fEvent(0), fMinNoHits(0),
+HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name),
+   fTree(new TTree("t", "TTree with HFT hits and tracks")),
+   fEvent(0),
+   fFile(0),
+   fMinNoHits(0),
    fpCut(0)
 {
+   fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 }
 
 
@@ -134,9 +139,6 @@ Int_t HftMatchedTree::Finish()
 
 void HftMatchedTree::SetTree()
 {
-   // Create a ROOT Tree and one superbranch
-   fTree = new TTree("t", "TTree with HFT hits and tracks");
-   fTree->SetAutoSave(1000000000);  // autosave when 1 Gbyte written
 
    Int_t bufsize = 64000;
    Int_t split   = 99;      // 0 means do not split event
