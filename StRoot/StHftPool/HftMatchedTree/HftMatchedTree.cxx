@@ -13,6 +13,8 @@
 #include "StIstDbMaker/StIstDb.h"
 #include "StPxlDbMaker/StPxlDb.h"
 
+ClassImp(HftMatchedTree)
+
 
 HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name),
    fTree(new TTree("t", "TTree with HFT hits and tracks")),
