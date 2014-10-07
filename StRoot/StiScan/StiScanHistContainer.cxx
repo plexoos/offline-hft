@@ -5,8 +5,8 @@
 #include "TProfile2D.h"
 #include "TVector3.h"
 
-#include "StHftPool/EventT/StiScanHistContainer.h"
-#include "StHftPool/EventT/TStiKalmanTrackNode.h"
+#include "StiScan/StiScanHistContainer.h"
+#include "StiScan/TStiKalmanTrackNode.h"
 
 
 StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirectoryFile(),
@@ -122,11 +122,11 @@ void StiScanHistContainer::BookHists()
 }
 
 
-void StiScanHistContainer::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
+void StiScanHistContainer::FillHists(const StiScanEvent &eventT, const std::set<std::string> *volumeList)
 {
-   std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = eventT.fTStiKalmanTracks.begin();
+   std::vector<TStiKalmanTrack>::const_iterator iTStiKTrack = eventT.GetTStiKalmanTracks().begin();
 
-   for ( ; iTStiKTrack != eventT.fTStiKalmanTracks.end(); ++iTStiKTrack)
+   for ( ; iTStiKTrack != eventT.GetTStiKalmanTracks().end(); ++iTStiKTrack)
    {
       const TStiKalmanTrack &kalmTrack = *iTStiKTrack;
       FillHists(kalmTrack, volumeList);

@@ -35,7 +35,7 @@ public:
    Int_t  GetDate() const { return fDate; }
    Double32_t GetField() const {return fField;}
 
-   ClassDef(EventTHeader, 1) //EventT Header
+   ClassDef(EventTHeader, 1)
 };
 
 

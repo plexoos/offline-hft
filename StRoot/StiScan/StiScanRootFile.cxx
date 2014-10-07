@@ -8,9 +8,9 @@
 #include "TProfile2D.h"
 #include "TSystem.h"
 
-#include "StHftPool/EventT/StiScanHistContainer.h"
-#include "StHftPool/EventT/StiScanHistsByVolume.h"
-#include "StHftPool/EventT/StiScanPrgOptions.h"
+#include "StiScan/StiScanHistContainer.h"
+#include "StiScan/StiScanHistsByVolume.h"
+#include "StiScan/StiScanPrgOptions.h"
 
 
 ClassImp(StiScanRootFile)
@@ -52,7 +52,7 @@ void StiScanRootFile::FindAutoRange() const
    const std::set<std::string> *volumeList = &fPrgOptions.GetVolumeList();
 
    TChain *hftChain = fPrgOptions.GetHftChain();
-   EventT *eventT = new EventT();
+   StiScanEvent *eventT = new StiScanEvent();
 
    hftChain->SetBranchAddress("e.", &eventT);
    hftChain->SetBranchStatus("e.*", false);
@@ -77,9 +77,9 @@ void StiScanRootFile::FindAutoRange() const
 
       hftChain->GetEntry(iEvent-1);
 
-      auto iTStiKTrack = eventT->fTStiKalmanTracks.begin();
+      auto iTStiKTrack = eventT->GetTStiKalmanTracks().begin();
 
-      for ( ; iTStiKTrack != eventT->fTStiKalmanTracks.end(); ++iTStiKTrack)
+      for ( ; iTStiKTrack != eventT->GetTStiKalmanTracks().end(); ++iTStiKTrack)
       {
          const TStiKalmanTrack &kalmTrack = *iTStiKTrack;
 
@@ -115,7 +115,7 @@ void StiScanRootFile::FindAutoRange() const
 }
 
 
-void StiScanRootFile::FillHists(const EventT &eventT, const std::set<std::string> *volumeList)
+void StiScanRootFile::FillHists(const StiScanEvent &eventT, const std::set<std::string> *volumeList)
 {
    StiScanHistContainer* container;
 
