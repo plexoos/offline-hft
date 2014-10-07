@@ -29,7 +29,7 @@ protected:
 
 private:
 
-   void SetTree();
+   virtual void SetTree();
 
    TFile    *fFile;
    Int_t     fMinNoHits;
