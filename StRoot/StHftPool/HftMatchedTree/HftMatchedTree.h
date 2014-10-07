@@ -22,6 +22,8 @@ public:
    void SetMinNoHits(Int_t minNoHits = 0) { fMinNoHits = minNoHits; }
    void SetpCut(Double_t pCut = 0.0) { fpCut = pCut; }
 
+   virtual const char* GetCVS() const { static const char cvs[]="Tag $Name:  $ $Id: HftMatchedTree.h,v 1.13 2014/10/07 18:02:11 smirnovd Exp $ built " __DATE__ " " __TIME__; return cvs; }
+
 protected:
 
    TTree    *fTree;
