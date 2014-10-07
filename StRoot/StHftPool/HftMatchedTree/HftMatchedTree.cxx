@@ -141,12 +141,8 @@ Int_t HftMatchedTree::Finish()
 
 void HftMatchedTree::SetTree()
 {
-
-   Int_t bufsize = 64000;
-   Int_t split   = 99;      // 0 means do not split event
-
    fEvent = new EventT();
-   TBranch *branch = fTree->Branch("e.", "EventT", &fEvent, bufsize, split);
+   TBranch *branch = fTree->Branch("e.", "EventT", &fEvent, 64000, 99);
    branch->SetAutoDelete(kFALSE);
 }
 

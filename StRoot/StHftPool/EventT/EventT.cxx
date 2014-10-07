@@ -512,7 +512,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
             comb->MasterToLocal(xyzGPred, uvPred);
 
             if (TMath::Abs(uvPred[0]) > IST_Width_X / 2. ) continue;
-
             if (TMath::Abs(uvPred[2]) > IST_Width_Z / 2. ) continue;
 
             onIST++;
@@ -523,9 +522,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
             Double_t tuvPred[2] = {dxyzL[0] / dxyzL[1], dxyzL[2] / dxyzL[1]};
 
             if (!stEvent->istHitCollection()) continue;
-
             if (!stEvent->istHitCollection()->ladder(i_ladder)) continue;
-
             if (!stEvent->istHitCollection()->ladder(i_ladder)->sensor(i_sensor)) continue;
 
             StSPtrVecIstHit &vec = stEvent->istHitCollection()->ladder(i_ladder)->sensor(i_sensor)->hits();
@@ -582,7 +579,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
                comb->MasterToLocal(xyzGPred, uvPred);
 
                if (TMath::Abs(uvPred[0]) > PXL_Width_X / 2. ) continue;
-
                if (TMath::Abs(uvPred[2]) > PXL_Width_Z / 2. ) continue;
 
                if (i_ladder == 0) onPXL1++;
@@ -594,11 +590,8 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
                Double_t tuvPred[2] = {dxyzL[0] / dxyzL[1], dxyzL[2] / dxyzL[1]};
 
                if (!stEvent->pxlHitCollection()) continue;
-
                if (!stEvent->pxlHitCollection()->sector(i_sector)) continue;
-
                if (!stEvent->pxlHitCollection()->sector(i_sector)->ladder(i_ladder)) continue;
-
                if (!stEvent->pxlHitCollection()->sector(i_sector)->ladder(i_ladder)->sensor(i_sensor)) continue;
 
                StSPtrVecPxlHit &vec = stEvent->pxlHitCollection()->sector(i_sector)->ladder(i_ladder)->sensor(i_sensor)->hits();
