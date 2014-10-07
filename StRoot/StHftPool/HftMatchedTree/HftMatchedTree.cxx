@@ -65,6 +65,8 @@ Int_t HftMatchedTree::Init()
 
    SetTree();
 
+   fTree->SetDirectory(fFile);
+
    return kStOK;
 }
 
