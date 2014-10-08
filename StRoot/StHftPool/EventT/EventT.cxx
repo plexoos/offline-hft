@@ -502,7 +502,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
       for (int i_ladder = 0; i_ladder < 24; i_ladder++) {
          for (int i_sensor = 0; i_sensor < 6; i_sensor++) {
             UInt_t id = 1000 + i_ladder * 6 + i_sensor + 1;
-            TGeoHMatrix *comb = (TGeoHMatrix *)istRot->FindObject(Form("R%04i", id));
+            TGeoHMatrix *comb = (TGeoHMatrix *) istRot->FindObject(Form("R%04i", id));
 
             Double_t *rot = comb->GetRotationMatrix();
             Double_t *tra = comb->GetTranslation();
@@ -652,6 +652,7 @@ TrackT *EventT::AddTrackT()
 
    TClonesArray &tracks = *fTracks;
    TrackT *track = new(tracks[fNtrack++]) TrackT();
+
    //Save reference to last TrackT in the collection of Tracks
    return track;
 }
@@ -705,8 +706,8 @@ VertexT *EventT::AddVertexT()
 
 void EventT::Clear(Option_t * /*option*/)
 {
-   fTracks->Clear("C"); //will also call TrackT::Clear
-   fHits->Clear("C"); //will also call HitT::Clear
+   fTracks->Clear("C"); // will also call TrackT::Clear
+   fHits->Clear("C");   // will also call HitT::Clear
    fVertices->Clear("C");
    fMatchHits->Clear("C");
 }

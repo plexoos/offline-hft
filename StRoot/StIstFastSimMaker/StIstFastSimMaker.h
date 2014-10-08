@@ -73,8 +73,7 @@ class StIstFastSimMaker : public StMaker {
   Double_t resZIst1;
   Int_t mSmear; //to turn smearing on and off
 
-  private:
-
-  ClassDef(StIstFastSimMaker,1)   //StAF chain virtual base class for Makers
+  ClassDef(StIstFastSimMaker,1)
 };
+
 #endif
