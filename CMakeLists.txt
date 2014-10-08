@@ -40,7 +40,6 @@ include_directories(
    ${Boost_INCLUDE_DIR}
    ${ROOT_INCLUDE_DIR}
    ${ROOTSYS}
-   $ENV{OFFLINE_HFT_DIR}/offline/hft/tests
    $ENV{OFFLINE_HFT_DIR}/StRoot
    /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/
    /afs/rhic.bnl.gov/star/packages/$ENV{STAR_VERSION}/StRoot
@@ -60,6 +59,7 @@ link_directories(
 set( HFT_LIBRARIES
    StHftPoolEventT
    StHftPoolHftMatchedTree
+   StiScan
 )
 
 set( STAR_LIBRARIES
