@@ -9,10 +9,10 @@
 #include "TRandom.h"
 #include "TROOT.h"
 
-#include "StHftPool/EventT/EventT.h"
 #include "StarGenerator/STEP/AgUStep.h"
-#include "StHftPool/EventT/StiScanPrgOptions.h"
-#include "StHftPool/EventT/StiScanRootFile.h"
+#include "StiScan/StiScanEvent.h"
+#include "StiScan/StiScanPrgOptions.h"
+#include "StiScan/StiScanRootFile.h"
 
 typedef Event EventG;
 typedef std::unordered_map<size_t, std::string> Hash2StringMap;
@@ -81,8 +81,8 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
    Info("loop_hftree", "Found tree/chain with N entries: %d", nTreeEvents);
 
-   EventT *eventT = new EventT();
-   hftChain->SetBranchAddress("e.", &eventT);
+   StiScanEvent *stiScanEvent = new StiScanEvent();
+   hftChain->SetBranchAddress("e.", &stiScanEvent);
    hftChain->SetBranchStatus("e.*", false);
    hftChain->SetBranchStatus("e.fTStiKalmanTracks*", true);
 
@@ -105,7 +105,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
       hftChain->GetEntry(iEvent-1);
 
-      outRootFile.FillHists(*eventT, &poProc.GetVolumeList());
+      outRootFile.FillHists(*stiScanEvent, &poProc.GetVolumeList());
 
       if (poProc.DoGeantStepTree()) {
          geantStepChain->GetEntry(iEvent-1);
@@ -113,7 +113,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
       }
    }
 
-   delete eventT;
+   delete stiScanEvent;
    delete eventG;
 
    outRootFile.FillDerivedHists();
