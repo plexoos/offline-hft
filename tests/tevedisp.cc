@@ -3,6 +3,7 @@
 #include <string>
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 
 #include <boost/regex.hpp>
 
@@ -113,7 +114,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B)
 {
    TChain *myTreeFileChain = poProc.GetHftChain();
 
-   std::cout << "Total number of events = " << myTreeFileChain->GetEntries() << endl;
+   std::cout << "Total number of events = " << myTreeFileChain->GetEntries() << std::endl;
 
    eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e.", &eventT);
@@ -138,7 +139,7 @@ void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumb
    char inname[100];
    sprintf(inname, "output/Event_%d.root", runnumber);
    myTreeFileChain->AddFile(inname);
-   cout << " Total number of events = " << myTreeFileChain->GetEntries() << endl;
+   std::cout << " Total number of events = " << myTreeFileChain->GetEntries() << std::endl;
    gHftGuiEventCounter = 0;
 
    eventT = new EventT();
@@ -163,7 +164,7 @@ void loadStatus(const int runnumber)
    memset(Status_IST, 0, sizeof(Status_IST));
 
    char inname[100];
-   ifstream inData;
+   std::ifstream inData;
    sprintf(inname, "status/PXL_%d.txt", runnumber);
    inData.open(inname);
 
@@ -173,7 +174,7 @@ void loadStatus(const int runnumber)
       int sector, ladder, sensor;
       decodeId(id, &sector, &ladder, &sensor);
 
-      if (Status_PXL[i]) cout << " Bad PXL Sensor # " << sector << "/" << ladder << "/" << sensor << endl;
+      if (Status_PXL[i]) std::cout << " Bad PXL Sensor # " << sector << "/" << ladder << "/" << sensor << std::endl;
    }
 
    inData.close();
@@ -187,7 +188,7 @@ void loadStatus(const int runnumber)
       int sector, ladder, sensor;
       decodeId(id, &sector, &ladder, &sensor);
 
-      if (Status_IST[i]) cout << " Bad IST Sensor # " << ladder << "/" << sensor << endl;
+      if (Status_IST[i]) std::cout << " Bad IST Sensor # " << ladder << "/" << sensor << std::endl;
    }
 
    inData.close();
@@ -252,15 +253,15 @@ void init(const double B)
 void process_event(TChain &fhtree, Int_t iEvt)
 {
    if (iEvt >= fhtree.GetEntriesFast()) {
-      cout << "End of the tree! Go backward! " << endl;
+      std::cout << "End of the tree! Go backward! " << std::endl;
       return;
    }
    else if (iEvt < 0) {
-      cout << "Beginning of the tree! Go forward! " << endl;
+      std::cout << "Beginning of the tree! Go forward! " << std::endl;
       return;
    }
 
-   cout << "Displaying " << gHftGuiEventCounter << "th entry...." << endl;
+   std::cout << "Displaying " << gHftGuiEventCounter << "th entry...." << std::endl;
    fhtree.GetEntry(iEvt);
 
    gTrackList->DestroyElements();
@@ -271,10 +272,10 @@ void process_event(TChain &fhtree, Int_t iEvt)
    int runId = eventT->fEvtHdr.fRun;
    int evtId = eventT->fEvtHdr.fEvtNum;
 
-   cout << Form("run#%d event#%d", runId, evtId) << endl;
+   std::cout << Form("run#%d event#%d", runId, evtId) << std::endl;
 
    // Load vertices and hits
-   cout << " Event vertex = " << eventT->fVertex[0] << " " << eventT->fVertex[1] << " " << eventT->fVertex[2] << endl;
+   std::cout << " Event vertex = " << eventT->fVertex[0] << " " << eventT->fVertex[1] << " " << eventT->fVertex[2] << std::endl;
    //gVtxList->SetNextPoint(eventT->fVertex[0], eventT->fVertex[1], eventT->fVertex[2]);
    //gEve->AddElement(gVtxList);
 
@@ -286,7 +287,7 @@ void process_event(TChain &fhtree, Int_t iEvt)
 
       int id = hitT->Id;
 
-      //cout << "Adding a new hit " << id << " " <<  hitT->xG << " " << hitT->yG << " " << hitT->zG << endl;
+      //std::cout << "Adding a new hit " << id << " " <<  hitT->xG << " " << hitT->yG << " " << hitT->zG << std::endl;
 
       if (id < 1000 && ( hitT->nRawHits < kPXL_Cluster_Min ||  hitT->nRawHits > kPXL_Cluster_Max ) ) continue;
       if (id < 1000 && Status_PXL[id - 1]) continue; // remove noisy channels
@@ -325,7 +326,7 @@ void process_event(TChain &fhtree, Int_t iEvt)
       else
          track->SetLineColor(kColors[1]);
 
-      //cout << "Adding a new track " << trackT->fPx << " " << trackT->fPy << " " << trackT->fPz << endl;
+      //std::cout << "Adding a new track " << trackT->fPx << " " << trackT->fPy << " " << trackT->fPz << std::endl;
       gTrackList->AddElement(track);
 
       // add track hit
@@ -361,7 +362,7 @@ void process_event(TChain &fhtree, Int_t iEvt)
       int nhits_pxl2 = (nhits % 100000) / 10000;
       int nhits_pxl1 = (nhits % 1000000) / 100000;
 
-      cout << " Number of hits on PXL1/PXL2/IST/SSD/TPC = " << nhits_pxl1 << "/" << nhits_pxl2 << "/" << nhits_ist << "/" << nhits_ssd << "/" << nhits_tpc << endl;
+      std::cout << " Number of hits on PXL1/PXL2/IST/SSD/TPC = " << nhits_pxl1 << "/" << nhits_pxl2 << "/" << nhits_ist << "/" << nhits_ssd << "/" << nhits_tpc << std::endl;
    }
 
    gTrackList->MakeTracks();
