@@ -62,7 +62,7 @@ public:
    EventT();
    virtual ~EventT();
    Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2);
-   void              Clear(Option_t *option = "");
+   virtual void      Clear(Option_t *option = "");
    void              SetNtrack(UInt_t n) { fNtrack = n; }
    void              SetNhit(UInt_t n) { fNhit = n; }
    void              SetNvertex(UInt_t n) { fNvertex = n; }

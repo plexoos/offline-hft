@@ -54,6 +54,11 @@ EventT::EventT() : TObject(),
 EventT::~EventT()
 {
    Clear();
+
+   delete fVertices;  fVertices = nullptr;
+   delete fTracks;    fTracks = nullptr;
+   delete fHits;      fHits = nullptr;
+   delete fMatchHits; fMatchHits = nullptr;
 }
 
 
