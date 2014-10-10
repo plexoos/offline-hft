@@ -48,7 +48,6 @@ public:
    UInt_t         fNtrack;            //Number of tracks
    UInt_t         fNhit;              //Number of hits
    UInt_t         fNmatchhit;         //
-   UInt_t         fFlag;
    Float_t        fVzVpd;
    Int_t          fNVpdHits;           // nVpdHitsEast * 100 + nVpdHitsWest
    EventTHeader   fEvtHdr;
@@ -59,18 +58,15 @@ public:
    TClonesArray  *fTracks;            //->array with all tracks
    TClonesArray  *fHits;              //->array with all hits
    TClonesArray  *fMatchHits;         //->array with hit-track match
-   Bool_t         fIsValid;           //
 
    EventT();
    virtual ~EventT();
    Int_t             Build(StEvent *pEventT, UInt_t minNoHits = 2, Double_t pCut = 0.2);
    void              Clear(Option_t *option = "");
-   Bool_t            IsValid() const { return fIsValid; }
    void              SetNtrack(UInt_t n) { fNtrack = n; }
    void              SetNhit(UInt_t n) { fNhit = n; }
    void              SetNvertex(UInt_t n) { fNvertex = n; }
    void              SetNmatchhit(UInt_t n) { fNmatchhit = n; }
-   void              SetFlag(UInt_t f) { fFlag = f; }
    void              SetNPredHFT(UInt_t *val) { for (int i = 0; i < 4; i++) fNPredHFT[i] = val[i]; }
    void              SetDbDatasets(const StPxlDb *pxlDb, const StIstDb *istDb) { fPxlDb = pxlDb; fIstDb = istDb; }
    void              SetHeader(Int_t i, Int_t run, Int_t date, Double32_t field);
@@ -84,7 +80,6 @@ public:
    UInt_t            GetNhit() const { return fNhit; }
    UInt_t            GetNmatchhit() const { return fNmatchhit; }
    UInt_t            GetNvertex() const { return fNvertex; }
-   UInt_t            GetFlag() const { return fFlag; }
    EventTHeader     *GetHeader() { return &fEvtHdr; }
    const Double32_t *GetVertex() const {return fVertex;}
    const Double32_t *GetCovMatrix() const {return fCovariantMatrix;}
@@ -109,7 +104,7 @@ private:
    const StPxlDb*   fPxlDb;   //!< Pointer to data with spatial transformations for PXL
    const StIstDb*   fIstDb;   //!< Pointer to data with spatial transformations for IST
 
-   ClassDef(EventT, 1)
+   ClassDef(EventT, 2)
 };
 
 #endif

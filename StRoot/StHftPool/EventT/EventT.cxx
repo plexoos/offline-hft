@@ -46,7 +46,6 @@ EventT::EventT() : TObject(),
    fTracks(new TClonesArray("TrackT", 1000)),
    fHits(new TClonesArray("HitT", 1000)),
    fMatchHits(new TClonesArray("HitMatchT", 1000)),
-   fIsValid(kFALSE),
    fPxlDb(nullptr), fIstDb(nullptr)
 {
 }
@@ -64,8 +63,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
       Error("Build", "Cannot build EventT: Missing StEvent object");
       return kStErr;
    }
-
-   fIsValid = kFALSE;
 
    const THashList *istRot = fIstDb->getRotations();
 
@@ -157,7 +154,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
    if (summary) field = summary->magneticField();
 
    SetHeader(ev, run, time, field);
-   SetFlag(1);
    // Create and Fill the TrackT objects
    //LOG_DEBUG <<" # of daughter tracks : "<< fNPTracks << endl;
 
