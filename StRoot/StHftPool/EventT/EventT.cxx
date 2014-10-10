@@ -60,7 +60,12 @@ EventT::~EventT()
 Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 {
    if (!stEvent) {
-      Error("Build", "Cannot build EventT: Missing StEvent object");
+      LOG_ERROR << "Cannot build EventT: Missing StEvent object" << endm;
+      return kStErr;
+   }
+
+   if (!fIstDb || !fPxlDb) {
+      LOG_ERROR << "Cannot build EventT: Missing PXL or IST data from database" << endm;
       return kStErr;
    }
 
