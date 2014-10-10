@@ -1,6 +1,6 @@
 /***************************************************************************
 *
-* $Id: StIstFastSimMaker.h,v 1.4 2014/08/05 03:28:42 ypwang Exp $
+* $Id: StIstFastSimMaker.h,v 1.5 2014/10/10 22:56:26 smirnovd Exp $
 *
 * Author: Yaping Wang, August 2012
 ****************************************************************************
@@ -9,6 +9,9 @@
 ****************************************************************************
 *
 * $Log: StIstFastSimMaker.h,v $
+* Revision 1.5  2014/10/10 22:56:26  smirnovd
+* Minor style, comments and whitespace changes
+*
 * Revision 1.4  2014/08/05 03:28:42  ypwang
 * buildIdealGeom() added to switch between ideal VMC geometry or DB geometry, Db geometry was built by default
 *
@@ -58,7 +61,7 @@ class StIstFastSimMaker : public StMaker {
 
   virtual const char *GetCVS() const
   {
-    static const char cvs[]="Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.4 2014/08/05 03:28:42 ypwang Exp $ built "__DATE__" "__TIME__ ; 
+    static const char cvs[]="Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.5 2014/10/10 22:56:26 smirnovd Exp $ built "__DATE__" "__TIME__ ; 
     return cvs;
   }
 
@@ -73,8 +76,7 @@ class StIstFastSimMaker : public StMaker {
   Double_t resZIst1;
   Int_t mSmear; //to turn smearing on and off
 
-  private:
-
-  ClassDef(StIstFastSimMaker,1)   //StAF chain virtual base class for Makers
+  ClassDef(StIstFastSimMaker,1)
 };
+
 #endif

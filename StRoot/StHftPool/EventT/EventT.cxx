@@ -46,7 +46,6 @@ EventT::EventT() : TObject(),
    fTracks(new TClonesArray("TrackT", 1000)),
    fHits(new TClonesArray("HitT", 1000)),
    fMatchHits(new TClonesArray("HitMatchT", 1000)),
-   fIsValid(kFALSE),
    fPxlDb(nullptr), fIstDb(nullptr)
 {
 }
@@ -55,17 +54,25 @@ EventT::EventT() : TObject(),
 EventT::~EventT()
 {
    Clear();
+
+   delete fVertices;  fVertices = nullptr;
+   delete fTracks;    fTracks = nullptr;
+   delete fHits;      fHits = nullptr;
+   delete fMatchHits; fMatchHits = nullptr;
 }
 
 
 Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
 {
    if (!stEvent) {
-      Error("Build", "Cannot build EventT: Missing StEvent object");
+      LOG_ERROR << "Cannot build EventT: Missing StEvent object" << endm;
       return kStErr;
    }
 
-   fIsValid = kFALSE;
+   if (!fIstDb || !fPxlDb) {
+      LOG_ERROR << "Cannot build EventT: Missing PXL or IST data from database" << endm;
+      return kStErr;
+   }
 
    const THashList *istRot = fIstDb->getRotations();
 
@@ -157,7 +164,6 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
    if (summary) field = summary->magneticField();
 
    SetHeader(ev, run, time, field);
-   SetFlag(1);
    // Create and Fill the TrackT objects
    //LOG_DEBUG <<" # of daughter tracks : "<< fNPTracks << endl;
 
@@ -496,7 +502,7 @@ Int_t EventT::Build(StEvent *stEvent, UInt_t minNoHits, Double_t pCut)
       for (int i_ladder = 0; i_ladder < 24; i_ladder++) {
          for (int i_sensor = 0; i_sensor < 6; i_sensor++) {
             UInt_t id = 1000 + i_ladder * 6 + i_sensor + 1;
-            TGeoHMatrix *comb = (TGeoHMatrix *)istRot->FindObject(Form("R%04i", id));
+            TGeoHMatrix *comb = (TGeoHMatrix *) istRot->FindObject(Form("R%04i", id));
 
             Double_t *rot = comb->GetRotationMatrix();
             Double_t *tra = comb->GetTranslation();
@@ -646,6 +652,7 @@ TrackT *EventT::AddTrackT()
 
    TClonesArray &tracks = *fTracks;
    TrackT *track = new(tracks[fNtrack++]) TrackT();
+
    //Save reference to last TrackT in the collection of Tracks
    return track;
 }
@@ -699,8 +706,8 @@ VertexT *EventT::AddVertexT()
 
 void EventT::Clear(Option_t * /*option*/)
 {
-   fTracks->Clear("C"); //will also call TrackT::Clear
-   fHits->Clear("C"); //will also call HitT::Clear
+   fTracks->Clear("C"); // will also call TrackT::Clear
+   fHits->Clear("C");   // will also call HitT::Clear
    fVertices->Clear("C");
    fMatchHits->Clear("C");
 }
