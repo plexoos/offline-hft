@@ -43,21 +43,21 @@ class EventT : public TObject
 {
 
 public:
-   UInt_t         fNPTracks;
-   UInt_t         fNvertex;           //Number of vertex
-   UInt_t         fNtrack;            //Number of tracks
-   UInt_t         fNhit;              //Number of hits
-   UInt_t         fNmatchhit;         //
-   Float_t        fVzVpd;
-   Int_t          fNVpdHits;           // nVpdHitsEast * 100 + nVpdHitsWest
-   EventTHeader   fEvtHdr;
-   Double32_t     fVertex[3];         //
-   Double32_t     fCovariantMatrix[6];//
-   UInt_t         fNPredHFT[4];        //
-   TClonesArray  *fVertices;          //->array of primary vertices
-   TClonesArray  *fTracks;            //->array with all tracks
-   TClonesArray  *fHits;              //->array with all hits
-   TClonesArray  *fMatchHits;         //->array with hit-track match
+   UInt_t         fNPTracks;           ///< Number of primary tracks in event
+   UInt_t         fNvertex;            ///< Number of vertices in event
+   UInt_t         fNtrack;             ///< Number of all tracks in event
+   UInt_t         fNhit;               ///< Number of hits in event
+   UInt_t         fNmatchhit;          ///<
+   Float_t        fVzVpd;              ///<
+   Int_t          fNVpdHits;           ///< nVpdHitsEast * 100 + nVpdHitsWest
+   EventTHeader   fEvtHdr;             ///<
+   Double32_t     fVertex[3];          ///<
+   Double32_t     fCovariantMatrix[6]; ///<
+   UInt_t         fNPredHFT[4];        ///<
+   TClonesArray  *fVertices;           ///< ->array of primary vertices
+   TClonesArray  *fTracks;             ///< ->array with all tracks
+   TClonesArray  *fHits;               ///< ->array with all hits
+   TClonesArray  *fMatchHits;          ///< ->array with hit-track match
 
    EventT();
    virtual ~EventT();

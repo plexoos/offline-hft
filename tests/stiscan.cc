@@ -94,7 +94,7 @@ void loop_hftree(StiScanPrgOptions &poProc)
 
    TRandom myRandom;
 
-   Info("loop_hftree", "Second pass...");
+   Info("loop_hftree", "Loop over tree/chain...");
 
    for (int iEvent = 1; iEvent <= nTreeEvents; iEvent++, nProcEvents++)
    {
