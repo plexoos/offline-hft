@@ -1,11 +1,10 @@
-/* $Id: StIstHitMaker.h,v 1.8 2014/10/13 22:21:56 smirnovd Exp $ */
+/* $Id: StIstHitMaker.h,v 1.12 2014/10/13 22:28:24 smirnovd Exp $ */
 
 #ifndef StIstHitMaker_hh
 #define StIstHitMaker_hh
 
 #include "StMaker.h"
 
-class StIstDb;
 class THashList;
 
 
@@ -17,21 +16,19 @@ class THashList;
  */
 class StIstHitMaker : public StMaker
 {
- public:
-  StIstHitMaker( const char* name="ist_hit" );
-  Int_t Init();
-  Int_t InitRun(Int_t runnumber);
-  Int_t Make();
+public:
+   StIstHitMaker( const char *name = "ist_hit" );
+   Int_t InitRun(Int_t runnumber);
+   Int_t Make();
 
   virtual const char *GetCVS() const
-  {static const char cvs[]="Tag $Name:  $ $Id: StIstHitMaker.h,v 1.8 2014/10/13 22:21:56 smirnovd Exp $ built "__DATE__" "__TIME__ ; return cvs;}
+  {static const char cvs[]="Tag $Name:  $ $Id: StIstHitMaker.h,v 1.12 2014/10/13 22:28:24 smirnovd Exp $ built "__DATE__" "__TIME__ ; return cvs;}
 
- protected:
-  THashList *listGeoMSensorOnGlobal;
-  StIstDb *mIstDb;
+protected:
+   THashList *listGeoMSensorOnGlobal;
 
- private:
-  ClassDef(StIstHitMaker,1);
+private:
+   ClassDef(StIstHitMaker, 0);
 };
 #endif
 
@@ -39,6 +36,18 @@ class StIstHitMaker : public StMaker
 /***************************************************************************
 *
 * $Log: StIstHitMaker.h,v $
+* Revision 1.12  2014/10/13 22:28:24  smirnovd
+* StIstHitMaker: Use local pointer to StIstDb. No need to have a data member
+*
+* Revision 1.11  2014/10/13 22:28:18  smirnovd
+* Do not use automatic ROOT I/O as this is a StMaker. Makers are not persistent
+*
+* Revision 1.10  2014/10/13 22:28:11  smirnovd
+* Removed pointless methods. ::Init() and ::Finish() do not do much. Data members initialized in constructor
+*
+* Revision 1.9  2014/10/13 22:28:03  smirnovd
+* StIstHitMaker: Corrected style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
+*
 * Revision 1.8  2014/10/13 22:21:56  smirnovd
 * Moved CVS log to the end of file and updated doxygen-style comments
 *
