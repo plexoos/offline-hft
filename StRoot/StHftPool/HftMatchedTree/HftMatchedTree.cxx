@@ -162,3 +162,10 @@ Int_t HftMatchedTree::Make()
 
    return kStOK;
 }
+
+
+/** Clear the container for the next event. */
+void HftMatchedTree::Clear(Option_t *opt)
+{
+   fEvent->Clear();
+}

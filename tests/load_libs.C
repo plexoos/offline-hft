@@ -27,4 +27,5 @@
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStIstDbMaker");
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStHftPoolEventT");
    gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStHftPoolHftMatchedTree");
+   gSystem->Load("$OFFLINE_HFT_DIR/.$STAR_HOST_SYS/lib/libStiScan");
 }
