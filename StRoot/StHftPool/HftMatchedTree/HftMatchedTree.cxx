@@ -18,8 +18,8 @@ ClassImp(HftMatchedTree)
 
 HftMatchedTree::HftMatchedTree(const Char_t *name) : StMaker(name),
    fTree(new TTree("t", "TTree with HFT hits and tracks")),
-   fEvent(0),
-   fFile(0),
+   fEvent(nullptr),
+   fFile(nullptr),
    fMinNoHits(0),
    fpCut(0)
 {
@@ -31,9 +31,9 @@ HftMatchedTree::~HftMatchedTree()
 {
    if (fFile) fFile->Close();
 
-   delete fFile; fFile = 0;
-   delete fTree; fTree = 0;
-   delete fEvent; fEvent = 0;
+   delete fFile; fFile = nullptr;
+   delete fTree; fTree = nullptr;
+   delete fEvent; fEvent = nullptr;
 }
 
 
@@ -151,7 +151,7 @@ void HftMatchedTree::SetTree()
 
 Int_t HftMatchedTree::Make()
 {
-   // Fill the rest of event with information from StEvent
+   // Fill the event with information from StEvent
    StEvent *stEvent = (StEvent*) GetInputDS("StEvent");
 
    LOG_DEBUG << "stEvent id: " << stEvent->id() << endm;

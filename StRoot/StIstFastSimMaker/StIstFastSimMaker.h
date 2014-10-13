@@ -1,4 +1,4 @@
-/* $Id: StIstFastSimMaker.h,v 1.8 2014/10/13 22:28:18 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.h,v 1.9 2014/10/13 22:33:04 smirnovd Exp $ */
 
 #ifndef STAR_StIstFastSimMaker
 #define STAR_StIstFastSimMaker
@@ -41,7 +41,7 @@ class StIstFastSimMaker : public StMaker {
 
   virtual const char *GetCVS() const
   {
-    static const char cvs[]="Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.8 2014/10/13 22:28:18 smirnovd Exp $ built "__DATE__" "__TIME__ ; 
+    static const char cvs[]="Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.9 2014/10/13 22:33:04 smirnovd Exp $ built "__DATE__" "__TIME__ ; 
     return cvs;
   }
 
@@ -54,7 +54,7 @@ class StIstFastSimMaker : public StMaker {
 
   Double_t resXIst1;
   Double_t resZIst1;
-  Int_t mSmear; //to turn smearing on and off
+  bool     mSmear; //to turn smearing on and off
 
   ClassDef(StIstFastSimMaker, 0)
 };
@@ -65,6 +65,9 @@ class StIstFastSimMaker : public StMaker {
 /***************************************************************************
 *
 * $Log: StIstFastSimMaker.h,v $
+* Revision 1.9  2014/10/13 22:33:04  smirnovd
+* Minor adjustments to the code and comments
+*
 * Revision 1.8  2014/10/13 22:28:18  smirnovd
 * Do not use automatic ROOT I/O as this is a StMaker. Makers are not persistent
 *
