@@ -36,6 +36,39 @@ an StRoot subdirectory in it. And
 be saved
 
 
+How to compile HFT libraries from STAR CVS repository
+=====================================================
+
+Setup the environment and prepare directories
+
+    starver dev
+    mkdir star-soft
+    cd star-soft
+
+    cvs checkout -d star-offline-hft offline/hft
+
+The following submodules can be copied to your local StRoot but you may chose to
+link to them instead
+
+    mkdir StRoot
+    cd StRoot
+    ln -s ../star-offline-hft/StRoot/StHftPool
+    ln -s ../star-offline-hft/StRoot/StiScan
+
+If desired other CVS modules from star-offline-hft can be linked in a similar
+way. Some official modules in CVS have changes not in the repository. One can
+copy them from the following locations:
+
+    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StarGenerator .
+    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StiMaker .
+    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/Sti .
+
+    cd ..
+    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
+
+The `cons` builder will place the libraries in the local `.slXX_gccXXX` directory.
+
+
 How to compile HFT libraries from git repository
 ================================================
 
@@ -113,7 +146,7 @@ tools. This section explains how to build them as standalone executables.
 Assuming the commands from the "How to compile HFT libraries..." section above
 have been executed one can do:
 
-    cd ~/star-soft
+    cd star-soft
     mkdir build
     cd build
     cmake ../star-offline-hft
