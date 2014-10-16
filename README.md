@@ -59,9 +59,10 @@ If desired other CVS modules from star-offline-hft can be linked in a similar
 way. Some official modules in CVS have changes not in the repository. One can
 copy them from the following locations:
 
-    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StarGenerator .
-    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StiMaker .
-    cp -r /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/Sti .
+    cp -r -L /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StarGenerator .
+    cp -r -L /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StiMaker .
+    cp -r -L /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/Sti .
+    cp -r -L /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StBFChain .
 
     cd ..
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
@@ -75,22 +76,12 @@ How to compile HFT libraries from git repository
     git clone https://github.com/plexoos/star-soft.git
     cd star-soft
     git submodule init
-    git submodule update --remote
-    ./install.sh ./
-    cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
-
-The `cons` builder will place the libraries in the local `./.slXX_gccXXX` directory.
-
-If desired one can switch to an experimental branch and recompile. The commands
-are identical to the above except one need to checkout the `hft-dev` branch:
-
-    git clone https://github.com/plexoos/star-soft.git
-    cd star-soft
-    git submodule init
     git checkout hft-dev
     git submodule update --remote
-    ./install.sh ./
+    ./install.sh ./ stiscan
     cons EXTRA_CXXFLAGS="-I${OPTSTAR}/include"
+
+The `cons` builder will place the libraries in the local `.slXX_gccXXX` directory.
 
 
 How to run tests
