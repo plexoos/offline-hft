@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.5 2014/09/30 18:00:10 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.6 2014/11/10 14:46:37 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.6  2014/11/10 14:46:37  zhoulong
+ * Fixed delete spa_strip table issue
+ *
  * Revision 1.5  2014/09/30 18:00:10  zhoulong
  * Fixed alot of issue, and remove histograms, ntuple.
  *
@@ -82,7 +85,7 @@ const Int_t StSstDaqMaker::ReadOutMap[128] = {
 };
 //-----------------------------------------------
 StSstDaqMaker::StSstDaqMaker(const Char_t *name)
-  : StRTSBaseMaker("sst", name)
+  : StRTSBaseMaker("sst", name),spa_strip(0)
 {
 }
 //-----------------------------------------------
@@ -459,10 +462,11 @@ void StSstDaqMaker::DecodeRawWords(UInt_t *val, Int_t vallength, Int_t channel)
     Int_t count              = 0;
 
     //initialize St_spa_strip and St_ssdPedStrip table.
-    St_spa_strip *spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
+    //St_spa_strip *spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
+    spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
     if(!spa_strip) {
-        spa_strip   = new St_spa_strip("spa_strip",vallength);
-        m_DataSet->Add(spa_strip);
+      spa_strip   = new St_spa_strip("spa_strip",vallength);
+      m_DataSet->Add(spa_strip);
     }
 
     spa_strip_st   out_strip;
@@ -579,7 +583,7 @@ void StSstDaqMaker::DecodeRawWords(UInt_t *val, Int_t vallength, Int_t channel)
         LOG_DEBUG << "Make()/  spa_strip->NRows= " << spa_strip->GetNRows() << endm;
       }
     }
-    delete spa_strip;
+    //delete spa_strip;
 }
 //-------------------------------------------------
 void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t channel)
@@ -596,10 +600,11 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
     Int_t readout          = 0;
     Int_t ladder           = 0;
     LOG_INFO<<"Current Event data length : "<<vallength<<endm;
-    St_spa_strip *spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
+    //St_spa_strip *spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
+    spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
     if(!spa_strip) {
-        spa_strip   = new St_spa_strip("spa_strip", vallength);
-        m_DataSet->Add(spa_strip);
+      spa_strip   = new St_spa_strip("spa_strip", vallength);
+      m_DataSet->Add(spa_strip);
     }
 
     spa_strip_st  out_strip;
@@ -666,7 +671,7 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
         LOG_DEBUG << "Make()/  spa_strip->NRows= " << spa_strip->GetNRows() << endm;
       } 
     }
-    delete spa_strip;
+    //delete spa_strip;
 }
 
 //-------------------------------------------------
@@ -753,4 +758,13 @@ Int_t StSstDaqMaker::Finish()
 {
   LOG_INFO << Form("Finish()") << endm;
   return kStOK;
+}
+//------------------------------------------------
+void StSstDaqMaker::Clear(const Option_t*)
+{
+  if(spa_strip){
+    delete spa_strip;
+    spa_strip = 0;
+  }
+  return StMaker::Clear();
 }

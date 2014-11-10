@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.5 2014/09/30 18:00:10 zhoulong Exp $
+ * $Id: StSstDaqMaker.h,v 1.6 2014/11/10 14:46:37 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.6  2014/11/10 14:46:37  zhoulong
+ * Fixed delete spa_strip table issue
+ *
  * Revision 1.5  2014/09/30 18:00:10  zhoulong
  * Fixed alot of issue, and remove histograms, ntuple.
  *
@@ -43,9 +46,10 @@ class StSstDaqMaker : public StRTSBaseMaker {
   virtual Int_t Init();
   virtual Int_t InitRun(Int_t runumber);
   virtual Int_t Make();
+  void Clear(const Option_t* = "");
   virtual Int_t Finish();
   virtual const char *GetCVS() const {
-	  static const char cvs[]="Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.5 2014/09/30 18:00:10 zhoulong Exp $ built "__DATE__" "__TIME__; 
+	  static const char cvs[]="Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.6 2014/11/10 14:46:37 zhoulong Exp $ built "__DATE__" "__TIME__; 
 	  return cvs;
 	}
 
@@ -63,6 +67,7 @@ private:
   void   PrintConfiguration(Int_t runumber,ssdConfiguration_st *config);
 
   StSsdConfig*  mConfig;
+  St_spa_strip *spa_strip;
   UInt_t* mRdoData;
   Int_t   mRdoDataLength;
   UInt_t* mHeaderData;
@@ -145,4 +150,3 @@ private:
 };
 
 #endif
- 
