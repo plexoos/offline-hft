@@ -2,43 +2,31 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
+- [How to compile HFT libraries from STAR CVS repository](#how-to-compile-hft-libraries-from-star-cvs-repository)
 - [How to compile HFT libraries from git repository](#how-to-compile-hft-libraries-from-git-repository)
 - [How to run tests](#how-to-run-tests)
 - [How to produce and reconstruct massive simulation for HFT ](#how-to-produce-and-reconstruct-massive-simulation-for-hft)
 - [How to build and run standalone HFT tools](#how-to-build-and-run-standalone-hft-tools)
+  - [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
 - [How to add PXL pileup events](#how-to-add-pxl-pileup-events)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-This project contains the code developed to support the offline reconstruction
-and analysis of the data collected by the STAR experiment at RHIC and by the
-Heavy Flavor Tracker (HFT) in particular. In the STAR CVS repository the
-corresponding code can be found in 'offline/hft'. The subdirectories (StRoot,
-...) include new submodules along with modified sources of the respective HEAD
-versions. Once tested the new classes and changes to the existing ones are moved
-to the official StRoot area.
-
-
-Prerequisites: Setting up the environment
-=========================================
-
-In the following we assume the work is being done in the standard STAR
-environment available on the interactive RCAS nodes.
-
-Some pieces of the package rely on a couple of additional environment variables:
-
-`OFFLINE_HFT_DIR` should contain the path to the local working directory with
-an StRoot subdirectory in it. And
-
-`OFFLINE_HFT_RESULTS_DIR` can contain any path to where the output results will
-be saved
+This goal of this project is to support the offline reconstruction and analysis
+of the data collected by the STAR experiment at RHIC and by the Heavy Flavor
+Tracker (HFT) in particular. In the STAR CVS repository the corresponding codes
+can be found in the 'StRoot/' and 'offline/hft/' directories. While the former
+contains submodules which are regularly compiled and included in the official
+STAR releases, the latter contains modules which are not included in the
+official 'StRoot/' area and thus, need to be compiled by the user.
 
 
 How to compile HFT libraries from STAR CVS repository
 =====================================================
 
+In order to use the code in the 'offline/hft/' modules one has to move it
+to a local 'StRoot/' directory.
 Setup the environment and prepare directories
 
     starver dev
@@ -47,7 +35,7 @@ Setup the environment and prepare directories
 
     cvs checkout -d star-offline-hft offline/hft
 
-The following submodules can be copied to your local StRoot but you may chose to
+From the The following submodules can be copied to your local StRoot but you may chose to
 link to them instead
 
     mkdir StRoot
@@ -55,8 +43,10 @@ link to them instead
     ln -s ../star-offline-hft/StRoot/StHftPool
     ln -s ../star-offline-hft/StRoot/StiScan
 
-If desired other CVS modules from star-offline-hft can be linked in a similar
-way. Some official modules in CVS have changes not in the repository. One can
+If desired other CVS modules from `star-offline-hft/` can be linked in a similar
+way.
+
+Some official modules in CVS have changes not in the repository. One can
 copy them from the following locations:
 
     cp -r -L /star/institutions/bnl_me/smirnovd/public/star-soft/StRoot/StarGenerator .
@@ -134,6 +124,26 @@ How to build and run standalone HFT tools
 
 To help with Sti geometry debugging and implementation we developed a number of
 tools. This section explains how to build them as standalone executables.
+
+
+Prerequisites: Setting up the environment
+-----------------------------------------
+
+In the following we assume the work is being done in the standard STAR
+environment available on the interactive RCAS nodes.
+
+Some pieces of the package rely on a couple of additional environment variables:
+
+`OFFLINE_HFT_DIR` should contain the path to the local working directory with
+an StRoot subdirectory in it. And
+
+`OFFLINE_HFT_RESULTS_DIR` can contain any path to where the output results will
+be saved
+
+
+    cd StRoot
+    ln -s ../star-offline-hft/StRoot/StiScan
+
 Assuming the commands from the "How to compile HFT libraries..." section above
 have been executed one can do:
 
