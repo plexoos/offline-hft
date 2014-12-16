@@ -131,32 +131,6 @@ void hft_display(PrgOptionProcessor &poProc, const double B)
 }
 
 
-void hft_display(PrgOptionProcessor &poProc, const double B, const Int_t runnumber)
-{
-   //loadStatus(runnumber);
-
-   TChain *myTreeFileChain = poProc.GetHftChain();
-   char inname[100];
-   sprintf(inname, "output/Event_%d.root", runnumber);
-   myTreeFileChain->AddFile(inname);
-   std::cout << " Total number of events = " << myTreeFileChain->GetEntries() << std::endl;
-   gHftGuiEventCounter = 0;
-
-   eventT = new EventT();
-   myTreeFileChain->SetBranchAddress("e.", &eventT);
-
-   // Create views and containers
-   make_geometry(poProc);
-
-   init(B);
-
-   build_gui(*myTreeFileChain);
-   process_event(*myTreeFileChain, gHftGuiEventCounter);
-
-   gEve->Redraw3D(kTRUE);
-}
-
-
 void loadStatus(const int runnumber)
 {
    // Read in the status - maybe moved int othe loop when loading multiple runs
