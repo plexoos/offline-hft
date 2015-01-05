@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.7 2015/01/05 21:58:48 smirnovd Exp $
+ * $Id: StSstDaqMaker.h,v 1.8 2015/01/05 21:58:56 smirnovd Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.8  2015/01/05 21:58:56  smirnovd
+ * Do not use automatic ROOT I/O as this is a StMaker. Makers are not persistent
+ *
  * Revision 1.7  2015/01/05 21:58:48  smirnovd
  * StSstDaqMaker/: Updated style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
  *
@@ -53,7 +56,7 @@ public:
    void Clear(const Option_t * = "");
    virtual Int_t Finish();
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.7 2015/01/05 21:58:48 smirnovd Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.8 2015/01/05 21:58:56 smirnovd Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
@@ -150,7 +153,7 @@ private:
    static const Int_t   RDO2LADDER[5][8];//Ladder cards number in each RDO channel .
    static const Int_t   ReadOutMap[128];
 
-   ClassDef(StSstDaqMaker, 1)
+   ClassDef(StSstDaqMaker, 0)
 };
 
 #endif
