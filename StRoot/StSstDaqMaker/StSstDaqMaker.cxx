@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.8 2015/01/05 22:07:23 smirnovd Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.9 2015/01/05 22:07:31 smirnovd Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,11 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.9  2015/01/05 22:07:31  smirnovd
+ * StSstDaqMaker: Use STAR framework return codes
+ *
+ * In this case we better return an error code
+ *
  * Revision 1.8  2015/01/05 22:07:23  smirnovd
  * StSstDaqMaker: Removed quite pointless overriding methods
  *
@@ -109,14 +114,14 @@ Int_t StSstDaqMaker::InitRun(Int_t runumber)
 
    if (!configuration) {
       LOG_ERROR << "InitRun(" << runumber << ") - ERROR - ssdConfiguration==0" << endm;
-      return 0;
+      return kStErr;
    }
 
    ssdConfiguration_st *config  = (ssdConfiguration_st *) configuration->GetTable() ;
 
    if (!config) {
       LOG_ERROR << "InitRun(" << runumber << ") - ERROR - config==0" << endm;
-      return 0;
+      return kStErr;
    }
 
    mConfig = new StSsdConfig();
