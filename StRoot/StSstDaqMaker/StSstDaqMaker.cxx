@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.7 2015/01/05 21:58:48 smirnovd Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.8 2015/01/05 22:07:23 smirnovd Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.8  2015/01/05 22:07:23  smirnovd
+ * StSstDaqMaker: Removed quite pointless overriding methods
+ *
  * Revision 1.7  2015/01/05 21:58:48  smirnovd
  * StSstDaqMaker/: Updated style with astyle -s3 -p -H -A3 -k3 -O -o -y -Y -f
  *
@@ -151,12 +154,7 @@ Int_t StSstDaqMaker::InitRun(Int_t runumber)
    return kStOK;
 }
 
-//-----------------------------------------------
-Int_t StSstDaqMaker::Init()
-{
-   LOG_INFO << "StSstDaqMaker initialization..." << endm;
-   return kStOk;
-}
+
 //-------------------------------------------------
 Int_t StSstDaqMaker::Make()
 {
@@ -860,12 +858,6 @@ void StSstDaqMaker::PrintConfiguration(Int_t runumber, ssdConfiguration_st *conf
 
    LOG_INFO << endm;
    LOG_INFO << "totLadderActive = " << totladderPresent << endm;
-}
-//------------------------------------------------
-Int_t StSstDaqMaker::Finish()
-{
-   LOG_INFO << Form("Finish()") << endm;
-   return kStOK;
 }
 //------------------------------------------------
 void StSstDaqMaker::Clear(const Option_t *)

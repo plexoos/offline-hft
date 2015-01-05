@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.8 2015/01/05 21:58:56 smirnovd Exp $
+ * $Id: StSstDaqMaker.h,v 1.9 2015/01/05 22:07:23 smirnovd Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.9  2015/01/05 22:07:23  smirnovd
+ * StSstDaqMaker: Removed quite pointless overriding methods
+ *
  * Revision 1.8  2015/01/05 21:58:56  smirnovd
  * Do not use automatic ROOT I/O as this is a StMaker. Makers are not persistent
  *
@@ -50,13 +53,11 @@ class StSstDaqMaker : public StRTSBaseMaker
 public:
    StSstDaqMaker(const char *name = "sst_raw");
    virtual ~StSstDaqMaker();
-   virtual Int_t Init();
    virtual Int_t InitRun(Int_t runumber);
    virtual Int_t Make();
    void Clear(const Option_t * = "");
-   virtual Int_t Finish();
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.8 2015/01/05 21:58:56 smirnovd Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.9 2015/01/05 22:07:23 smirnovd Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
