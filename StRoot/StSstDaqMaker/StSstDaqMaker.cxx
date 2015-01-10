@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.9 2015/01/05 22:07:31 smirnovd Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.10 2015/01/10 20:18:18 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.10  2015/01/10 20:18:18  zhoulong
+ * 1>remove constant shift. 2>fixed delete pedestal table issue
+ *
  * Revision 1.9  2015/01/05 22:07:31  smirnovd
  * StSstDaqMaker: Use STAR framework return codes
  *
@@ -189,7 +192,7 @@ Int_t StSstDaqMaker::Make()
       LOG_INFO << "Found sst Pedestal Run data at " << hex << mRdoData
                << dec << " , length in byte: " << mRdoDataLength << endm;
       Int_t flag = 0;
-      St_ssdPedStrip *ssdPedStrip = (St_ssdPedStrip *) m_DataSet->Find("ssdPedStrip");
+      ssdPedStrip = (St_ssdPedStrip *) m_DataSet->Find("ssdPedStrip");
 
       if (!ssdPedStrip) {
          ssdPedStrip = new St_ssdPedStrip("ssdPedStrip", nSstStripsPerWafer * nSstWaferPerLadder);
@@ -239,7 +242,7 @@ Int_t StSstDaqMaker::Make()
                //wafer
                Int_t s = c_correct;
                FindStripNumber(s);
-               mPed  = (Float_t)f->ped[h][c_correct];
+               mPed  = (Float_t)f->ped[h][c_correct] - 375; //Pedestal from data have a constant shift (375)
                mRms  = (Float_t)f->rms[h][c_correct] / 16.;
                strip_number = s + 1;
 
@@ -287,7 +290,7 @@ Int_t StSstDaqMaker::Make()
          }
       }
 
-      delete ssdPedStrip;
+      //delete ssdPedStrip;
    }
 
    return kStOk;
@@ -870,6 +873,11 @@ void StSstDaqMaker::Clear(const Option_t *)
    if (spa_strip) {
       delete spa_strip;
       spa_strip = 0;
+   }
+
+   if(ssdPedStrip){
+     delete ssdPedStrip;
+     ssdPedStrip = 0;
    }
 
    return StMaker::Clear();

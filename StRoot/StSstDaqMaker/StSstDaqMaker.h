@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.9 2015/01/05 22:07:23 smirnovd Exp $
+ * $Id: StSstDaqMaker.h,v 1.10 2015/01/10 20:18:18 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.10  2015/01/10 20:18:18  zhoulong
+ * 1>remove constant shift. 2>fixed delete pedestal table issue
+ *
  * Revision 1.9  2015/01/05 22:07:23  smirnovd
  * StSstDaqMaker: Removed quite pointless overriding methods
  *
@@ -57,7 +60,7 @@ public:
    virtual Int_t Make();
    void Clear(const Option_t * = "");
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.9 2015/01/05 22:07:23 smirnovd Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.10 2015/01/10 20:18:18 zhoulong Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
@@ -76,6 +79,7 @@ private:
 
    StSsdConfig  *mConfig;
    St_spa_strip *spa_strip;
+   St_ssdPedStrip* ssdPedStrip;
    UInt_t *mRdoData;
    Int_t   mRdoDataLength;
    UInt_t *mHeaderData;
