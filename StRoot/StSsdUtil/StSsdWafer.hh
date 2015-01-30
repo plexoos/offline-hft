@@ -1,6 +1,9 @@
-// $Id: StSsdWafer.hh,v 1.1 2015/01/29 20:16:49 bouchet Exp $
+// $Id: StSsdWafer.hh,v 1.2 2015/01/30 14:15:39 bouchet Exp $
 //
 // $Log: StSsdWafer.hh,v $
+// Revision 1.2  2015/01/30 14:15:39  bouchet
+// TGeoHMatrix columns ordering corrected
+//
 // Revision 1.1  2015/01/29 20:16:49  bouchet
 // SSD utils for hit reconstruction
 //
@@ -82,14 +85,14 @@ class StSsdWafer: public TGeoHMatrix {
   StSsdWafer(const StSsdWafer & originalWafer);
   StSsdWafer& operator=(const StSsdWafer originalWafer);
 
-  void              init(Int_t rId, Double_t *rD, Double_t *rT, Double_t *rN, Double_t *rX);
+  void init(Int_t rId, Double_t *rD, Double_t *rN, Double_t *rT, Double_t *rX);
 
   void setID(Int_t i){mId = i;}
   void setDriftDirection(Double_t x1, Double_t x2, Double_t x3)      
   {Double_t *r = GetRotationMatrix();  r[0] = x1; r[3] = x2; r[6] = x3;}
-  void setTransverseDirection(Double_t x1, Double_t x2, Double_t x3) 
+  void setNormalDirection(Double_t x1, Double_t x2, Double_t x3) 
   {Double_t *r = GetRotationMatrix();  r[1] = x1; r[4] = x2; r[7] = x3;}
-  void setNormalDirection(Double_t x1, Double_t x2, Double_t x3)     
+  void setTransverseDirection(Double_t x1, Double_t x2, Double_t x3)     
   {Double_t *r = GetRotationMatrix();  r[2] = x1; r[5] = x2; r[8] = x3;}
   void setCenterPosition(Double_t x1, Double_t x2, Double_t x3)  {Double_t *t = GetTranslation(); t[0] = x1; t[1] = x2; t[2] = x3;}
   StSsdClusterList* getClusterP() { return mClusterP; } //!< Returns the P-side cluster list attached to this wafer
@@ -104,8 +107,8 @@ class StSsdWafer: public TGeoHMatrix {
   Int_t             getIdWafer()  { return mId; } 
   Int_t             getId()       {return getIdWafer();}
   Double_t d(Int_t i){Double_t *r = GetRotationMatrix(); return r[3*i];  }
-  Double_t t(Int_t i){Double_t *r = GetRotationMatrix(); return r[3*i+1];}
-  Double_t n(Int_t i){Double_t *r = GetRotationMatrix(); return r[3*i+2];}
+  Double_t n(Int_t i){Double_t *r = GetRotationMatrix(); return r[3*i+1];}
+  Double_t t(Int_t i){Double_t *r = GetRotationMatrix(); return r[3*i+2];}
   Double_t x(Int_t i){Double_t *t = GetTranslation();    return t[i];    }
 
   void              addCluster(StSsdCluster *ptr, Int_t iSide); //!< Attaches the ptr cluster on the iSide of the wafer
