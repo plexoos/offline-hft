@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.10 2015/01/10 20:18:18 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.11 2015/02/02 22:58:31 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.11  2015/02/02 22:58:31  zhoulong
+ * Corrected the default ordering issue
+ *
  * Revision 1.10  2015/01/10 20:18:18  zhoulong
  * 1>remove constant shift. 2>fixed delete pedestal table issue
  *
@@ -611,12 +614,12 @@ void StSstDaqMaker::DecodeRawWords(UInt_t *val, Int_t vallength, Int_t channel)
 
          if (id_side == 0) {
             id_wafer[n] = 7000 + 100 * (nSstWaferPerLadder - wafer[n]) + ladder + 1;
+	    strip_number[n] = strip[n] + 1; //strip[n]+1 . in mapping, strip[1-128];
          }
          else {
             id_wafer[n] = 7000 + 100 * ((wafer[n]) + 1) + ladder + 1;
+	    strip_number[n] = nSstStripsPerWafer - strip[n];	
          }
-
-         strip_number[n] = strip[n] + 1; //strip[n]+1 . in mapping, strip[1-128];
 
          out_strip.id          = count;
          out_strip.adc_count   = data[n];
@@ -718,12 +721,14 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
 
       if (id_side == 0) {
          id_wafer = 7000 + 100 * (nSstWaferPerLadder - wafer) + ladder + 1;
+	 strip_number = strip + 1;
       }
       else {
          id_wafer = 7000 + 100 * ((wafer) + 1) + ladder + 1;
+	 strip_number = nSstStripsPerWafer - strip;	
       }
 
-      strip_number = strip + 1;
+
       out_strip.id          = count;
       out_strip.adc_count   = data;
       out_strip.id_strip    = 10000 * (10 * strip_number + id_side) + id_wafer;
