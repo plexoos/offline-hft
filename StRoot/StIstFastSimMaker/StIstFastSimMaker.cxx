@@ -1,4 +1,4 @@
-/* $Id: StIstFastSimMaker.cxx,v 1.13 2015/02/02 14:14:19 ypwang Exp $ */
+/* $Id: StIstFastSimMaker.cxx,v 1.14 2015/02/02 14:37:17 ypwang Exp $ */
 
 #include "Stiostream.h"
 #include "StIstFastSimMaker.h"
@@ -64,9 +64,9 @@ Int_t StIstFastSimMaker::InitRun(int runNo)
 
    // geometry Db tables
    mIstRot = mIstDb->getRotations();
-   if (mIstRot) {
-      LOG_ERROR << "InitRun : mIstRot is not initialized" << endm;
-      return kStErr;
+   if (!mIstRot) {
+      LOG_FATAL << "InitRun : mIstRot is not initialized" << endm;
+      return kStFatal;
    }
 
    return kStOk;
@@ -225,6 +225,9 @@ Double_t StIstFastSimMaker::distortHit(const Double_t x, const Double_t res, con
 /***************************************************************************
 *
 * $Log: StIstFastSimMaker.cxx,v $
+* Revision 1.14  2015/02/02 14:37:17  ypwang
+* minor update for mIstRot initialization check
+*
 * Revision 1.13  2015/02/02 14:14:19  ypwang
 * STAR Coding Standards style upates according to Jason W. comments
 *
