@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.10 2015/01/10 20:18:18 zhoulong Exp $
+ * $Id: StSstDaqMaker.h,v 1.11 2015/02/04 22:27:33 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.11  2015/02/04 22:27:33  zhoulong
+ * merged DAQ maker for Run14 and Run15.
+ *
  * Revision 1.10  2015/01/10 20:18:18  zhoulong
  * 1>remove constant shift. 2>fixed delete pedestal table issue
  *
@@ -50,6 +53,10 @@ class St_ssdPedStrip;
 class StSsdConfig;
 class St_ssdConfiguration;
 class ssdConfiguration_st;
+class St_ssdStripCalib;
+class St_ssdNoise;
+class St_ssdChipCorrect;
+class ssdChipCorrect_st;
 
 class StSstDaqMaker : public StRTSBaseMaker
 {
@@ -59,8 +66,9 @@ public:
    virtual Int_t InitRun(Int_t runumber);
    virtual Int_t Make();
    void Clear(const Option_t * = "");
+   virtual Int_t Finish();
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.10 2015/01/10 20:18:18 zhoulong Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.11 2015/02/04 22:27:33 zhoulong Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
@@ -69,6 +77,7 @@ private:
    void   DecodeRdoData();
    void   DecodeHitsData();
    void   DecodeRawWords(UInt_t *val, int vallength, int channel);
+   void   DecodeRawWords_r15(UInt_t *val, int vallength, int channel);
    void   DecodeCompressedWords(UInt_t *val, int valength, int channel);
    UInt_t Mid(Int_t start, Int_t end, UInt_t input);
    Int_t  Shift(int runnumber, int &channel);
@@ -76,10 +85,32 @@ private:
    void   FindStripNumber(int &strip);
    void   DeclareNTuple();
    void   PrintConfiguration(Int_t runumber, ssdConfiguration_st *config);
+   void   FillData(vector<vector<int> > vadc, vector<vector<float> > vcmnoise, Int_t id_side, Int_t ladder, Int_t valength);
+   Float_t CalculateCommonModeNoise(vector<int> vtemp);
+   Float_t CalculateCommonModeNoiseSimple(vector<int> vtemp);
+   void   FillReadOutPedTable();
+   void   FillDefaultReadOutPedTable();
+   void   FillNoiseTable();
+   void   FillDefaultNoiseTable();
+   void   FillChipNoiseTable();
+   void   FillDefaultChipNoiseTable();
+   Int_t  idWaferToWafer(Int_t idWafer);
+   Int_t  idWaferToLadderNumb(Int_t idWafer);
 
-   StSsdConfig  *mConfig;
-   St_spa_strip *spa_strip;
-   St_ssdPedStrip* ssdPedStrip;
+   StSsdConfig       *mConfig;
+   St_ssdChipCorrect* mChipCorrect;//!< Pointer to the ssdChipCorrectio table (noise status)) 
+   St_spa_strip      *spa_strip;
+   St_ssdPedStrip    *ssdPedStrip;
+   St_ssdStripCalib  *strip_calib;
+   St_ssdNoise       *mNoise;
+   ssdChipCorrect_st *chip_correct;
+
+   Int_t   mUseChipCorrect;
+   Int_t   mUsePedSubtraction;
+   Int_t   mUseIntrinsicNoise;
+   Int_t   mReverse; //reverse Wafer and Strip ordering
+   Int_t   mReverseChip; // Reverse readout mapping.
+   Int_t   mDynamicMask; // Dynamic Masking hot chip.
    UInt_t *mRdoData;
    Int_t   mRdoDataLength;
    UInt_t *mHeaderData;
@@ -105,8 +136,11 @@ private:
    Int_t   mEventnumber;
    Int_t   mEventrunumber;
    Int_t   mEventTime;// Current event RHIC clock
-   Int_t   mPEventTime;// Previous event RHIC clock
-
+   Int_t   mPEventTime;// Previous event RHIC cloc
+   Int_t   mCorrectFactor[1920][2]; //chip correction table.
+   Int_t   mNoiseCut[1920][2]; //Reject Noise.
+   map<Int_t, Int_t> mReadOutPed; //ReadOut Pedestal.
+   map<Int_t, Int_t> mIntrinsicRms; //Intrinsic Rms
    //DAQ File parameters(please look at the SSD data formata document. )
    static const UInt_t  HEADER_LENGTH       = 8;
    static const UInt_t  FIBER_HEADER_LENGTH = 10;
@@ -154,7 +188,9 @@ private:
    static const Int_t   nSstLadder          = 20;
    static const Int_t   nSstFiberPerRdo     = 8;
    static const Int_t   nSstWaferPerLadder  = 16;
+   static const Int_t   nSstChipPerWafer    = 6;
    static const Int_t   nSstStripsPerWafer  = 768;
+   static const Int_t   nSstStripsPerChip   = 128;
    static const Int_t   RDO2LADDER[5][8];//Ladder cards number in each RDO channel .
    static const Int_t   ReadOutMap[128];
 
