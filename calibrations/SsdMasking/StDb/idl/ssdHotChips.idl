@@ -1,0 +1,10 @@
+/* ssdHotChips.idl
+ *
+ * Table: ssdHotChips
+ *
+ * description: hot chips mask
+ *
+ */
+struct ssdHotChips {
+  unsigned long hotChip[3840]; /* side*2000 + ladder[0-19]*96 wafer[0-15]*6 + chip[1-6]*/
+};
