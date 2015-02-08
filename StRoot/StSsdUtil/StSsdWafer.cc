@@ -1,8 +1,11 @@
 
 
-// $Id: StSsdWafer.cc,v 1.1 2015/01/29 20:16:48 bouchet Exp $
+// $Id: StSsdWafer.cc,v 1.2 2015/02/08 17:18:36 bouchet Exp $
 //
 // $Log: StSsdWafer.cc,v $
+// Revision 1.2  2015/02/08 17:18:36  bouchet
+// cuts for clusterFinder (re)based on strip signal/noise ; doCleanListStrip (re)used
+//
 // Revision 1.1  2015/01/29 20:16:48  bouchet
 // SSD utils for hit reconstruction
 //
@@ -72,8 +75,6 @@
 #include <Stiostream.h>
 #include "TMath.h"
 #include "StMessMgr.h"
-const Int_t THRESHOLD = 10; // with rms p ~rms n ~3 ADC ==> s/n>5 (old cut) gives signal > 15 ADC 
-
 //________________________________________________________________________________
 StSsdWafer::StSsdWafer(Int_t nid) : TGeoHMatrix(), mDebug(0) {
   memset(first, 0, last-first);
@@ -328,7 +329,7 @@ Int_t StSsdWafer::doFindCluster(StSsdClusterControl *clusterControl, Int_t iSide
   Int_t nCluster = 0;
   Int_t atTheEnd = 0;
 
-  //doCleanListStrip(CurrentStripList);
+  doCleanListStrip(CurrentStripList);
 
   StSsdStrip *CurrentStrip = CurrentStripList->first();
   StSsdStrip *ScanStrip  = 0;
@@ -339,8 +340,7 @@ Int_t StSsdWafer::doFindCluster(StSsdClusterControl *clusterControl, Int_t iSide
   
   while(CurrentStrip) 
     {
-      if(CurrentStrip->getDigitSig()>THRESHOLD)
-	//if((CurrentStrip->getDigitSig()>(clusterControl->getHighCut()*CurrentStrip->getSigma()))&&(CurrentStrip->getSigma()>0))
+      if((CurrentStrip->getDigitSig()>(clusterControl->getHighCut()*CurrentStrip->getSigma()))&&(CurrentStrip->getSigma()>0))
 	{
 	  LastScanStrip = 0;
 	  StSsdCluster *newCluster = new StSsdCluster(CurrentClusterList->getSize());
