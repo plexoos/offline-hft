@@ -1,6 +1,9 @@
-// $Id: StSsdStripList.cc,v 1.1 2015/01/29 20:16:47 bouchet Exp $
+// $Id: StSsdStripList.cc,v 1.2 2015/02/08 17:20:20 bouchet Exp $
 //
 // $Log: StSsdStripList.cc,v $
+// Revision 1.2  2015/02/08 17:20:20  bouchet
+// division by 16 of the strip noise removed (was used for 2005,2007 data)
+//
 // Revision 1.1  2015/01/29 20:16:47  bouchet
 // SSD utils for hit reconstruction
 //
@@ -251,7 +254,8 @@ void StSsdStripList::setPedestalSigma(Int_t iStrip, Int_t iPedestal, Int_t iSigm
 {
   const Int_t     NAdcChannel             = 1 << (dynamicControl->getnbitEncoding()); // 1 << x == 2^x 
   //  const Float_t   conversionFactor = (float)(NAdcChannel)/(dynamicControl->getadcDynamic()*dynamicControl->getnElectronInAMip());
-  const Float_t   conversionFactor = 1./16.;
+  //noise is real noise, no more conversion factor needed
+  const Float_t   conversionFactor = 1.;
   StSsdStrip *currentStrip=first(); 
   while((currentStrip) && (currentStrip->getNStrip()!=iStrip))
     currentStrip=next(currentStrip);
