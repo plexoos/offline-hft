@@ -1,6 +1,9 @@
-// $Id: StSsdPointMaker.cxx,v 1.1 2015/01/29 19:51:41 bouchet Exp $
+// $Id: StSsdPointMaker.cxx,v 1.2 2015/02/08 17:30:30 bouchet Exp $
 //
 // $Log: StSsdPointMaker.cxx,v $
+// Revision 1.2  2015/02/08 17:30:30  bouchet
+// read noise table aacording year and mode
+//
 // Revision 1.1  2015/01/29 19:51:41  bouchet
 // 1st revision of PointMaker for run 14 and beyond
 //
@@ -406,8 +409,7 @@ Int_t StSsdPointMaker::Make()
       mySsd->sortListStrip();
       PrintStripSummary(mySsd);
       noiseTableSize = 0; 
-      //noiseTableSize = ReadNoiseTable(mySsd,year);
-      noiseTableSize = mySsd->readNoiseDefault(mDynamicControl); //jb : test for simu
+      noiseTableSize = ReadNoiseTable(mySsd,year);
       LOG_INFO<<"####       NUMBER OF DB ENTRIES "<<noiseTableSize<<"       ####"<<endm;
       Int_t nClusterPerSide[2];
       nClusterPerSide[0] = 0;
