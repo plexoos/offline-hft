@@ -1,0 +1,16 @@
+/*ssdChipCorrect.idl
+*
+* Table: ssdChipCorrect
+*
+* Describtion: ssd chip correction factor.once per run
+*/
+
+struct ssdChipCorrect
+{
+  octet nLadder;             //0 to 19
+  octet nWafer;              //0 to 15
+  octet nChip;               //0 to 6 
+  octet nSide;               //0,1
+  unsigned short nCutPos;    //0 to 1024
+  unsigned short nCorrect;   //0 to 1024
+};
