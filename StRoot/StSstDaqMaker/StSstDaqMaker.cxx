@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.12 2015/02/04 22:27:33 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.13 2015/02/10 17:12:45 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.13  2015/02/10 17:12:45  zhoulong
+ * Fixed a bug, when I fill readout ped array.
+ *
  * Revision 1.12  2015/02/04 22:27:33  zhoulong
  * merged DAQ maker for Run14 and Run15.
  *
@@ -123,6 +126,7 @@ Int_t StSstDaqMaker::InitRun(Int_t runumber)
    mEventrunumber = runumber;
    mReverse = 0; // reverse=0 reverse P-side ; reverse=1 reverse N-side
    mReverseChip = 0; //0 -- Default(1-97), 1 -- Reverse(128-97) ;
+   mDynamicMask = 0; //0 -- Default, no Dynamic Masking, 1 -- with Dynamic Masking.
    mUseChipCorrect = 1;
    mUsePedSubtraction = 1;
    mUseIntrinsicNoise = 1;
@@ -1136,23 +1140,24 @@ Float_t StSstDaqMaker::CalculateCommonModeNoise(vector<int> vadc)
    Float_t sum     = 0;
    Float_t devcut  = 20; //deviation cut, default is 10 ADC
    Int_t   counter = 0;
-   //For Masking
-   TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
-   Float_t chipRms  = 0;
+   if(mDynamicMask) {
+     //For Masking
+     TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
+     Float_t chipRms  = 0;
 
-   for (int i = 1; i < 128; i++) { //index start from 1 is to avoid the edge effect.
-      hadc->Fill(vadc[i]);
+     for (int i = 1; i < 128; i++) { //index start from 1 is to avoid the edge effect.
+       hadc->Fill(vadc[i]);
+     }
+
+     chipRms = hadc->GetRMS();
+
+     if (chipRms > 15) {
+       hadc->Delete();
+       return 0.; //if Raw signal in one chip have very large RMS, we will mark it to bad
+     }
+
+     hadc->Delete();
    }
-
-   chipRms = hadc->GetRMS();
-
-   if (chipRms > 15) {
-      hadc->Delete();
-      return 0.; //if Raw signal in one chip have very large RMS, we will mark it to bad
-   }
-
-   hadc->Delete();
-
    //----------------------
    //Self-tunning algorithm
    for (int i = 17; i < 49; i++) {
@@ -1194,23 +1199,24 @@ Float_t StSstDaqMaker::CalculateCommonModeNoiseSimple(vector<int> vadc) //Simpli
    Float_t sum     = 0;
    Float_t devcut  = 20; //deviation cut, default is 10 ADC
    Int_t   counter = 0;
-   //For Masking
-   TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
-   Float_t chipRms  = 0;
+   if(mDynamicMask) {
+     //For Masking
+     TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
+     Float_t chipRms  = 0;
 
-   for (int i = 1; i < 128; i++) { //index start from 1 is to avoid the edge effect.
-      hadc->Fill(vadc[i]);
+     for (int i = 1; i < 128; i++) { //index start from 1 is to avoid the edge effect.
+       hadc->Fill(vadc[i]);
+     }
+
+     chipRms = hadc->GetRMS();
+
+     if (chipRms > 15) {
+       hadc->Delete();
+       return 0.; //if Raw signal in one chip have very large RMS, we will mark it to bad
+     }
+
+     hadc->Delete();
    }
-
-   chipRms = hadc->GetRMS();
-
-   if (chipRms > 15) {
-      hadc->Delete();
-      return 0.; //if Raw signal in one chip have very large RMS, we will mark it to bad
-   }
-
-   hadc->Delete();
-
    //------------------------------
    //upgraded Fix Threshold method.
    for (int i = 1; i < 128; i++) {
@@ -1259,7 +1265,7 @@ void StSstDaqMaker::FillReadOutPedTable()
       wafer   = idWaferToWafer(idwaf);
       ladder  = idWaferToLadderNumb(idwaf);
       side    = (noise[i].id - channel * 100000 - idwaf) / 10000;
-      index   = side * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + ladder * nSstWaferPerLadder * nSstStripsPerWafer + wafer * nSstStripsPerWafer + channel;
+      index   = side * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + ladder * nSstWaferPerLadder * nSstStripsPerWafer + wafer * nSstStripsPerWafer + channel - 1;
       ped     = noise[i].pedestals;
       mReadOutPed[index] = ped;
    }
