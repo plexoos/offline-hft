@@ -1,6 +1,9 @@
-// $Id: StSsdBarrel.cc,v 1.1 2015/01/29 20:16:37 bouchet Exp $
+// $Id: StSsdBarrel.cc,v 1.2 2015/02/12 15:25:24 bouchet Exp $
 //
 // $Log: StSsdBarrel.cc,v $
+// Revision 1.2  2015/02/12 15:25:24  bouchet
+// pedestal and rms in ssdStripCalib coded as short
+//
 // Revision 1.1  2015/01/29 20:16:37  bouchet
 // SSD utils for hit reconstruction
 //
@@ -271,8 +274,8 @@ Int_t  StSsdBarrel::writeNoiseToFile(St_spa_strip *spa_strip){
   for (Int_t i = 0 ; i < spa_strip->GetNRows(); i++)
     {
       noise_strip.id=strip[i].id_strip;
-      noise_strip.pedestals=(unsigned char) strip[i].id_mchit[0];
-      noise_strip.rms=(unsigned char) strip[i].adc_count;
+      noise_strip.pedestals=(short) strip[i].id_mchit[0];
+      noise_strip.rms=(short) strip[i].adc_count;
       stripCal->AddAt(&noise_strip);
     }
   TFile f1("ssdStripCalib.root","NEW");
