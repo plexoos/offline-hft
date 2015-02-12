@@ -1,6 +1,9 @@
-// $Id: StSsdPointMaker.cxx,v 1.2 2015/02/08 17:30:30 bouchet Exp $
+// $Id: StSsdPointMaker.cxx,v 1.3 2015/02/12 15:24:25 bouchet Exp $
 //
 // $Log: StSsdPointMaker.cxx,v $
+// Revision 1.3  2015/02/12 15:24:25  bouchet
+// protection against missing spa_strip when writing pedestal file
+//
 // Revision 1.2  2015/02/08 17:30:30  bouchet
 // read noise table aacording year and mode
 //
@@ -473,10 +476,10 @@ Int_t StSsdPointMaker::Make()
     }
   else
     {
-      if((spa_strip->GetNRows()==0)&&(spa_ped_strip && spa_ped_strip->GetNRows()!=0))
+      if((!spa_strip|| spa_strip->GetNRows()==0)&&(spa_ped_strip && spa_ped_strip->GetNRows()!=0))
 	{ 
 	  LOG_INFO <<"###### WRITING SSD PEDESTAL HISTOGRAMS##########"<<endm;
-	  if(year<7){
+	  if(year<7 || year>13){
 	    mySsd->writeNoiseToFile(spa_ped_strip,myLabel);}
 	  else{mySsd->writeNewNoiseToFile3(spa_ped_strip,myLabel);//new method
 	    printf("done\n");
