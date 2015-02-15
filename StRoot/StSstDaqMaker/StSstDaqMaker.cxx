@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.13 2015/02/10 17:12:45 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.14 2015/02/15 05:47:05 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.14  2015/02/15 05:47:05  zhoulong
+ * Changed pedStrip table from strip ordering to readout ordering(only in  pedestal run)
+ *
  * Revision 1.13  2015/02/10 17:12:45  zhoulong
  * Fixed a bug, when I fill readout ped array.
  *
@@ -271,14 +274,9 @@ Int_t StSstDaqMaker::Make()
                FindStripNumber(s);
                mPed  = (Float_t)f->ped[h][c_correct] - 375; //Pedestal from data have a constant shift (375)
                mRms  = (Float_t)f->rms[h][c_correct] / 16.;
-               strip_number = s + 1;
 
-               if (id_side == 0) {
-                  id_wafer = 7000 + 100 * (nSstWaferPerLadder - h) + ladder + 1;
-               }
-               else {
-                  id_wafer = 7000 + 100 * (h + 1) + ladder + 1;
-               }
+               id_wafer = 7000 + 100 * (h + 1) + ladder + 1;
+               strip_number = c_correct + 1;
 
                out_ped_strip.id         = count;
                out_ped_strip.id_strip   = 10000 * (10 * strip_number + id_side) + id_wafer;
