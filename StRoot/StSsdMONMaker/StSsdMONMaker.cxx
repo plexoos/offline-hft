@@ -112,6 +112,11 @@ Int_t StSsdMONMaker::Init(){
   globalMatchisto->SetYTitle("ADC clusters N-side [adc counts]");
   globalDeviation = new TH1S("globalDeviation","ADC cluster P - ADC clusterN for all ladders",200,-100,100);
   globalDeviation->SetXTitle("ADC clusters PSide - ADC clusters NSide [adc counts]");
+  globalMatchistoP = new TH2S("globalMatchistoP","matching ADC for all ladders, 1p-1n package",525,0,1050,525,0,1050); 
+  globalMatchistoP->SetXTitle("ADC clusters P-side [adc counts]"); 
+  globalMatchistoP->SetYTitle("ADC clusters N-side [adc counts]"); 
+  globalDeviationP = new TH1S("globalDeviationP","ADC cluster P - ADC clusterN for all ladders, 1p-1n package",200,-100,100); 
+  globalDeviationP->SetXTitle("ADC clusters PSide - ADC clusters NSide [adc counts]"); 
   LadderWaferHits = new TH2S("LadderWaferHits","number of reconstructed hits per wafer",20,1,21,16,1,17);
   LadderWaferHits->SetXTitle("Ladder Id");
   LadderWaferHits->SetYTitle("Wafer Id");
@@ -124,6 +129,8 @@ Int_t StSsdMONMaker::Init(){
   rphiZ           = new TH2D("rphiZ","azimuth vs. Z positions of reconstructed points",160,-40,40,160,-3.2,3.2);
   rphiZ->SetXTitle(" global Z position [cm]");
   rphiZ->SetYTitle(" r/#phi coordinate ");
+  package= new TH1S("package","point package -see SN0427-",10,0,10); 
+  package->SetXTitle("type");
   return ierr;
 }
 //____________________________________________________________________________
@@ -229,6 +236,7 @@ void StSsdMONMaker::makeScmCtrlHistograms(St_scm_spt *scm_spt){
   Int_t b = 0;
   int iLad =0;
   int iWaf =0;
+  Int_t type[11]={11,12,21,13,31,221,222,223,23,32,33}; 
   for(Int_t i = 0 ; i < scm_spt->GetNRows(); i++){
     a = convMeVToADC*((float)on_point[i].de[0] + (float)on_point[i].de[1]);
     b = convMeVToADC*((float)on_point[i].de[0] - (float)on_point[i].de[1]);
@@ -242,6 +250,15 @@ void StSsdMONMaker::makeScmCtrlHistograms(St_scm_spt *scm_spt){
     globalPosition->Fill(on_point[i].x[0],on_point[i].x[1]);
     rphiZ->Fill(on_point[i].x[2],TMath::ATan2(on_point[i].x[1],on_point[i].x[0]));
     localPosition->Fill(on_point[i].xl[0],on_point[i].xl[2]);
+    if(on_point[i].id_match==11){ 
+      globalMatchistoP->Fill(a,b); 
+      globalDeviationP->Fill(a-b); 
+    } 
+    for(Int_t k=0;k<=11;k++){ 
+      if(on_point[i].id_match==type[k]){ 
+        package->Fill(k); 
+      } 
+    } 
   }
 }   
 //____________________________________________________________________________
@@ -299,9 +316,12 @@ void StSsdMONMaker::writeHists() {
   myRootFile->WriteTObject(LadderWaferHits);
   myRootFile->WriteTObject(globalMatchisto);
   myRootFile->WriteTObject(globalDeviation);
+  myRootFile->WriteTObject(globalMatchistoP); 
+  myRootFile->WriteTObject(globalDeviationP); 
   myRootFile->WriteTObject(globalPosition);
   myRootFile->WriteTObject(rphiZ); 
   myRootFile->WriteTObject(localPosition);
+  myRootFile->WriteTObject(package); 
   myRootFile->Close();
 }
 //_____________________________________________________________________________

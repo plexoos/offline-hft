@@ -55,16 +55,19 @@ class StSsdMONMaker : public StMaker {
   TH2D  *m_matchisto[320];
   TH2S  *globalMatchisto; 
   TH1S  *globalDeviation;
+  TH2S  *globalMatchistoP; 
+  TH1S  *globalDeviationP;
   TH2D  *globalPosition;
   TH2D  *localPosition;
   TH2D  *rphiZ;
   TH2S  *LadderWaferHits;
+  TH1S  *package; 
   //constant
   Float_t convMeVToADC;
   Int_t mEventCounter;
 
   virtual const char *GetCVS() const 
-  {static const char cvs[]="Tag $Name:  $ $Id: StSsdMONMaker.h,v 1.1 2015/01/29 19:56:30 bouchet Exp $ built "__DATE__" "__TIME__ ; return cvs;}
+  {static const char cvs[]="Tag $Name:  $ $Id: StSsdMONMaker.h,v 1.2 2015/02/15 16:10:45 bouchet Exp $ built "__DATE__" "__TIME__ ; return cvs;}
   
   ClassDef(StSsdMONMaker, 1)   //StAF chain virtual base class for Makers
     };
