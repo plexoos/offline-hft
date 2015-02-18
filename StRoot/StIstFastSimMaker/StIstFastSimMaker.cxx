@@ -1,4 +1,4 @@
-/* $Id: StIstFastSimMaker.cxx,v 1.23 2015/02/18 16:32:08 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.cxx,v 1.24 2015/02/18 16:32:16 smirnovd Exp $ */
 
 #include "Stiostream.h"
 #include "StIstFastSimMaker.h"
@@ -82,7 +82,12 @@ Int_t StIstFastSimMaker::InitRun(int runNo)
    return kStOk;
 }
 
-//______________________________________________________________________________
+
+/**
+ * Retrieves GEANT hit information from StMcEvent then fills the StEvent's
+ * StIstHitCollection with (possibly smeared) hit positions in either ideal or
+ * misaligned geometry. Thus created StIstHitCollection is used in tracking.
+ */
 Int_t StIstFastSimMaker::Make()
 {
    LOG_INFO << "StIstFastSimMaker::Make()" << endm;
