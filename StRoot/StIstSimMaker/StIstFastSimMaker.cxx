@@ -1,9 +1,9 @@
-/* $Id: StIstFastSimMaker.cxx,v 1.1 2015/02/19 18:22:26 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.cxx,v 1.2 2015/02/19 18:22:44 smirnovd Exp $ */
 
 #include "TGeoManager.h"
 #include "TDataSet.h"
 
-#include "StIstFastSimMaker/StIstFastSimMaker.h"
+#include "StIstSimMaker/StIstFastSimMaker.h"
 #include "StEvent/StEvent.h"
 #include "StEvent/StEnumerations.h"
 #include "StMcEvent/StMcEvent.hh"
