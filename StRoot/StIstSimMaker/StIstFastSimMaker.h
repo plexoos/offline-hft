@@ -1,4 +1,4 @@
-/* $Id: StIstFastSimMaker.h,v 1.20 2015/02/19 18:16:17 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.h,v 1.1 2015/02/19 18:22:27 smirnovd Exp $ */
 
 #ifndef StIstFastSimMaker_h
 #define StIstFastSimMaker_h
@@ -36,7 +36,7 @@ public:
    virtual void  Clear(Option_t *option="");
 
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.20 2015/02/19 18:16:17 smirnovd Exp $ built "__DATE__" "__TIME__ ;
+      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.1 2015/02/19 18:22:27 smirnovd Exp $ built "__DATE__" "__TIME__ ;
       return cvs;
    }
 
