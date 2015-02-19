@@ -1,11 +1,12 @@
-/* $Id: StIstFastSimMaker.h,v 1.16 2015/02/18 16:33:34 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.h,v 1.17 2015/02/19 01:09:16 smirnovd Exp $ */
 
 #ifndef StIstFastSimMaker_h
 #define StIstFastSimMaker_h
 
+#include "TRandom1.h"
+
 #include "StMaker.h"
 
-class StRandom;
 class StIstDb;
 class THashList;
 
@@ -35,7 +36,7 @@ public:
    virtual void  Clear(Option_t *option="");
 
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.16 2015/02/18 16:33:34 smirnovd Exp $ built "__DATE__" "__TIME__ ;
+      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.17 2015/02/19 01:09:16 smirnovd Exp $ built "__DATE__" "__TIME__ ;
       return cvs;
    }
 
@@ -44,7 +45,7 @@ protected:
    StIstDb *mIstDb;
    Bool_t mBuildIdealGeom; ///< Switch between ideal and misaligned geometries. Default is true (ideal)
 
-   StRandom *mRandom;
+   TRandom1 mRandom;
 
    Double_t mResXIst1;
    Double_t mResZIst1;
@@ -53,7 +54,7 @@ protected:
 private:
 
    /// Routine to smear hit by resolution with gaussian, mean zero and width res
-   Double_t distortHit(const Double_t x, const Double_t res, const Double_t detLength) const;
+   Double_t distortHit(const Double_t x, const Double_t res, const Double_t detLength);
 
    ClassDef(StIstFastSimMaker, 0)
 };
