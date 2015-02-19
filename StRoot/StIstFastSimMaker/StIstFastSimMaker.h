@@ -1,4 +1,4 @@
-/* $Id: StIstFastSimMaker.h,v 1.17 2015/02/19 01:09:16 smirnovd Exp $ */
+/* $Id: StIstFastSimMaker.h,v 1.18 2015/02/19 01:09:21 smirnovd Exp $ */
 
 #ifndef StIstFastSimMaker_h
 #define StIstFastSimMaker_h
@@ -23,7 +23,7 @@ class StIstFastSimMaker : public StMaker
 {
 public:
 
-   StIstFastSimMaker(const Char_t *name = "istFastSim");
+   StIstFastSimMaker(const Char_t *name = "istFastSim", bool useRandomSeed=true);
    virtual ~StIstFastSimMaker();
    Int_t Init();
    /// Retrieve GEANT hit information then transfer hit position to ideal or misaligned geometry of
@@ -36,7 +36,7 @@ public:
    virtual void  Clear(Option_t *option="");
 
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.17 2015/02/19 01:09:16 smirnovd Exp $ built "__DATE__" "__TIME__ ;
+      static const char cvs[] = "Tag $Name:  $ $Id: StIstFastSimMaker.h,v 1.18 2015/02/19 01:09:21 smirnovd Exp $ built "__DATE__" "__TIME__ ;
       return cvs;
    }
 
