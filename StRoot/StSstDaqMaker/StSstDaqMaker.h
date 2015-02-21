@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.11 2015/02/04 22:27:33 zhoulong Exp $
+ * $Id: StSstDaqMaker.h,v 1.12 2015/02/21 02:42:32 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.12  2015/02/21 02:42:32  zhoulong
+ * Added the masking method switch into DAQ maker, the default is using hot chip table.
+ *
  * Revision 1.11  2015/02/04 22:27:33  zhoulong
  * merged DAQ maker for Run14 and Run15.
  *
@@ -68,7 +71,7 @@ public:
    void Clear(const Option_t * = "");
    virtual Int_t Finish();
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.11 2015/02/04 22:27:33 zhoulong Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.12 2015/02/21 02:42:32 zhoulong Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
@@ -110,7 +113,7 @@ private:
    Int_t   mUseIntrinsicNoise;
    Int_t   mReverse; //reverse Wafer and Strip ordering
    Int_t   mReverseChip; // Reverse readout mapping.
-   Int_t   mDynamicMask; // Dynamic Masking hot chip.
+   Int_t   mMaskMethod; // 0 -- default hot chip table, 1 -- Dynamic Masking hot chip + basic noise channel masking.
    UInt_t *mRdoData;
    Int_t   mRdoDataLength;
    UInt_t *mHeaderData;

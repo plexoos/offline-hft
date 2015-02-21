@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.14 2015/02/15 05:47:05 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.15 2015/02/21 02:42:32 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.15  2015/02/21 02:42:32  zhoulong
+ * Added the masking method switch into DAQ maker, the default is using hot chip table.
+ *
  * Revision 1.14  2015/02/15 05:47:05  zhoulong
  * Changed pedStrip table from strip ordering to readout ordering(only in  pedestal run)
  *
@@ -129,7 +132,7 @@ Int_t StSstDaqMaker::InitRun(Int_t runumber)
    mEventrunumber = runumber;
    mReverse = 0; // reverse=0 reverse P-side ; reverse=1 reverse N-side
    mReverseChip = 0; //0 -- Default(1-97), 1 -- Reverse(128-97) ;
-   mDynamicMask = 0; //0 -- Default, no Dynamic Masking, 1 -- with Dynamic Masking.
+   mMaskMethod = 0; //0 -- Default, Hot Chip Masking, 1 -- Dynamic Masking.
    mUseChipCorrect = 1;
    mUsePedSubtraction = 1;
    mUseIntrinsicNoise = 1;
@@ -196,7 +199,7 @@ Int_t StSstDaqMaker::InitRun(Int_t runumber)
 //-------------------------------------------------
 Int_t StSstDaqMaker::Make()
 {
-   LOG_INFO << "StSstDaqMaker Start Make..." << endm;
+   LOG_DEBUG << "StSstDaqMaker Start Make..." << endm;
    StRtsTable *rts_table = 0;
    mEventnumber++;
 
@@ -207,7 +210,7 @@ Int_t StSstDaqMaker::Make()
       mMode = 0;//0-physic run,1-pedestal run
       mRdoData = (UInt_t *)rts_table->At(0);
       mRdoDataLength = rts_table->GetNRows();
-      LOG_INFO << "Found sst RDO raw data at " << hex << mRdoData << dec << " , length in byte: "
+      LOG_DEBUG << "Found sst RDO raw data at " << hex << mRdoData << dec << " , length in byte: "
                << mRdoDataLength << " in UInt_t: " << mRdoDataLength / sizeof(UInt_t) << endm;
       DecodeRdoData();
       DecodeHitsData();
@@ -830,7 +833,7 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
    Int_t ladder           = 0;
    Int_t chip             = 0;
    Int_t chipIndex        = 0;
-   LOG_INFO << "Current Event data length : " << vallength << endm;
+   LOG_DEBUG << "Current Event data length : " << vallength << endm;
    //St_spa_strip *spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
    spa_strip = (St_spa_strip *) m_DataSet->Find("spa_strip");
 
@@ -1064,7 +1067,9 @@ void StSstDaqMaker::FillData(vector<vector<int> > vadc, vector<vector<float> > v
 
          //---------------
          //hotchip masking
-         if (gStSstDbMaker->chipHot(id_side, ladder, i, j / 128)) continue;
+         if(!mMaskMethod) {
+	   if (gStSstDbMaker->chipHot(id_side, ladder, i, j / 128)) continue;
+	 }
 
          if (id_side == mReverse) {
             id_wafer = 7000 + 100 * (nSstWaferPerLadder - i) + ladder + 1;
@@ -1083,7 +1088,9 @@ void StSstDaqMaker::FillData(vector<vector<int> > vadc, vector<vector<float> > v
          if (adc < 3 * intrinsicnoise) continue;
 
          //mask dead strips.
-         //if(intrinsicnoise<=1) continue;
+         if(mMaskMethod) {
+	   if(intrinsicnoise>10) continue;
+	 }
 
          out_strip.id          = count;
          out_strip.adc_count   = adc; //Minus the Common mode noise
@@ -1138,7 +1145,7 @@ Float_t StSstDaqMaker::CalculateCommonModeNoise(vector<int> vadc)
    Float_t sum     = 0;
    Float_t devcut  = 20; //deviation cut, default is 10 ADC
    Int_t   counter = 0;
-   if(mDynamicMask) {
+   if(mMaskMethod) {
      //For Masking
      TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
      Float_t chipRms  = 0;
@@ -1197,7 +1204,7 @@ Float_t StSstDaqMaker::CalculateCommonModeNoiseSimple(vector<int> vadc) //Simpli
    Float_t sum     = 0;
    Float_t devcut  = 20; //deviation cut, default is 10 ADC
    Int_t   counter = 0;
-   if(mDynamicMask) {
+   if(mMaskMethod) {
      //For Masking
      TH1I *hadc = new TH1I("hadc", "adc in each chip", 768, -512, 1024);
      Float_t chipRms  = 0;
