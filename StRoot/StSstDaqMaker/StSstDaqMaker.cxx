@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.15 2015/02/21 02:42:32 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.16 2015/02/22 22:23:17 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.16  2015/02/22 22:23:17  zhoulong
+ * Added the default tables when the noisetable,ssdStripCalib table and ChipNoiseTable timestamp is not correct or no DB tables
+ *
  * Revision 1.15  2015/02/21 02:42:32  zhoulong
  * Added the masking method switch into DAQ maker, the default is using hot chip table.
  *
@@ -1247,34 +1250,36 @@ void StSstDaqMaker::FillReadOutPedTable()
 {
    strip_calib = (St_ssdStripCalib *) GetDataBase("Calibrations/ssd/ssdStripCalib");
 
-   if (!strip_calib) {LOG_ERROR << "InitRun : No access to ssdStripCalib table - we will use the default noise and pedestal values" << endm;}
+   if(strip_calib) {
+    
+     LOG_INFO << "InirTun : New Table(ssdStripCalib) is used ! " << endm;
+     ssdStripCalib_st *noise = strip_calib->GetTable();
+
+     Int_t side    = 0;
+     Int_t ladder  = 0;
+     Int_t wafer   = 0;
+     Int_t idwaf   = 0;
+     Int_t channel = 0;
+     Int_t chip    = 0;
+     Int_t ped     = 0;
+     Int_t index   = 0;
+
+     for (Int_t i = 0 ; i < strip_calib->GetNRows(); i++) {
+       channel = (int)(noise[i].id / 100000.);
+       chip    = (channel - 1) / 128;
+       idwaf   = noise[i].id - 10000 * ((int)(noise[i].id / 10000.));
+       wafer   = idWaferToWafer(idwaf);
+       ladder  = idWaferToLadderNumb(idwaf);
+       side    = (noise[i].id - channel * 100000 - idwaf) / 10000;
+       index   = side * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + ladder * nSstWaferPerLadder * nSstStripsPerWafer + wafer * nSstStripsPerWafer + channel - 1;
+       ped     = noise[i].pedestals;
+       mReadOutPed[index] = ped;
+     }
+   }
    else {
-      LOG_INFO << "We will use the default Pedestal(=0) and Rms(=0) " << endm;
+     LOG_WARN << "InitRun : No access to ssdStripCalib table - we will use the default pedestal values( ped = 0)." << endm;
+     FillDefaultReadOutPedTable();
    }
-
-   ssdStripCalib_st *noise = strip_calib->GetTable();
-
-   Int_t side    = 0;
-   Int_t ladder  = 0;
-   Int_t wafer   = 0;
-   Int_t idwaf   = 0;
-   Int_t channel = 0;
-   Int_t chip    = 0;
-   Int_t ped     = 0;
-   Int_t index   = 0;
-
-   for (Int_t i = 0 ; i < strip_calib->GetNRows(); i++) {
-      channel = (int)(noise[i].id / 100000.);
-      chip    = (channel - 1) / 128;
-      idwaf   = noise[i].id - 10000 * ((int)(noise[i].id / 10000.));
-      wafer   = idWaferToWafer(idwaf);
-      ladder  = idWaferToLadderNumb(idwaf);
-      side    = (noise[i].id - channel * 100000 - idwaf) / 10000;
-      index   = side * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + ladder * nSstWaferPerLadder * nSstStripsPerWafer + wafer * nSstStripsPerWafer + channel - 1;
-      ped     = noise[i].pedestals;
-      mReadOutPed[index] = ped;
-   }
-
 }
 //------------------------------------------------
 void StSstDaqMaker::FillDefaultReadOutPedTable()
@@ -1290,24 +1295,20 @@ void StSstDaqMaker::FillDefaultReadOutPedTable()
 void StSstDaqMaker::FillNoiseTable()
 {
    mNoise = (St_ssdNoise *)GetDataBase("Calibrations/ssd/ssdNoise");
+   if(mNoise) {
+     LOG_INFO << "InitRun for real data : new Table(ssdNoise) is used" << endm;
+     ssdNoise_st *noise = mNoise->GetTable();
+     Int_t iWaf          = 0;
+     Int_t iLad          = 0;
+     Int_t iSide         = 0;
+     Int_t index         = 0;
+     printf("size of mNoise table = %d\n", (int)mNoise->GetNRows());
 
-   if (!mNoise) {LOG_ERROR << "InitRun : No access to ssdNoise - will use the default noise and pedestal values" << endm;}
-   else {
-      LOG_INFO << "InitRun for real data : new Table(ssdNoise) is used" << endm;
-   }
+     for (Int_t i = 0 ; i < mNoise->GetNRows(); i++) {
+       iWaf      = noise[i].id - (noise[i].id / nSstWaferPerLadder) * nSstWaferPerLadder;
+       iLad      = noise[i].id / 16;
 
-   ssdNoise_st *noise = mNoise->GetTable();
-   Int_t iWaf          = 0;
-   Int_t iLad          = 0;
-   Int_t iSide         = 0;
-   Int_t index         = 0;
-   printf("size of mNoise table = %d\n", (int)mNoise->GetNRows());
-
-   for (Int_t i = 0 ; i < mNoise->GetNRows(); i++) {
-      iWaf      = noise[i].id - (noise[i].id / nSstWaferPerLadder) * nSstWaferPerLadder;
-      iLad      = noise[i].id / 16;
-
-      for (int s = 0; s < nSstStripsPerWafer; s++) {
+       for (int s = 0; s < nSstStripsPerWafer; s++) {
          //P-Side
          iSide = 0;
          index = iSide * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + iLad * nSstWaferPerLadder * nSstStripsPerWafer + iWaf * nSstStripsPerWafer + s;
@@ -1318,7 +1319,12 @@ void StSstDaqMaker::FillNoiseTable()
          index = iSide * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer + iLad * nSstWaferPerLadder * nSstStripsPerWafer + iWaf * nSstStripsPerWafer + s;
          mIntrinsicRms[index] = (Int_t)noise[i].rmsn[s];
 
-      }
+       }
+     }
+   }
+   else {
+     LOG_WARN << "InitRun : No access to ssdNoise - will use the default noise(rms in all channel will be 1 adc )" << endm;
+     FillDefaultNoiseTable();  
    }
 }
 //------------------------------------------------
@@ -1328,13 +1334,14 @@ void StSstDaqMaker::FillDefaultNoiseTable()
    Int_t size = nSstSide * nSstLadder * nSstWaferPerLadder * nSstStripsPerWafer;
 
    for (Int_t i = 0; i < size; i++) {
-      mIntrinsicRms[i] = 0;
+      mIntrinsicRms[i] = 1;
    }
 }
 //------------------------------------------------
 void StSstDaqMaker::FillChipNoiseTable(){
   mChipCorrect = (St_ssdChipCorrect*)GetDataBase("Calibrations/ssd/ssdChipCorrect");
   if(mChipCorrect){
+    LOG_INFO<<"New ChipNoiseTable was used! "<<endm;
     ssdChipCorrect_st *g  = mChipCorrect->GetTable() ;
     Int_t size = mChipCorrect->GetNRows();
     LOG_INFO<<"Size of gain table = "<<mChipCorrect->GetNRows()<<endm;
@@ -1343,6 +1350,10 @@ void StSstDaqMaker::FillChipNoiseTable(){
       mCorrectFactor[g[i].nLadder*96+g[i].nWafer*6+g[i].nChip][g[i].nSide] = g[i].nCorrect;
       mNoiseCut[g[i].nLadder*96+g[i].nWafer*6+g[i].nChip][g[i].nSide] = g[i].nCutPos;
     }
+  }
+  else { 
+    LOG_INFO<<"We will using the default chip noise table. NoiseCut=0,CorrectionFactor=0"<<endm;   
+    FillDefaultChipNoiseTable();
   }
 }
 //------------------------------------------------
