@@ -118,6 +118,8 @@ void hft_display(PrgOptionProcessor &poProc, const double B)
 
    eventT = new EventT();
    myTreeFileChain->SetBranchAddress("e.", &eventT);
+   myTreeFileChain->SetBranchStatus("e.*", false);
+   myTreeFileChain->SetBranchStatus("e.EventT*", true);
 
    // Create views and containers
    make_geometry(poProc);
