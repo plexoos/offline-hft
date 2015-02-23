@@ -62,7 +62,6 @@ const uintmax_t kPXL_Cluster_Max = 20; // Max cluster size to be accepted, i.e. 
 
 // Draw Options
 const Bool_t kPlotHFTSupport = false;
-const Color_t  kColors[3] = { kRed, kGreen, kYellow };
 const Double_t kTrackHitOffset = 0.5;
 
 // sensor status
@@ -298,9 +297,9 @@ void process_event(TChain &fhtree, Int_t iEvt)
       track->SetAttLineAttMarker(gTrackList);
 
       if (charge == +1)
-         track->SetLineColor(kColors[0]);
+         track->SetLineColor(kRed);
       else
-         track->SetLineColor(kColors[1]);
+         track->SetLineColor(kGreen);
 
       //std::cout << "Adding a new track " << trackT->fPx << " " << trackT->fPy << " " << trackT->fPz << std::endl;
       gTrackList->AddElement(track);
