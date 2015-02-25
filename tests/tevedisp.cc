@@ -7,8 +7,6 @@
 
 #include <boost/regex.hpp>
 
-#include "tevedisp.h"
-
 #include "TChain.h"
 #include "TFile.h"
 #include "TMath.h"
@@ -17,6 +15,7 @@
 #include "TEveTrackPropagator.h"
 #include "TGeoManager.h"
 #include "TGeoNavigator.h"
+#include "TGeoNode.h"
 #include "TEveBrowser.h"
 #include "TEveManager.h"
 #include "TRootBrowser.h"
@@ -28,6 +27,7 @@
 
 #include "StHftPool/EventT/EventT.h"
 #include "StHftPool/EventT/GuiEventHandler.h"
+#include "StiScan/PrgOptionProcessor.h"
 
 
 // Constants
@@ -89,6 +89,17 @@ TGeoManager   *gGeoManager = 0;
 // These globals are not used but required since we link against TGiant3.o
 int    Margc=0;
 char** Margv=NULL;
+
+
+void decodeId(int id, int *sector, int *ladder, int *sensor);
+void hft_display(PrgOptionProcessor &poProc, const double B = 1);
+void loadStatus(const int runnumber);
+void init(const double B);
+void make_visible_select_volumes(TGeoNavigator &geoNav, PrgOptionProcessor &poProc);
+void make_visible_daughters(TGeoNavigator &geoNav, PrgOptionProcessor &poProc, bool usePattern=false);
+void make_visible_mothers(TGeoNavigator &geoNav, int levelsUp);
+void make_geometry(PrgOptionProcessor &poProc);
+void build_gui(TChain &hftree);
 
 
 int main(int argc, char **argv)
