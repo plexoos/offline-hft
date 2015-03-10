@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.cxx,v 1.16 2015/02/22 22:23:17 zhoulong Exp $
+ * $Id: StSstDaqMaker.cxx,v 1.17 2015/03/10 23:10:22 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013
  ***************************************************************************
@@ -17,6 +17,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.cxx,v $
+ * Revision 1.17  2015/03/10 23:10:22  zhoulong
+ * Added HotChip masking table to ZS data.
+ *
  * Revision 1.16  2015/02/22 22:23:17  zhoulong
  * Added the default tables when the noisetable,ssdStripCalib table and ChipNoiseTable timestamp is not correct or no DB tables
  *
@@ -650,6 +653,10 @@ void StSstDaqMaker::DecodeRawWords(UInt_t *val, Int_t vallength, Int_t channel)
             strip_number[n] = nSstStripsPerWafer - strip[n];
          }
 
+         if(!mMaskMethod) {
+	   if (gStSstDbMaker->chipHot(id_side, ladder, wafer[n], strip[n] / 128)) continue;
+	 }
+
          out_strip.id          = count;
          out_strip.adc_count   = data[n];
          out_strip.id_strip    = 10000 * (10 * strip_number[n] + id_side) + id_wafer[n]; //id_side:0-->p,1-->N
@@ -860,14 +867,14 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
          continue;
       }
 
-      if(mEventrunumber<16000000) {
-	//chip correction 
-	chip = strip/nSstStripsPerChip;
-	chipIndex = ladder*nSstWaferPerLadder*nSstChipPerWafer + wafer*nSstChipPerWafer + chip;
+      //if(mEventrunumber<16000000) {
+      //chip correction 
+      chip = strip/nSstStripsPerChip;
+      chipIndex = ladder*nSstWaferPerLadder*nSstChipPerWafer + wafer*nSstChipPerWafer + chip;
       
-	if(data<mNoiseCut[chipIndex][id_side]) data = 0; //remove noise.
-	else data = data - mCorrectFactor[chipIndex][id_side]; //data correction.
-      }
+      if(data<mNoiseCut[chipIndex][id_side]) data = 0; //remove noise.
+      else data = data - mCorrectFactor[chipIndex][id_side]; //data correction.
+      //}
 
       readout = strip;
 
@@ -880,6 +887,10 @@ void StSstDaqMaker::DecodeCompressedWords(UInt_t *val, Int_t vallength, Int_t ch
       else {
          id_wafer = 7000 + 100 * ((wafer) + 1) + ladder + 1;
          strip_number = nSstStripsPerWafer - strip;
+      }
+
+      if(!mMaskMethod) {
+	if (gStSstDbMaker->chipHot(id_side, ladder, wafer, chip)) continue;
       }
 
       out_strip.id          = count;
