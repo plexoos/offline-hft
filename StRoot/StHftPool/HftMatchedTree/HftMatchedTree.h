@@ -1,9 +1,10 @@
 #ifndef HftMatchedTree_h
 #define HftMatchedTree_h
 
-#include "StMaker.h"
 #include "TFile.h"
 #include "TTree.h"
+
+#include "StChain/StMaker.h"
 
 class EventT;
 
