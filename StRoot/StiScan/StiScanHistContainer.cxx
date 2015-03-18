@@ -1,12 +1,13 @@
 #include <cmath>
 
 #include "TCanvas.h"
+#include "TClonesArray.h"
 #include "TH2S.h"
 #include "TProfile2D.h"
 #include "TVector3.h"
 
 #include "StiScan/StiScanHistContainer.h"
-#include "StiScan/TStiKalmanTrackNode.h"
+#include "StiRootIO/TStiKalmanTrackNode.h"
 
 
 StiScanHistContainer::StiScanHistContainer(StiScanPrgOptions& prgOpts) : TDirectoryFile(),
