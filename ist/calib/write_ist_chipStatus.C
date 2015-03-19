@@ -22,13 +22,15 @@ void write_ist_chipStatus() {
     	gSystem->Load("libStDb_Tables.so");
     	gSystem->Load("StDbLib.so");
 
+	//int maxRunNumber = 2399; //20150314 number of runs for hot/cold chips masking 
 	int maxRunNumber = 3153; //number of runs in 2014 with IST included
         int deadChipsInRun14 = 31; //initialize chip status
         UChar_t chipStatus[864];
 
 	//counting number of runs in this entry
 	if(!isSimFavor)
-	    std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_full.lis");
+	    //std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_hotColdChip.lis"); //20150314 for hot/cold chip marsking
+	    std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_full.lis");//full 2014 IST physics run
 	else {
 	    std::ifstream runList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/run_2014_ist_sim.lis");
 	    maxRunNumber = 1;
@@ -110,6 +112,7 @@ void write_ist_chipStatus() {
 	    }
 
 	    //mask out bad chips (eg. mis-configured)
+	    //std::ifstream badChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_bad_2014.txt"); //20150314
 	    std::ifstream badChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_bad.txt");
             if (!badChipList.is_open())
                 exit(0);
@@ -130,6 +133,25 @@ void write_ist_chipStatus() {
             }
             badChipList.close();
 
+	    //masking out hot or cold chips
+	    std::ifstream hotColdChipList("/star/u/ypwang/disk01/offline_hft/DB/runListPerWeek4ChipStatusDB/ist_apv_hotCold.txt");
+            if (!hotColdChipList.is_open())
+                exit(0);
+
+	    Float_t nHitsPerChip;
+	    while(!hotColdChipList.eof()) {
+		hotColdChipList >> runID >> badChipId >> rdo >> arm >> chip >> nHitsPerChip >> code;
+		if(runID != runNumber) continue;
+		if(badChipId<1 || badChipId>864) continue;
+		if(code==11) //11: hot
+			cout << "Hot chip geometry index: " << badChipId << endl;
+		if(code==12) //12: cold
+			cout << "Cold chip geometry index: " << badChipId << endl;
+
+		chipStatus[badChipId-1] = code;
+	    }
+	    hotColdChipList.close();
+
 	    table.run = runNumber;
 	    cout << "table.run = " << runNumber << ";" << endl;
 
@@ -137,6 +159,8 @@ void write_ist_chipStatus() {
 		table.s[iChip] = (unsigned)chipStatus[iChip];
 		cout << "table.s["<<iChip<<"]="<<(int)chipStatus[iChip]<<"; ";
 	    }
+
+	    cout << " ....................." << endl;
 
 	    // Store data to the StDbTable
 	    dbtable->SetTable((char*)&table, 1);
