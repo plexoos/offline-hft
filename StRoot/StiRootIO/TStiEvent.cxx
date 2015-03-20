@@ -7,6 +7,7 @@ ClassImp(TStiEvent);
 /// By default, we set no constraints on tracks w.r.t. their association with
 /// a specific detector group
 StDetectorId TStiEvent::fgDetGroupId = kMaxDetectorId;
+bool TStiEvent::fgDetActiveOnly = false;
 
 
 TStiEvent::TStiEvent() : TObject(), fTStiKalmanTracks(), fTStiHits()
@@ -18,13 +19,15 @@ TStiEvent::TStiEvent() : TObject(), fTStiKalmanTracks(), fTStiHits()
  * Constructs event in which track nodes will be constrained by the provided
  * detector Id.
  * */
-TStiEvent::TStiEvent(StDetectorId detGroupId) : TObject(), fTStiKalmanTracks(), fTStiHits()
+TStiEvent::TStiEvent(StDetectorId detGroupId, bool detActiveOnly) :
+   TObject(), fTStiKalmanTracks(), fTStiHits()
 {
    fgDetGroupId = detGroupId;
+   fgDetActiveOnly = detActiveOnly;
 }
 
 
-Int_t TStiEvent::Fill(StiTrackContainer &stiTrackContainer)
+EReturnCodes TStiEvent::Fill(const StiTrackContainer &stiTrackContainer)
 {
    for (auto trackIt = stiTrackContainer.begin(); trackIt != stiTrackContainer.end(); ++trackIt)
    {
@@ -58,6 +61,17 @@ Int_t TStiEvent::Fill(StiTrackContainer &stiTrackContainer)
          }
       }
    }
+
+   return kStOK;
+}
+
+
+EReturnCodes TStiEvent::Fill(StiHitContainer &stiHitContainer)
+{
+   std::vector<StiHit*>& selectedHits = stiHitContainer.getHits(fgDetGroupId);
+
+   for (auto iStiHit = selectedHits.begin(); iStiHit != selectedHits.end(); ++iStiHit)
+      InsertStiHit(**iStiHit);
 
    return kStOK;
 }

@@ -15,7 +15,7 @@ TStiKalmanTrack::TStiKalmanTrack() : TObject(),
 }
 
 
-TStiKalmanTrack::TStiKalmanTrack(TStiEvent* event, const StiKalmanTrack& stiKTrack, StDetectorId detGroupId) :
+TStiKalmanTrack::TStiKalmanTrack(TStiEvent* event, const StiKalmanTrack& stiKTrack) :
    TObject(),
    fEvent(event), fNodes(), fEnergyLosses(0)
 {
@@ -29,11 +29,22 @@ TStiKalmanTrack::TStiKalmanTrack(TStiEvent* event, const StiKalmanTrack& stiKTra
          continue;
       }
 
-      StDetectorId stiNodeDetId = stiNode->getDetector() ?
-         static_cast<StDetectorId>( stiNode->getDetector()->getGroupId() ) : kUnknownId;
+      const StiDetector* stiKTNDet = stiNode->getDetector();
 
-      if (stiNodeDetId == detGroupId || detGroupId == kMaxDetectorId)
+      if (!stiKTNDet) {
+         Warning("TStiKalmanTrack", "No detector found associated with the node. Skipping to next one...");
+         continue;
+      }
+
+      StDetectorId stiNodeDetId = stiKTNDet ?
+         static_cast<StDetectorId>( stiKTNDet->getGroupId() ) : kUnknownId;
+
+      if ( ( TStiEvent::fgDetGroupId == stiNodeDetId || TStiEvent::fgDetGroupId == kMaxDetectorId ) &&
+           ( (TStiEvent::fgDetActiveOnly && stiKTNDet->isActive()) || !TStiEvent::fgDetActiveOnly )
+         )
+      {
          fNodes.insert( TStiKalmanTrackNode(this, *stiNode) );
+      }
 
       fEnergyLosses += stiNode->getEnergyLosses();
    }
