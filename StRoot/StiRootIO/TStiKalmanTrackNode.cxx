@@ -14,7 +14,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode() : TObject(),
    fTrack(nullptr), fValid(false),
    fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fNodeCenterRefAngle(0), fNodeMaterialDensity(0),
    fNodeTrackLength(0),
-   fNodeRelRadLength(0), fVolumeName(), fStiHit(nullptr), fTrackProjErr(-1)
+   fNodeRelRadLength(0), fVolumeName(), fStiHit(nullptr), fClosestStiHit(nullptr), fTrackProjErr(-1)
 {
 }
 
@@ -23,7 +23,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(TStiKalmanTrack* const track, const Sti
    fTrack(track), fValid(stiKTN.isValid()),
    fPosition(), fTrackP(), fEnergyLosses(-1), fNodeRadius(0), fNodeCenterRefAngle(0), fNodeMaterialDensity(0),
    fNodeTrackLength(stiKTN.getTrackLength()),
-   fNodeRelRadLength(0), fVolumeName(), fStiHit(nullptr), fTrackProjErr(-1)
+   fNodeRelRadLength(0), fVolumeName(), fStiHit(nullptr), fClosestStiHit(nullptr), fTrackProjErr(-1)
 {
    // Access node parameters
    fPosition.SetXYZ(stiKTN.x_g(), stiKTN.y_g(), stiKTN.z_g());
@@ -34,14 +34,17 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(TStiKalmanTrack* const track, const Sti
    fEnergyLosses = stiKTN.getEnergyLosses() * 1e6; // Get losses in volume material and convert GeV to keV
    fNodeRelRadLength = stiKTN.getRelRadLength();
 
-   if (stiKTN.getDetector()) {
-      fVolumeName = stiKTN.getDetector()->getName();
-      StiPlacement* stiPlacement = stiKTN.getDetector()->getPlacement();
+   const StiDetector* stiKTNDet = stiKTN.getDetector();
+
+   if (stiKTNDet)
+   {
+      fVolumeName = stiKTNDet->getName();
+      StiPlacement* stiPlacement = stiKTNDet->getPlacement();
       assert(stiPlacement);
       fNodeRadius = stiPlacement->getLayerRadius();
       fNodeCenterRefAngle = stiPlacement->getCenterRefAngle();
 
-      StiMaterial* stiMaterial = stiKTN.getDetector()->getMaterial();
+      StiMaterial* stiMaterial = stiKTNDet->getMaterial();
       assert(stiMaterial);
 
       fNodeMaterialDensity = stiMaterial->getDensity();
@@ -58,7 +61,7 @@ TStiKalmanTrackNode::TStiKalmanTrackNode(TStiKalmanTrack* const track, const Sti
 
    const StiNodeInf* prefitKTNParams = stiKTN.getInfo();
 
-   fTrackProjErr = prefitKTNParams ? prefitKTNParams->mPE.getDelta() : -1;
+   fTrackProjErr = prefitKTNParams ? prefitKTNParams->mPE.getDelta() : -2;
 }
 
 
@@ -107,4 +110,22 @@ void TStiKalmanTrackNode::Print(Option_t *opt) const
 bool operator< (const TStiKalmanTrackNode& lhs, const TStiKalmanTrackNode& rhs)
 {
    return lhs.fNodeRadius < rhs.fNodeRadius;
+}
+
+
+void TStiKalmanTrackNode::AssignClosestHit(const std::set<TStiHit>& stiHits)
+{
+   TVector3 distVec;
+   double max_dist = DBL_MAX;
+
+   for (auto iHit = stiHits.begin(); iHit != stiHits.end(); ++iHit)
+   {
+      distVec = GetPosition() - iHit->GetPosition();
+
+      double dist = distVec.Mag();
+      if (dist < max_dist) {
+         max_dist = dist;
+         fClosestStiHit = &*iHit;
+      }
+   }
 }

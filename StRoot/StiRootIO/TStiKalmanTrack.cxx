@@ -59,7 +59,6 @@ std::pair<std::set<TStiHit>::iterator, bool> TStiKalmanTrack::AddToParentEvent(c
    return fEvent ? fEvent->InsertStiHit(stiHit) : dummy;
 }
 
-const std::set<TStiKalmanTrackNode>& TStiKalmanTrack::GetNodes() const { return fNodes; }
 
 const TStiKalmanTrackNode& TStiKalmanTrack::GetDcaNode() const { return *fNodes.begin(); }
 
@@ -75,5 +74,17 @@ void TStiKalmanTrack::Print(Option_t *opt) const
    for (int nodeIdx=0; iTStiKTrackNode != fNodes.end(); ++iTStiKTrackNode, ++nodeIdx) {
       printf("node index: %d\n", nodeIdx);
       iTStiKTrackNode->Print();
+   }
+}
+
+
+void TStiKalmanTrack::AssignClosestHits(const std::set<TStiHit>& stiHits)
+{
+   for (auto iNode = fNodes.begin(); iNode != fNodes.end(); ++iNode)
+   {
+      // This cast is ugly but we want to update a member which is not used for
+      // ordering of the set elements
+      TStiKalmanTrackNode& tmpNode = const_cast< TStiKalmanTrackNode& >(*iNode);
+      tmpNode.AssignClosestHit(stiHits);
    }
 }
