@@ -1,18 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [How to compile HFT libraries from STAR CVS repository](#how-to-compile-hft-libraries-from-star-cvs-repository)
-- [How to compile HFT libraries from git repository](#how-to-compile-hft-libraries-from-git-repository)
-- [How to run tests](#how-to-run-tests)
-- [How to produce and reconstruct massive simulation for HFT ](#how-to-produce-and-reconstruct-massive-simulation-for-hft)
-- [How to build and run standalone HFT tools](#how-to-build-and-run-standalone-hft-tools)
-  - [Prerequisites: Setting up the environment](#prerequisites-setting-up-the-environment)
-- [How to add PXL pileup events](#how-to-add-pxl-pileup-events)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
 This project is intended to support the offline reconstruction and analysis of
 the data collected by the STAR experiment at RHIC and by the Heavy Flavor
 Tracker (HFT) in particular. In the STAR CVS repository the corresponding codes
