@@ -5,7 +5,7 @@
  */
 /***************************************************************************
  *
- * $Id: StSstDaqMaker.h,v 1.12 2015/02/21 02:42:32 zhoulong Exp $
+ * $Id: StSstDaqMaker.h,v 1.13 2015/06/22 14:05:49 zhoulong Exp $
  *
  * Author: Long Zhou, Nov 2013, according codes from Hao Qiu
  ***************************************************************************
@@ -16,6 +16,9 @@
  ***************************************************************************
  *
  * $Log: StSstDaqMaker.h,v $
+ * Revision 1.13  2015/06/22 14:05:49  zhoulong
+ * New version with new table structures. Changed the produce to deal with pedestal run, directly write pedestal files in DAQ maker.
+ *
  * Revision 1.12  2015/02/21 02:42:32  zhoulong
  * Added the masking method switch into DAQ maker, the default is using hot chip table.
  *
@@ -52,11 +55,10 @@
 #include "StRTSBaseMaker.h"
 
 class St_spa_strip;
-class St_ssdPedStrip;
 class StSsdConfig;
 class St_ssdConfiguration;
 class ssdConfiguration_st;
-class St_ssdStripCalib;
+class St_sstStripCalib;
 class St_ssdNoise;
 class St_ssdChipCorrect;
 class ssdChipCorrect_st;
@@ -71,7 +73,7 @@ public:
    void Clear(const Option_t * = "");
    virtual Int_t Finish();
    virtual const char *GetCVS() const {
-      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.12 2015/02/21 02:42:32 zhoulong Exp $ built "__DATE__" "__TIME__;
+      static const char cvs[] = "Tag $Name:  $ $Id: StSstDaqMaker.h,v 1.13 2015/06/22 14:05:49 zhoulong Exp $ built "__DATE__" "__TIME__;
       return cvs;
    }
 
@@ -86,6 +88,7 @@ private:
    Int_t  Shift(int runnumber, int &channel);
    void   FindLadderSide(int RDO, int channel, int &ladder, int &side);
    void   FindStripNumber(int &strip);
+   void   FindChannelNumber(int &channel);
    void   DeclareNTuple();
    void   PrintConfiguration(Int_t runumber, ssdConfiguration_st *config);
    void   FillData(vector<vector<int> > vadc, vector<vector<float> > vcmnoise, Int_t id_side, Int_t ladder, Int_t valength);
@@ -103,46 +106,45 @@ private:
    StSsdConfig       *mConfig;
    St_ssdChipCorrect* mChipCorrect;//!< Pointer to the ssdChipCorrectio table (noise status)) 
    St_spa_strip      *spa_strip;
-   St_ssdPedStrip    *ssdPedStrip;
-   St_ssdStripCalib  *strip_calib;
+   St_sstStripCalib  *strip_calib;
    St_ssdNoise       *mNoise;
    ssdChipCorrect_st *chip_correct;
 
    Int_t   mUseChipCorrect;
    Int_t   mUsePedSubtraction;
    Int_t   mUseIntrinsicNoise;
-   Int_t   mReverse; //reverse Wafer and Strip ordering
-   Int_t   mReverseChip; // Reverse readout mapping.
-   Int_t   mMaskMethod; // 0 -- default hot chip table, 1 -- Dynamic Masking hot chip + basic noise channel masking.
+   Int_t   mReverse;                //reverse Wafer and Strip ordering
+   Int_t   mReverseChip;            // Reverse readout mapping.
+   Int_t   mMaskMethod;             // 0 -- default hot chip table, 1 -- Dynamic Masking hot chip + basic noise channel masking.
    UInt_t *mRdoData;
    Int_t   mRdoDataLength;
    UInt_t *mHeaderData;
    UInt_t *mTrailerData;
    Int_t   mTrailerDataLength;
-   UInt_t *mAdc[8];//8 Fiber data pointer
+   UInt_t *mAdc[8];                 //8 Fiber data pointer
    UInt_t *mAdcHeader[8];
    UInt_t  mAdcLength[8];
-   Int_t   mMode;// 0: Physical run , 1: pedestal run
+   Int_t   mMode;                   // 0: Physical run , 1: pedestal run
    Int_t   mRdoFlag;
    Int_t   mFiberFlag[8];
-   UInt_t  mFlag[8];//daq file flag.
+   UInt_t  mFlag[8];                //daq file flag.
    Int_t   mTrigger;
-   Int_t   mSec;//sector number.(in Tonko's pedestal bank)
-   Int_t   mFiber;//Fiber number (in Tonko's pedestal bank)
+   Int_t   mSec;                    //sector number.(in Tonko's pedestal bank)
+   Int_t   mFiber;                  //Fiber number (in Tonko's pedestal bank)
    Float_t mPed;
    Float_t mRms;
-   Int_t   mRDO;//RDO number
+   Int_t   mRDO;                    //RDO number
    Int_t   mWafer[16];
    Int_t   mStrip[768];
    Int_t   mChannel[8];
-   UInt_t  mDataMode[8];// Raw or Compressed data .
+   UInt_t  mDataMode[8];            // Raw or Compressed data .
    Int_t   mEventnumber;
    Int_t   mEventrunumber;
-   Int_t   mEventTime;// Current event RHIC clock
-   Int_t   mPEventTime;// Previous event RHIC cloc
-   Int_t   mCorrectFactor[1920][2]; //chip correction table.
-   Int_t   mNoiseCut[1920][2]; //Reject Noise.
-   map<Int_t, Int_t> mReadOutPed; //ReadOut Pedestal.
+   Int_t   mEventTime;              // Current event RHIC clock
+   Int_t   mPEventTime;             // Previous event RHIC cloc
+   Int_t   mCorrectFactor[3840];    //chip correction table.
+   Int_t   mNoiseCut[3840];         //Reject Noise.
+   map<Int_t, Int_t> mReadOutPed;   //ReadOut Pedestal.
    map<Int_t, Int_t> mIntrinsicRms; //Intrinsic Rms
    //DAQ File parameters(please look at the SSD data formata document. )
    static const UInt_t  HEADER_LENGTH       = 8;
@@ -195,7 +197,8 @@ private:
    static const Int_t   nSstStripsPerWafer  = 768;
    static const Int_t   nSstStripsPerChip   = 128;
    static const Int_t   RDO2LADDER[5][8];//Ladder cards number in each RDO channel .
-   static const Int_t   ReadOutMap[128];
+   static const Int_t   ReadOutMap[128];     // readout channel 2 Strip number map
+   static const Int_t   Rev_ReadOutMap[128]; // strip number 2 readout channelmap 
 
    ClassDef(StSstDaqMaker, 0)
 };
