@@ -119,27 +119,3 @@ a list of such ROOT files (one per line) as input. The simplest command to
 display events from hftree can look like this:
 
     tevedisp -f path/to/my.hftree.root
-
-
-How to add PXL pileup events
-============================
-
-You need to patch StPxlSimMaker with the pileup adder as follows:
-
-First, checkout the patch (notice the -ko option):
-
-    cvs co -ko offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
-    cvs co -ko offline/hft/runPxlSimWithPileup.csh
-
-Then checkout HEAD StPxlSimMaker from official STAR repo:
-
-    cvs co StRoot/StPxlSimMaker
-
-Now patch it:
-
-    cd StRoot/
-    patch -p1 < ../offline/hft/StRoot/StPxlSimMaker_pileupAdder.patch
-
-to run it, look at:
-
-    offline/hft/runPxlSimWithPileup.csh
